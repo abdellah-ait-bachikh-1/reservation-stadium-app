@@ -1,0 +1,377 @@
+{
+  "Pages": {
+    "Home": {
+      "headTitle": "Home",
+      "pageTitle": "Welcome to Stadium Reservation in Tan-Tan",
+      "description": "Book your stadium seats easily in Tan-Tan, Morocco. For sports clubs and teams.",
+      "keywords": "Tan-Tan stadium reservation, Tan-Tan stadium booking, book seats Tan-Tan, sports events Tan-Tan, for sports clubs and teams Tan-Tan",
+      "metaDescription": "Easily reserve your seats for stadium events in Tan-Tan, Morocco using our simple online booking system. Designed for sports clubs and teams.",
+      "features": {
+        "heading": "Our Features",
+        "quickBooking": {
+          "title": "Quick Booking",
+          "description": "Book your stadium seats in under 2 minutes."
+        },
+        "bestSeats": {
+          "title": "Best Seats",
+          "description": "Choose from the best available seats."
+        },
+        "securePayment": {
+          "title": "Secure Payment",
+          "description": "Your payments are 100% secure with encryption."
+        }
+      }
+    },
+    "Dashboard": {
+      "headTitle": "Dashboard",
+      "pageTitle": "Dashboard in Tan-Tan (For sports clubs and teams)",
+      "description": "Your stadium reservation overview in Tan-Tan, Morocco. For sports clubs and teams.",
+      "keywords": "Tan-Tan dashboard, my bookings Tan-Tan, sports events Tan-Tan, stadium reservations Morocco, for sports clubs and teams",
+      "metaDescription": "View and manage your stadium reservations in Tan-Tan, Morocco from your dashboard. For sports clubs and teams."
+    },
+    "About": {
+      "headTitle": "About",
+      "pageTitle": "About Us - Tan-Tan Stadium Reservations",
+      "description": "Learn more about our stadium booking service in Tan-Tan, Morocco. For sports clubs and teams.",
+      "keywords": "about us Tan-Tan, stadium booking Morocco, sports events Tan-Tan, for sports clubs and teams",
+      "metaDescription": "Discover more about our stadium reservation services in Tan-Tan, Morocco and how we help sports fans, clubs, and teams book their seats.",
+
+      "heroTitle": "Empowering Sports in Tan-Tan",
+      "heroSubtitle": "A digital initiative by Tan-Tan Municipality",
+      "intro": {
+        "title": "Official Stadium Management Platform",
+        "description": "This platform is the official digital solution developed and managed by the Tan-Tan Municipality to facilitate stadium reservations for local sports clubs, teams, and community events.",
+        "mission": "Our mission is to streamline stadium access, promote sports development, and support athletic excellence in our community."
+      },
+      "municipality": {
+        "title": "About Tan-Tan Municipality",
+        "description": "As the governing body of Tan-Tan city, our municipality is committed to enhancing public services, supporting local development, and fostering community engagement through innovative digital solutions.",
+        "responsibilities": [
+          "Overseeing public sports facilities",
+          "Managing stadium operations and maintenance",
+          "Supporting local sports clubs and events",
+          "Promoting community sports programs"
+        ]
+      },
+      "platform": {
+        "title": "Our Platform Features",
+        "features": [
+          {
+            "title": "Easy Online Booking",
+            "description": "Simple 3-step reservation process for all stadium facilities"
+          },
+          {
+            "title": "Club Management",
+            "description": "Dedicated tools for sports clubs to manage their bookings"
+          },
+          {
+            "title": "Municipal Oversight",
+            "description": "Direct integration with Tan-Tan Municipality's scheduling systems"
+          },
+          {
+            "title": "Secure Payments",
+            "description": "Municipality-approved payment channels for reservations"
+          }
+        ]
+      },
+      "contactMunicipality": {
+        "title": "Contact the Municipality",
+        "description": "For official inquiries about stadium management, facility improvements, or partnership opportunities with Tan-Tan Municipality.",
+        "officeHours": "Municipal Office Hours: Monday to Friday, 8:00 AM - 5:00 PM",
+        "emergencyContact": "Emergency Stadium Issues: Contact Municipal Sports Department"
+      },
+      "partnerships": {
+        "title": "Partnership Opportunities",
+        "description": "Tan-Tan Municipality welcomes partnerships with sports organizations, event organizers, and community groups to enhance stadium utilization and sports development.",
+        "sportsEvents": "Sports Events",
+        "youthPrograms": "Youth Programs",
+        "facilityUpgrades": "Facility Upgrades",
+        "trainingSessions": "Training Sessions"
+      },
+      "municipalOffice": {
+        "title": "Municipal Office",
+        "headquarters": "Tan-Tan Municipality Headquarters"
+      },
+      "callToAction": {
+        "title": "Ready to Book Your Stadium Experience?",
+        "description": "Join hundreds of sports clubs and teams already using our official municipal platform for their stadium needs."
+      }
+    },
+    "Login": {
+      "headTitle": "Login",
+      "pageTitle": "Login - Tan-Tan (For sports clubs and teams)",
+      "description": "Enter your credentials to sign in. For sports clubs and teams.",
+      "keywords": "Tan-Tan login, sign in Morocco, sports events Tan-Tan, for sports clubs and teams",
+      "metaDescription": "Access your account to manage your stadium bookings in Tan-Tan, Morocco. For sports clubs and teams."
+    },
+    "Register": {
+      "headTitle": "Register",
+      "pageTitle": "Create an Account - Tan-Tan (For sports clubs and teams)",
+      "description": "Sign up to start booking stadium seats in Tan-Tan. For sports clubs and teams.",
+      "keywords": "Tan-Tan register, sign up Morocco, sports events Tan-Tan, for sports clubs and teams",
+      "metaDescription": "Create a new account to start reserving stadium seats in Tan-Tan, Morocco. For sports clubs and teams."
+    },
+    "Stadiums": {
+      "headTitle": "Stadiums",
+      "pageTitle": "Stadiums in Tan-Tan (For sports clubs and teams)",
+      "description": "Explore available stadiums in Tan-Tan, Morocco. For sports clubs and teams.",
+      "keywords": "Tan-Tan stadiums, stadium list Morocco, sports events Tan-Tan, for sports clubs and teams",
+      "metaDescription": "Browse and select stadiums in Tan-Tan, Morocco available for reservation. For sports clubs and teams."
+    },
+    "Contact": {
+      "headTitle": "Contact Us",
+      "pageTitle": "Get in Touch with Tan-Tan Municipality",
+      "description": "Contact the Tan-Tan Municipality for stadium inquiries, support, or partnership opportunities. We're here to help!",
+      "keywords": "contact Tan-Tan, stadium contact, Tan-Tan municipality contact, sports facility support, Morocco stadium booking",
+      "metaDescription": "Get in touch with Tan-Tan Municipality for stadium reservations, facility inquiries, or partnership opportunities. Official contact for sports clubs and teams.",
+
+      "hero": {
+        "title": "Contact Tan-Tan Municipality",
+        "subtitle": "Official Support for Stadium Reservations & Facilities"
+      },
+
+      "contactMethods": {
+        "title": "How to Reach Us",
+        "email": {
+          "title": "Email Support",
+          "description": "For general inquiries and support"
+        },
+        "phone": {
+          "title": "Phone Support",
+          "description": "Monday to Friday, 8:00 AM - 5:00 PM"
+        },
+        "office": {
+          "title": "Municipal Office",
+          "description": "Visit our headquarters in Tan-Tan"
+        }
+      },
+
+      "form": {
+        "title": "Send Us a Message",
+        "subtitle": "Fill out the form below and we'll get back to you within 24 hours",
+
+        "fields": {
+          "fullName": {
+            "label": "Full Name",
+            "placeholder": "Enter your full name",
+            "error": "Name is required"
+          },
+          "email": {
+            "label": "Email Address",
+            "placeholder": "Enter your email address",
+            "error": "Valid email is required"
+          },
+          "clubTeam": {
+            "label": "Club/Team Name",
+            "placeholder": "Enter your sports club or team name",
+            "error": "Club/team name is required"
+          },
+          "subject": {
+            "label": "Subject",
+            "placeholder": "What is this regarding?",
+            "options": {
+              "stadiumBooking": "Stadium Booking Inquiry",
+              "facilityRental": "Facility Rental",
+              "partnership": "Partnership Opportunity",
+              "technicalIssue": "Technical Issue",
+              "generalQuestion": "General Question",
+              "feedback": "Feedback & Suggestions"
+            },
+            "error": "Subject is required"
+          },
+          "message": {
+            "label": "Your Message",
+            "placeholder": "Type your message here...",
+            "error": "Message is required (minimum 20 characters)"
+          }
+        },
+
+        "submitButton": "Send Message",
+        "submittingButton": "Sending...",
+        "successMessage": "Thank you! Your message has been sent successfully.",
+        "errorMessage": "Something went wrong. Please try again later.",
+        "urgentCheckbox": "This is an urgent matter requiring immediate attention",
+        "newsletterCheckbox": "Subscribe to municipal sports updates and announcements"
+      },
+
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "questions": [
+          {
+            "question": "How long does it take to get a response?",
+            "answer": "We typically respond within 24 hours during business days."
+          },
+          {
+            "question": "Can I book a stadium directly through email?",
+            "answer": "For official stadium bookings, please use our online booking system for faster processing."
+          },
+          {
+            "question": "Do you offer emergency stadium support?",
+            "answer": "Yes, for urgent stadium issues, please call our emergency line mentioned above."
+          },
+          {
+            "question": "Can I visit the municipal office directly?",
+            "answer": "Yes, our office is open Monday to Friday, 8:00 AM - 5:00 PM."
+          }
+        ]
+      },
+
+      "emergency": {
+        "title": "Emergency Stadium Issues",
+        "description": "For urgent stadium problems that need immediate attention",
+        "contact": "Call Municipal Sports Department: +212 5XX XX XX XX"
+      },
+      "otherWays": {
+        "title": "Other Ways to Connect",
+        "options": {
+          "stadiumBookings": "Stadium Bookings",
+          "sportsPrograms": "Sports Programs",
+          "partnerships": "Partnerships",
+          "facilityInfo": "Facility Information"
+        }
+      },
+      "outsideHours": "Outside business hours? Leave a message and we'll respond on the next business day.",
+      "security": {
+        "title": "Secure Communication",
+        "description": "Your information is protected with industry-standard encryption. We never share your data with third parties."
+      }
+    },
+      "Stadiums": {
+      "headTitle": "Available Stadiums | Tan-Tan Municipality",
+      "pageTitle": "Stadiums & Sports Facilities",
+      "description": "Explore modern stadiums and sports facilities available for booking in Tan-Tan Municipality.",
+      "keywords": "stadium booking Tan-Tan, sports facilities Morocco, football stadiums, basketball courts, sports venues",
+      "metaDescription": "Book modern stadiums and sports facilities in Tan-Tan Municipality. Professional venues for football, basketball, volleyball and more sports.",
+      
+      "hero": {
+        "title": "Stadiums & Sports Facilities",
+        "subtitle": "Tan-Tan Municipal Sports",
+        "description": "Discover professional sports venues for training, tournaments, and community events"
+      },
+      
+      "search": {
+        "placeholder": "Search stadiums by name or location..."
+      },
+      
+      "filter": {
+        "sport": "Filter by Sport",
+        "capacity": "Capacity"
+      },
+      
+      "featured": {
+        "title": "Featured Stadiums",
+        "badge": "Featured"
+      },
+      
+      "allStadiums": {
+        "title": "All Available Stadiums",
+        "total": "stadiums available"
+      },
+      
+      "sports": {
+        "soccer": "Soccer",
+        "basketball": "Basketball",
+        "volleyball": "Volleyball",
+        "handball": "Handball",
+        "tennis": "Tennis",
+        "athletics": "Athletics",
+        "swimming": "Swimming",
+        "gymnastics": "Gymnastics"
+      },
+      
+      "capacity": {
+        "small": "Small (< 1,000)",
+        "medium": "Medium (1,000-3,000)",
+        "large": "Large (> 3,000)"
+      },
+      
+      "details": {
+        "capacity": "Capacity",
+        "ratePerHour": "Hourly Rate",
+        "type": "Type"
+      },
+      
+      "type": {
+        "multipleSports": "Multiple Sports"
+      },
+      
+      "actions": {
+        "viewDetails": "View Details",
+        "bookNow": "Book Now"
+      },
+      
+      "cta": {
+        "title": "Ready to Book a Stadium?",
+        "description": "Contact our municipal sports department for booking inquiries, pricing, and availability",
+        "contactSupport": "Contact Support",
+        "bookNow": "Book a Stadium"
+      }
+    }
+  
+  },
+  "Components": {
+    "Header": {
+      "navigation": {
+        "home": "Home",
+        "stadiums": "Stadiums",
+        "about": "About",
+        "contact": "Contact"
+      },
+      "userMenu": {
+        "dashboard": "Dashboard",
+        "myBookings": "My Bookings",
+        "profile": "Profile",
+        "logout": "Logout"
+      },
+      "labels": {
+        "welcomeGuest": "Welcome Guest",
+        "signInToAccess": "Sign in to access your dashboard",
+        "sportsClubManager": "Sports Club Manager",
+        "mainNavigation": "Main Navigation",
+        "myAccount": "My Account",
+        "appSettings": "App Settings",
+        "theme": "Theme",
+        "language": "Language",
+        "signIn": "Sign In",
+        "register": "Register"
+      }
+    },
+    "Footer": {
+      "contactUs": "Contact us",
+      "getInTouch": "Stadium Tan-Tan",
+      "teamAlwaysHere": "Sports Clubs & Teams",
+      "emailTitle": "Email",
+      "emailDescription": "Our friendly team is here to help.",
+      "officeTitle": "Office",
+      "officeDescription": "Come say hello at our office HQ.",
+      "phoneTitle": "Phone",
+      "phoneDescription": "Mon-Fri from 8am to 5pm.",
+      "email": "info@stadiumbooking.com",
+      "address": "Tan-Tan, Morocco",
+      "phone": "+212 5XX XX XX XX",
+      "mapsUrl": "https://www.google.com/maps/place/CWP5%2BRP4,+Tan-Tan+82000,+Morocco",
+      "contactPageLink": "Visit Contact Page",
+      "allRightsReserved": "All rights reserved.",
+      "designedFor": "Designed for sports clubs and teams"
+    }
+  },
+  "Common": {
+    "appName": "Stadium Tan-Tan",
+    "appSubName": "Sports Clubs & Teams"
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "Select Language"
+  },
+  "Schema": {
+    "organizationName": "Stadium Booking Tan-Tan",
+    "organizationDescription": "Book stadium seats easily in Tan-Tan, Morocco",
+    "organizationUrl": "https://stadium-tantan.com",
+    "organizationLogo": "https://stadium-tantan.com/logo.png",
+    "organizationAddressLocality": "Tan-Tan",
+    "organizationAddressCountry": "Morocco",
+    "organizationAddressRegion": "Guelmim-Oued Noun",
+    "websiteName": "Stadium Booking Tan-Tan",
+    "websiteDescription": "Book stadium seats easily in Tan-Tan, Morocco for sports clubs and teams",
+    "searchPlaceholder": "Search for stadiums or events"
+  }
+}

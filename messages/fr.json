@@ -1,0 +1,374 @@
+{
+  "Pages": {
+    "Home": {
+      "headTitle": "Accueil",
+      "pageTitle": "Bienvenue à la Réservation de Stade à Tan-Tan",
+      "description": "Réservez vos sièges de stade facilement à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "keywords": "réservation stade Tan-Tan, réservation stade Tan-Tan, réserver sièges Tan-Tan, événements sportifs Tan-Tan, pour les clubs et équipes sportives Tan-Tan",
+      "metaDescription": "Réservez facilement vos sièges pour des événements sportifs à Tan-Tan, Maroc grâce à notre système de réservation en ligne simple. Conçu pour les clubs et équipes sportives.",
+      "features": {
+        "heading": "Nos Fonctionnalités",
+        "quickBooking": {
+          "title": "Réservation Rapide",
+          "description": "Réservez vos sièges de stade en moins de 2 minutes."
+        },
+        "bestSeats": {
+          "title": "Meilleurs Sièges",
+          "description": "Choisissez parmi les meilleurs sièges disponibles."
+        },
+        "securePayment": {
+          "title": "Paiement Sécurisé",
+          "description": "Vos paiements sont 100% sécurisés avec chiffrement."
+        }
+      }
+    },
+    "Dashboard": {
+      "headTitle": "Tableau de Bord",
+      "pageTitle": "Tableau de Bord à Tan-Tan (Pour les clubs et équipes sportives)",
+      "description": "Votre aperçu des réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "keywords": "tableau de bord Tan-Tan, mes réservations Tan-Tan, événements sportifs Tan-Tan, réservations stade Maroc, pour les clubs et équipes sportives",
+      "metaDescription": "Visualisez et gérez vos réservations de stade à Tan-Tan, Maroc depuis votre tableau de bord. Pour les clubs et équipes sportives."
+    },
+    "About": {
+      "headTitle": "À Propos",
+      "pageTitle": "À Propos de Nous - Réservations de Stade Tan-Tan",
+      "description": "En savoir plus sur notre service de réservation de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "keywords": "à propos nous Tan-Tan, réservation stade Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
+      "metaDescription": "Découvrez nos services de réservation de stade à Tan-Tan, Maroc et comment nous aidons les fans de sport, clubs et équipes à réserver leurs sièges.",
+      "heroTitle": "Renforcer le Sport à Tan-Tan",
+      "heroSubtitle": "Une initiative numérique de la Municipalité de Tan-Tan",
+      "intro": {
+        "title": "Plateforme Officielle de Gestion des Stades",
+        "description": "Cette plateforme est la solution numérique officielle développée et gérée par la Municipalité de Tan-Tan pour faciliter les réservations de stades pour les clubs sportifs locaux, les équipes et les événements communautaires.",
+        "mission": "Notre mission est de simplifier l'accès aux stades, promouvoir le développement sportif et soutenir l'excellence athlétique dans notre communauté."
+      },
+      "municipality": {
+        "title": "À Propos de la Municipalité de Tan-Tan",
+        "description": "En tant qu'organe directeur de la ville de Tan-Tan, notre municipalité s'engage à améliorer les services publics, soutenir le développement local et favoriser l'engagement communautaire grâce à des solutions numériques innovantes.",
+        "responsibilities": [
+          "Supervision des installations sportives publiques",
+          "Gestion des opérations et maintenance des stades",
+          "Soutien aux clubs sportifs locaux et événements",
+          "Promotion des programmes sportifs communautaires"
+        ]
+      },
+      "platform": {
+        "title": "Fonctionnalités de Notre Plateforme",
+        "features": [
+          {
+            "title": "Réservation en Ligne Facile",
+            "description": "Processus de réservation en 3 étapes pour toutes les installations du stade"
+          },
+          {
+            "title": "Gestion des Clubs",
+            "description": "Outils dédiés pour les clubs sportifs pour gérer leurs réservations"
+          },
+          {
+            "title": "Supervision Municipale",
+            "description": "Intégration directe avec les systèmes de planification de la Municipalité de Tan-Tan"
+          },
+          {
+            "title": "Paiements Sécurisés",
+            "description": "Canaux de paiement approuvés par la municipalité pour les réservations"
+          }
+        ]
+      },
+      "contactMunicipality": {
+        "title": "Contacter la Municipalité",
+        "description": "Pour les demandes officielles concernant la gestion des stades, les améliorations des installations ou les opportunités de partenariat avec la Municipalité de Tan-Tan.",
+        "officeHours": "Heures de Bureau Municipal : Lundi au Vendredi, 8h00 - 17h00",
+        "emergencyContact": "Problèmes Urgents de Stade : Contacter le Département des Sports Municipal"
+      },
+      "partnerships": {
+        "title": "Opportunités de Partenariat",
+        "description": "La Municipalité de Tan-Tan accueille favorablement les partenariats avec les organisations sportives, les organisateurs d'événements et les groupes communautaires pour améliorer l'utilisation des stades et le développement sportif.",
+        "sportsEvents": "Événements Sportifs",
+        "youthPrograms": "Programmes Jeunesse",
+        "facilityUpgrades": "Améliorations des Installations",
+        "trainingSessions": "Séances d'Entraînement"
+      },
+      "municipalOffice": {
+        "title": "Bureau Municipal",
+        "headquarters": "Siège de la Municipalité de Tan-Tan"
+      },
+      "callToAction": {
+        "title": "Prêt à Réserver Votre Expérience de Stade?",
+        "description": "Rejoignez des centaines de clubs et équipes sportives utilisant déjà notre plateforme municipale officielle pour leurs besoins en stades."
+      }
+    },
+    "Login": {
+      "headTitle": "Connexion",
+      "pageTitle": "Connexion - Tan-Tan (Pour les clubs et équipes sportives)",
+      "description": "Entrez vos identifiants pour vous connecter. Pour les clubs et équipes sportives.",
+      "keywords": "connexion Tan-Tan, se connecter Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
+      "metaDescription": "Accédez à votre compte pour gérer vos réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives."
+    },
+    "Register": {
+      "headTitle": "Inscription",
+      "pageTitle": "Créer un Compte - Tan-Tan (Pour les clubs et équipes sportives)",
+      "description": "Inscrivez-vous pour commencer à réserver des sièges de stade à Tan-Tan. Pour les clubs et équipes sportives.",
+      "keywords": "inscription Tan-Tan, s'inscrire Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
+      "metaDescription": "Créez un nouveau compte pour commencer à réserver des sièges de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives."
+    },
+    "Stadiums": {
+      "headTitle": "Stades",
+      "pageTitle": "Stades à Tan-Tan (Pour les clubs et équipes sportives)",
+      "description": "Explorez les stades disponibles à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "keywords": "stades Tan-Tan, liste stades Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
+      "metaDescription": "Parcourez et sélectionnez les stades disponibles à Tan-Tan, Maroc pour réservation. Pour les clubs et équipes sportives."
+    },
+    "Contact": {
+      "headTitle": "Contactez-nous",
+      "pageTitle": "Contactez la Municipalité de Tan-Tan",
+      "description": "Contactez la Municipalité de Tan-Tan pour des demandes concernant les stades, le support ou les opportunités de partenariat. Nous sommes là pour vous aider !",
+      "keywords": "contact Tan-Tan, contact stade, contact municipalité Tan-Tan, support installations sportives, réservation stade Maroc",
+      "metaDescription": "Contactez la Municipalité de Tan-Tan pour les réservations de stades, les demandes concernant les installations ou les opportunités de partenariat. Contact officiel pour les clubs et équipes sportives.",
+
+      "hero": {
+        "title": "Contacter la Municipalité de Tan-Tan",
+        "subtitle": "Support Officiel pour les Réservations et Installations de Stades"
+      },
+
+      "contactMethods": {
+        "title": "Comment Nous Contacter",
+        "email": {
+          "title": "Support Email",
+          "description": "Pour les demandes générales et le support"
+        },
+        "phone": {
+          "title": "Support Téléphonique",
+          "description": "Lundi au Vendredi, 8h00 - 17h00"
+        },
+        "office": {
+          "title": "Bureau Municipal",
+          "description": "Visitez notre siège à Tan-Tan"
+        }
+      },
+
+      "form": {
+        "title": "Envoyez-nous un Message",
+        "subtitle": "Remplissez le formulaire ci-dessous et nous vous répondrons dans les 24 heures",
+
+        "fields": {
+          "fullName": {
+            "label": "Nom Complet",
+            "placeholder": "Entrez votre nom complet",
+            "error": "Le nom est requis"
+          },
+          "email": {
+            "label": "Adresse Email",
+            "placeholder": "Entrez votre adresse email",
+            "error": "Un email valide est requis"
+          },
+          "clubTeam": {
+            "label": "Nom du Club/Équipe",
+            "placeholder": "Entrez le nom de votre club ou équipe sportive",
+            "error": "Le nom du club/équipe est requis"
+          },
+          "subject": {
+            "label": "Sujet",
+            "placeholder": "De quoi s'agit-il ?",
+            "options": {
+              "stadiumBooking": "Demande de Réservation de Stade",
+              "facilityRental": "Location d'Installation",
+              "partnership": "Opportunité de Partenariat",
+              "technicalIssue": "Problème Technique",
+              "generalQuestion": "Question Générale",
+              "feedback": "Retour & Suggestions"
+            },
+            "error": "Le sujet est requis"
+          },
+          "message": {
+            "label": "Votre Message",
+            "placeholder": "Tapez votre message ici...",
+            "error": "Le message est requis (minimum 20 caractères)"
+          }
+        },
+
+        "submitButton": "Envoyer le Message",
+        "submittingButton": "Envoi en cours...",
+        "successMessage": "Merci ! Votre message a été envoyé avec succès.",
+        "errorMessage": "Quelque chose s'est mal passé. Veuillez réessayer plus tard.",
+        "urgentCheckbox": "C'est une question urgente nécessitant une attention immédiate",
+        "newsletterCheckbox": "S'abonner aux mises à jour et annonces sportives municipales"
+      },
+
+      "faq": {
+        "title": "Questions Fréquemment Posées",
+        "questions": [
+          {
+            "question": "Combien de temps faut-il pour obtenir une réponse ?",
+            "answer": "Nous répondons généralement dans les 24 heures pendant les jours ouvrables."
+          },
+          {
+            "question": "Puis-je réserver un stade directement par email ?",
+            "answer": "Pour les réservations officielles de stades, veuillez utiliser notre système de réservation en ligne pour un traitement plus rapide."
+          },
+          {
+            "question": "Offrez-vous un support d'urgence pour les stades ?",
+            "answer": "Oui, pour les problèmes urgents de stades, veuillez appeler notre ligne d'urgence mentionnée ci-dessus."
+          },
+          {
+            "question": "Puis-je visiter le bureau municipal directement ?",
+            "answer": "Oui, notre bureau est ouvert du lundi au vendredi, de 8h00 à 17h00."
+          }
+        ]
+      },
+
+      "emergency": {
+        "title": "Problèmes Urgents de Stade",
+        "description": "Pour les problèmes urgents de stades nécessitant une attention immédiate",
+        "contact": "Appelez le Département des Sports Municipal : +212 5XX XX XX XX"
+      },
+      "otherWays": {
+        "title": "Autres Moyens de Nous Contacter",
+        "options": {
+          "stadiumBookings": "Réservations de Stades",
+          "sportsPrograms": "Programmes Sportifs",
+          "partnerships": "Partenariats",
+          "facilityInfo": "Informations sur les Installations"
+        }
+      },
+      "outsideHours": "En dehors des heures de bureau ? Laissez un message et nous répondrons le prochain jour ouvrable.",
+      "security": {
+        "title": "Communication Sécurisée",
+        "description": "Vos informations sont protégées par un chiffrement de norme industrielle. Nous ne partageons jamais vos données avec des tiers."
+      }
+    },"Stadiums": {
+      "headTitle": "Stades Disponibles | Municipalité de Tan-Tan",
+      "pageTitle": "Stades et Installations Sportives",
+      "description": "Découvrez les stades et installations sportives modernes disponibles à la réservation dans la Municipalité de Tan-Tan.",
+      "keywords": "réservation stades Tan-Tan, installations sportives Maroc, stades de football, terrains de basket, lieux sportifs",
+      "metaDescription": "Réservez des stades et installations sportives modernes dans la Municipalité de Tan-Tan. Lieux professionnels pour le football, le basket-ball, le volley-ball et plus de sports.",
+      
+      "hero": {
+        "title": "Stades et Installations Sportives",
+        "subtitle": "Sports Municipaux de Tan-Tan",
+        "description": "Découvrez des lieux sportifs professionnels pour l'entraînement, les tournois et les événements communautaires"
+      },
+      
+      "search": {
+        "placeholder": "Rechercher des stades par nom ou emplacement..."
+      },
+      
+      "filter": {
+        "sport": "Filtrer par Sport",
+        "capacity": "Capacité"
+      },
+      
+      "featured": {
+        "title": "Stades en Vedette",
+        "badge": "En Vedette"
+      },
+      
+      "allStadiums": {
+        "title": "Tous les Stades Disponibles",
+        "total": "stades disponibles"
+      },
+      
+      "sports": {
+        "soccer": "Football",
+        "basketball": "Basket-ball",
+        "volleyball": "Volley-ball",
+        "handball": "Handball",
+        "tennis": "Tennis",
+        "athletics": "Athlétisme",
+        "swimming": "Natation",
+        "gymnastics": "Gymnastique"
+      },
+      
+      "capacity": {
+        "small": "Petit (< 1,000)",
+        "medium": "Moyen (1,000-3,000)",
+        "large": "Grand (> 3,000)"
+      },
+      
+      "details": {
+        "capacity": "Capacité",
+        "ratePerHour": "Tarif Horaire",
+        "type": "Type"
+      },
+      
+      "type": {
+        "multipleSports": "Sports Multiples"
+      },
+      
+      "actions": {
+        "viewDetails": "Voir les Détails",
+        "bookNow": "Réserver Maintenant"
+      },
+      
+      "cta": {
+        "title": "Prêt à Réserver un Stade ?",
+        "description": "Contactez notre département des sports municipaux pour les demandes de réservation, les prix et la disponibilité",
+        "contactSupport": "Contacter le Support",
+        "bookNow": "Réserver un Stade"
+      }
+    }
+  },
+  "Components": {
+    "Header": {
+      "navigation": {
+        "home": "Accueil",
+        "stadiums": "Stades",
+        "about": "À Propos",
+        "contact": "Contact"
+      },
+      "userMenu": {
+        "dashboard": "Tableau de Bord",
+        "myBookings": "Mes Réservations",
+        "profile": "Profil",
+        "logout": "Déconnexion"
+      },
+      "labels": {
+        "welcomeGuest": "Bienvenue Invité",
+        "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord",
+        "sportsClubManager": "Gérant de Club Sportif",
+        "mainNavigation": "Navigation Principale",
+        "myAccount": "Mon Compte",
+        "appSettings": "Paramètres de l'Application",
+        "theme": "Thème",
+        "language": "Langue",
+        "signIn": "Se Connecter",
+        "register": "S'inscrire"
+      }
+    },
+    "Footer": {
+      "contactUs": "Contactez-nous",
+      "getInTouch": "Stade Tan-Tan",
+      "teamAlwaysHere": "Clubs et Équipes Sportives",
+      "emailTitle": "Email",
+      "emailDescription": "Notre équipe amicale est là pour vous aider.",
+      "officeTitle": "Bureau",
+      "officeDescription": "Venez nous saluer au siège de notre bureau.",
+      "phoneTitle": "Téléphone",
+      "phoneDescription": "Lun-Ven de 8h à 17h.",
+      "email": "info@stadiumbooking.com",
+      "address": "Tan-Tan, Maroc",
+      "phone": "+212 5XX XX XX XX",
+      "mapsUrl": "https://www.google.com/maps/place/CWP5%2BRP4,+Tan-Tan+82000,+Maroc",
+      "contactPageLink": "Visiter la Page de Contact",
+      "allRightsReserved": "Tous droits réservés.",
+      "designedFor": "Conçu pour les clubs et équipes sportives"
+    }
+  },
+  "Common": {
+    "appName": "Stade Tan-Tan",
+    "appSubName": "Clubs et Équipes Sportives"
+  },
+  "LanguageSwitcher": {
+    "selectLanguage": "Choisir la Langue"
+  },
+  "Schema": {
+    "organizationName": "Réservation de Stade Tan-Tan",
+    "organizationDescription": "Réservez vos sièges de stade facilement à Tan-Tan, Maroc",
+    "organizationUrl": "https://stadium-tantan.com",
+    "organizationLogo": "https://stadium-tantan.com/logo.png",
+    "organizationAddressLocality": "Tan-Tan",
+    "organizationAddressCountry": "Maroc",
+    "organizationAddressRegion": "Guelmim-Oued Noun",
+    "websiteName": "Réservation de Stade Tan-Tan",
+    "websiteDescription": "Réservez vos sièges de stade facilement à Tan-Tan, Maroc pour les clubs et équipes sportives",
+    "searchPlaceholder": "Rechercher des stades ou événements"
+  }
+}
