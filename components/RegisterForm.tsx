@@ -19,12 +19,25 @@ const RegisterForm = () => {
     remember: false,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof typeof formData
+  ) => {
+    const { value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [field]: type === "checkbox" ? checked : value,
     }));
+  };
+  const handleCheckboxChange = (field: "remember", value: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(formData);
   };
   return (
     <div className="w-full md:w-160 lg:w-150 bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl flex flex-col gap-5">
@@ -43,7 +56,7 @@ const RegisterForm = () => {
       </div>
 
       {/* Form */}
-      <form className="mt-8 space-y-6" action="#" method="POST">
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
           <Input
             id="fullNameAr"
@@ -52,7 +65,7 @@ const RegisterForm = () => {
             label={t("arabicName")}
             variant="bordered"
             value={formData.fullNameAr}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "fullNameAr")}
           />
           <Input
             id="fullNameFr"
@@ -61,13 +74,15 @@ const RegisterForm = () => {
             label={t("frenchName")}
             variant="bordered"
             value={formData.fullNameFr}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "fullNameFr")}
           />
           <Input
             id="email"
             name="email"
             label={t("email")}
             variant="bordered"
+            value={formData.email}
+            onChange={(e) => handleChange(e, "email")}
           />
           <Input
             id="password"
@@ -75,7 +90,7 @@ const RegisterForm = () => {
             label={t("password")}
             variant="bordered"
             value={formData.password}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "password")}
           />
           <Input
             id="phoneNumber"
@@ -83,13 +98,17 @@ const RegisterForm = () => {
             label={t("phone")}
             variant="bordered"
             value={formData.phoneNumber}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "phoneNumber")}
           />
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Checkbox checked={formData.remember} onChange={handleChange}>
+            <Checkbox
+              onChange={(e) => handleChange(e, "remember")}
+              isSelected={formData.remember}
+              onValueChange={(value) => handleCheckboxChange("remember", value)}
+            >
               {t("remember")}
             </Checkbox>
           </div>
@@ -105,6 +124,7 @@ const RegisterForm = () => {
 
         <div>
           <Button
+            type="submit"
             color="success"
             className="font-semibold"
             fullWidth
