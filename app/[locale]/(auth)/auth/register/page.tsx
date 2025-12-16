@@ -17,6 +17,7 @@ export const generateMetadata = async ({
 };
 const ReisterPage = async () => {
   await new Promise((res) => setTimeout(res, 10000));
+
   return (
     <div className="w-screen flex items-center justify-center text-black dark:text-white  px-2 lg:px-0 py-2 lg:py-0">
       <RegisterForm />
