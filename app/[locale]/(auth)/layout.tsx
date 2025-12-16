@@ -1,49 +1,46 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
-import { HeroUIProvider } from "@heroui/system";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { ToastProvider } from "@heroui/toast";
-import { Inter, Rubik } from "next/font/google";
-import { Metadata } from "next";
-import { APP_NAME } from "@/lib/const";
+import { Rubik } from "next/font/google";
 import { Providers } from "@/components/provider/Provider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 import { cn } from "@heroui/theme";
+import { APP_NAMES } from "@/lib/const";
+import { Metadata } from "next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const messages = await getMessages({ locale });
-  const appName = APP_NAME || "Stades Tan-Tan";
-
-  return {
-    title: `${messages.HomePage?.headTitle || "Home"} | ${appName}`,
-    description:
-      messages.HomePage?.metaDescription || "Stadium reservation platform",
-    keywords: messages.HomePage?.keywords || "stadium, reservation, booking",
-  };
-}
-
 const inter = Rubik({
   subsets: ["latin"],
   display: "swap",
 });
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  const messages = await getMessages({ locale });
+  return {
+    title: {
+      template: `%s | ${
+        APP_NAMES[locale as "fr" | "ar" | "en"] || "Tan-Tan Stades"
+      }`,
+      default: APP_NAMES[locale as "fr" | "ar" | "en"] || "Tan-Tan Stades",
+    },
+    description: messages.Pages.Register.metaDescription,
+    keywords: messages.Pages.Register.keywords,
+  };
+};
 
-export default async function LocaleLayout({
+export default async function LocaleAuthLayout({
   children,
   params,
 }: {
@@ -61,19 +58,21 @@ export default async function LocaleLayout({
   const isRTL = locale === "ar";
 
   return (
-    <html lang={locale} dir={isRTL ? "rtl" : "ltr"}>
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
         className={cn(
           `${inter.className}`,
-
-          "bg-linear-to-r from-amber-100 via-rose-100 to-red-200",
-          "dark:bg-linear-to-br dark:from-gray-900 dark:via-slate-800 dark:to-slate-900",
-          "transition-colors duration-500 ease-in-out bg-fixed h-screen "
+          "bg-linear-to-r from-[#FFEFBA] to-[#ffecec] ",
+          "dark:bg-linear-to-br dark:from-gray-950 dark:via-slate-800 dark:to-slate-950",
+          "transition-colors duration-500 ease-in-out bg-fixed min-h-screen  text-black dark:text-white"
         )}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers locale={locale}>
-            <main className="flex h-full items-center justify-center">
+            <main className="flex min-h-screen items-center justify-center gap-3 flex-col">
+             <div className="flex items-center gap-3"><LanguageSwitcher/>
+              <ThemeSwitcher/></div> 
               {children}
             </main>
             <ToastProvider placement="top-center" />

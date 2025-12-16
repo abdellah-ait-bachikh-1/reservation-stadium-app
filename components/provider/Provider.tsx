@@ -11,13 +11,13 @@ export function Providers({
   locale: string;
 }) {
   return (
-    <HeroUIProvider locale={locale} className="h-full w-full">
+    <HeroUIProvider locale={locale} className="min-h-screen w-full">
       <NextThemesProvider
         attribute="class"
         defaultTheme="light"
         enableSystem={true}
         key={"theme"}
-        storageKey="theme"
+        storageKey="theme" 
       >
         {children}
       </NextThemesProvider>

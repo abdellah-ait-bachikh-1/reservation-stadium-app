@@ -108,7 +108,7 @@ export default async function HomePage({
             color="primary"
             className={cn(
               button({
-                variant: "shadow",
+                variant: "flat",
                 size: "lg",
                 color: "warning",
                 radius: "lg",
@@ -134,7 +134,7 @@ export default async function HomePage({
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group bg-white/70 dark:bg-gray-800/70 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 backdrop-blur-sm"
+              className=" group bg-white/70 dark:bg-gray-800/70 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 backdrop-blur-sm"
             >
               <div className="text-5xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
                 {feature.icon}

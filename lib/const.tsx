@@ -10,7 +10,11 @@ import { MdCheckCircle, MdOutlineSportsGymnastics, MdSportsSoccer } from "react-
 //   fr: process.env.FR_APP_NAME || "Application de Réservation de Stade",
 // };
 export const APP_NAME =process.env.APP_NAME
-
+export const APP_NAMES ={
+  en:process.env.APP_NAME_EN as string,
+  fr:process.env.APP_NAME_FR as string,
+  ar :process.env.APP_NAME_AR as string
+}
 
 // Static stadium data
 export const stadiums = [

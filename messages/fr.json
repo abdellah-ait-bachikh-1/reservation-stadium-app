@@ -105,18 +105,22 @@
     },
     "Register": {
       "headTitle": "Inscription",
-      "pageTitle": "Créer un Compte - Tan-Tan (Pour les clubs et équipes sportives)",
-      "description": "Inscrivez-vous pour commencer à réserver des sièges de stade à Tan-Tan. Pour les clubs et équipes sportives.",
+
       "keywords": "inscription Tan-Tan, s'inscrire Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
-      "metaDescription": "Créez un nouveau compte pour commencer à réserver des sièges de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives."
+      "metaDescription": "Créez un nouveau compte pour commencer à réserver des sièges de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "heading": "Créer un compte",
+      "arabicName": "Nom complet en arabe",
+      "frenchName": "Nom complet en français",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "phone": "Numéro de téléphone",
+      "remember": "Se souvenir de moi",
+      "forgot": "Mot de passe oublié ?",
+      "register": "S'inscrire",
+      "loginPrompt": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter"
     },
-    "Stadiums": {
-      "headTitle": "Stades",
-      "pageTitle": "Stades à Tan-Tan (Pour les clubs et équipes sportives)",
-      "description": "Explorez les stades disponibles à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
-      "keywords": "stades Tan-Tan, liste stades Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
-      "metaDescription": "Parcourez et sélectionnez les stades disponibles à Tan-Tan, Maroc pour réservation. Pour les clubs et équipes sportives."
-    },
+
     "Contact": {
       "headTitle": "Contactez-nous",
       "pageTitle": "Contactez la Municipalité de Tan-Tan",
@@ -234,38 +238,39 @@
         "title": "Communication Sécurisée",
         "description": "Vos informations sont protégées par un chiffrement de norme industrielle. Nous ne partageons jamais vos données avec des tiers."
       }
-    },"Stadiums": {
+    },
+    "Stadiums": {
       "headTitle": "Stades Disponibles | Municipalité de Tan-Tan",
       "pageTitle": "Stades et Installations Sportives",
       "description": "Découvrez les stades et installations sportives modernes disponibles à la réservation dans la Municipalité de Tan-Tan.",
       "keywords": "réservation stades Tan-Tan, installations sportives Maroc, stades de football, terrains de basket, lieux sportifs",
       "metaDescription": "Réservez des stades et installations sportives modernes dans la Municipalité de Tan-Tan. Lieux professionnels pour le football, le basket-ball, le volley-ball et plus de sports.",
-      
+
       "hero": {
         "title": "Stades et Installations Sportives",
         "subtitle": "Sports Municipaux de Tan-Tan",
         "description": "Découvrez des lieux sportifs professionnels pour l'entraînement, les tournois et les événements communautaires"
       },
-      
+
       "search": {
         "placeholder": "Rechercher des stades par nom ou emplacement..."
       },
-      
+
       "filter": {
         "sport": "Filtrer par Sport",
         "capacity": "Capacité"
       },
-      
+
       "featured": {
         "title": "Stades en Vedette",
         "badge": "En Vedette"
       },
-      
+
       "allStadiums": {
         "title": "Tous les Stades Disponibles",
         "total": "stades disponibles"
       },
-      
+
       "sports": {
         "soccer": "Football",
         "basketball": "Basket-ball",
@@ -276,28 +281,28 @@
         "swimming": "Natation",
         "gymnastics": "Gymnastique"
       },
-      
+
       "capacity": {
         "small": "Petit (< 1,000)",
         "medium": "Moyen (1,000-3,000)",
         "large": "Grand (> 3,000)"
       },
-      
+
       "details": {
         "capacity": "Capacité",
         "ratePerHour": "Tarif Horaire",
         "type": "Type"
       },
-      
+
       "type": {
         "multipleSports": "Sports Multiples"
       },
-      
+
       "actions": {
         "viewDetails": "Voir les Détails",
         "bookNow": "Réserver Maintenant"
       },
-      
+
       "cta": {
         "title": "Prêt à Réserver un Stade ?",
         "description": "Contactez notre département des sports municipaux pour les demandes de réservation, les prix et la disponibilité",

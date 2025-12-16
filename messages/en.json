@@ -106,18 +106,22 @@
     },
     "Register": {
       "headTitle": "Register",
-      "pageTitle": "Create an Account - Tan-Tan (For sports clubs and teams)",
-      "description": "Sign up to start booking stadium seats in Tan-Tan. For sports clubs and teams.",
+
       "keywords": "Tan-Tan register, sign up Morocco, sports events Tan-Tan, for sports clubs and teams",
-      "metaDescription": "Create a new account to start reserving stadium seats in Tan-Tan, Morocco. For sports clubs and teams."
+      "metaDescription": "Create a new account to start reserving stadium seats in Tan-Tan, Morocco. For sports clubs and teams.",
+      "heading": "Create an Account",
+      "arabicName": "Arabic Full Name",
+      "frenchName": "French Full Name",
+      "email": "Email",
+      "password": "Password",
+      "phone": "Phone Number",
+      "remember": "Remember me",
+      "forgot": "Forgot password?",
+      "register": "Register",
+      "loginPrompt": "Already have an account?",
+      "signIn": "Sign in"
     },
-    "Stadiums": {
-      "headTitle": "Stadiums",
-      "pageTitle": "Stadiums in Tan-Tan (For sports clubs and teams)",
-      "description": "Explore available stadiums in Tan-Tan, Morocco. For sports clubs and teams.",
-      "keywords": "Tan-Tan stadiums, stadium list Morocco, sports events Tan-Tan, for sports clubs and teams",
-      "metaDescription": "Browse and select stadiums in Tan-Tan, Morocco available for reservation. For sports clubs and teams."
-    },
+
     "Contact": {
       "headTitle": "Contact Us",
       "pageTitle": "Get in Touch with Tan-Tan Municipality",
@@ -236,38 +240,38 @@
         "description": "Your information is protected with industry-standard encryption. We never share your data with third parties."
       }
     },
-      "Stadiums": {
+    "Stadiums": {
       "headTitle": "Available Stadiums | Tan-Tan Municipality",
       "pageTitle": "Stadiums & Sports Facilities",
       "description": "Explore modern stadiums and sports facilities available for booking in Tan-Tan Municipality.",
       "keywords": "stadium booking Tan-Tan, sports facilities Morocco, football stadiums, basketball courts, sports venues",
       "metaDescription": "Book modern stadiums and sports facilities in Tan-Tan Municipality. Professional venues for football, basketball, volleyball and more sports.",
-      
+
       "hero": {
         "title": "Stadiums & Sports Facilities",
         "subtitle": "Tan-Tan Municipal Sports",
         "description": "Discover professional sports venues for training, tournaments, and community events"
       },
-      
+
       "search": {
         "placeholder": "Search stadiums by name or location..."
       },
-      
+
       "filter": {
         "sport": "Filter by Sport",
         "capacity": "Capacity"
       },
-      
+
       "featured": {
         "title": "Featured Stadiums",
         "badge": "Featured"
       },
-      
+
       "allStadiums": {
         "title": "All Available Stadiums",
         "total": "stadiums available"
       },
-      
+
       "sports": {
         "soccer": "Soccer",
         "basketball": "Basketball",
@@ -278,28 +282,28 @@
         "swimming": "Swimming",
         "gymnastics": "Gymnastics"
       },
-      
+
       "capacity": {
         "small": "Small (< 1,000)",
         "medium": "Medium (1,000-3,000)",
         "large": "Large (> 3,000)"
       },
-      
+
       "details": {
         "capacity": "Capacity",
         "ratePerHour": "Hourly Rate",
         "type": "Type"
       },
-      
+
       "type": {
         "multipleSports": "Multiple Sports"
       },
-      
+
       "actions": {
         "viewDetails": "View Details",
         "bookNow": "Book Now"
       },
-      
+
       "cta": {
         "title": "Ready to Book a Stadium?",
         "description": "Contact our municipal sports department for booking inquiries, pricing, and availability",
@@ -307,7 +311,6 @@
         "bookNow": "Book a Stadium"
       }
     }
-  
   },
   "Components": {
     "Header": {

@@ -1,41 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import { Badge } from "@heroui/badge";
 import { Button } from "@heroui/button";
-import { Image } from "@heroui/image";
-import { IoMdTennisball } from "react-icons/io";
-
-import {
-  FaMapMarkerAlt,
-  FaCalendar,
-  FaClock,
-  FaUsers,
-  FaFutbol,
-  FaBasketballBall,
-  FaVolleyballBall,
-  FaHandPaper,
-  FaRunning,
-  FaSwimmer,
-  FaStar,
-  FaCity,
-  FaSearch,
-  FaFilter,
-  FaPhone,
-  FaExternalLinkAlt,
-} from "react-icons/fa";
-import {
-  MdSportsSoccer,
-  MdOutlineSportsGymnastics,
-  MdLocationOn,
-  MdAccessTime,
-  MdEuro,
-  MdCheckCircle,
-} from "react-icons/md";
-import { Link } from "@/i18n/navigation";
+import { FaCalendar, FaFilter, FaPhone } from "react-icons/fa";
 import StadiumCard from "@/components/StadiumCard";
-import { sportColors, sportIcons, stadiums } from "@/lib/const";
+import { stadiums } from "@/lib/const";
 import FeaturedStadiumCard from "@/components/FeaturedStadiumCard";
 import StadiumHeroSection from "@/components/StadiumHeroSection";
 import StadiumSearchFilters from "@/components/StadiumSearchFilters";
@@ -65,21 +33,6 @@ const StadiumsPage = async ({
   const t = await getTranslations("Pages.Stadiums");
   const isRTL = locale === "ar";
 
-  // Get stadium name based on locale
-  const getStadiumName = (stadium: any) => {
-    return stadium.name[locale] || stadium.name.en;
-  };
-
-  // Get stadium description based on locale
-  const getStadiumDescription = (stadium: any) => {
-    return stadium.description[locale] || stadium.description.en;
-  };
-
-  // Get stadium address based on locale
-  const getStadiumAddress = (stadium: any) => {
-    return stadium.address[locale] || stadium.address.en;
-  };
-
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
@@ -89,10 +42,10 @@ const StadiumsPage = async ({
       <StadiumHeroSection locale={locale} />
 
       {/* Search and Filter Section */}
-      <StadiumSearchFilters locale={locale}/>
+      <StadiumSearchFilters locale={locale} />
 
       {/* Featured Stadiums */}
-      {stadiums.filter((s) => s.featured).length > 0 && (
+      {stadiums.filter((s, i) => s.featured).length > 0 && (
         <div className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-8">
             {t("featured.title")}
