@@ -1,6 +1,8 @@
 "use client";
 
+import { AuthContextProvider } from "@/context/authContext";
 import { HeroUIProvider } from "@heroui/system";
+import { ToastProvider } from "@heroui/toast";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export function Providers({
@@ -11,16 +13,19 @@ export function Providers({
   locale: string;
 }) {
   return (
-    <HeroUIProvider locale={locale} className="min-h-screen w-full">
-      <NextThemesProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem={true}
-        key={"theme"}
-        storageKey="theme" 
-      >
-        {children}
-      </NextThemesProvider>
-    </HeroUIProvider>
+    <AuthContextProvider>
+      <HeroUIProvider locale={locale} className="min-h-screen w-full">
+        <NextThemesProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={true}
+          key={"theme"}
+          storageKey="theme"
+        >
+          {children}
+          <ToastProvider placement="top-center"  />
+        </NextThemesProvider>
+      </HeroUIProvider>
+    </AuthContextProvider>
   );
 }

@@ -121,12 +121,17 @@
       "frenchName": "Nom complet en français",
       "email": "E-mail",
       "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+
       "phone": "Numéro de téléphone",
       "remember": "Se souvenir de moi",
       "forgot": "Mot de passe oublié ?",
       "register": "S'inscrire",
       "loginPrompt": "Vous avez déjà un compte ?",
-      "signIn": "Se connecter"
+      "signIn": "Se connecter",
+      "registrationFailed": "Échec de l'inscription",
+      "unknownError": "Une erreur inconnue est survenue",
+      "networkError": "Erreur réseau. Veuillez vérifier votre connexion"
     },
     "ForgotPassword": {
       "headTitle": "Mot de passe oublié",

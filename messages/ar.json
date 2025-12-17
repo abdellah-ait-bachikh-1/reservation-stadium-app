@@ -120,12 +120,17 @@
       "frenchName": "الاسم الكامل بالفرنسية",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+
       "phone": "رقم الهاتف",
       "remember": "تذكرني",
       "forgot": "نسيت كلمة المرور؟",
       "register": "تسجيل",
       "loginPrompt": "هل لديك حساب بالفعل؟",
-      "signIn": "تسجيل الدخول"
+      "signIn": "تسجيل الدخول",
+      "registrationFailed": "فشل التسجيل",
+    "unknownError": "حدث خطأ غير معروف",
+    "networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك بالإنترنت"
     },
     "ForgotPassword": {
       "headTitle": "نسيت كلمة المرور",

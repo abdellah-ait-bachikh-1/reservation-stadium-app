@@ -122,12 +122,17 @@
       "frenchName": "French Full Name",
       "email": "Email",
       "password": "Password",
+      "confirmPassword": "Confirm Password",
+
       "phone": "Phone Number",
       "remember": "Remember me",
       "forgot": "Forgot password?",
       "register": "Register",
       "loginPrompt": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "registrationFailed": "Registration Failed",
+      "unknownError": "An unknown error occurred",
+      "networkError": "Network error. Please check your connection"
     },
     "ForgotPassword": {
       "headTitle": "Forgot Password",

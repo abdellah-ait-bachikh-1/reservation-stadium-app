@@ -5,34 +5,75 @@ import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
 import { Input } from "@heroui/input";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { RegisterCredentials } from "@/lib/types";
+import {
+  RegisterCredentials,
+  TLocale,
+  ValidateRegisterCredentialsErrorResult,
+} from "@/lib/types";
+import { useAuth } from "@/hooks/useAuth";
+import { validateRegisterCredentials } from "@/lib/validation/register";
+import { isFieldHasError } from "@/lib/utils";
+import { FaEye } from "react-icons/fa";
+import { FiEyeOff } from "react-icons/fi";
 
 const RegisterForm = () => {
   const t = useTranslations("Pages.Register");
+  const locale = useLocale();
+  const { isPending, register, validationErrors, setValidationErrors } =
+    useAuth();
+
   const [formData, setFormData] = useState<RegisterCredentials>({
     fullNameAr: "",
     fullNameFr: "",
     email: "",
     password: "",
     phoneNumber: "",
+    confirmPassword: "",
   });
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
 
+  const toggleVisibility = () => setIsVisiblePassword(!isVisiblePassword);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: keyof typeof formData
   ) => {
-    const { value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [field]: type === "checkbox" ? checked : value,
-    }));
+    const { value,  } = e.target;
+    const updatedFormData = { ...formData, [field]: value };
+    setFormData(updatedFormData);
+    const { validationErrors: newErrors } = validateRegisterCredentials(
+      locale as TLocale,
+      updatedFormData
+    );
+
+    setValidationErrors((prev) => {
+      const merged = prev ? { ...prev } : {};
+
+      if (!newErrors) return null;
+
+      if (newErrors[field] && newErrors[field].length > 0) {
+        merged[field] = newErrors[field];
+      } else {
+        delete merged[field];
+      }
+
+      Object.keys(newErrors).forEach((key) => {
+        if (key !== field) {
+          merged[key as keyof ValidateRegisterCredentialsErrorResult] =
+            newErrors[key as keyof ValidateRegisterCredentialsErrorResult] ??
+            [];
+        }
+      });
+
+      return Object.keys(merged).length > 0 ? merged : null;
+    });
   };
- 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+console.log(validationErrors)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
+    await register(formData);
   };
   return (
     <div className="w-full md:w-160 lg:w-150 bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl flex flex-col gap-5">
@@ -61,6 +102,19 @@ const RegisterForm = () => {
             variant="bordered"
             value={formData.fullNameAr}
             onChange={(e) => handleChange(e, "fullNameAr")}
+            isInvalid={
+             isFieldHasError(validationErrors, "fullNameAr")
+               
+            }
+          
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "fullNameAr")
+                ? validationErrors["fullNameAr"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
           <Input
             id="fullNameFr"
@@ -70,6 +124,19 @@ const RegisterForm = () => {
             variant="bordered"
             value={formData.fullNameFr}
             onChange={(e) => handleChange(e, "fullNameFr")}
+            isInvalid={
+             isFieldHasError(validationErrors, "fullNameFr")
+             
+            }
+          
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "fullNameFr")
+                ? validationErrors["fullNameFr"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
           <Input
             id="email"
@@ -78,14 +145,20 @@ const RegisterForm = () => {
             variant="bordered"
             value={formData.email}
             onChange={(e) => handleChange(e, "email")}
-          />
-          <Input
-            id="password"
-            name="password"
-            label={t("password")}
-            variant="bordered"
-            value={formData.password}
-            onChange={(e) => handleChange(e, "password")}
+            fullWidth
+            isInvalid={
+              isFieldHasError(validationErrors, "email")
+               
+            }
+       
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "email")
+                ? validationErrors["email"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
           <Input
             id="phoneNumber"
@@ -94,11 +167,107 @@ const RegisterForm = () => {
             variant="bordered"
             value={formData.phoneNumber}
             onChange={(e) => handleChange(e, "phoneNumber")}
+            isInvalid={
+              isFieldHasError(validationErrors, "phoneNumber")
+               
+            }
+         
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "phoneNumber")
+                ? validationErrors["phoneNumber"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
+          />
+          <Input
+            id="password"
+            name="password"
+            label={t("password")}
+            variant="bordered"
+            value={formData.password}
+            onChange={(e) => handleChange(e, "password")}
+            isInvalid={
+               isFieldHasError(validationErrors, "password")
+                
+            }
+         
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "password")
+                ? validationErrors["password"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
+            type={isVisiblePassword ? "text" : "password"}
+            endContent={
+              <button
+                aria-label="toggle password visibility"
+                className="focus:outline-solid outline-transparent cursor-pointer"
+                type="button"
+                onClick={toggleVisibility}
+              >
+                {!isVisiblePassword ? (
+                  <FaEye
+                    size={18}
+                    className="text-2xl text-default-400 pointer-events-none"
+                  />
+                ) : (
+                  <FiEyeOff
+                    size={18}
+                    className="text-2xl text-default-400 pointer-events-none"
+                  />
+                )}
+              </button>
+            }
+          />{" "}
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            label={t("confirmPassword")}
+            variant="bordered"
+            value={formData.confirmPassword}
+            onChange={(e) => handleChange(e, "confirmPassword")}
+            isInvalid={
+              isFieldHasError(validationErrors, "confirmPassword")
+               
+            }
+         
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "confirmPassword")
+                ? validationErrors["confirmPassword"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
+            type={isVisiblePassword ? "text" : "password"}
+            endContent={
+              <button
+                aria-label="toggle password visibility"
+                className="focus:outline-solid outline-transparent cursor-pointer"
+                type="button"
+                onClick={toggleVisibility}
+              >
+                {!isVisiblePassword ? (
+                  <FaEye
+                    size={18}
+                    className="text-2xl text-default-400 pointer-events-none"
+                  />
+                ) : (
+                  <FiEyeOff
+                    size={18}
+                    className="text-2xl text-default-400 pointer-events-none"
+                  />
+                )}
+              </button>
+            }
           />
         </div>
 
         <div className="flex items-center justify-end">
-        
           <div className="text-sm">
             <Link
               href="/auth/forgot-password"
@@ -116,6 +285,7 @@ const RegisterForm = () => {
             className="font-semibold"
             fullWidth
             variant="flat"
+            isLoading={isPending}
           >
             {t("register")}
           </Button>

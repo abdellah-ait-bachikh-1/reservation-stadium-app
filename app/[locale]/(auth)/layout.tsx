@@ -2,7 +2,6 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { ToastProvider } from "@heroui/toast";
 import { Rubik } from "next/font/google";
 import { Providers } from "@/components/provider/Provider";
 
@@ -76,7 +75,6 @@ export default async function LocaleAuthLayout({
               </div>
               {children}
             </main>
-            <ToastProvider placement="top-center" />
           </Providers>
         </NextIntlClientProvider>
       </body>

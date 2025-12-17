@@ -3,12 +3,10 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import {
   getMessages,
-  getTranslations,
   setRequestLocale,
 } from "next-intl/server";
-import { HeroUIProvider } from "@heroui/system";
-import { ToastProvider } from "@heroui/toast";
-import { Inter, Rubik } from "next/font/google";
+
+import {  Rubik } from "next/font/google";
 import { Metadata } from "next";
 import { APP_NAME, APP_NAMES } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
@@ -84,7 +82,6 @@ export default async function LocaleLayout({
             </main>
             <Footer locale={locale} />
 
-            <ToastProvider placement="top-center" />
           </Providers>
         </NextIntlClientProvider>
       </body>

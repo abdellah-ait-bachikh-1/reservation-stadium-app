@@ -3,17 +3,12 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import {
   getMessages,
-  getTranslations,
   setRequestLocale,
 } from "next-intl/server";
-import { HeroUIProvider } from "@heroui/system";
-import { ToastProvider } from "@heroui/toast";
-import { Inter, Rubik } from "next/font/google";
+import {  Rubik } from "next/font/google";
 import { Metadata } from "next";
 import { APP_NAME } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { cn } from "@heroui/theme";
 export const dynamic = "force-static";
 
@@ -74,8 +69,6 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers locale={locale}>
             <main className="min-h-[calc(100vh-96px)]">{children}</main>
-
-            <ToastProvider placement="top-center" />
           </Providers>
         </NextIntlClientProvider>
       </body>

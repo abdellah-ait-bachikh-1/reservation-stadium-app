@@ -70,7 +70,7 @@ export function ThemeSwitcher() {
 
   return (
     // Use elementRef from hook here
-    <div className="relative z-9998" ref={elementRef}>
+    <div className="relative " ref={elementRef}>
       <Button
         isIconOnly
         variant="light"

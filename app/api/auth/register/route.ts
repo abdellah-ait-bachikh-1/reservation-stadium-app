@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         validationErrors: {
           email: [getLocalizedValidationMessage("email.exists", locale)],
         },
-      });
+      },{status:400});
     }
     const SALT = parseInt(process.env.SALT as string) || 12;
     const hasehdPassword = await hash(data.password, SALT);
