@@ -114,7 +114,7 @@ const RegisterForm = () => {
           </div>
           <div className="text-sm">
             <Link
-              href="#"
+              href="/auth/forgot-password"
               className="font-medium text-gray-600 hover:text-gray-500 dark:text-gray-300"
             >
               {t("forgot")}
@@ -136,9 +136,9 @@ const RegisterForm = () => {
       </form>
 
       <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-500">
-        {t("loginPrompt")}{" "}
+        {t("loginPrompt")}
         <Link
-          href="/login"
+          href="/auth/login"
           className="font-medium text-gray-600 hover:text-gray-500 dark:text-gray-300"
         >
           {t("signIn")}

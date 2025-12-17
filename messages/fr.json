@@ -101,14 +101,15 @@
       "pageTitle": "Connexion - Tan-Tan (Pour les clubs et équipes sportives)",
       "description": "Entrez vos identifiants pour vous connecter. Pour les clubs et équipes sportives.",
       "keywords": "connexion Tan-Tan, se connecter Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
-      "metaDescription": "Accédez à votre compte pour gérer vos réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.", "heading": "Connexion",
-    "email": "E-mail",
-    "password": "Mot de passe",
-    "remember": "Se souvenir de moi",
-    "forgot": "Mot de passe oublié ?",
-    "signIn": "Se connecter",
-    "noAccount": "Vous n'avez pas de compte ?",
-    "register": "S'inscrire"
+      "metaDescription": "Accédez à votre compte pour gérer vos réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
+      "heading": "Connexion",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "remember": "Se souvenir de moi",
+      "forgot": "Mot de passe oublié ?",
+      "signIn": "Se connecter",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "register": "S'inscrire"
     },
     "Register": {
       "headTitle": "Inscription",
@@ -127,7 +128,20 @@
       "loginPrompt": "Vous avez déjà un compte ?",
       "signIn": "Se connecter"
     },
-
+    "ForgotPassword": {
+      "headTitle": "Mot de passe oublié",
+      "pageTitle": "Mot de passe oublié - Tan-Tan",
+      "description": "Entrez votre e-mail pour réinitialiser votre mot de passe.",
+      "keywords": "réinitialiser mot de passe Tan-Tan, mot de passe oublié Maroc",
+      "metaDescription": "Réinitialisez votre mot de passe pour accéder à votre compte de réservation de stade à Tan-Tan, Maroc.",
+      "heading": "Réinitialiser le mot de passe",
+      "email": "E-mail",
+      "resetButton": "Réinitialiser le mot de passe",
+      "rememberPassword": "Vous vous souvenez de votre mot de passe ?",
+      "signIn": "Se connecter",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "createAccount": "Créer un compte"
+    },
     "Contact": {
       "headTitle": "Contactez-nous",
       "pageTitle": "Contactez la Municipalité de Tan-Tan",

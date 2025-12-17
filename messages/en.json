@@ -103,14 +103,14 @@
       "description": "Enter your credentials to sign in. For sports clubs and teams.",
       "keywords": "Tan-Tan login, sign in Morocco, sports events Tan-Tan, for sports clubs and teams",
       "metaDescription": "Access your account to manage your stadium bookings in Tan-Tan, Morocco. For sports clubs and teams.",
-       "heading": "Sign In",
-    "email": "Email",
-    "password": "Password",
-    "remember": "Remember me",
-    "forgot": "Forgot password?",
-    "signIn": "Sign In",
-    "noAccount": "Don't have an account?",
-    "register": "Register"
+      "heading": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "remember": "Remember me",
+      "forgot": "Forgot password?",
+      "signIn": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
     },
     "Register": {
       "headTitle": "Register",
@@ -129,7 +129,20 @@
       "loginPrompt": "Already have an account?",
       "signIn": "Sign in"
     },
-
+    "ForgotPassword": {
+      "headTitle": "Forgot Password",
+      "pageTitle": "Forgot Password - Tan-Tan",
+      "description": "Enter your email to reset your password.",
+      "keywords": "reset password Tan-Tan, forgot password Morocco",
+      "metaDescription": "Reset your password to access your stadium booking account in Tan-Tan, Morocco.",
+      "heading": "Reset Password",
+      "email": "Email",
+      "resetButton": "Reset Password",
+      "rememberPassword": "Remember your password?",
+      "signIn": "Sign in",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account"
+    },
     "Contact": {
       "headTitle": "Contact Us",
       "pageTitle": "Get in Touch with Tan-Tan Municipality",

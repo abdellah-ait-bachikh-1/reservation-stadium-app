@@ -11,7 +11,7 @@ import { useState } from "react";
 const LoginForm = () => {
   // Changed from "Pages.Register" to "Pages.Login"
   const t = useTranslations("Pages.Login");
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,19 +28,19 @@ const LoginForm = () => {
       [field]: type === "checkbox" ? checked : value,
     }));
   };
-  
+
   const handleCheckboxChange = (field: "remember", value: boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
-  
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Login Data:", formData);
   };
-  
+
   return (
     <div className="w-full md:w-160 lg:w-150 bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl flex flex-col gap-5">
       {/* Logo & Heading */}
@@ -75,7 +75,7 @@ const LoginForm = () => {
             onChange={(e) => handleChange(e, "email")}
             required
           />
-          
+
           {/* Password field */}
           <Input
             id="password"
@@ -125,7 +125,7 @@ const LoginForm = () => {
       <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-500">
         {t("noAccount")}
         <Link
-          href="/register"
+          href="/auth/register"
           className="font-medium text-gray-600 hover:text-gray-500 dark:text-gray-300"
         >
           {t("register")}

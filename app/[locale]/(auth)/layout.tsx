@@ -31,9 +31,7 @@ export const generateMetadata = async ({
   const messages = await getMessages({ locale });
   return {
     title: {
-      template: `%s | ${
-        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
-      }`,
+      template: `%s | ${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
       default: APP_NAMES[locale as TLocale] || "Tan-Tan Stades",
     },
     description: messages.Pages.Register.metaDescription,
@@ -72,8 +70,10 @@ export default async function LocaleAuthLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers locale={locale}>
             <main className="flex min-h-screen items-center justify-center gap-3 flex-col">
-             <div className="flex items-center gap-3"><LanguageSwitcher/>
-              <ThemeSwitcher/></div> 
+              <div className="flex items-center gap-3">
+                <LanguageSwitcher />
+                <ThemeSwitcher />
+              </div>
               {children}
             </main>
             <ToastProvider placement="top-center" />
