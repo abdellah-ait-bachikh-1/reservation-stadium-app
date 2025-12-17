@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
     }
     const SALT = parseInt(process.env.SALT as string) || 12;
     const hasehdPassword = await hash(data.password, SALT);
+
     const user = await db.user.create({
       data: {
         fullNameFr: data.fullNameFr,
@@ -78,13 +79,13 @@ export async function POST(req: NextRequest) {
         deletedAt: true,
       },
     });
-    return NextResponse.json({
-      message: getLocalizedSuccess(locale, "register"),
-      user,
-    });
-    //return response
+    // send veryfication email
+    return NextResponse.json(
+      { message: getLocalizedSuccess(locale, "register"), user },
+      { status: 201 }
+    );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (isError(error)) {
       return NextResponse.json(
         { message: `${getLocalizedError(locale, "500")} | ${error.message}` },
