@@ -1,4 +1,4 @@
-import RegisterForm from "@/components/RegisterForm";
+import LoginForm from "@/components/LoginForm";
 import { Link } from "@/i18n/navigation";
 import { button, cn } from "@heroui/theme";
 import { Metadata } from "next";
@@ -17,11 +17,11 @@ export const generateMetadata = async ({
   };
 };
 const LoginPage = async () => {
-  await new Promise((res) => setTimeout(res, 5000));
+  await new Promise((res) => setTimeout(res, 1000));
 
   return (
     <div>
-     <RegisterForm/>
+     <LoginForm/>
     </div>
   );
 };

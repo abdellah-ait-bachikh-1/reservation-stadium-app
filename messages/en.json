@@ -102,7 +102,15 @@
       "pageTitle": "Login - Tan-Tan (For sports clubs and teams)",
       "description": "Enter your credentials to sign in. For sports clubs and teams.",
       "keywords": "Tan-Tan login, sign in Morocco, sports events Tan-Tan, for sports clubs and teams",
-      "metaDescription": "Access your account to manage your stadium bookings in Tan-Tan, Morocco. For sports clubs and teams."
+      "metaDescription": "Access your account to manage your stadium bookings in Tan-Tan, Morocco. For sports clubs and teams.",
+       "heading": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgot": "Forgot password?",
+    "signIn": "Sign In",
+    "noAccount": "Don't have an account?",
+    "register": "Register"
     },
     "Register": {
       "headTitle": "Register",

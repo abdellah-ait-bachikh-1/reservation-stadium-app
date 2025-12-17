@@ -101,7 +101,14 @@
       "pageTitle": "Connexion - Tan-Tan (Pour les clubs et équipes sportives)",
       "description": "Entrez vos identifiants pour vous connecter. Pour les clubs et équipes sportives.",
       "keywords": "connexion Tan-Tan, se connecter Maroc, événements sportifs Tan-Tan, pour les clubs et équipes sportives",
-      "metaDescription": "Accédez à votre compte pour gérer vos réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives."
+      "metaDescription": "Accédez à votre compte pour gérer vos réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.", "heading": "Connexion",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "remember": "Se souvenir de moi",
+    "forgot": "Mot de passe oublié ?",
+    "signIn": "Se connecter",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "register": "S'inscrire"
     },
     "Register": {
       "headTitle": "Inscription",
