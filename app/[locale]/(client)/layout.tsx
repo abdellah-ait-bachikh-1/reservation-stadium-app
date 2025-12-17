@@ -15,152 +15,34 @@ import { Providers } from "@/components/provider/Provider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { cn } from "@heroui/theme";
+import { TLocale } from "@/lib/types";
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({
+
+export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}): Promise<Metadata> => {
   const { locale } = await params;
-  const appName = APP_NAMES[locale as "ar" | "fr" | "en"];
-
-  const tPages = await getTranslations({ locale, namespace: "Pages" });
-  const tSchema = await getTranslations({ locale, namespace: "Schema" });
-
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL || "https://stadium-tantan.com";
-
-  const currentUrl = `${baseUrl}/${locale}`;
-
-  const homePageMeta = {
-    headTitle: tPages("Home.headTitle") || "Home",
-    metaDescription:
-      tPages("Home.metaDescription") || "Stadium reservation platform",
-    keywords: tPages("Home.keywords") || "stadium, reservation, booking",
-  };
-
-  // Structured data with translations
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": `${baseUrl}/#website`,
-        url: baseUrl, // Website URL without locale
-        name: tSchema("websiteName") || "Stadium Booking",
-        description:
-          tSchema("websiteDescription") || "Book stadium seats easily",
-        inLanguage: locale,
-        potentialAction: {
-          "@type": "SearchAction",
-          target: `${baseUrl}/${locale}/search?q={search_term_string}`,
-          "query-input": "required name=search_term_string",
-        },
-      },
-      {
-        "@type": "SportsOrganization",
-        "@id": `${baseUrl}/#organization`,
-        name: tSchema("organizationName") || "Stadium Booking",
-        description:
-          tSchema("organizationDescription") || "Book stadium seats easily",
-        url: baseUrl,
-        logo: {
-          "@type": "ImageObject",
-          url: `${baseUrl}/logo.png`,
-          width: "512",
-          height: "512",
-        },
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: tSchema("organizationAddressLocality") || "Tan-Tan",
-          addressRegion: tSchema("organizationAddressRegion") || "Region",
-          addressCountry: tSchema("organizationAddressCountry") || "Morocco",
-        },
-        contactPoint: {
-          "@type": "ContactPoint",
-          contactType: "customer service",
-          availableLanguage: locale,
-        },
-      },
-    ],
-  };
-
+  const messages = await getMessages({ locale });
   return {
-    title: `${homePageMeta.headTitle} | ${appName}`,
-    description: homePageMeta.metaDescription,
-    keywords: homePageMeta.keywords,
-
-    // Add JSON-LD structured data
-    other: {
-      "application/ld+json": JSON.stringify(structuredData),
+    title: {
+      template: `%s | ${
+        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
+      }`,
+      default: `${messages.Pages.Home.headTitle} | ${
+        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
+      }`,
     },
-
-    // Open Graph metadata
-    openGraph: {
-      title: `${homePageMeta.headTitle} | ${appName}`,
-      description: homePageMeta.metaDescription,
-      type: "website",
-      locale: locale,
-      url: currentUrl,
-      siteName: tSchema("websiteName") || "Stadium Booking Tan-Tan",
-      images: [
-        {
-          url: `${baseUrl}/og-image.png`,
-          width: 1200,
-          height: 630,
-          alt: tSchema("websiteName") || "Stadium Booking Tan-Tan",
-        },
-      ],
-    },
-
-    // Twitter metadata
-    twitter: {
-      card: "summary_large_image",
-      title: `${homePageMeta.headTitle} | ${appName}`,
-      description: homePageMeta.metaDescription,
-      images: [`${baseUrl}/twitter-image.png`],
-      creator: process.env.NEXT_PUBLIC_TWITTER_HANDLE || "@stadiumtantan",
-    },
-
-    // Additional metadata
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
-
-    // Alternate languages for SEO
-    alternates: {
-      canonical: currentUrl,
-      languages: {
-        en: `${baseUrl}/en`,
-        fr: `${baseUrl}/fr`,
-        ar: `${baseUrl}/ar`,
-        "x-default": `${baseUrl}/en`,
-      },
-    },
-
-    // Verification from environment variables
-    verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? {
-          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-          yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
-        }
-      : undefined,
+    description: messages.Pages.Register.metaDescription,
+    keywords: messages.Pages.Register.keywords,
   };
-}
-
+};
 const inter = Rubik({
   subsets: ["latin"],
   display: "swap",

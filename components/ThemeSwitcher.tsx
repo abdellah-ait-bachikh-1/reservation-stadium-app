@@ -12,7 +12,7 @@ export function ThemeSwitcher() {
   const { theme, setTheme, systemTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
+
   // Call the hook - use elementRef from the hook
   const { hasSpaceBelow, elementRef } = useViewportSpace();
 
@@ -23,7 +23,10 @@ export function ThemeSwitcher() {
   // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (elementRef.current && !elementRef.current.contains(event.target as Node)) {
+      if (
+        elementRef.current &&
+        !elementRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -89,14 +92,14 @@ export function ThemeSwitcher() {
             exit={{ opacity: 0, scale: 0.7, y: -10 }}
             // Use hasSpaceBelow to conditionally position the menu
             className={`z-110 min-w-36 absolute p-2 flex flex-col gap-0.5 rounded-xl bg-amber-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
-              hasSpaceBelow 
-                ? "top-12 ltr:right-0 rtl:left-0" 
+              hasSpaceBelow
+                ? "top-12 ltr:right-0 rtl:left-0"
                 : "bottom-12 ltr:right-0 rtl:left-0"
             }`}
           >
             {themeOptions.map((option) => {
               const isActive = isOptionActive(option.id);
-              
+
               return (
                 <button
                   key={option.id}
@@ -109,9 +112,7 @@ export function ThemeSwitcher() {
                 >
                   <div className="flex items-center justify-between w-full">
                     <option.icon className={`w-4 h-4`} />
-                    <span className={`font-medium`}>
-                      {option.name}
-                    </span>
+                    <span className={`font-medium`}>{option.name}</span>
                   </div>
                 </button>
               );

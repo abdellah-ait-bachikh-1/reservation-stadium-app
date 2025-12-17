@@ -4,6 +4,8 @@ import TextType from "@/components/ui/TextType";
 import { button, cn } from "@heroui/theme";
 import { Link } from "@/i18n/navigation";
 import Team from "@/components/Team";
+import { APP_NAMES } from "@/lib/const";
+import { TLocale } from "@/lib/types";
 
 // Move feature cards outside the component to avoid recreation on every render
 const FEATURE_ICONS = ["⚡", "🎯", "🛡️"];
@@ -14,20 +16,136 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Pages.Home" });
+  const appName = APP_NAMES[locale as "ar" | "fr" | "en"];
+
+  const tPages = await getTranslations({ locale, namespace: "Pages" });
+  const tSchema = await getTranslations({ locale, namespace: "Schema" });
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "https://stadium-tantan.com";
+
+  const currentUrl = `${baseUrl}/${locale}`;
+
+  const homePageMeta = {
+    headTitle: tPages("Home.headTitle") || "Home",
+    metaDescription:
+      tPages("Home.metaDescription") || "Stadium reservation platform",
+    keywords: tPages("Home.keywords") || "stadium, reservation, booking",
+  };
+
+  // Structured data with translations
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: baseUrl, // Website URL without locale
+        name: tSchema("websiteName") || "Stadium Booking",
+        description:
+          tSchema("websiteDescription") || "Book stadium seats easily",
+        inLanguage: locale,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${baseUrl}/${locale}/search?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "SportsOrganization",
+        "@id": `${baseUrl}/#organization`,
+        name: tSchema("organizationName") || "Stadium Booking",
+        description:
+          tSchema("organizationDescription") || "Book stadium seats easily",
+        url: baseUrl,
+        logo: {
+          "@type": "ImageObject",
+          url: `${baseUrl}/logo.png`,
+          width: "512",
+          height: "512",
+        },
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: tSchema("organizationAddressLocality") || "Tan-Tan",
+          addressRegion: tSchema("organizationAddressRegion") || "Region",
+          addressCountry: tSchema("organizationAddressCountry") || "Morocco",
+        },
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          availableLanguage: locale,
+        },
+      },
+    ],
+  };
 
   return {
-    title: t("headTitle"),
-    description: t("metaDescription"),
-    keywords: t("keywords"),
+   
+    description: homePageMeta.metaDescription,
+    keywords: homePageMeta.keywords,
+
+    other: {
+      "application/ld+json": JSON.stringify(structuredData),
+    },
+
+    // Open Graph metadata
     openGraph: {
-      title: t("headTitle"),
-      description: t("metaDescription"),
+      title: `${homePageMeta.headTitle} | ${appName}`,
+      description: homePageMeta.metaDescription,
+      type: "website",
+      locale: locale,
+      url: currentUrl,
+      siteName: tSchema("websiteName") || "Stadium Booking Tan-Tan",
+      images: [
+        {
+          url: `${baseUrl}/og-image.png`,
+          width: 1200,
+          height: 630,
+          alt: tSchema("websiteName") || "Stadium Booking Tan-Tan",
+        },
+      ],
     },
+
+    // Twitter metadata
     twitter: {
-      title: t("headTitle"),
-      description: t("metaDescription"),
+      card: "summary_large_image",
+      title: `${homePageMeta.headTitle} | ${appName}`,
+      description: homePageMeta.metaDescription,
+      images: [`${baseUrl}/twitter-image.png`],
+      creator: process.env.NEXT_PUBLIC_TWITTER_HANDLE || "@stadiumtantan",
     },
+
+    // Additional metadata
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+
+    // Alternate languages for SEO
+    alternates: {
+      canonical: currentUrl,
+      languages: {
+        en: `${baseUrl}/en`,
+        fr: `${baseUrl}/fr`,
+        ar: `${baseUrl}/ar`,
+        "x-default": `${baseUrl}/en`,
+      },
+    },
+
+    // Verification from environment variables
+    verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+          yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+        }
+      : undefined,
   };
 }
 

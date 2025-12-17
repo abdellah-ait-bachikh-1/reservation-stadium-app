@@ -11,6 +11,7 @@ import { APP_NAMES } from "@/lib/const";
 import { Metadata } from "next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { TLocale } from "@/lib/types";
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
@@ -31,9 +32,9 @@ export const generateMetadata = async ({
   return {
     title: {
       template: `%s | ${
-        APP_NAMES[locale as "fr" | "ar" | "en"] || "Tan-Tan Stades"
+        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
       }`,
-      default: APP_NAMES[locale as "fr" | "ar" | "en"] || "Tan-Tan Stades",
+      default: APP_NAMES[locale as TLocale] || "Tan-Tan Stades",
     },
     description: messages.Pages.Register.metaDescription,
     keywords: messages.Pages.Register.keywords,
