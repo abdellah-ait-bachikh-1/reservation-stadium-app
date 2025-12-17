@@ -10,8 +10,10 @@ import { RegisterCredentials, TLocale } from "@/lib/types";
 import { isError } from "@/lib/utils";
 import { getLocalizedValidationMessage } from "@/lib/validation-messages";
 import { validateRegisterCredentials } from "@/lib/validation/register";
+import { sendVerificationEmail } from "@/services/email-smtp-service";
 import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: NextRequest) {
   let locale: TLocale = "en";
@@ -77,9 +79,21 @@ export async function POST(req: NextRequest) {
         createdAt: true,
         updatedAt: true,
         deletedAt: true,
+        verificationToken: true,
       },
     });
-    // send veryfication email
+    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${user.verificationToken}`;
+    // REPLACE the old email sending call with:
+    const emailResult = await sendVerificationEmail(
+      user.email,
+      user.fullNameFr || user.fullNameAr,
+      verificationLink,
+      locale
+    );
+
+    if (!emailResult.success) {
+      console.warn("Email sending failed, but user was created.");
+    }
     return NextResponse.json(
       { message: getLocalizedSuccess(locale, "register"), user },
       { status: 201 }
