@@ -7,16 +7,16 @@ import { Input } from "@heroui/input";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { RegisterCredentials } from "@/lib/types";
 
 const RegisterForm = () => {
   const t = useTranslations("Pages.Register");
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterCredentials>({
     fullNameAr: "",
     fullNameFr: "",
     email: "",
     password: "",
     phoneNumber: "",
-    remember: false,
   });
 
   const handleChange = (
@@ -29,12 +29,7 @@ const RegisterForm = () => {
       [field]: type === "checkbox" ? checked : value,
     }));
   };
-  const handleCheckboxChange = (field: "remember", value: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+ 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
@@ -102,16 +97,8 @@ const RegisterForm = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Checkbox
-              onChange={(e) => handleChange(e, "remember")}
-              isSelected={formData.remember}
-              onValueChange={(value) => handleCheckboxChange("remember", value)}
-            >
-              {t("remember")}
-            </Checkbox>
-          </div>
+        <div className="flex items-center justify-end">
+        
           <div className="text-sm">
             <Link
               href="/auth/forgot-password"
