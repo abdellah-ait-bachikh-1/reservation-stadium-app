@@ -2,106 +2,138 @@
 
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
 import { Button } from "@heroui/button";
-import { FaGlobeAmericas } from "react-icons/fa";
-import { 
-  MdLanguage as EnglishIcon,
-  MdTranslate as FrenchIcon,
-  MdMenuBook as ArabicIcon
-} from "react-icons/md";
-import { useState, useMemo, Key } from "react";
+import ReactCountryFlag from "react-country-flag";
+import { Activity, useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+// 1. Import the hook
+import { useViewportSpace } from "@/hooks/useViewportSpace";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  // 2. Replace the local ref with the hook's elementRef
+  const { hasSpaceBelow, elementRef } = useViewportSpace();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // 3. Use elementRef from the hook
+      if (elementRef.current && !elementRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, elementRef]); // 4. Add elementRef to the dependency array
 
   const languages = [
     { 
       code: "en", 
       name: "English", 
-      icon: EnglishIcon 
+      countryCode: "US"
     },
     { 
       code: "fr", 
       name: "Français", 
-      icon: FrenchIcon 
+      countryCode: "FR"
     },
     { 
       code: "ar", 
       name: "العربية", 
-      icon: ArabicIcon 
+      countryCode: "MA"
     },
   ];
 
-  // Initialize selectedKeys with current locale
-  const [selectedKeys, setSelectedKeys] = useState(new Set([locale]));
-
   const changeLanguage = (newLocale: string) => {
     router.push(pathname, { locale: newLocale });
+    setIsOpen(false);
   };
 
-  const handleSelectionChange = (keys: any) => {
-    const selectedKey = Array.from(keys)[0] as string;
-    setSelectedKeys(new Set([selectedKey]));
-    changeLanguage(selectedKey);
+  const getCurrentLanguage = () => {
+    return languages.find(lang => lang.code === locale) || languages[0];
   };
 
-  // Get current language name for display
-  const selectedLanguage = useMemo(() => {
-    const selectedKey = Array.from(selectedKeys)[0] as string;
-    return languages.find(lang => lang.code === selectedKey) || languages[0];
-  }, [selectedKeys]);
+  const currentLang = getCurrentLanguage();
 
   return (
-    <Dropdown placement="bottom-end" className="bg-transparent backdrop-blur-3xl" offset={20}   shouldBlockScroll={false} // Add this prop
->
-      <DropdownTrigger>
-        <Button
-          isIconOnly
-          variant="light"
-          size="sm"
-          className="min-w-10"
-          aria-label="Select language"
-        >
-          <FaGlobeAmericas className="w-4 h-4" />
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu
-        aria-label="Language selection"
-        selectedKeys={selectedKeys}
-        selectionMode="single"
-        variant="flat"
-        disallowEmptySelection
-        onSelectionChange={handleSelectionChange}
-        className="z-110 min-w-25"
+    // 5. Attach the hook's ref to the container div
+    <div className="relative z-9998" ref={elementRef}>
+      <Button
+        isIconOnly
+        variant="light"
+        size="sm"
+        className="min-w-10"
+        aria-label="Select language"
+        onPress={() => setIsOpen((prev) => !prev)}
       >
-        {languages.map((lang) => {
-          const LangIcon = lang.icon;
-          
-          return (
-            <DropdownItem
-              key={lang.code}
-              startContent={<LangIcon className="w-4 h-4" />}
-              textValue={lang.name}
-            >
-              <div className="flex items-center justify-between w-full">
-                <span className="font-medium">{lang.name}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">{lang.code.toUpperCase()}</span>
-                 
-                </div>
-              </div>
-            </DropdownItem>
-          );
-        })}
-      </DropdownMenu>
-    </Dropdown>
+        <div className="w-4 h-4 flex items-center justify-center overflow-hidden">
+          <ReactCountryFlag 
+            countryCode={currentLang.countryCode}
+            svg
+            style={{
+              width: '1rem',
+              height: '1rem',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
+      </Button>
+      
+      <Activity mode={isOpen ? "visible" : "hidden"}>
+        {isOpen && (
+          <motion.div
+            key="language-menu"
+            initial={{ opacity: 0, scale: 0.7, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.7, y: -10 }}
+            // 6. Apply dynamic positioning using hasSpaceBelow
+            className={`z-110 min-w-36 absolute p-2 flex flex-col gap-0.5 rounded-xl bg-amber-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
+              hasSpaceBelow 
+                ? "top-12 ltr:right-0 rtl:left-0" 
+                : "bottom-12 ltr:right-0 rtl:left-0"
+            }`}
+          >
+            {languages.map((lang) => {
+              const isActive = locale === lang.code;
+              
+              return (
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`p-2 rounded-lg cursor-pointer transition-colors ${
+                    isActive 
+                      ? "bg-amber-200 dark:bg-slate-800" 
+                      : "hover:bg-amber-100 dark:hover:bg-slate-950"
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="w-4 h-4 flex items-center justify-center overflow-hidden">
+                      <ReactCountryFlag 
+                        countryCode={lang.countryCode}
+                        svg
+                        style={{
+                          width: '1rem',
+                          height: '1rem',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                    <span className="font-medium">{lang.name}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </Activity>
+    </div>
   );
 }

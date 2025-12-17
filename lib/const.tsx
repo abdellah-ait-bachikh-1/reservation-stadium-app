@@ -16,6 +16,7 @@ export const APP_NAMES ={
   ar :process.env.APP_NAME_AR as string
 }
 
+
 // Static stadium data
 export const stadiums = [
   {
