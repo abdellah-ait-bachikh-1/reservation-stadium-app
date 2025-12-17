@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import Team from "@/components/Team";
 import { APP_NAMES } from "@/lib/const";
 import { TLocale } from "@/lib/types";
+import db from "@/lib/db";
 
 // Move feature cards outside the component to avoid recreation on every render
 const FEATURE_ICONS = ["⚡", "🎯", "🛡️"];
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const appName = APP_NAMES[locale as "ar" | "fr" | "en"];
-
+ 
   const tPages = await getTranslations({ locale, namespace: "Pages" });
   const tSchema = await getTranslations({ locale, namespace: "Schema" });
 

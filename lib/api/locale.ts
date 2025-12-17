@@ -47,3 +47,40 @@ export const errorMessages: Record<TLocale, Record<string, string>> = {
 export function getLocalizedError(locale: TLocale, errorCode: string): string {
   return errorMessages[locale]?.[errorCode] || errorMessages.en[errorCode];
 }
+
+
+export const successMessages: Record<TLocale, Record<string, string>> = {
+  en: {
+    "200": "Operation completed successfully",
+    "201": "Resource created successfully",
+    "202": "Request accepted for processing",
+    "204": "Resource deleted successfully",
+    "register": "Registration completed successfully",
+    "login": "Login successful",
+    "logout": "Logout successful",
+    "update": "Update completed successfully",
+  },
+  fr: {
+    "200": "Opération terminée avec succès",
+    "201": "Ressource créée avec succès",
+    "202": "Demande acceptée pour traitement",
+    "204": "Ressource supprimée avec succès",
+    "register": "Inscription terminée avec succès",
+    "login": "Connexion réussie",
+    "logout": "Déconnexion réussie",
+    "update": "Mise à jour terminée avec succès",
+  },
+  ar: {
+    "200": "تمت العملية بنجاح",
+    "201": "تم إنشاء المورد بنجاح",
+    "202": "تم قبول الطلب للمعالجة",
+    "204": "تم حذف المورد بنجاح",
+    "register": "تم التسجيل بنجاح",
+    "login": "تم تسجيل الدخول بنجاح",
+    "logout": "تم تسجيل الخروج بنجاح",
+    "update": "تم التحديث بنجاح",
+  },
+};
+export function getLocalizedSuccess(locale: TLocale, successCode: string): string {
+  return successMessages[locale]?.[successCode] || successMessages.en[successCode];
+}

@@ -2,10 +2,15 @@ import {
   errorMessages,
   getLocaleFromNextIntlCookie,
   getLocalizedError,
+  getLocalizedSuccess,
 } from "@/lib/api/locale";
+import db from "@/lib/db";
+import { getUserByEmailFromDb } from "@/lib/server-utils";
 import { RegisterCredentials, TLocale } from "@/lib/types";
 import { isError } from "@/lib/utils";
+import { getLocalizedValidationMessage } from "@/lib/validation-messages";
 import { validateRegisterCredentials } from "@/lib/validation/register";
+import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -39,30 +44,55 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    //check email if exist
-    //hash password
-    // create user
-    //return response
-    return NextResponse.json({
-      locale,
+    const existUser = await getUserByEmailFromDb(data.email);
+    if (existUser) {
+      return NextResponse.json({
+        message:
+          getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
+        validationErrors: {
+          email: [getLocalizedValidationMessage("email.exists", locale)],
+        },
+      });
+    }
+    const SALT = parseInt(process.env.SALT as string) || 12;
+    const hasehdPassword = await hash(data.password, SALT);
+    const user = await db.user.create({
       data: {
-        fullNameFr,
-        fullNameAr,
-        email,
-        phoneNumber,
-        password,
-        confirmPassword,
+        fullNameFr: data.fullNameFr,
+        fullNameAr: data.fullNameAr,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        password: hasehdPassword,
+      },
+      select: {
+        id: true,
+        fullNameFr: true,
+        fullNameAr: true,
+        email: true,
+        role: true,
+        phoneNumber: true,
+        emailVerifiedAt: true,
+        approved: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
       },
     });
+    return NextResponse.json({
+      message: getLocalizedSuccess(locale, "register"),
+      user,
+    });
+    //return response
   } catch (error) {
+    console.log(error)
     if (isError(error)) {
       return NextResponse.json(
-        { error: `${getLocalizedError(locale, "500")} | ${error.message}` },
+        { message: `${getLocalizedError(locale, "500")} | ${error.message}` },
         { status: 500 }
       );
     } else {
       return NextResponse.json(
-        { error: getLocalizedError(locale, "500") },
+        { message: getLocalizedError(locale, "500") },
         { status: 500 }
       );
     }
