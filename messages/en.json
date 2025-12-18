@@ -336,7 +336,80 @@
         "contactSupport": "Contact Support",
         "bookNow": "Book a Stadium"
       }
+    },
+  "VerifyPage": {
+  "loading": {
+    "title": "Verifying Your Email",
+    "subtitle": "Please wait while we verify your email address",
+    "progress": "Verification Progress",
+    "processing": "Processing verification...",
+    "whyVerification": "Why email verification?",
+    "reasons": {
+      "security": "Protects your account from unauthorized access",
+      "notifications": "Ensures you receive important account notifications",
+      "enhancement": "Enhances overall account security"
     }
+  },
+  "verified": {
+    "title": "Email Verified Successfully!",
+    "description": "Your email address has been successfully verified. You can now access all features of your account.",
+    "readyToExplore": "Ready to Explore?",
+    "exploreDescription": "Your account is now fully activated. Log in to get started with all the amazing features!",
+    "goToLogin": "Go to Login",
+    "goToHomepage": "Go to Homepage"
+  },
+  "alreadyVerified": {
+    "title": "Already Verified",
+    "description": "Your email address was already verified previously. You can proceed to login.",
+    "accountSecurity": "Account Security",
+    "securityDescription": "Your account is secure and ready to use. All features are now unlocked for you.",
+    "goToLogin": "Go to Login",
+    "returnToHomepage": "Return to Homepage"
+  },
+  "errors": {
+    "userNotFound": {
+      "title": "User Not Found",
+      "whatHappened": "What happened?",
+      "reasons": [
+        "The verification link may have expired",
+        "The link might have been already used",
+        "The user account may not exist",
+        "There could be a technical issue"
+      ],
+      "nextSteps": "Please register for a new account to continue.",
+      "registerNew": "Register New Account",
+      "goToHomepage": "Go to Homepage"
+    },
+    "userDeleted": {
+      "title": "Account Deactivated",
+      "description": "This account has been deactivated and is no longer accessible.",
+      "reasons": [
+        "The account may have been deleted by the user",
+        "The account may have been suspended",
+        "Account recovery is not available"
+      ],
+      "needAssistance": "Need Assistance?",
+      "assistanceMessage": "Contact our support team if you believe this is an error.",
+      "contactSupport": "Contact Support",
+      "createNewAccount": "Create New Account",
+      "returnToHomepage": "Return to Homepage"
+    },
+    "invalidToken": {
+      "title": "Invalid Verification Link",
+      "nextSteps": "Try registering again or contact support if the problem persists.",
+      "tryAgain": "Try Again",
+      "registerAgain": "Register Again",
+      "returnHome": "Return Home"
+    },
+    "error": {
+      "title": "Verification Failed",
+      "nextSteps": "Try registering again or contact support if the problem persists.",
+      "tryAgain": "Try Again",
+      "registerAgain": "Register Again",
+      "returnHome": "Return Home"
+    }
+  }
+}
   },
   "Components": {
     "Header": {

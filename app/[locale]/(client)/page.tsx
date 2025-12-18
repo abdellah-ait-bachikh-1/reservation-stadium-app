@@ -157,6 +157,7 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  // await new Promise(res=>setTimeout(res,5000))
 
   // Fetch all translations at once to minimize requests
   const t = await getTranslations();

@@ -335,6 +335,81 @@
         "contactSupport": "Contacter le Support",
         "bookNow": "Réserver un Stade"
       }
+    },
+    "VerifyPage": {
+      "loading": {
+        "title": "Vérification de votre email",
+        "subtitle": "Veuillez patienter pendant que nous vérifions votre adresse email",
+        "progress": "Progression de la vérification",
+        "processing": "Traitement de la vérification...",
+        "whyVerification": "Pourquoi vérifier son email ?",
+        "reasons": {
+          "security": "Protège votre compte contre les accès non autorisés",
+          "notifications": "Assure la réception des notifications importantes de compte",
+          "enhancement": "Améliore la sécurité globale de votre compte"
+        }
+      },
+      "verified": {
+        "title": "Email vérifié avec succès !",
+        "description": "Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités de votre compte.",
+        "readyToExplore": "Prêt à explorer ?",
+        "exploreDescription": "Votre compte est maintenant entièrement activé. Connectez-vous pour commencer à utiliser toutes les fonctionnalités !",
+        "goToLogin": "Aller à la connexion",
+        "goToHomepage": "Aller à la page d'accueil"
+      },
+      "alreadyVerified": {
+        "title": "Déjà vérifié",
+        "description": "Votre adresse email a déjà été vérifiée précédemment. Vous pouvez procéder à la connexion.",
+        "accountSecurity": "Sécurité du compte",
+        "securityDescription": "Votre compte est sécurisé et prêt à l'emploi. Toutes les fonctionnalités sont maintenant débloquées pour vous.",
+        "goToLogin": "Aller à la connexion",
+        "returnToHomepage": "Retour à la page d'accueil"
+      },
+      "errors": {
+        "userNotFound": {
+          "title": "Utilisateur non trouvé",
+          "message": "Jeton de vérification invalide ou expiré.",
+          "whatHappened": "Que s'est-il passé ?",
+          "reasons": [
+            "Le lien de vérification a peut-être expiré",
+            "Le lien a peut-être déjà été utilisé",
+            "Le compte utilisateur peut ne pas exister",
+            "Il pourrait y avoir un problème technique"
+          ],
+          "nextSteps": "Veuillez vous inscrire pour un nouveau compte pour continuer.",
+          "registerNew": "Inscrire un nouveau compte",
+          "goToHomepage": "Aller à la page d'accueil"
+        },
+        "userDeleted": {
+          "title": "Compte désactivé",
+          "description": "Ce compte a été désactivé et n'est plus accessible.",
+          "reasons": [
+            "Le compte a peut-être été supprimé par l'utilisateur",
+            "Le compte a peut-être été suspendu",
+            "La récupération du compte n'est pas disponible"
+          ],
+          "needAssistance": "Besoin d'aide ?",
+          "assistanceMessage": "Contactez notre équipe de support si vous pensez qu'il s'agit d'une erreur.",
+          "contactSupport": "Contacter le support",
+          "createNewAccount": "Créer un nouveau compte",
+          "returnToHomepage": "Retour à la page d'accueil"
+        },
+        "invalidToken": {
+          "title": "Lien de vérification invalide",
+          "message": "Aucun jeton de vérification n'a été fourni.",
+          "nextSteps": "Essayez de vous inscrire à nouveau ou contactez le support si le problème persiste.",
+          "tryAgain": "Réessayer",
+          "registerAgain": "S'inscrire à nouveau",
+          "returnHome": "Retour à l'accueil"
+        },
+        "error": {
+          "title": "Échec de la vérification",
+          "nextSteps": "Essayez de vous inscrire à nouveau ou contactez le support si le problème persiste.",
+          "tryAgain": "Réessayer",
+          "registerAgain": "S'inscrire à nouveau",
+          "returnHome": "Retour à l'accueil"
+        }
+      }
     }
   },
   "Components": {

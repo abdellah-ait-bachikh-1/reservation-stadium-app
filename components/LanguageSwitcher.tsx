@@ -8,12 +8,15 @@ import { Activity, useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 // 1. Import the hook
 import { useViewportSpace } from "@/hooks/useViewportSpace";
+import { useSearchParams } from "next/navigation";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+    const searchParams = useSearchParams(); // Get search params
+
   // 2. Replace the local ref with the hook's elementRef
   const { hasSpaceBelow, elementRef } = useViewportSpace();
 
@@ -56,9 +59,17 @@ export default function LanguageSwitcher() {
   ];
 
   const changeLanguage = (newLocale: string) => {
-    router.push(pathname, { locale: newLocale });
+    // Create a new URLSearchParams object with current search params
+    const params = new URLSearchParams(searchParams.toString());
+    
+    // Build the URL with preserved search params
+    const url = pathname + (params.toString() ? `?${params.toString()}` : '');
+    
+    // Navigate with preserved search params
+    router.push(url, { locale: newLocale });
     setIsOpen(false);
   };
+
 
   const getCurrentLanguage = () => {
     return languages.find((lang) => lang.code === locale) || languages[0];

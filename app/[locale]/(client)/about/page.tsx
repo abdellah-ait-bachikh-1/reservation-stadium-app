@@ -58,7 +58,7 @@ const AboutPage = async ({
   setRequestLocale(locale);
   const t = await getTranslations("Pages.About");
   const isRTL = locale === "ar";
-
+  await new Promise((res) => setTimeout(res, 5000));
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"

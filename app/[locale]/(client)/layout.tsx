@@ -68,8 +68,8 @@ export default async function LocaleLayout({
       <body
         className={cn(
           `${inter.className}`,
-          "bg-linear-to-r from-[#FFEFBA] to-[#ffecec] ",
-          "dark:bg-linear-to-br dark:from-gray-950 dark:via-slate-800 dark:to-slate-950",
+          "bg-linear-to-br from-[#FFEFBA] via-[#fffbfb] to-[#FFEFBA]",
+          "dark:bg-linear-to-br dark:from-gray-950 dark:via-slate-700 dark:to-slate-950",
           "transition-colors duration-500 ease-in-out bg-fixed min-h-screen max-h-fit overflow-y-auto pt-24 z-99998 text-black dark:text-white"
         )}
         suppressHydrationWarning

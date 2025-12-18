@@ -32,6 +32,7 @@ const StadiumsPage = async ({
   setRequestLocale(locale);
   const t = await getTranslations("Pages.Stadiums");
   const isRTL = locale === "ar";
+  // await new Promise(res=>setTimeout(res,5000))
 
   return (
     <section
@@ -81,7 +82,7 @@ const StadiumsPage = async ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {stadiums.map((stadium) => (
-            <StadiumCard stadium={stadium} locale={locale} />
+            <StadiumCard stadium={stadium} locale={locale} key={stadium.id} />
           ))}
         </div>
       </div>

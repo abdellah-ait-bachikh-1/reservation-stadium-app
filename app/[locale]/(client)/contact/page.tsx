@@ -43,6 +43,7 @@ const ContactPage = async ({
   const tCommon = await getTranslations("Common");
   const tFooter = await getTranslations("Components.Footer");
   const isRTL = locale === "ar";
+  // await new Promise(res=>setTimeout(res,5000))
 
   // Contact methods
   const contactMethods = [

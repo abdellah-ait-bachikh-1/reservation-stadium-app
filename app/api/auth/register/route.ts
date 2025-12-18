@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
         verificationToken: true,
       },
     });
-    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${user.verificationToken}`;
+    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/verify-email?token=${user.verificationToken}`;
     // REPLACE the old email sending call with:
     const emailResult = await sendVerificationEmail(
       user.email,

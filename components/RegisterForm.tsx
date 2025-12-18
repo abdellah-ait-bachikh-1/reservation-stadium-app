@@ -2,7 +2,6 @@
 
 import { Link } from "@/i18n/navigation";
 import { Button } from "@heroui/button";
-import { Checkbox } from "@heroui/checkbox";
 import { Input } from "@heroui/input";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -39,7 +38,7 @@ const RegisterForm = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     field: keyof typeof formData
   ) => {
-    const { value,  } = e.target;
+    const { value } = e.target;
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
     const { validationErrors: newErrors } = validateRegisterCredentials(
@@ -69,7 +68,7 @@ const RegisterForm = () => {
       return Object.keys(merged).length > 0 ? merged : null;
     });
   };
-console.log(validationErrors)
+  console.log(validationErrors);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(formData);
@@ -102,11 +101,7 @@ console.log(validationErrors)
             variant="bordered"
             value={formData.fullNameAr}
             onChange={(e) => handleChange(e, "fullNameAr")}
-            isInvalid={
-             isFieldHasError(validationErrors, "fullNameAr")
-               
-            }
-          
+            isInvalid={isFieldHasError(validationErrors, "fullNameAr")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "fullNameAr")
@@ -124,11 +119,7 @@ console.log(validationErrors)
             variant="bordered"
             value={formData.fullNameFr}
             onChange={(e) => handleChange(e, "fullNameFr")}
-            isInvalid={
-             isFieldHasError(validationErrors, "fullNameFr")
-             
-            }
-          
+            isInvalid={isFieldHasError(validationErrors, "fullNameFr")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "fullNameFr")
@@ -146,11 +137,7 @@ console.log(validationErrors)
             value={formData.email}
             onChange={(e) => handleChange(e, "email")}
             fullWidth
-            isInvalid={
-              isFieldHasError(validationErrors, "email")
-               
-            }
-       
+            isInvalid={isFieldHasError(validationErrors, "email")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "email")
@@ -167,11 +154,7 @@ console.log(validationErrors)
             variant="bordered"
             value={formData.phoneNumber}
             onChange={(e) => handleChange(e, "phoneNumber")}
-            isInvalid={
-              isFieldHasError(validationErrors, "phoneNumber")
-               
-            }
-         
+            isInvalid={isFieldHasError(validationErrors, "phoneNumber")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "phoneNumber")
@@ -188,11 +171,7 @@ console.log(validationErrors)
             variant="bordered"
             value={formData.password}
             onChange={(e) => handleChange(e, "password")}
-            isInvalid={
-               isFieldHasError(validationErrors, "password")
-                
-            }
-         
+            isInvalid={isFieldHasError(validationErrors, "password")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "password")
@@ -230,11 +209,7 @@ console.log(validationErrors)
             variant="bordered"
             value={formData.confirmPassword}
             onChange={(e) => handleChange(e, "confirmPassword")}
-            isInvalid={
-              isFieldHasError(validationErrors, "confirmPassword")
-               
-            }
-         
+            isInvalid={isFieldHasError(validationErrors, "confirmPassword")}
             errorMessage={
               validationErrors &&
               (isFieldHasError(validationErrors, "confirmPassword")
