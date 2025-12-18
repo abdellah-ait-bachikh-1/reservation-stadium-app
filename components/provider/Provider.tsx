@@ -14,7 +14,7 @@ export function Providers({
 }) {
   return (
     <AuthContextProvider>
-      <HeroUIProvider locale={locale} className="min-h-screen w-full">
+      <HeroUIProvider locale={locale} className="min-h-screen w-fullz-99999">
         <NextThemesProvider
           attribute="class"
           defaultTheme="light"
@@ -23,7 +23,12 @@ export function Providers({
           storageKey="theme"
         >
           {children}
-          <ToastProvider placement="top-center"  />
+          <ToastProvider
+            toastProps={{
+              classNames: { base: "z-99999" },
+            }}
+            placement="bottom-right"
+          />
         </NextThemesProvider>
       </HeroUIProvider>
     </AuthContextProvider>

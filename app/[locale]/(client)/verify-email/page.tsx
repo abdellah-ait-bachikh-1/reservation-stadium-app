@@ -25,6 +25,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { Button } from "@heroui/button";
+import { addToast } from "@heroui/toast";
 
 type VerificationStatus =
   | "loading"
@@ -46,6 +47,11 @@ const VerifyEmailPage = () => {
   useEffect(() => {
     if (!token) {
       setStatus("invalid_token");
+      addToast({
+        title: t("errors.invalidToken.title"),
+        description: "Verification token is missing",
+        color: "warning",
+      });
       return;
     }
 
@@ -53,6 +59,9 @@ const VerifyEmailPage = () => {
       setProgress((prev) => Math.min(prev + 10, 90));
     }, 200);
 
+    // Add this import at the top
+
+    // Inside your verifyEmail function, add toast calls:
     const verifyEmail = async () => {
       try {
         const response = await fetch(`/api/verify-email?token=${token}`);
@@ -62,8 +71,60 @@ const VerifyEmailPage = () => {
         setProgress(100);
 
         if (!response.ok) {
+          // Map API status to toast types
+          let toastColor:
+            | "success"
+            | "danger"
+            | "warning"
+            | "primary"
+            | "secondary"
+            | "default" = "danger";
+          let toastTitle = "";
+
+          switch (data.status) {
+            case "user_deleted":
+              toastColor = "danger";
+              toastTitle = t("errors.userDeleted.title");
+              break;
+            case "user_not_found":
+              toastColor = "warning";
+              toastTitle = t("errors.userNotFound.title");
+              break;
+            case "invalid_token":
+              toastColor = "warning";
+              toastTitle = t("errors.invalidToken.title");
+              break;
+            default:
+              toastColor = "danger";
+              toastTitle = t("errors.error.title");
+          }
+
+          addToast({
+            title: toastTitle,
+            description: data.message,
+            color: toastColor,
+          });
+
           setStatus(data.status || "error");
           return;
+        }
+
+        // Success toasts
+        switch (data.status) {
+          case "verified":
+            addToast({
+              title: t("verified.title"),
+              description: data.message,
+              color: "success",
+            });
+            break;
+          case "already_verified":
+            addToast({
+              title: t("alreadyVerified.title"),
+              description: data.message,
+              color: "primary",
+            });
+            break;
         }
 
         setStatus(data.status);
@@ -71,6 +132,13 @@ const VerifyEmailPage = () => {
         clearInterval(progressInterval);
         setProgress(100);
         console.error("Verification error:", error);
+
+        addToast({
+          title: t("errors.error.title"),
+          description: "Network error occurred. Please try again.",
+          color: "danger",
+        });
+
         setStatus("error");
       }
     };
@@ -92,33 +160,46 @@ const VerifyEmailPage = () => {
   // Status color mapping
   const getStatusColor = (status: VerificationStatus) => {
     switch (status) {
-      case "verified": return "text-green-600";
-      case "already_verified": return "text-blue-600";
-      case "loading": return "text-blue-600";
-      case "user_deleted": return "text-red-600";
+      case "verified":
+        return "text-green-600";
+      case "already_verified":
+        return "text-blue-600";
+      case "loading":
+        return "text-blue-600";
+      case "user_deleted":
+        return "text-red-600";
       case "user_not_found":
       case "invalid_token":
-      case "error": return "text-amber-600";
-      default: return "text-gray-600";
+      case "error":
+        return "text-amber-600";
+      default:
+        return "text-gray-600";
     }
   };
 
   const getStatusBgColor = (status: VerificationStatus) => {
     switch (status) {
-      case "verified": return "bg-green-100 dark:bg-green-900/20";
-      case "already_verified": return "bg-blue-100 dark:bg-blue-900/20";
-      case "loading": return "bg-blue-100 dark:bg-blue-900/20";
-      case "user_deleted": return "bg-red-100 dark:bg-red-900/20";
+      case "verified":
+        return "bg-green-100 dark:bg-green-900/20";
+      case "already_verified":
+        return "bg-blue-100 dark:bg-blue-900/20";
+      case "loading":
+        return "bg-blue-100 dark:bg-blue-900/20";
+      case "user_deleted":
+        return "bg-red-100 dark:bg-red-900/20";
       case "user_not_found":
       case "invalid_token":
-      case "error": return "bg-amber-100 dark:bg-amber-900/20";
-      default: return "bg-gray-100 dark:bg-gray-900/20";
+      case "error":
+        return "bg-amber-100 dark:bg-amber-900/20";
+      default:
+        return "bg-gray-100 dark:bg-gray-900/20";
     }
   };
 
   const getStatusIcon = (status: VerificationStatus) => {
-    const iconClass = "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6";
-    
+    const iconClass =
+      "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6";
+
     switch (status) {
       case "loading":
         return (
@@ -160,11 +241,11 @@ const VerifyEmailPage = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 text-center">
             {getStatusIcon(status)}
-            
+
             <h1 className={`text-2xl font-bold mb-3 ${getStatusColor(status)}`}>
               {t("loading.title")}
             </h1>
-            
+
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {t("loading.subtitle")}
             </p>
@@ -176,13 +257,13 @@ const VerifyEmailPage = () => {
                   <span className="font-bold text-blue-600">{progress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-center gap-2 text-gray-500">
                 <FaSpinner className="animate-spin text-blue-600" />
                 <span>{t("loading.processing")}</span>
@@ -193,7 +274,7 @@ const VerifyEmailPage = () => {
               <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3">
                 {t("loading.whyVerification")}
               </h3>
-              
+
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -203,7 +284,7 @@ const VerifyEmailPage = () => {
                     {t("loading.reasons.security")}
                   </span>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center flex-shrink-0">
                     <FaKey className="text-blue-600 dark:text-blue-400" />
@@ -212,7 +293,7 @@ const VerifyEmailPage = () => {
                     {t("loading.reasons.notifications")}
                   </span>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center flex-shrink-0">
                     <FaLock className="text-purple-600 dark:text-purple-400" />
@@ -236,11 +317,11 @@ const VerifyEmailPage = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 text-center">
             {getStatusIcon(status)}
-            
+
             <h1 className={`text-2xl font-bold mb-3 ${getStatusColor(status)}`}>
               {t("verified.title")}
             </h1>
-            
+
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {t("verified.description")}
             </p>
@@ -255,7 +336,7 @@ const VerifyEmailPage = () => {
               >
                 {t("verified.goToLogin")}
               </Button>
-              
+
               <Button
                 variant="bordered"
                 className="w-full py-6 text-lg"
@@ -292,11 +373,11 @@ const VerifyEmailPage = () => {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 text-center">
             {getStatusIcon(status)}
-            
+
             <h1 className={`text-2xl font-bold mb-3 ${getStatusColor(status)}`}>
               {t("alreadyVerified.title")}
             </h1>
-            
+
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {t("alreadyVerified.description")}
             </p>
@@ -311,7 +392,7 @@ const VerifyEmailPage = () => {
               >
                 {t("alreadyVerified.goToLogin")}
               </Button>
-              
+
               <Button
                 variant="bordered"
                 className="w-full py-6 text-lg"
@@ -347,7 +428,7 @@ const VerifyEmailPage = () => {
       <div className="w-full max-w-md mx-auto">
         <div className="bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 text-center">
           {getStatusIcon(status)}
-          
+
           <h1 className={`text-2xl font-bold mb-3 ${getStatusColor(status)}`}>
             {status === "user_not_found"
               ? t("errors.userNotFound.title")
@@ -357,7 +438,7 @@ const VerifyEmailPage = () => {
               ? t("errors.invalidToken.title")
               : t("errors.error.title")}
           </h1>
-          
+
           <div className="mb-6">
             {status === "user_deleted" ? (
               <>
@@ -365,22 +446,26 @@ const VerifyEmailPage = () => {
                   {t("errors.userDeleted.description")}
                 </p>
                 <ul className="text-red-600 dark:text-red-400 text-sm space-y-2 text-left pl-5">
-                  {t.raw("errors.userDeleted.reasons").map((reason: string, index: number) => (
+                  {t
+                    .raw("errors.userDeleted.reasons")
+                    .map((reason: string, index: number) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2">•</span>
+                        <span>{reason}</span>
+                      </li>
+                    ))}
+                </ul>
+              </>
+            ) : (
+              <ul className="text-amber-600 dark:text-amber-400 text-sm space-y-2 text-left pl-5 mb-4">
+                {t
+                  .raw("errors.userNotFound.reasons")
+                  .map((reason: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="mr-2">•</span>
                       <span>{reason}</span>
                     </li>
                   ))}
-                </ul>
-              </>
-            ) : (
-              <ul className="text-amber-600 dark:text-amber-400 text-sm space-y-2 text-left pl-5 mb-4">
-                {t.raw("errors.userNotFound.reasons").map((reason: string, index: number) => (
-                  <li key={index} className="flex items-start">
-                    <span className="mr-2">•</span>
-                    <span>{reason}</span>
-                  </li>
-                ))}
               </ul>
             )}
           </div>
@@ -397,7 +482,7 @@ const VerifyEmailPage = () => {
                 >
                   {t("errors.userNotFound.registerNew")}
                 </Button>
-                
+
                 <Button
                   variant="bordered"
                   className="w-full py-6 text-lg"
@@ -417,7 +502,7 @@ const VerifyEmailPage = () => {
                 >
                   {t("errors.userDeleted.contactSupport")}
                 </Button>
-                
+
                 <Button
                   variant="bordered"
                   className="w-full py-6 text-lg"
@@ -426,7 +511,7 @@ const VerifyEmailPage = () => {
                 >
                   {t("errors.userDeleted.createNewAccount")}
                 </Button>
-                
+
                 <Button
                   variant="light"
                   className="w-full py-6 text-lg"
@@ -446,7 +531,7 @@ const VerifyEmailPage = () => {
                 >
                   {t("errors.invalidToken.tryAgain")}
                 </Button>
-                
+
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     variant="bordered"
@@ -456,7 +541,7 @@ const VerifyEmailPage = () => {
                   >
                     {t("errors.invalidToken.registerAgain")}
                   </Button>
-                  
+
                   <Button
                     variant="light"
                     className="w-full py-5"
@@ -476,7 +561,7 @@ const VerifyEmailPage = () => {
                 <FaInfoCircle className="text-gray-600 dark:text-gray-300" />
               </div>
               <h3 className="font-bold text-gray-800 dark:text-gray-200">
-                {status === "user_deleted" 
+                {status === "user_deleted"
                   ? t("errors.userDeleted.needAssistance")
                   : t("errors.userNotFound.whatHappened")}
               </h3>

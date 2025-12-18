@@ -84,16 +84,16 @@ export async function POST(req: NextRequest) {
     });
     const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/verify-email?token=${user.verificationToken}`;
     // REPLACE the old email sending call with:
-    const emailResult = await sendVerificationEmail(
+    const emailResult =  sendVerificationEmail(
       user.email,
       user.fullNameFr || user.fullNameAr,
       verificationLink,
       locale
     );
 
-    if (!emailResult.success) {
-      console.warn("Email sending failed, but user was created.");
-    }
+    // if (!emailResult.success) {
+    //   console.warn("Email sending failed, but user was created.");
+    // }
     return NextResponse.json(
       { message: getLocalizedSuccess(locale, "register"), user },
       { status: 201 }
