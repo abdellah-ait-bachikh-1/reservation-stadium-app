@@ -43,13 +43,13 @@ const VerifyEmailPage = () => {
   const token = searchParams.get("token");
   const [status, setStatus] = useState<VerificationStatus>("loading");
   const [progress, setProgress] = useState(0);
-
+  
   useEffect(() => {
     if (!token) {
       setStatus("invalid_token");
       addToast({
         title: t("errors.invalidToken.title"),
-        description: "Verification token is missing",
+        description: t("errors.invalidToken.description"),
         color: "warning",
       });
       return;
@@ -59,9 +59,6 @@ const VerifyEmailPage = () => {
       setProgress((prev) => Math.min(prev + 10, 90));
     }, 200);
 
-    // Add this import at the top
-
-    // Inside your verifyEmail function, add toast calls:
     const verifyEmail = async () => {
       try {
         const response = await fetch(`/api/verify-email?token=${token}`);
@@ -80,28 +77,33 @@ const VerifyEmailPage = () => {
             | "secondary"
             | "default" = "danger";
           let toastTitle = "";
+          let toastDescription = "";
 
           switch (data.status) {
             case "user_deleted":
               toastColor = "danger";
               toastTitle = t("errors.userDeleted.title");
+              toastDescription = t("errors.userDeleted.description");
               break;
             case "user_not_found":
               toastColor = "warning";
               toastTitle = t("errors.userNotFound.title");
+              toastDescription = t("errors.userNotFound.description");
               break;
             case "invalid_token":
               toastColor = "warning";
               toastTitle = t("errors.invalidToken.title");
+              toastDescription = t("errors.invalidToken.description");
               break;
             default:
               toastColor = "danger";
               toastTitle = t("errors.error.title");
+              toastDescription = t("errors.error.description");
           }
 
           addToast({
             title: toastTitle,
-            description: data.message,
+            description: toastDescription,
             color: toastColor,
           });
 
@@ -114,14 +116,14 @@ const VerifyEmailPage = () => {
           case "verified":
             addToast({
               title: t("verified.title"),
-              description: data.message,
+              description: t("verified.description"),
               color: "success",
             });
             break;
           case "already_verified":
             addToast({
               title: t("alreadyVerified.title"),
-              description: data.message,
+              description: t("alreadyVerified.description"),
               color: "primary",
             });
             break;
@@ -135,7 +137,7 @@ const VerifyEmailPage = () => {
 
         addToast({
           title: t("errors.error.title"),
-          description: "Network error occurred. Please try again.",
+          description: t("errors.networkError"),
           color: "danger",
         });
 
@@ -146,7 +148,7 @@ const VerifyEmailPage = () => {
     verifyEmail();
 
     return () => clearInterval(progressInterval);
-  }, [token, router]);
+  }, [token, router, t]);
 
   const handleLoginRedirect = () => router.push("/auth/login");
   const handleHomeRedirect = () => router.push("/");
@@ -439,37 +441,6 @@ const VerifyEmailPage = () => {
               : t("errors.error.title")}
           </h1>
 
-          <div className="mb-6">
-            {status === "user_deleted" ? (
-              <>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {t("errors.userDeleted.description")}
-                </p>
-                <ul className="text-red-600 dark:text-red-400 text-sm space-y-2 text-left pl-5">
-                  {t
-                    .raw("errors.userDeleted.reasons")
-                    .map((reason: string, index: number) => (
-                      <li key={index} className="flex items-start">
-                        <span className="mr-2">•</span>
-                        <span>{reason}</span>
-                      </li>
-                    ))}
-                </ul>
-              </>
-            ) : (
-              <ul className="text-amber-600 dark:text-amber-400 text-sm space-y-2 text-left pl-5 mb-4">
-                {t
-                  .raw("errors.userNotFound.reasons")
-                  .map((reason: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <span>{reason}</span>
-                    </li>
-                  ))}
-              </ul>
-            )}
-          </div>
-
           <div className="space-y-4 mb-8">
             {status === "user_not_found" ? (
               <>
@@ -561,17 +532,17 @@ const VerifyEmailPage = () => {
                 <FaInfoCircle className="text-gray-600 dark:text-gray-300" />
               </div>
               <h3 className="font-bold text-gray-800 dark:text-gray-200">
-                {status === "user_deleted"
-                  ? t("errors.userDeleted.needAssistance")
-                  : t("errors.userNotFound.whatHappened")}
+                {status === "user_deleted" 
+                  ? "هل تحتاج إلى مساعدة؟"
+                  : "ماذا حدث؟"}
               </h3>
             </div>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
               {status === "user_not_found"
-                ? t("errors.userNotFound.nextSteps")
+                ? "يرجى التسجيل لحساب جديد للمتابعة."
                 : status === "user_deleted"
-                ? t("errors.userDeleted.assistanceMessage")
-                : t("errors.invalidToken.nextSteps")}
+                ? "اتصل بفريق الدعم إذا كنت تعتقد أن هذا خطأ."
+                : "حاول التسجيل مرة أخرى أو اتصل بالدعم إذا استمرت المشكلة."}
             </p>
           </div>
         </div>

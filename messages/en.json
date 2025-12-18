@@ -337,79 +337,66 @@
         "bookNow": "Book a Stadium"
       }
     },
-  "VerifyPage": {
-  "loading": {
-    "title": "Verifying Your Email",
-    "subtitle": "Please wait while we verify your email address",
-    "progress": "Verification Progress",
-    "processing": "Processing verification...",
-    "whyVerification": "Why email verification?",
-    "reasons": {
-      "security": "Protects your account from unauthorized access",
-      "notifications": "Ensures you receive important account notifications",
-      "enhancement": "Enhances overall account security"
+    "VerifyPage": {
+      "loading": {
+        "title": "Vérification de votre email",
+        "subtitle": "Veuillez patienter pendant que nous vérifions votre adresse email",
+        "progress": "Progression de la vérification",
+        "processing": "Traitement de la vérification...",
+        "whyVerification": "Pourquoi vérifier son email ?",
+        "reasons": {
+          "security": "Protège votre compte contre les accès non autorisés",
+          "notifications": "Assure la réception des notifications importantes de compte",
+          "enhancement": "Améliore la sécurité globale de votre compte"
+        }
+      },
+      "verified": {
+        "title": "Email vérifié avec succès !",
+        "description": "Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités de votre compte.",
+        "readyToExplore": "Prêt à explorer ?",
+        "exploreDescription": "Votre compte est maintenant entièrement activé. Connectez-vous pour commencer à utiliser toutes les fonctionnalités !",
+        "goToLogin": "Aller à la connexion",
+        "goToHomepage": "Aller à la page d'accueil"
+      },
+      "alreadyVerified": {
+        "title": "Déjà vérifié",
+        "description": "Votre adresse email a déjà été vérifiée précédemment. Vous pouvez procéder à la connexion.",
+        "accountSecurity": "Sécurité du compte",
+        "securityDescription": "Votre compte est sécurisé et prêt à l'emploi. Toutes les fonctionnalités sont maintenant débloquées pour vous.",
+        "goToLogin": "Aller à la connexion",
+        "returnToHomepage": "Retour à la page d'accueil"
+      },
+      "errors": {
+        "invalidToken": {
+          "title": "Lien de vérification invalide",
+          "description": "Le jeton de vérification est invalide ou manquant",
+          "tryAgain": "Réessayer",
+          "registerAgain": "S'inscrire à nouveau",
+          "returnHome": "Retour à l'accueil"
+        },
+        "userNotFound": {
+          "title": "Utilisateur non trouvé",
+          "description": "Jeton de vérification invalide ou expiré",
+          "registerNew": "Inscrire un nouveau compte",
+          "goToHomepage": "Aller à la page d'accueil"
+        },
+        "userDeleted": {
+          "title": "Compte désactivé",
+          "description": "Ce compte a été désactivé. Veuillez contacter le support.",
+          "contactSupport": "Contacter le support",
+          "createNewAccount": "Créer un nouveau compte",
+          "returnToHomepage": "Retour à la page d'accueil"
+        },
+        "error": {
+          "title": "Échec de la vérification",
+          "description": "Une erreur inattendue s'est produite",
+          "tryAgain": "Réessayer",
+          "registerAgain": "S'inscrire à nouveau",
+          "returnHome": "Retour à l'accueil"
+        },
+        "networkError": "Erreur réseau survenue. Veuillez réessayer."
+      }
     }
-  },
-  "verified": {
-    "title": "Email Verified Successfully!",
-    "description": "Your email address has been successfully verified. You can now access all features of your account.",
-    "readyToExplore": "Ready to Explore?",
-    "exploreDescription": "Your account is now fully activated. Log in to get started with all the amazing features!",
-    "goToLogin": "Go to Login",
-    "goToHomepage": "Go to Homepage"
-  },
-  "alreadyVerified": {
-    "title": "Already Verified",
-    "description": "Your email address was already verified previously. You can proceed to login.",
-    "accountSecurity": "Account Security",
-    "securityDescription": "Your account is secure and ready to use. All features are now unlocked for you.",
-    "goToLogin": "Go to Login",
-    "returnToHomepage": "Return to Homepage"
-  },
-  "errors": {
-    "userNotFound": {
-      "title": "User Not Found",
-      "whatHappened": "What happened?",
-      "reasons": [
-        "The verification link may have expired",
-        "The link might have been already used",
-        "The user account may not exist",
-        "There could be a technical issue"
-      ],
-      "nextSteps": "Please register for a new account to continue.",
-      "registerNew": "Register New Account",
-      "goToHomepage": "Go to Homepage"
-    },
-    "userDeleted": {
-      "title": "Account Deactivated",
-      "description": "This account has been deactivated and is no longer accessible.",
-      "reasons": [
-        "The account may have been deleted by the user",
-        "The account may have been suspended",
-        "Account recovery is not available"
-      ],
-      "needAssistance": "Need Assistance?",
-      "assistanceMessage": "Contact our support team if you believe this is an error.",
-      "contactSupport": "Contact Support",
-      "createNewAccount": "Create New Account",
-      "returnToHomepage": "Return to Homepage"
-    },
-    "invalidToken": {
-      "title": "Invalid Verification Link",
-      "nextSteps": "Try registering again or contact support if the problem persists.",
-      "tryAgain": "Try Again",
-      "registerAgain": "Register Again",
-      "returnHome": "Return Home"
-    },
-    "error": {
-      "title": "Verification Failed",
-      "nextSteps": "Try registering again or contact support if the problem persists.",
-      "tryAgain": "Try Again",
-      "registerAgain": "Register Again",
-      "returnHome": "Return Home"
-    }
-  }
-}
   },
   "Components": {
     "Header": {
