@@ -1,24 +1,34 @@
 export type Theme = "light" | "dark" | "system";
 export type TLocale = "fr" | "ar" | "en";
 
-// register
+// -----------register
 export type RegisterCredentials = {
   fullNameAr: string;
   fullNameFr: string;
   email: string;
   password: string;
   phoneNumber: string;
-  confirmPassword:string
+  confirmPassword: string;
 };
-
-export type ValidateRegisterCredentialsErrorResult = Partial<Record<
-  keyof RegisterCredentials,
-  string[]
->>;
-
+export type ValidateRegisterCredentialsErrorResult = Partial<
+  Record<keyof RegisterCredentials, string[]>
+>;
 export type ValidateRegisterCredentialsResult =
   | {
       data: null;
       validationErrors: ValidateRegisterCredentialsErrorResult;
     }
   | { data: RegisterCredentials; validationErrors: null };
+
+
+  //------------login
+export type LoginCredentials = Pick<RegisterCredentials, "email" | "password">;
+export type ValidateLoginCredentialsErrorResult = Pick<
+  ValidateRegisterCredentialsErrorResult,
+  "email" | "password"
+>;
+export type ValidateLoginCredentialsResult =  | {
+      data: null;
+      validationErrors: ValidateLoginCredentialsErrorResult;
+    }
+  | { data: LoginCredentials; validationErrors: null };

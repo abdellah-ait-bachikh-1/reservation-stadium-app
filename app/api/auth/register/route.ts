@@ -1,6 +1,8 @@
 import {
   errorMessages,
   getLocaleFromNextIntlCookie,
+  getLocalizedEmailSuccess,
+  getLocalizedEmailWarning,
   getLocalizedError,
   getLocalizedSuccess,
 } from "@/lib/api/locale";
@@ -48,13 +50,16 @@ export async function POST(req: NextRequest) {
     }
     const existUser = await getUserByEmailFromDb(data.email);
     if (existUser) {
-      return NextResponse.json({
-        message:
-          getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
-        validationErrors: {
-          email: [getLocalizedValidationMessage("email.exists", locale)],
+      return NextResponse.json(
+        {
+          message:
+            getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
+          validationErrors: {
+            email: [getLocalizedValidationMessage("email.exists", locale)],
+          },
         },
-      },{status:400});
+        { status: 400 }
+      );
     }
     const SALT = parseInt(process.env.SALT as string) || 12;
     const hasehdPassword = await hash(data.password, SALT);
@@ -84,20 +89,28 @@ export async function POST(req: NextRequest) {
     });
     const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/verify-email?token=${user.verificationToken}`;
     // REPLACE the old email sending call with:
-    const emailResult =  sendVerificationEmail(
+    const emailResult = await sendVerificationEmail(
       user.email,
       user.fullNameFr || user.fullNameAr,
       verificationLink,
       locale
     );
 
-    // if (!emailResult.success) {
-    //   console.warn("Email sending failed, but user was created.");
-    // }
-    return NextResponse.json(
-      { message: getLocalizedSuccess(locale, "register"), user },
-      { status: 201 }
-    );
+    let message;
+    if (emailResult.success) {
+      message = `${getLocalizedSuccess(
+        locale,
+        "register"
+      )}. ${getLocalizedEmailSuccess(locale)}`;
+    } else {
+      console.warn("Email sending failed, but user was created.");
+      message = `${getLocalizedSuccess(
+        locale,
+        "register"
+      )}. ${getLocalizedEmailWarning(locale)}`;
+    }
+
+    return NextResponse.json({ message, user }, { status: 201 });
   } catch (error) {
     console.log(error);
     if (isError(error)) {

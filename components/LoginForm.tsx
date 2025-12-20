@@ -5,19 +5,31 @@ import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
 import { Input } from "@heroui/input";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  LoginCredentials,
+  TLocale,
+  ValidateLoginCredentialsErrorResult,
+} from "@/lib/types";
+import { validateLoginCredentials } from "@/lib/validation/login";
+import { isFieldHasError } from "@/lib/utils";
+import { signIn } from "next-auth/react";
+import { getLocalizedValidationMessage } from "@/lib/validation-messages";
 
 const LoginForm = () => {
-  // Changed from "Pages.Register" to "Pages.Login"
+  const router = useRouter();
   const t = useTranslations("Pages.Login");
-
+  const locale = useLocale();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    remember: false,
+    // remember: false,
   });
-
+  const [validationErrors, setValidationErrors] =
+    useState<ValidateLoginCredentialsErrorResult | null>(null);
+  const [isPending, setIsPending] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: keyof typeof formData
@@ -27,19 +39,60 @@ const LoginForm = () => {
       ...prev,
       [field]: type === "checkbox" ? checked : value,
     }));
+    setValidationErrors(null);
   };
 
-  const handleCheckboxChange = (field: "remember", value: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const handleCheckboxChange = (field: "remember", value: boolean) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Login Data:", formData);
-  };
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setIsPending(true);
+  setValidationErrors(null);
+
+  // 1️⃣ Client-side validation
+  const { data, validationErrors } = validateLoginCredentials(
+    locale as TLocale,
+    formData
+  );
+
+  if (validationErrors) {
+    setValidationErrors(validationErrors);
+    setIsPending(false);
+    return;
+  }
+
+  // 2️⃣ NextAuth sign-in
+  const result = await signIn("credentials", {
+    ...data,
+    redirect: false,
+  });
+
+  // 3️⃣ Invalid credentials
+  if (!result?.ok) {
+    setValidationErrors({
+      email: [
+        getLocalizedValidationMessage(
+          "auth.invalidCredentials",
+          locale as TLocale
+        ),
+      ],
+      password: [getLocalizedValidationMessage(
+          "auth.invalidCredentials",
+          locale as TLocale
+        ),],
+    });
+    setIsPending(false);
+    return;
+  }
+
+  // 4️⃣ Success
+  router.push("/");
+};
 
   return (
     <div className="w-full md:w-160 lg:w-150 bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl flex flex-col gap-5">
@@ -73,7 +126,15 @@ const LoginForm = () => {
             variant="bordered"
             value={formData.email}
             onChange={(e) => handleChange(e, "email")}
-            required
+            isInvalid={isFieldHasError(validationErrors, "email")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "email")
+                ? validationErrors["email"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
 
           {/* Password field */}
@@ -85,19 +146,27 @@ const LoginForm = () => {
             variant="bordered"
             value={formData.password}
             onChange={(e) => handleChange(e, "password")}
-            required
+            isInvalid={isFieldHasError(validationErrors, "password")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "password")
+                ? validationErrors["password"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Checkbox
+            {/* <Checkbox
               onChange={(e) => handleChange(e, "remember")}
               isSelected={formData.remember}
               onValueChange={(value) => handleCheckboxChange("remember", value)}
             >
               {t("remember")}
-            </Checkbox>
+            </Checkbox> */}
           </div>
           <div className="text-sm">
             <Link
@@ -116,6 +185,7 @@ const LoginForm = () => {
             className="font-semibold"
             fullWidth
             variant="flat"
+            isLoading={isPending}
           >
             {t("signIn")}
           </Button>

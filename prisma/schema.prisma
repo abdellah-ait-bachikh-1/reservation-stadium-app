@@ -20,7 +20,7 @@ model User {
   email           String    @unique
   password        String
   approved        Boolean   @default(false)
-  role            UserRole? @default(CLUB)
+  role            UserRole @default(CLUB)
   phoneNumber     String
 
   emailVerifiedAt DateTime?

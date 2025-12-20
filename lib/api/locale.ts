@@ -84,3 +84,29 @@ export const successMessages: Record<TLocale, Record<string, string>> = {
 export function getLocalizedSuccess(locale: TLocale, successCode: string): string {
   return successMessages[locale]?.[successCode] || successMessages.en[successCode];
 }
+
+
+export const emailWarningMessages: Record<TLocale, Record<string, string>> = {
+  en: {
+    "verification_not_sent": "User created, but verification email could not be sent. Please request a new verification email.",
+    "verification_sent": "Verification email sent successfully"
+  },
+  fr: {
+    "verification_not_sent": "Utilisateur créé, mais l'email de vérification n'a pas pu être envoyé. Veuillez demander un nouvel email de vérification.",
+    "verification_sent": "Email de vérification envoyé avec succès"
+  },
+  ar: {
+    "verification_not_sent": "تم إنشاء المستخدم، ولكن تعذر إرسال بريد التحقق. يرجى طلب بريد تحقق جديد.",
+    "verification_sent": "تم إرسال بريد التحقق بنجاح"
+  },
+};
+
+export function getLocalizedEmailWarning(locale: TLocale): string {
+  return emailWarningMessages[locale]?.verification_not_sent || 
+         emailWarningMessages.en.verification_not_sent;
+}
+
+export function getLocalizedEmailSuccess(locale: TLocale): string {
+  return emailWarningMessages[locale]?.verification_sent || 
+         emailWarningMessages.en.verification_sent;
+}

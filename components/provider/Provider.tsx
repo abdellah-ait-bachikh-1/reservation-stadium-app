@@ -4,7 +4,7 @@ import { AuthContextProvider } from "@/context/authContext";
 import { HeroUIProvider } from "@heroui/system";
 import { ToastProvider } from "@heroui/toast";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-
+import {SessionProvider} from 'next-auth/react'
 export function Providers({
   children,
   locale,
@@ -14,6 +14,7 @@ export function Providers({
 }) {
   return (
     <AuthContextProvider>
+      <SessionProvider>
       <HeroUIProvider locale={locale} className="min-h-screen w-fullz-99999">
         <NextThemesProvider
           attribute="class"
@@ -30,7 +31,7 @@ export function Providers({
             placement="bottom-right"
           />
         </NextThemesProvider>
-      </HeroUIProvider>
+      </HeroUIProvider></SessionProvider>
     </AuthContextProvider>
   );
 }

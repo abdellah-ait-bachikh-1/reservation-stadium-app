@@ -134,7 +134,11 @@ export const validationMessages: ValidationMessages = {
     en: "Passwords do not match",
     fr: "Les mots de passe ne correspondent pas",
     ar: "كلمات المرور غير متطابقة",
-  },
+  },"auth.invalidCredentials": {
+  en: "Email or password is incorrect",
+  fr: "L’email ou le mot de passe est incorrect",
+  ar: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+},
 };
 
 // Utility function to get localized validation message

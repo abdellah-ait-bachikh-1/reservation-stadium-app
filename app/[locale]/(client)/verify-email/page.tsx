@@ -43,7 +43,7 @@ const VerifyEmailPage = () => {
   const token = searchParams.get("token");
   const [status, setStatus] = useState<VerificationStatus>("loading");
   const [progress, setProgress] = useState(0);
-  
+
   useEffect(() => {
     if (!token) {
       setStatus("invalid_token");
@@ -532,7 +532,7 @@ const VerifyEmailPage = () => {
                 <FaInfoCircle className="text-gray-600 dark:text-gray-300" />
               </div>
               <h3 className="font-bold text-gray-800 dark:text-gray-200">
-                {status === "user_deleted" 
+                {status === "user_deleted"
                   ? "هل تحتاج إلى مساعدة؟"
                   : "ماذا حدث؟"}
               </h3>

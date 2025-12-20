@@ -1,25 +1,35 @@
 import z from "zod";
-import { LoginCredentials, ValidateLoginCredentialsResult } from "../types";
-export const loginCredentialsSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email is required")
-    .email("Invalid email adress")
-    .max(100, "Email is too long"),
+import {
+  LoginCredentials,
+  TLocale,
+  ValidateLoginCredentialsResult,
+} from "../types";
+import { getLocalizedValidationMessage } from "../validation-messages";
 
-  password: z
-    .string()
-    .trim()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters") // Fixed: min 8, not 3
-    .max(100, "Password is too long"),
-});
-
+export const createLoginCredentialsValidationSchema = (
+  locale: TLocale = "en"
+) => {
+  return z.object({
+    email: z
+      .string(getLocalizedValidationMessage("email.string", locale))
+      .trim()
+      .email(getLocalizedValidationMessage("email.invalid", locale))
+      .max(150, getLocalizedValidationMessage("email.max", locale)),
+    password: z
+      .string(getLocalizedValidationMessage("password.string", locale))
+      .min(1, getLocalizedValidationMessage("password.required", locale))
+      .min(8, getLocalizedValidationMessage("password.min", locale))
+      .max(100, getLocalizedValidationMessage("password.max", locale)),
+  });
+};
 export function validateLoginCredentials(
+  locale: TLocale = "en",
   loginCredentials: LoginCredentials
 ): ValidateLoginCredentialsResult {
-  const result = loginCredentialsSchema.safeParse(loginCredentials);
+  const result =
+    createLoginCredentialsValidationSchema(locale).safeParse(
+      loginCredentials
+    );
   if (!result.success) {
     return { data: null, validationErrors: result.error.flatten().fieldErrors };
   }
