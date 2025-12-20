@@ -19,7 +19,7 @@ export const authConfig: AuthOptions = {
             email: credentials.email,
           },
         });
-        console.log({user})
+        console.log({ user });
         if (!user || user?.deletedAt !== null) {
           return null;
         }
@@ -30,34 +30,56 @@ export const authConfig: AuthOptions = {
         if (!validPassword) {
           return null;
         }
-        const { id , email, role ,fullNameAr,fullNameFr,phoneNumber,deletedAt} = user;
-        return { id , email, role ,fullNameAr,fullNameFr,phoneNumber,deletedAt };
+        const {
+          id,
+          email,
+          role,
+          fullNameAr,
+          fullNameFr,
+          phoneNumber,
+          deletedAt,
+        } = user;
+        return {
+          id,
+          email,
+          role,
+          fullNameAr,
+          fullNameFr,
+          phoneNumber,
+          deletedAt,
+        };
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 7,
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24 * 7,
+  },
   pages: { signIn: "auth/login" },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-      token.id = user.id;
-      token.email = user.email;
-      token.role = user.role;
-      token.fullNameAr = user.fullNameAr;
-      token.fullNameFr = user.fullNameFr;
-      token.phoneNumber = user.phoneNumber;
-    }
+        token.id = user.id;
+        token.email = user.email;
+        token.role = user.role;
+        token.fullNameAr = user.fullNameAr;
+        token.fullNameFr = user.fullNameFr;
+        token.phoneNumber = user.phoneNumber;
+      }
       return token;
     },
     async session({ session, token }) {
       session.user = {
-      id: token.id as string,
-      email: token.email as string,
-      role: token.role as string,
-      fullNameAr: token.fullNameAr as string,
-      fullNameFr: token.fullNameFr as string,
-      phoneNumber: token.phoneNumber as string,
-    };
+        id: token.id as string,
+        email: token.email as string,
+        role: token.role as string,
+        fullNameAr: token.fullNameAr as string,
+        fullNameFr: token.fullNameFr as string,
+        phoneNumber: token.phoneNumber as string,
+      };
       return session;
     },
   },

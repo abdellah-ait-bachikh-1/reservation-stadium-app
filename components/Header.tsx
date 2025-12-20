@@ -31,12 +31,14 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { MdDashboard, MdMenu, MdClose, MdSettings } from "react-icons/md";
+import { signOut, useSession } from "next-auth/react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const locale = useLocale();
-
+  const { data } = useSession();
+  console.log({ data });
   // Use only Header translations
   const tHeader = useTranslations("Components.Header");
   const tCommon = useTranslations("Common");
@@ -134,30 +136,7 @@ const Header = () => {
 
             {/* Desktop Right Section */}
             <div className="hidden lg:flex items-center space-x-4">
-              {!isAuthenticated ? (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    href="/auth/login"
-                    className={cn(
-                      button({ variant: "flat", size: "sm", color: "success" }),
-                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
-                    )}
-                  >
-                    <FaSignInAlt className="w-4 h-4 mr-2" />
-                    {tHeader("labels.signIn")}
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className={cn(
-                      button({ variant: "flat", size: "sm", color: "primary" }),
-                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
-                    )}
-                  >
-                    <FaUserPlus className="w-4 h-4 mr-2" />
-                    {tHeader("labels.register")}
-                  </Link>
-                </div>
-              ) : (
+              {data && data.user ? (
                 <div className="flex items-center space-x-4">
                   <Dropdown placement="bottom-end">
                     <DropdownTrigger>
@@ -168,7 +147,7 @@ const Header = () => {
                         />
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            Mohamed Ali
+                            {data.user.fullNameFr}
                           </span>
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             Sports Club
@@ -207,12 +186,35 @@ const Header = () => {
                           <FaSignOutAlt className="w-4 h-4 text-red-600" />
                         }
                         className="py-3 px-4 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
-                        onPress={() => setIsAuthenticated(false)}
+                        onPress={() => signOut()}
                       >
                         {tHeader("userMenu.logout")}
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <Link
+                    href="/auth/login"
+                    className={cn(
+                      button({ variant: "flat", size: "sm", color: "success" }),
+                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
+                    )}
+                  >
+                    <FaSignInAlt className="w-4 h-4 mr-2" />
+                    {tHeader("labels.signIn")}
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className={cn(
+                      button({ variant: "flat", size: "sm", color: "primary" }),
+                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
+                    )}
+                  >
+                    <FaUserPlus className="w-4 h-4 mr-2" />
+                    {tHeader("labels.register")}
+                  </Link>
                 </div>
               )}
 
