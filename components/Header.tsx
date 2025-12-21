@@ -32,6 +32,7 @@ import {
 } from "react-icons/fa";
 import { MdDashboard, MdMenu, MdClose, MdSettings } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
+import MobileAvatar from "./MobileAvatar";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -136,87 +137,7 @@ const Header = () => {
 
             {/* Desktop Right Section */}
             <div className="hidden lg:flex items-center space-x-4">
-              {data && data.user ? (
-                <div className="flex items-center space-x-4">
-                  <Dropdown placement="bottom-end">
-                    <DropdownTrigger>
-                      <div className="flex items-center space-x-3 cursor-pointer group">
-                        <Avatar
-                          size="md"
-                          className="transition-transform group-hover:scale-105 border-2 border-blue-500/20"
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                            {data.user.fullNameFr}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            Sports Club
-                          </span>
-                        </div>
-                      </div>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      aria-label="User menu"
-                      variant="flat"
-                      className="min-w-55 p-2"
-                    >
-                      <DropdownItem
-                        key="profile"
-                        href="/dashboard/profile"
-                        startContent={
-                          <FaUser className="w-4 h-4 text-blue-600" />
-                        }
-                        className="py-3 px-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
-                      >
-                        {tHeader("userMenu.profile")}
-                      </DropdownItem>
-                      <DropdownItem
-                        key="dashboard"
-                        href="/dashboard"
-                        startContent={
-                          <MdDashboard className="w-4 h-4 text-green-600" />
-                        }
-                        className="py-3 px-4 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg"
-                      >
-                        {tHeader("userMenu.dashboard")}
-                      </DropdownItem>
-                      <DropdownItem
-                        key="logout"
-                        startContent={
-                          <FaSignOutAlt className="w-4 h-4 text-red-600" />
-                        }
-                        className="py-3 px-4 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
-                        onPress={() => signOut()}
-                      >
-                        {tHeader("userMenu.logout")}
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    href="/auth/login"
-                    className={cn(
-                      button({ variant: "flat", size: "sm", color: "success" }),
-                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
-                    )}
-                  >
-                    <FaSignInAlt className="w-4 h-4 mr-2" />
-                    {tHeader("labels.signIn")}
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className={cn(
-                      button({ variant: "flat", size: "sm", color: "primary" }),
-                      "px-5 py-2.5 font-semibold shadow-sm hover:shadow-md transition-shadow"
-                    )}
-                  >
-                    <FaUserPlus className="w-4 h-4 mr-2" />
-                    {tHeader("labels.register")}
-                  </Link>
-                </div>
-              )}
+              <MobileAvatar onCloseMenu={()=>setIsMenuOpen(false)} />
 
               <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" />
 
@@ -275,7 +196,7 @@ const Header = () => {
           )}
         >
           {/* User Profile Section */}
-          {isAuthenticated ? (
+          {data && data.user ? (
             <div className="px-3 py-4 shrink-0">
               <div
                 className="flex items-center space-x-4"
@@ -284,14 +205,16 @@ const Header = () => {
                 <Avatar size="lg" className="border-2 border-blue-500/30" />
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {isRTL ? "محمد علي" : "Mohamed Ali"}
+                    {isRTL ? data.user.fullNameAr : data.user.fullNameFr}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {tHeader("labels.sportsClubManager")}
+                    {data.user.role === "CLUB"
+                      ? tHeader("labels.sportsClubManager")
+                      : tHeader("labels.admin")}
                   </p>
                 </div>
                 <Link
-                  href="/dashboard/profile"
+                  href={`/dashboard/profile/${data.user.id}`}
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
@@ -399,7 +322,7 @@ const Header = () => {
             </div>
 
             {/* User Navigation Section (when authenticated) */}
-            {isAuthenticated && (
+            {data && data.user && (
               <div className="space-y-1">
                 <h4
                   className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-2"
@@ -480,11 +403,11 @@ const Header = () => {
           </div>
 
           {/* Fixed Bottom Logout Button */}
-          {isAuthenticated && (
+          {data && data.user && (
             <div className="px-5 py-4 border-t border-gray-200/50 dark:border-gray-800/50 shrink-0">
               <button
                 onClick={() => {
-                  setIsAuthenticated(false);
+                  signOut({ redirect: true, callbackUrl: "/auth/login" });
                   setIsMenuOpen(false);
                 }}
                 className={cn(
