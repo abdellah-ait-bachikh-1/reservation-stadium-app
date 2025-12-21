@@ -1,10 +1,9 @@
+// app/[locale]/stadiums/page.tsx
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Button } from "@heroui/button";
-import { FaCalendar, FaFilter, FaPhone } from "react-icons/fa";
 import StadiumHeroSection from "@/components/StadiumHeroSection";
 import StadiumClientSection from "@/components/StadiumClientSection";
-import { getStadiumForDisplay, stadiums } from "@/lib/const";
+import { getStadiums, getSports } from "@/app/actions/stadiums";
 
 export async function generateMetadata({
   params,
@@ -39,6 +38,12 @@ const StadiumsPage = async ({
   const t = await getTranslations("Pages.Stadiums");
   const isRTL = locale === "ar";
 
+  // Get data from server actions
+  const [allStadiums, allSports] = await Promise.all([
+    getStadiums(locale as "ar" | "fr"),
+    getSports(locale as "ar" | "fr"),
+  ]);
+
   // Get filter values from URL query params
   const searchTerm = sp.search || "";
   const sportParam = sp.sports;
@@ -50,33 +55,22 @@ const StadiumsPage = async ({
     ? [sportParam]
     : [];
 
-  // Initialize all stadiums
-  const allStadiums = stadiums.map(stadium => 
-    getStadiumForDisplay(stadium.id, locale)
-  ).filter(Boolean);
-
   // Prepare initial filtered stadiums (server-side for first load)
   let initialFilteredStadiums = allStadiums;
   
   // Filter by selected sports
   if (selectedSports.length > 0) {
-    initialFilteredStadiums = initialFilteredStadiums.filter(stadium => 
-    {  if(stadium){
-        return stadium.sports.some(sport => selectedSports.includes(sport.id))
-        
-      }}
-    );
-  }
+  initialFilteredStadiums = initialFilteredStadiums.filter(stadium => 
+    stadium.sports.some((sport: { id: string }) => selectedSports.includes(sport.id))
+  );
+}
   
   // Filter by search term
   if (searchTerm.trim()) {
     const term = searchTerm.toLowerCase().trim();
     initialFilteredStadiums = initialFilteredStadiums.filter(stadium => 
-    {  if(stadium){
-
-      return  stadium.name.toLowerCase().includes(term) ||
-        stadium.address.toLowerCase().includes(term)
-      }}
+      stadium.name.toLowerCase().includes(term) ||
+      stadium.address.toLowerCase().includes(term)
     );
   }
 
@@ -92,44 +86,52 @@ const StadiumsPage = async ({
       <StadiumClientSection 
         locale={locale}
         allStadiums={allStadiums}
+        allSports={allSports} // Pass sports data for filters
         initialSelectedSports={selectedSports}
         initialSearchTerm={searchTerm}
         initialFilteredStadiums={initialFilteredStadiums}
-        translations={{
-          allStadiums: t("allStadiums.title"),
-          total: t("allStadiums.total"),
-          noResults: {
-            title: t("noResults.title"),
-            message: t("noResults.message"),
-            resetFilters: t("noResults.resetFilters")
-          },
-          cta: {
-            title: t("cta.title"),
-            description: t("cta.description"),
-            contactSupport: t("cta.contactSupport"),
-            bookNow: t("cta.bookNow")
-          },
-          search: {
-            placeholder: t("search.placeholder")
-          },
-          filter: {
-            sport: t("filter.sport"),
-            selectSports: t("filter.selectSports"),            activeFilters: t("filter.activeFilters")  // Added this line
-
-          },
-          details: {
-            monthlyRate: t("details.monthlyRate"),
-            perMonth: t("details.perMonth"),
-            type: t("details.type")
-          },
-          type: {
-            multipleSports: t("type.multipleSports"),
-            singleSport: t("type.singleSport")
-          },
-          actions: {
-            viewDetails: t("actions.viewDetails")
-          }
-        }}
+       translations={{
+  allStadiums: t("allStadiums.title"),
+  total: t("allStadiums.total"),
+  noResults: {
+    title: t("noResults.title"),
+    message: t("noResults.message"),
+    resetFilters: t("noResults.resetFilters")
+  },
+  cta: {
+    title: t("cta.title"),
+    description: t("cta.description"),
+    contactSupport: t("cta.contactSupport"),
+    bookNow: t("cta.bookNow")
+  },
+  search: {
+    placeholder: t("search.placeholder")
+  },
+  filter: {
+    sport: t("filter.sport"),
+    selectSports: t("filter.selectSports"),
+    activeFilters: t("filter.activeFilters")
+  },
+  details: {
+    monthlyRate: t("details.monthlyRate"),
+    perMonth: t("details.perMonth"),
+    type: t("details.type"),
+    perSession: t("details.perSession"),
+    from: t("details.from"),
+    additionalSports: t("details.additionalSports"),
+    totalSports: t("details.totalSports"),
+    bestForOneTime: t("details.bestForOneTime"),
+    viewFullDetails: t("details.viewFullDetails"),
+    viewOnMaps: t("details.viewOnMaps")
+  },
+  type: {
+    multipleSports: t("type.multipleSports"),
+    singleSport: t("type.singleSport")
+  },
+  actions: {
+    viewDetails: t("actions.viewDetails")
+  }
+}}
       />
     </section>
   );

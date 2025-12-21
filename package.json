@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:seed": "prisma db seed",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.25",
@@ -16,7 +22,7 @@
     "@heroui/button": "^2.2.27",
     "@heroui/card": "^2.2.26",
     "@heroui/checkbox": "^2.3.28",
-    "@heroui/chip": "^2.2.23",
+    "@heroui/chip": "^2.2.24",
     "@heroui/date-picker": "^2.3.29",
     "@heroui/dropdown": "^2.3.27",
     "@heroui/image": "^2.2.18",
@@ -29,7 +35,7 @@
     "@heroui/system": "^2.4.23",
     "@heroui/theme": "^2.4.23",
     "@heroui/toast": "^2.0.17",
-    "@heroui/tooltip": "^2.2.24",
+    "@heroui/tooltip": "^2.2.26",
     "@prisma/adapter-mariadb": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "bcryptjs": "^3.0.3",
@@ -60,6 +66,7 @@
     "eslint-config-next": "16.0.10",
     "prisma": "^7.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

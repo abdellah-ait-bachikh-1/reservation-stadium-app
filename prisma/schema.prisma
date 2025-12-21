@@ -30,10 +30,261 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  // Relations
+  club         Club?
+  reservations Reservation[]
+  reservationSeries ReservationSeries[]
+  cashPayments CashPaymentRecord[]
+  monthlyPayments MonthlyPayment[]
+  subscriptions MonthlySubscription[]
+
   @@map("users")
 }
 
+model Club {
+  id             String   @id @default(uuid())
+  nameAr         String
+  nameFr         String
+  adressFr       String
+  adressAr       String
+  monthlyFee     Decimal  @default(100) @db.Decimal(10, 2)
+  paymentDueDay  Int      @default(5)
+
+  // Relations
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sportId  String
+  sport    Sport  @relation(fields: [sportId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("clubs")
+}
+
+model Sport {
+  id      String   @id @default(uuid())
+  nameAr  String
+  nameFr  String
+
+  // Relations
+  clubs         Club[]
+  stadiumSports StadiumSport[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("sports")
+}
+
+model Stadium {
+  id              String   @id @default(uuid())
+  nameAr          String
+  nameFr          String
+  adressfr        String
+  adressAr        String
+  googleMapsUrl   String
+  monthlyPrice    Decimal  @db.Decimal(10, 2)
+  pricePerSession Decimal  @db.Decimal(10, 2)
+
+  // Relations
+  images           StadiumImage[]
+  stadiumSports    StadiumSport[]
+  reservations     Reservation[]
+  reservationSeries ReservationSeries[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("stadiums")
+}
+
+model StadiumSport {
+  stadiumId String
+  sportId   String
+
+  // Relations
+  stadium Stadium @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  sport   Sport   @relation(fields: [sportId], references: [id], onDelete: Cascade)
+
+  @@id([stadiumId, sportId])
+  @@map("stadium_sports")
+}
+
+model StadiumImage {
+  id        String   @id @default(uuid())
+  imageUri  String
+  stadiumId String
+
+  // Relations
+  stadium Stadium @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("stadium_images")
+}
+
+model Reservation {
+  id            String   @id @default(uuid())
+  startDateTime DateTime
+  endDateTime   DateTime
+  status        ReservationStatus @default(PENDING)
+  sessionPrice  Decimal  @db.Decimal(10, 2)
+  isPaid        Boolean  @default(false)
+  paymentType   PaymentType
+
+  // Relations
+  stadiumId          String
+  stadium            Stadium @relation(fields: [stadiumId], references: [id])
+  userId             String
+  user               User    @relation(fields: [userId], references: [id])
+  monthlyPaymentId   String?
+  monthlyPayment     MonthlyPayment? @relation(fields: [monthlyPaymentId], references: [id])
+  cashPayment        CashPaymentRecord?
+  reservationSeriesId String?
+  reservationSeries  ReservationSeries? @relation(fields: [reservationSeriesId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("reservations")
+}
+
+model ReservationSeries {
+  id                String   @id @default(uuid())
+  startTime         DateTime // Use DateTime for time storage
+  endTime           DateTime // Use DateTime for time storage
+  dayOfWeek         Int      // 1=Monday, 7=Sunday
+  recurrenceEndDate DateTime?
+  isFixed           Boolean  @default(true)
+  billingType       BillingType
+  monthlyPrice      Decimal? @db.Decimal(10, 2)
+  pricePerSession   Decimal? @db.Decimal(10, 2)
+
+  // Relations
+  stadiumId     String
+  stadium       Stadium @relation(fields: [stadiumId], references: [id])
+  userId        String
+  user          User    @relation(fields: [userId], references: [id])
+  reservations  Reservation[]
+  monthlyPayments MonthlyPayment[]
+  subscription  MonthlySubscription?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("reservation_series")
+}
+
+model MonthlyPayment {
+  id                String   @id @default(uuid())
+  month             Int
+  year              Int
+  amount            Decimal  @db.Decimal(10, 2)
+  status            PaymentStatus @default(PENDING)
+  paymentDate       DateTime?
+  receiptNumber     String?
+
+  // Relations
+  userId              String
+  user                User    @relation(fields: [userId], references: [id])
+  reservationSeriesId String
+  reservationSeries   ReservationSeries @relation(fields: [reservationSeriesId], references: [id])
+  cashPayment         CashPaymentRecord?
+  reservations        Reservation[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("monthly_payments")
+}
+
+model CashPaymentRecord {
+  id              String   @id @default(uuid())
+  amount          Decimal  @db.Decimal(10, 2)
+  paymentDate     DateTime @default(now())
+  receiptNumber   String
+  notes           String?
+
+  // Relations
+  reservationId      String?
+  reservation        Reservation? @relation(fields: [reservationId], references: [id])
+  monthlyPaymentId   String?
+  monthlyPayment     MonthlyPayment? @relation(fields: [monthlyPaymentId], references: [id])
+  userId             String
+  user               User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([reservationId])
+  @@unique([monthlyPaymentId])
+  @@map("cash_payment_records")
+}
+
+model MonthlySubscription {
+  id            String   @id @default(uuid())
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  monthlyAmount Decimal  @db.Decimal(10, 2)
+  status        SubscriptionStatus @default(ACTIVE)
+  autoRenew     Boolean  @default(true)
+
+  // Relations
+  userId              String
+  user                User    @relation(fields: [userId], references: [id])
+  reservationSeriesId String  @unique
+  reservationSeries   ReservationSeries @relation(fields: [reservationSeriesId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("monthly_subscriptions")
+}
+
+// =====================
+// Enums
+// =====================
 enum UserRole {
   ADMIN
   CLUB
+}
+
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  CANCELLED
+  PAID
+  UNPAID
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  PARTIALLY_PAID
+}
+
+enum PaymentType {
+  SINGLE_SESSION
+  MONTHLY_SUBSCRIPTION
+}
+
+enum BillingType {
+  PER_SESSION
+  MONTHLY_SUBSCRIPTION
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  SUSPENDED
 }

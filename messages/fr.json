@@ -267,19 +267,19 @@
     },
     "Stadiums": {
       "headTitle": "Stades Disponibles",
-      "pageTitle": "Stades et Installations Sportives",
-      "description": "Découvrez les stades et installations sportives modernes disponibles à la réservation dans la Municipalité de Tan-Tan.",
-      "keywords": "réservation stades Tan-Tan, installations sportives Maroc, stades de football, terrains de basket, lieux sportifs",
-      "metaDescription": "Réservez des stades et installations sportives modernes dans la Municipalité de Tan-Tan. Lieux professionnels pour le football, le basket-ball, le volley-ball et plus de sports.",
+      "pageTitle": "Stades & Installations Sportives",
+      "description": "Explorez les stades modernes et les installations sportives disponibles à la réservation dans la municipalité de Tan-Tan.",
+      "keywords": "réservation stade Tan-Tan, installations sportives Maroc, stades de football, terrains de basket, sites sportifs",
+      "metaDescription": "Réservez des stades modernes et des installations sportives dans la municipalité de Tan-Tan. Lieux professionnels pour le football, le basket, le volleyball et plus.",
 
       "hero": {
-        "title": "Stades et Installations Sportives",
-        "subtitle": "Sports Municipaux de Tan-Tan",
-        "description": "Découvrez des lieux sportifs professionnels pour l'entraînement, les tournois et les événements communautaires"
+        "title": "Stades & Installations Sportives",
+        "subtitle": "Sports Municipaux Tan-Tan",
+        "description": "Découvrez des sites sportifs professionnels pour l'entraînement, les tournois et les événements communautaires"
       },
 
       "search": {
-        "placeholder": "Rechercher des stades par nom ou emplacement..."
+        "placeholder": "Rechercher des stades par nom ou localisation..."
       },
 
       "filter": {
@@ -288,6 +288,7 @@
         "multipleSelected": "{count} sélectionné(s)",
         "activeFilters": "Filtres Actifs"
       },
+
       "noResults": {
         "title": "Aucun stade trouvé",
         "message": "Essayez d'ajuster vos filtres ou votre terme de recherche",
@@ -296,7 +297,7 @@
 
       "featured": {
         "title": "Stades en Vedette",
-        "badge": "En Vedette"
+        "badge": "Vedette"
       },
 
       "allStadiums": {
@@ -306,8 +307,8 @@
 
       "sports": {
         "soccer": "Football",
-        "basketball": "Basket-ball",
-        "volleyball": "Volley-ball",
+        "basketball": "Basketball",
+        "volleyball": "Volleyball",
         "handball": "Handball",
         "tennis": "Tennis",
         "athletics": "Athlétisme",
@@ -316,27 +317,30 @@
       },
 
       "details": {
-        "monthlyRate": "Tarif Mensuel",
+        "monthlyRate": "Abonnement Mensuel",
         "perMonth": "par mois",
-        "hourlyRate": "Tarif Horaire",
-        "capacity": "Capacité",
-        "ratePerHour": "Tarif Horaire",
-        "type": "Type"
+        "type": "Type de Stade",
+        "perSession": "Par Séance",
+        "from": "à partir de","additionalSports": "Sports Additionnels",
+        "totalSports": "Sports totaux",
+        "bestForOneTime": "Idéal pour les réservations ponctuelles",
+        "viewFullDetails": "Voir les détails complets de",
+        "viewOnMaps": "Voir l'emplacement sur Google Maps"
       },
 
       "type": {
         "multipleSports": "Sports Multiples",
-        "singleSport": "Sport unique"
+        "singleSport": "Sport Unique"
       },
 
       "actions": {
-        "viewDetails": "Voir les Détails",
-        "bookNow": "Réserver Maintenant"
+        "viewDetails": "Voir Détails",
+        "bookNow": "Réserver"
       },
 
       "cta": {
         "title": "Prêt à Réserver un Stade ?",
-        "description": "Contactez notre département des sports municipaux pour les demandes de réservation, les prix et la disponibilité",
+        "description": "Contactez notre département des sports municipaux pour les demandes de réservation, tarifs et disponibilités",
         "contactSupport": "Contacter le Support",
         "bookNow": "Réserver un Stade"
       }

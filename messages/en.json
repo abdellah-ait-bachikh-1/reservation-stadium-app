@@ -286,9 +286,10 @@
       "filter": {
         "sport": "Filter by Sport",
         "selectSports": "Select sports...",
-        "multipleSelected": "{count} selected",        "activeFilters": "Active Filters"
-
+        "multipleSelected": "{count} selected",
+        "activeFilters": "Active Filters"
       },
+
       "noResults": {
         "title": "No stadiums found",
         "message": "Try adjusting your filters or search term",
@@ -317,17 +318,20 @@
       },
 
       "details": {
-        "monthlyRate": "Monthly Rate",
+        "monthlyRate": "Monthly Subscription",
         "perMonth": "per month",
-        "hourlyRate": "Hourly Rate",
-        "capacity": "Capacity",
-        "ratePerHour": "Hourly Rate",
-        "type": "Type"
+        "type": "Stadium Type",
+        "perSession": "Per Session",
+        "from": "from", "additionalSports": "Additional Sports",
+        "totalSports": "Total sports",
+        "bestForOneTime": "Best for one-time bookings",
+        "viewFullDetails": "View full details of",
+        "viewOnMaps": "View location on Google Maps"
       },
 
       "type": {
-        "multipleSports": "Multiple Sports",        "singleSport": "Single Sport"
-
+        "multipleSports": "Multiple Sports",
+        "singleSport": "Single Sport"
       },
 
       "actions": {

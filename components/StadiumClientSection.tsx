@@ -1,18 +1,24 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { useRouter, usePathname } from '@/i18n/navigation';
-import { useSearchParams } from 'next/navigation';
+import { useState, useCallback, useRef, useEffect } from "react"; // Added useEffect
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
-import { FaSearch, FaFilter, FaCalendar, FaPhone, FaTimes } from "react-icons/fa";
+import {
+  FaSearch,
+  FaFilter,
+  FaCalendar,
+  FaPhone,
+  FaTimes,
+} from "react-icons/fa";
 import StadiumCard from "@/components/StadiumCard";
 import StadiumCardSkeleton from "@/components/StadiumCardSkeleton";
-import { sports } from '@/lib/const';
 
 interface StadiumClientSectionProps {
   locale: string;
   allStadiums: any[];
+  allSports: any[];
   initialSelectedSports: string[];
   initialSearchTerm: string;
   initialFilteredStadiums: any[];
@@ -42,6 +48,13 @@ interface StadiumClientSectionProps {
       monthlyRate: string;
       perMonth: string;
       type: string;
+      perSession: string;
+      from: string;
+      additionalSports: string;
+      totalSports: string;
+      bestForOneTime: string;
+      viewFullDetails: string;
+      viewOnMaps: string;
     };
     type: {
       multipleSports: string;
@@ -56,135 +69,163 @@ interface StadiumClientSectionProps {
 const StadiumClientSection = ({
   locale,
   allStadiums,
+  allSports,
   initialSelectedSports,
   initialSearchTerm,
   initialFilteredStadiums,
-  translations
+  translations,
 }: StadiumClientSectionProps) => {
   const isRTL = locale === "ar";
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
-  const [searchValue, setSearchValue] = useState(initialSearchTerm);
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set(initialSelectedSports));
+
+  // Get current search params from URL (client-side)
+  const currentSearchParam = searchParams.get("search") || "";
+  const currentSportsParam = searchParams.getAll("sports") || [];
+
+  // Use client-side search params if available, otherwise use server-side initial values
+  const [searchValue, setSearchValue] = useState(
+    currentSearchParam || initialSearchTerm
+  );
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+    new Set(currentSportsParam.length > 0 ? currentSportsParam : initialSelectedSports)
+  );
   const [isCardsLoading, setIsCardsLoading] = useState(false);
-  const [filteredStadiums, setFilteredStadiums] = useState(initialFilteredStadiums);
+  const [filteredStadiums, setFilteredStadiums] = useState(
+    initialFilteredStadiums
+  );
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showSearchSpinner, setShowSearchSpinner] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false); // Track initialization
 
   // Update URL when filters change
-  const updateURL = useCallback((search: string, sportIds: string[]) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (search.trim()) {
-      params.set('search', search.trim());
-    } else {
-      params.delete('search');
-    }
-    
-    params.delete('sports');
-    if (sportIds.length > 0) {
-      sportIds.forEach(sport => {
-        params.append('sports', sport);
-      });
-    }
-    
-    const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-    router.replace(url, { scroll: false });
-  }, [router, pathname, searchParams]);
+  const updateURL = useCallback(
+    (search: string, sportIds: string[]) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (search.trim()) {
+        params.set("search", search.trim());
+      } else {
+        params.delete("search");
+      }
+
+      params.delete("sports");
+      if (sportIds.length > 0) {
+        sportIds.forEach((sport) => {
+          params.append("sports", sport);
+        });
+      }
+
+      const url = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
+      router.replace(url, { scroll: false });
+    },
+    [router, pathname, searchParams]
+  );
 
   // Client-side filtering function
-  const filterStadiums = useCallback((search: string, sportIds: string[]) => {
-    let results = [...allStadiums];
-    
-    if (sportIds.length > 0) {
-      results = results.filter(stadium => 
-        stadium.sports.some((sport: any) => sportIds.includes(sport.id))
-      );
-    }
-    
-    if (search.trim()) {
-      const term = search.toLowerCase().trim();
-      results = results.filter(stadium => 
-        stadium.name.toLowerCase().includes(term) ||
-        stadium.address.toLowerCase().includes(term)
-      );
-    }
-    
-    return results;
-  }, [allStadiums]);
+  const filterStadiums = useCallback(
+    (search: string, sportIds: string[]) => {
+      let results = [...allStadiums];
+
+      if (sportIds.length > 0) {
+        results = results.filter((stadium) =>
+          stadium.sports.some((sport: any) => sportIds.includes(sport.id))
+        );
+      }
+
+      if (search.trim()) {
+        const term = search.toLowerCase().trim();
+        results = results.filter(
+          (stadium) =>
+            stadium.name.toLowerCase().includes(term) ||
+            stadium.address.toLowerCase().includes(term)
+        );
+      }
+
+      return results;
+    },
+    [allStadiums]
+  );
 
   // Handle search input change with debouncing
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    
-    // Clear previous timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    
-    // Show search spinner
-    setShowSearchSpinner(true);
-    
-    // Create new timeout for debouncing
-    searchTimeoutRef.current = setTimeout(() => {
-      const sportArray = Array.from(selectedKeys);
-      const filtered = filterStadiums(value, sportArray);
-      setFilteredStadiums(filtered);
-      updateURL(value, sportArray);
-      setShowSearchSpinner(false);
-    }, 300);
-  }, [selectedKeys, filterStadiums, updateURL]);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchValue(value);
+
+      // Clear previous timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      // Show search spinner
+      setShowSearchSpinner(true);
+
+      // Create new timeout for debouncing
+      searchTimeoutRef.current = setTimeout(() => {
+        const sportArray = Array.from(selectedKeys);
+        const filtered = filterStadiums(value, sportArray);
+        setFilteredStadiums(filtered);
+        updateURL(value, sportArray);
+        setShowSearchSpinner(false);
+      }, 300);
+    },
+    [selectedKeys, filterStadiums, updateURL]
+  );
 
   // Handle sport selection change
-  const handleSportSelectionChange = useCallback((keys: any) => {
-    // Clear search timeout if any
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    
-    setIsCardsLoading(true);
-    
-    let sportArray: string[];
-    let selectedKeysSet: Set<string>;
-    
-    if (keys === "all") {
-      selectedKeysSet = new Set();
-      sportArray = [];
-    } else if (keys instanceof Set) {
-      selectedKeysSet = keys;
-      sportArray = Array.from(keys);
-    } else if (keys === "all" || keys === "none") {
-      selectedKeysSet = new Set();
-      sportArray = [];
-    } else {
-      selectedKeysSet = new Set();
-      sportArray = [];
-    }
-    
-    setSelectedKeys(selectedKeysSet);
-    
-    // Filter and update
-    const filtered = filterStadiums(searchValue, sportArray);
-    setFilteredStadiums(filtered);
-    updateURL(searchValue, sportArray);
-    
-    // Quick loading state for cards only
-    setTimeout(() => {
-      setIsCardsLoading(false);
-    }, 200);
-  }, [searchValue, filterStadiums, updateURL]);
+  const handleSportSelectionChange = useCallback(
+    (keys: any) => {
+      // Clear search timeout if any
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      setIsCardsLoading(true);
+
+      let sportArray: string[];
+      let selectedKeysSet: Set<string>;
+
+      if (keys === "all") {
+        selectedKeysSet = new Set();
+        sportArray = [];
+      } else if (keys instanceof Set) {
+        selectedKeysSet = keys;
+        sportArray = Array.from(keys);
+      } else if (keys === "all" || keys === "none") {
+        selectedKeysSet = new Set();
+        sportArray = [];
+      } else {
+        selectedKeysSet = new Set();
+        sportArray = [];
+      }
+
+      setSelectedKeys(selectedKeysSet);
+
+      // Filter and update
+      const filtered = filterStadiums(searchValue, sportArray);
+      setFilteredStadiums(filtered);
+      updateURL(searchValue, sportArray);
+
+      // Quick loading state for cards only
+      setTimeout(() => {
+        setIsCardsLoading(false);
+      }, 200);
+    },
+    [searchValue, filterStadiums, updateURL]
+  );
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-    
-    setSearchValue('');
+
+    setSearchValue("");
     setSelectedKeys(new Set());
     setFilteredStadiums(allStadiums);
     setShowSearchSpinner(false);
@@ -194,28 +235,57 @@ const StadiumClientSection = ({
 
   // Clear search input
   const handleClearSearch = useCallback(() => {
-    setSearchValue('');
+    setSearchValue("");
     setShowSearchSpinner(false);
-    
+
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-    
+
     const sportArray = Array.from(selectedKeys);
-    const filtered = filterStadiums('', sportArray);
+    const filtered = filterStadiums("", sportArray);
     setFilteredStadiums(filtered);
-    updateURL('', sportArray);
-    
+    updateURL("", sportArray);
+
     // Focus back on input after clearing
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [selectedKeys, filterStadiums, updateURL]);
 
+  // Sync with URL params on initial load and when URL changes
+  useEffect(() => {
+    // Don't run on initial server render
+    if (!isInitialized) {
+      setIsInitialized(true);
+      return;
+    }
+
+    const search = searchParams.get("search") || "";
+    const sports = searchParams.getAll("sports") || [];
+
+    // Update state if URL params differ from current state
+    if (search !== searchValue) {
+      setSearchValue(search);
+    }
+
+    const currentSportsArray = Array.from(selectedKeys);
+    if (
+      sports.length !== currentSportsArray.length ||
+      !sports.every((sport) => currentSportsArray.includes(sport))
+    ) {
+      setSelectedKeys(new Set(sports));
+    }
+
+    // Re-filter based on URL params
+    const filtered = filterStadiums(search, sports);
+    setFilteredStadiums(filtered);
+  }, [searchParams, filterStadiums, isInitialized]);
+
   // Prepare sports for Select component
-  const sportOptions = sports.map(sport => ({
+  const sportOptions = allSports.map((sport) => ({
     key: sport.id,
-    label: locale === 'ar' ? sport.nameAr : sport.nameFr,
+    label: sport.name,
   }));
 
   return (
@@ -226,26 +296,38 @@ const StadiumClientSection = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <div className="relative">
-                <FaSearch className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 text-gray-400`} />
+                <FaSearch
+                  className={`absolute ${
+                    isRTL ? "right-4" : "left-4"
+                  } top-1/2 transform -translate-y-1/2 text-gray-400`}
+                />
                 <input
                   ref={inputRef}
                   type="text"
                   value={searchValue}
                   onChange={handleSearchChange}
                   placeholder={translations.search.placeholder}
-                  className={`w-full ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400`}
+                  className={`w-full ${
+                    isRTL ? "pr-12 pl-4" : "pl-12 pr-4"
+                  } py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400`}
                 />
                 {searchValue && (
                   <button
                     type="button"
                     onClick={handleClearSearch}
-                    className={`absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600`}
+                    className={`absolute ${
+                      isRTL ? "left-12" : "right-12"
+                    } top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"`}
                   >
                     <FaTimes className="w-4 h-4" />
                   </button>
                 )}
                 {showSearchSpinner && (
-                  <div className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 transform -translate-y-1/2`}>
+                  <div
+                    className={`absolute ${
+                      isRTL ? "left-4" : "right-4"
+                    } top-1/2 transform -translate-y-1/2`}
+                  >
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
                   </div>
                 )}
@@ -263,19 +345,19 @@ const StadiumClientSection = ({
                 disallowEmptySelection={false}
               >
                 {sportOptions.map((sport) => (
-                  <SelectItem key={sport.key}>
-                    {sport.label}
-                  </SelectItem>
+                  <SelectItem key={sport.key}>{sport.label}</SelectItem>
                 ))}
               </Select>
             </div>
           </div>
-          
+
           {/* Active filters display */}
           {(selectedKeys.size > 0 || searchValue) && (
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-500">{translations.filter.activeFilters}:</span>
-              
+              <span className="text-sm text-gray-500">
+                {translations.filter.activeFilters}:
+              </span>
+
               {searchValue && (
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
                   Search: "{searchValue}"
@@ -288,12 +370,15 @@ const StadiumClientSection = ({
                   </button>
                 </span>
               )}
-              
-              {Array.from(selectedKeys).map(sportId => {
-                const sport = sports.find(s => s.id === sportId);
-                const sportName = sport ? (locale === 'ar' ? sport.nameAr : sport.nameFr) : sportId;
+
+              {Array.from(selectedKeys).map((sportId) => {
+                const sport = allSports.find((s) => s.id === sportId);
+                const sportName = sport ? sport.name : sportId;
                 return (
-                  <span key={sportId} className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
+                  <span
+                    key={sportId}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm"
+                  >
                     {sportName}
                     <button
                       type="button"
@@ -301,8 +386,11 @@ const StadiumClientSection = ({
                         const newKeys = new Set(selectedKeys);
                         newKeys.delete(sportId);
                         setSelectedKeys(newKeys);
-                        
-                        const filtered = filterStadiums(searchValue, Array.from(newKeys));
+
+                        const filtered = filterStadiums(
+                          searchValue,
+                          Array.from(newKeys)
+                        );
                         setFilteredStadiums(filtered);
                         updateURL(searchValue, Array.from(newKeys));
                       }}
@@ -313,7 +401,7 @@ const StadiumClientSection = ({
                   </span>
                 );
               })}
-              
+
               <button
                 type="button"
                 onClick={handleClearFilters}
@@ -373,14 +461,25 @@ const StadiumClientSection = ({
           // Show filtered stadiums
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredStadiums.map((stadium) => (
-              <StadiumCard 
-                stadium={stadium} 
-                locale={locale} 
+              <StadiumCard
+                stadium={stadium}
+                locale={locale}
                 key={stadium.id}
                 translations={{
-                  details: translations.details,
+                  details: {
+                    monthlyRate: translations.details.monthlyRate,
+                    perMonth: translations.details.perMonth,
+                    type: translations.details.type,
+                    perSession: translations.details.perSession,
+                    from: translations.details.from,
+                    additionalSports: translations.details.additionalSports,
+                    totalSports: translations.details.totalSports,
+                    bestForOneTime: translations.details.bestForOneTime,
+                    viewFullDetails: translations.details.viewFullDetails,
+                    viewOnMaps: translations.details.viewOnMaps,
+                  },
                   type: translations.type,
-                  actions: translations.actions
+                  actions: translations.actions,
                 }}
               />
             ))}
