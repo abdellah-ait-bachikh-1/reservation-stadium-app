@@ -1,20 +1,12 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import {
-  getMessages,
-  setRequestLocale,
-} from "next-intl/server";
-import {  Rubik } from "next/font/google";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { Rubik } from "next/font/google";
 import { Metadata } from "next";
 import { APP_NAME } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
 import { cn } from "@heroui/theme";
-export const dynamic = "force-static";
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
 
 export async function generateMetadata({
   params,
