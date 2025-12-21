@@ -33,6 +33,8 @@ import {
 import { MdDashboard, MdMenu, MdClose, MdSettings } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import MobileAvatar from "./MobileAvatar";
+import DesktopAvatar from "./DesktopAvatar";
+import LogoutButton from "./LogoutButton";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -137,7 +139,7 @@ const Header = () => {
 
             {/* Desktop Right Section */}
             <div className="hidden lg:flex items-center space-x-4">
-              <MobileAvatar onCloseMenu={()=>setIsMenuOpen(false)} />
+              <DesktopAvatar  />
 
               <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" />
 
@@ -405,24 +407,7 @@ const Header = () => {
           {/* Fixed Bottom Logout Button */}
           {data && data.user && (
             <div className="px-5 py-4 border-t border-gray-200/50 dark:border-gray-800/50 shrink-0">
-              <button
-                onClick={() => {
-                  signOut({ redirect: true, callbackUrl: "/auth/login" });
-                  setIsMenuOpen(false);
-                }}
-                className={cn(
-                  button({
-                    variant: "flat",
-                    size: "md",
-                    color: "danger",
-                  }),
-                  "w-full justify-center font-semibold py-3"
-                )}
-                dir={isRTL ? "rtl" : "ltr"}
-              >
-                <FaSignOutAlt className="w-5 h-5 mr-3" />
-                {tHeader("userMenu.logout")}
-              </button>
+              <LogoutButton variant="mobile" />
             </div>
           )}
         </div>

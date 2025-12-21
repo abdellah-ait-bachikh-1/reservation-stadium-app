@@ -424,6 +424,11 @@
         "language": "Language",
         "signIn": "Sign In",
         "register": "Register"
+      },"logoutModal": {
+        "title": "Confirm Logout",
+        "message": "Are you sure you want to log out?",
+        "confirm": "Logout",
+        "cancel": "Cancel"
       }
     },
     "Footer": {
