@@ -283,7 +283,14 @@
 
       "filter": {
         "sport": "تصفية حسب الرياضة",
-        "capacity": "السعة"
+        "selectSports": "اختر الرياضات...",
+        "multipleSelected": "{count} محدد",
+        "activeFilters": "الفلاتر النشطة"
+      },
+      "noResults": {
+        "title": "لم يتم العثور على ملاعب",
+        "message": "حاول تعديل الفلاتر أو مصطلح البحث",
+        "resetFilters": "إعادة تعيين جميع الفلاتر"
       },
 
       "featured": {
@@ -307,20 +314,18 @@
         "gymnastics": "الجمباز"
       },
 
-      "capacity": {
-        "small": "صغير (< 1,000)",
-        "medium": "متوسط (1,000-3,000)",
-        "large": "كبير (> 3,000)"
-      },
-
       "details": {
+        "monthlyRate": "السعر الشهري",
+        "perMonth": "شهرياً",
+        "hourlyRate": "السعر بالساعة",
         "capacity": "السعة",
         "ratePerHour": "السعر بالساعة",
         "type": "النوع"
       },
 
       "type": {
-        "multipleSports": "متعدد الرياضات"
+        "multipleSports": "متعدد الرياضات",
+        "singleSport": "رياضة واحدة"
       },
 
       "actions": {
@@ -422,7 +427,8 @@
         "language": "اللغة",
         "signIn": "تسجيل الدخول",
         "register": "إنشاء حساب"
-      }, "logoutModal": {
+      },
+      "logoutModal": {
         "title": "تأكيد تسجيل الخروج",
         "message": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
         "confirm": "تسجيل الخروج",

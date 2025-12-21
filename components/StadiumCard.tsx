@@ -6,40 +6,59 @@ import { Badge } from "@heroui/badge";
 import { Button } from "@heroui/button";
 import {
   FaMapMarkerAlt,
-  FaUsers,
   FaStar,
   FaExternalLinkAlt,
+  FaCalendarAlt,
 } from "react-icons/fa";
-import { MdEuro, MdAccessTime } from "react-icons/md";
-import { useTranslations } from "next-intl";
+import { MdAccessTime } from "react-icons/md";
 import { useRouter } from "@/i18n/navigation";
 import { sportIcons, sportColors } from "@/lib/const";
+import Image from "next/image";
 
 interface StadiumCardProps {
   stadium: {
-    id: number;
-    name: Record<string, string>;
-    address: Record<string, string>;
+    id: string;
+    name: string;
+    address: string;
     googleMapsUrl: string;
-    sports: string[];
-    capacity: number;
-    bookingRate: {
-      perHour: number;
-      currency: string;
-    };
+    sports: Array<{ id: string; name: string }>;
     type: string;
     rating: number;
     featured: boolean;
+    images: Array<{ id: string; imageUri: string }>;
+    monthlyPayment: number;
+    currency: string;
   };
   locale: string;
+  translations: {
+    details: {
+      monthlyRate: string;
+      perMonth: string;
+      type: string;
+    };
+    type: {
+      multipleSports: string;
+      singleSport: string;
+    };
+    actions: {
+      viewDetails: string;
+    };
+  };
 }
 
-const StadiumCard = ({ stadium, locale }: StadiumCardProps) => {
-  const t = useTranslations("Pages.Stadiums");
+const StadiumCard = ({ stadium, locale, translations }: StadiumCardProps) => {
   const router = useRouter();
 
-  const getStadiumName = () => stadium.name[locale] || stadium.name.en;
-  const getStadiumAddress = () => stadium.address[locale] || stadium.address.en;
+  // Use first image in the array
+  const stadiumImage = stadium.images[0]?.imageUri || "https://img.freepik.com/free-photo/basketball-game-concept_23-2150910744.jpg";
+  
+  // Get type text based on number of sports
+  const getTypeText = () => {
+    if (stadium.sports.length > 1) {
+      return translations.type.multipleSports;
+    }
+    return translations.type.singleSport;
+  };
 
   const handleViewDetails = () => {
     router.push(`/stadiums/${stadium.id}`);
@@ -48,46 +67,49 @@ const StadiumCard = ({ stadium, locale }: StadiumCardProps) => {
   return (
     <Card className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
       <div className="relative h-48">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-600 to-gray-800 dark:from-gray-500 dark:to-gray-700" />
+        <Image
+          src={stadiumImage}
+          alt={stadium.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute top-4 left-4">
-          <Badge color="default" variant="flat">
-            {t("type.multipleSports")}
+          <Badge color="default" variant="flat" className="backdrop-blur-sm">
+            {getTypeText()}
           </Badge>
         </div>
-        <div className="absolute top-4 right-4 flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
+        <div className="absolute top-4 right-4 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
           <FaStar className="w-4 h-4 text-yellow-400" />
           <span className="text-white font-semibold">{stadium.rating}</span>
         </div>
       </div>
       
       <CardHeader className="pb-0">
-        <div className="flex justify-between items-start">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-            {getStadiumName()}
-          </h3>
-          {stadium.featured && (
-            <FaStar className="w-5 h-5 text-yellow-500" />
-          )}
-        </div>
-        <div className="flex items-center gap-2 mt-2">
-          <FaMapMarkerAlt className="w-4 h-4 text-gray-500 flex-shrink-0" />
-          <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-            {getStadiumAddress()}
-          </p>
-        </div>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          {stadium.name}
+        </h3>
       </CardHeader>
       
-      <CardBody className="pt-4">
-        <div className="flex flex-wrap gap-2 mb-4">
+      <CardBody className="pt-0">
+        <div className="flex items-center gap-2 mb-4">
+          <FaMapMarkerAlt className="w-4 h-4 text-gray-500 flex-shrink-0" />
+          <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+            {stadium.address}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-6">
           {stadium.sports.slice(0, 3).map((sport) => (
             <Chip
-              key={sport}
+              key={sport.id}
               size="sm"
               variant="flat"
-              className={sportColors[sport as keyof typeof sportColors]}
-              startContent={sportIcons[sport as keyof typeof sportIcons]}
+              className={sportColors[sport.id as keyof typeof sportColors] || sportColors["1"]}
+              startContent={sportIcons[sport.id as keyof typeof sportIcons] || sportIcons["1"]}
             >
-              {sport}
+              {sport.name}
             </Chip>
           ))}
           {stadium.sports.length > 3 && (
@@ -97,32 +119,29 @@ const StadiumCard = ({ stadium, locale }: StadiumCardProps) => {
           )}
         </div>
         
-        <div className="space-y-3 mb-6">
+        <div className="space-y-4 mb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FaUsers className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t("details.capacity")}</span>
+              <FaCalendarAlt className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">{translations.details.monthlyRate}</span>
             </div>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {stadium.capacity.toLocaleString()}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MdEuro className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t("details.ratePerHour")}</span>
+            <div className="flex flex-col items-end">
+              <span className="font-semibold text-green-600 dark:text-green-400">
+                {stadium.monthlyPayment} {stadium.currency}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {translations.details.perMonth}
+              </span>
             </div>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {stadium.bookingRate.perHour} {stadium.bookingRate.currency}
-            </span>
           </div>
+          
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MdAccessTime className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t("details.type")}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{translations.details.type}</span>
             </div>
             <span className="font-semibold text-gray-900 dark:text-white">
-              {t("type.multipleSports")}
+              {getTypeText()}
             </span>
           </div>
         </div>
@@ -136,7 +155,7 @@ const StadiumCard = ({ stadium, locale }: StadiumCardProps) => {
             className="flex-1"
             onPress={handleViewDetails}
           >
-            {t("actions.viewDetails")}
+            {translations.actions.viewDetails}
           </Button>
           <Button
             isIconOnly
