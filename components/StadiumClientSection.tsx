@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react"; // Added useEffect
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@heroui/button";
@@ -83,14 +83,10 @@ const StadiumClientSection = ({
   // Get current search params from URL (client-side)
   const currentSearchParam = searchParams.get("search") || "";
   const currentSportsParam = searchParams.getAll("sports") || [];
-
-  // Use client-side search params if available, otherwise use server-side initial values
-  const [searchValue, setSearchValue] = useState(
-    currentSearchParam || initialSearchTerm
-  );
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
-    new Set(currentSportsParam.length > 0 ? currentSportsParam : initialSelectedSports)
-  );
+  
+  // FIXED: Check if we're on client side before using searchParams
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
   const [isCardsLoading, setIsCardsLoading] = useState(false);
   const [filteredStadiums, setFilteredStadiums] = useState(
     initialFilteredStadiums
@@ -98,20 +94,17 @@ const StadiumClientSection = ({
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showSearchSpinner, setShowSearchSpinner] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false); // Track initialization
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Update URL when filters change
   const updateURL = useCallback(
     (search: string, sportIds: string[]) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams();
 
       if (search.trim()) {
         params.set("search", search.trim());
-      } else {
-        params.delete("search");
       }
 
-      params.delete("sports");
       if (sportIds.length > 0) {
         sportIds.forEach((sport) => {
           params.append("sports", sport);
@@ -123,7 +116,7 @@ const StadiumClientSection = ({
         : pathname;
       router.replace(url, { scroll: false });
     },
-    [router, pathname, searchParams]
+    [router, pathname]
   );
 
   // Client-side filtering function
@@ -196,9 +189,6 @@ const StadiumClientSection = ({
       } else if (keys instanceof Set) {
         selectedKeysSet = keys;
         sportArray = Array.from(keys);
-      } else if (keys === "all" || keys === "none") {
-        selectedKeysSet = new Set();
-        sportArray = [];
       } else {
         selectedKeysSet = new Set();
         sportArray = [];
@@ -253,34 +243,54 @@ const StadiumClientSection = ({
     }
   }, [selectedKeys, filterStadiums, updateURL]);
 
-  // Sync with URL params on initial load and when URL changes
+  // Initialize from URL params on mount
   useEffect(() => {
-    // Don't run on initial server render
-    if (!isInitialized) {
-      setIsInitialized(true);
-      return;
-    }
-
+    // Only run once on mount
+    if (isInitialized) return;
+    
     const search = searchParams.get("search") || "";
     const sports = searchParams.getAll("sports") || [];
+    
+    console.log("Initializing from URL:", { search, sports });
+    
+    // Set initial values from URL - use a slight delay to ensure component is mounted
+    setTimeout(() => {
+      setSearchValue(search);
+      setSelectedKeys(new Set(sports));
+      
+      // Filter based on URL params
+      const filtered = filterStadiums(search, sports);
+      setFilteredStadiums(filtered);
+      
+      setIsInitialized(true);
+    }, 50);
+  }, [searchParams, filterStadiums, isInitialized]);
 
-    // Update state if URL params differ from current state
+  // Also sync when URL params change (for browser back/forward)
+  useEffect(() => {
+    if (!isInitialized) return;
+    
+    const search = searchParams.get("search") || "";
+    const sports = searchParams.getAll("sports") || [];
+    
+    // Only update if values have changed
     if (search !== searchValue) {
       setSearchValue(search);
     }
-
+    
     const currentSportsArray = Array.from(selectedKeys);
-    if (
-      sports.length !== currentSportsArray.length ||
-      !sports.every((sport) => currentSportsArray.includes(sport))
-    ) {
-      setSelectedKeys(new Set(sports));
+    const sportsSet = new Set(sports);
+    
+    // Check if sports have changed
+    if (sportsSet.size !== selectedKeys.size || 
+        !Array.from(sportsSet).every(sport => selectedKeys.has(sport))) {
+      setSelectedKeys(sportsSet);
     }
-
-    // Re-filter based on URL params
+    
+    // Always re-filter when URL params change
     const filtered = filterStadiums(search, sports);
     setFilteredStadiums(filtered);
-  }, [searchParams, filterStadiums, isInitialized]);
+  }, [searchParams, isInitialized, filterStadiums, searchValue, selectedKeys]);
 
   // Prepare sports for Select component
   const sportOptions = allSports.map((sport) => ({
