@@ -104,6 +104,15 @@ const createTransporter = () => {
     },
   });
 };
+// Helper functions
+function getLocalizedSubject(locale: TLocale, subject: string): string {
+  const messages = {
+    en: `Confirmation: We received your ${subject.toLowerCase()} inquiry`,
+    fr: `Confirmation : Nous avons reçu votre demande de ${subject.toLowerCase()}`,
+    ar: `تأكيد: لقد استلمنا استفسارك بشأن ${subject.toLowerCase()}`,
+  };
+  return messages[locale];
+}
 
 export async function sendContactEmail(
   data: ContactFormData,
@@ -117,25 +126,24 @@ export async function sendContactEmail(
     await transporter.verify();
 
     const subject = subjectMap[data.subject]?.[locale] || data.subject;
-    const urgentLabel = data.urgent ? "URGENT" : "";
 
-    // Admin email
-    const adminHtml = generateAdminEmailHtml(data, locale, subject);
+    // Admin email - plain text with all form data
+    const adminText = generateAdminEmailText(data, locale, subject);
     const adminMailOptions = {
       from: `"Contact Form" <${emailFrom}>`,
       to: emailFrom,
-      subject: `[${urgentLabel} ${subject}] From: ${data.fullName}`,
-      html: adminHtml,
+      subject: `[Contact Form] ${subject} - From: ${data.fullName}`,
+      text: adminText,
       replyTo: data.email,
     };
 
-    // User confirmation email
-    const userHtml = generateUserEmailHtml(data, locale, subject);
+    // User confirmation email - plain text
+    const userText = generateUserEmailText(data, locale, subject);
     const userMailOptions = {
       from: `"Municipal Stadiums" <${emailFrom}>`,
       to: data.email,
       subject: getLocalizedSubject(locale, subject),
-      html: userHtml,
+      text: userText,
     };
 
     // Send both emails
@@ -154,22 +162,67 @@ export async function sendContactEmail(
   }
 }
 
-// Helper functions
-function getLocalizedSubject(locale: TLocale, subject: string): string {
-  const messages = {
-    en: `Confirmation: We received your ${subject.toLowerCase()} inquiry`,
-    fr: `Confirmation : Nous avons reçu votre demande de ${subject.toLowerCase()}`,
-    ar: `تأكيد: لقد استلمنا استفسارك بشأن ${subject.toLowerCase()}`,
-  };
-  return messages[locale];
+function generateAdminEmailText(data: ContactFormData, locale: TLocale, subject: string): string {
+  const timestamp = new Date().toLocaleString();
+  const subjectTranslation = subjectMap[data.subject]?.[locale] || data.subject;
+  
+  return `
+📧 NEW CONTACT FORM SUBMISSION 📧
+=====================================
+
+📋 SUBJECT: ${subjectTranslation}
+⏰ TIMESTAMP: ${timestamp}
+🌐 LOCALE: ${locale.toUpperCase()}
+
+👤 PERSONAL INFORMATION
+---------------------------------
+• Full Name: ${data.fullName}
+• Email: ${data.email}
+• Club/Team: ${data.clubTeam}
+
+💬 MESSAGE CONTENT
+---------------------------------
+${data.message}
+
+📞 CONTACT INFORMATION
+---------------------------------
+• Reply to: ${data.email}
+
+=====================================
+This message was sent via the contact form on the Tan-Tan Municipality website.
+`;
 }
 
-function generateAdminEmailHtml(data: ContactFormData, locale: TLocale, subject: string): string {
-  // Return your HTML template
-  return `... HTML template ...`;
-}
+function generateUserEmailText(data: ContactFormData, locale: TLocale, subject: string): string {
+  const timestamp = new Date().toLocaleString();
+  const subjectTranslation = subjectMap[data.subject]?.[locale] || data.subject;
+  
+  // ... same as before but without checkbox references
+  return `
+Dear ${data.fullName},
 
-function generateUserEmailHtml(data: ContactFormData, locale: TLocale, subject: string): string {
-  // Return your HTML template
-  return `... HTML template ...`;
+Thank you for contacting Tan-Tan Municipality!
+
+We have received your message and will get back to you as soon as possible.
+
+📋 Your Message Summary:
+• Subject: ${subjectTranslation}
+• Full Name: ${data.fullName}
+• Club/Team: ${data.clubTeam}
+• Submitted: ${timestamp}
+
+💬 Your Message:
+${data.message}
+
+📅 What happens next?
+• Our municipal team will review your inquiry within 24-48 hours
+• You'll receive a response at: ${data.email}
+
+=====================================
+Best regards,
+The Tan-Tan Municipal Stadiums Team
+
+📧 This is an automated confirmation email.
+⏰ Timestamp: ${timestamp}
+`;
 }

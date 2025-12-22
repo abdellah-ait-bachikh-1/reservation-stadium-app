@@ -8,8 +8,6 @@ export interface ContactFormData {
   clubTeam: string;
   subject: string;
   message: string;
-  urgent: boolean;
-  newsletter: boolean;
   locale: string;
 }
 
@@ -55,8 +53,6 @@ export const createContactFormValidationSchema = (locale: TLocale = "en") => {
       .min(10, getLocalizedValidationMessage('contact.message.min', locale))
       .max(2000, getLocalizedValidationMessage('contact.message.max', locale)),
 
-    urgent: z.boolean().default(false),
-    newsletter: z.boolean().default(true),
     locale: z.string(),
   });
 };
@@ -68,7 +64,6 @@ export function validateContactFormData(
   const result = createContactFormValidationSchema(locale).safeParse(formData);
   
   if (!result.success) {
-    // ✅ Directly return flattened field errors like in register validation
     return { 
       data: null, 
       validationErrors: result.error.flatten().fieldErrors as Record<string, string[]> 

@@ -4,15 +4,9 @@ import { useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { Checkbox } from "@heroui/checkbox";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
-import {
-  FaPaperPlane,
-  FaUser,
-  FaUsers,
-  FaExclamationTriangle,
-} from "react-icons/fa";
+import { FaPaperPlane, FaUser, FaUsers } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { ContactFormData, validateContactFormData } from "@/lib/validation/contact";
 import { TLocale } from "@/lib/types";
@@ -29,7 +23,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
   const t = useTranslations("Pages.Contact");
   const tCommon = useTranslations("Common");
 
-  // Form state
+  // Form state (without checkbox fields)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -37,8 +31,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
     clubTeam: "",
     subject: "generalQuestion",
     message: "",
-    urgent: false,
-    newsletter: true,
+    locale: locale,
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -64,11 +57,11 @@ const ContactForm = ({ locale }: ContactFormProps) => {
     { key: "feedback", label: t("form.fields.subject.options.feedback") },
   ];
 
-  const handleChange = (field: string, value: string | boolean) => {
+  const handleChange = (field: string, value: string) => {
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
     
-    // Real-time validation like in register form
+    // Real-time validation
     const { validationErrors: newErrors } = validateContactFormData(
       locale as TLocale,
       updatedFormData as ContactFormData
@@ -112,10 +105,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          locale,
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -156,8 +146,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
         clubTeam: "",
         subject: "generalQuestion",
         message: "",
-        urgent: false,
-        newsletter: true,
+        locale: locale,
       });
       setErrors({});
 
@@ -173,7 +162,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
     }
   };
 
-  // Helper to render error messages like in register form
+  // Helper to render error messages
   const renderErrorMessages = (field: string) => {
     if (!errors[field] || errors[field].length === 0) return null;
     
@@ -270,31 +259,6 @@ const ContactForm = ({ locale }: ContactFormProps) => {
           size="lg"
           isRequired
         />
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <Checkbox
-          isSelected={formData.urgent}
-          onValueChange={(checked) => handleChange("urgent", checked)}
-          color="warning"
-          size="lg"
-        >
-          <div className="flex items-center gap-2">
-            <FaExclamationTriangle className="w-4 h-4 text-amber-600" />
-            <span className="font-medium">{t("form.urgentCheckbox")}</span>
-          </div>
-        </Checkbox>
-
-        <Checkbox
-          isSelected={formData.newsletter}
-          onValueChange={(checked) => handleChange("newsletter", checked)}
-          color="primary"
-          size="lg"
-        >
-          <span className="text-gray-700 dark:text-gray-300">
-            {t("form.newsletterCheckbox")}
-          </span>
-        </Checkbox>
       </div>
 
       {/* Display form-level errors */}
