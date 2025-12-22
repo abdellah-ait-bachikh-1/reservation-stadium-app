@@ -21,168 +21,190 @@ interface NotificationItem {
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("Components.Dashboard.Notifications");
-  
-  // Use the position hook
-  const { bellRef, dropdownRef, positionStyle, calculatePosition, refinePosition, isMobile } = useSafePositionScreen();
 
-const [notifications, setNotifications] = useState<NotificationItem[]>([
-  {
-    id: "1",
-    type: "account",
-    title: "New Club Registration",
-    message: "Al Ahly Club has submitted registration for approval",
-    time: "2 min ago",
-    read: false,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-        <span className="text-blue-600 dark:text-blue-400 font-bold">C</span>
-      </div>
-    ),
-  },
-  {
-    id: "2",
-    type: "reservation",
-    title: "Reservation Request",
-    message: "New booking request for Stadium 1 - Tomorrow 4:00 PM",
-    time: "15 min ago",
-    read: false,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-        <span className="text-green-600 dark:text-green-400 font-bold">B</span>
-      </div>
-    ),
-  },
-  {
-    id: "3",
-    type: "payment",
-    title: "Payment Successful",
-    message: "Monthly subscription payment received - $500.00",
-    time: "1 hour ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-        <span className="text-purple-600 dark:text-purple-400 font-bold">$</span>
-      </div>
-    ),
-  },
-  {
-    id: "4",
-    type: "payment",
-    title: "Payment Overdue",
-    message: "Zamalek Club has overdue payment - Please follow up",
-    time: "3 hours ago",
-    read: false,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-        <span className="text-red-600 dark:text-red-400 font-bold">!</span>
-      </div>
-    ),
-  },
-  {
-    id: "5",
-    type: "email",
-    title: "Welcome Email Sent",
-    message: "Account confirmation email delivered successfully",
-    time: "5 hours ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-        <span className="text-amber-600 dark:text-amber-400 font-bold">✉</span>
-      </div>
-    ),
-  },
-  {
-    id: "6",
-    type: "reservation",
-    title: "Reservation Approved",
-    message: "Your booking for Stadium 3 has been confirmed",
-    time: "1 day ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-        <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
-      </div>
-    ),
-  },
-  {
-    id: "7",
-    type: "system",
-    title: "System Maintenance",
-    message: "Scheduled maintenance tonight at 2:00 AM",
-    time: "2 days ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        <span className="text-gray-600 dark:text-gray-400 font-bold">⚙</span>
-      </div>
-    ),
-  },
-  {
-    id: "8",
-    type: "account",
-    title: "Profile Updated",
-    message: "Your account profile information has been successfully updated",
-    time: "3 days ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-        <span className="text-blue-600 dark:text-blue-400 font-bold">👤</span>
-      </div>
-    ),
-  },
-  {
-    id: "9",
-    type: "reservation",
-    title: "Reservation Cancelled",
-    message: "Your booking for Stadium 2 on Friday has been cancelled",
-    time: "1 week ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-        <span className="text-red-600 dark:text-red-400 font-bold">✕</span>
-      </div>
-    ),
-  },
-  {
-    id: "10",
-    type: "payment",
-    title: "Refund Processed",
-    message: "Your refund of $250 has been processed successfully",
-    time: "1 week ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-        <span className="text-green-600 dark:text-green-400 font-bold">↶</span>
-      </div>
-    ),
-  },
-  {
-    id: "11",
-    type: "system",
-    title: "New Feature Available",
-    message: "Check out the new stadium booking features in your dashboard",
-    time: "2 weeks ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-        <span className="text-indigo-600 dark:text-indigo-400 font-bold">🆕</span>
-      </div>
-    ),
-  },
-  {
-    id: "12",
-    type: "email",
-    title: "Newsletter Sent",
-    message: "Monthly sports club newsletter has been delivered to subscribers",
-    time: "1 month ago",
-    read: true,
-    icon: (
-      <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-        <span className="text-amber-600 dark:text-amber-400 font-bold">📰</span>
-      </div>
-    ),
-  },
-]);
+  // Use the position hook
+  const {
+    bellRef,
+    dropdownRef,
+    positionStyle,
+    calculatePosition,
+    refinePosition,
+    isMobile,
+  } = useSafePositionScreen();
+
+  const [notifications, setNotifications] = useState<NotificationItem[]>([
+    {
+      id: "1",
+      type: "account",
+      title: "New Club Registration",
+      message: "Al Ahly Club has submitted registration for approval",
+      time: "2 min ago",
+      read: false,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+          <span className="text-blue-600 dark:text-blue-400 font-bold">C</span>
+        </div>
+      ),
+    },
+    {
+      id: "2",
+      type: "reservation",
+      title: "Reservation Request",
+      message: "New booking request for Stadium 1 - Tomorrow 4:00 PM",
+      time: "15 min ago",
+      read: false,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+          <span className="text-green-600 dark:text-green-400 font-bold">
+            B
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "3",
+      type: "payment",
+      title: "Payment Successful",
+      message: "Monthly subscription payment received - $500.00",
+      time: "1 hour ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+          <span className="text-purple-600 dark:text-purple-400 font-bold">
+            $
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "4",
+      type: "payment",
+      title: "Payment Overdue",
+      message: "Zamalek Club has overdue payment - Please follow up",
+      time: "3 hours ago",
+      read: false,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+          <span className="text-red-600 dark:text-red-400 font-bold">!</span>
+        </div>
+      ),
+    },
+    {
+      id: "5",
+      type: "email",
+      title: "Welcome Email Sent",
+      message: "Account confirmation email delivered successfully",
+      time: "5 hours ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+          <span className="text-amber-600 dark:text-amber-400 font-bold">
+            ✉
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "6",
+      type: "reservation",
+      title: "Reservation Approved",
+      message: "Your booking for Stadium 3 has been confirmed",
+      time: "1 day ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+            ✓
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "7",
+      type: "system",
+      title: "System Maintenance",
+      message: "Scheduled maintenance tonight at 2:00 AM",
+      time: "2 days ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <span className="text-gray-600 dark:text-gray-400 font-bold">⚙</span>
+        </div>
+      ),
+    },
+    {
+      id: "8",
+      type: "account",
+      title: "Profile Updated",
+      message: "Your account profile information has been successfully updated",
+      time: "3 days ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+          <span className="text-blue-600 dark:text-blue-400 font-bold">👤</span>
+        </div>
+      ),
+    },
+    {
+      id: "9",
+      type: "reservation",
+      title: "Reservation Cancelled",
+      message: "Your booking for Stadium 2 on Friday has been cancelled",
+      time: "1 week ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+          <span className="text-red-600 dark:text-red-400 font-bold">✕</span>
+        </div>
+      ),
+    },
+    {
+      id: "10",
+      type: "payment",
+      title: "Refund Processed",
+      message: "Your refund of $250 has been processed successfully",
+      time: "1 week ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+          <span className="text-green-600 dark:text-green-400 font-bold">
+            ↶
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "11",
+      type: "system",
+      title: "New Feature Available",
+      message: "Check out the new stadium booking features in your dashboard",
+      time: "2 weeks ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+          <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+            🆕
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "12",
+      type: "email",
+      title: "Newsletter Sent",
+      message:
+        "Monthly sports club newsletter has been delivered to subscribers",
+      time: "1 month ago",
+      read: true,
+      icon: (
+        <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+          <span className="text-amber-600 dark:text-amber-400 font-bold">
+            📰
+          </span>
+        </div>
+      ),
+    },
+  ]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -193,33 +215,33 @@ const [notifications, setNotifications] = useState<NotificationItem[]>([
     if (match) {
       const count = parseInt(match[1]);
       const unit = match[2].toLowerCase();
-      
-      switch(unit) {
-        case 'min':
-        case 'mins':
-          return t('time.minutesAgo', { count });
-        case 'hour':
-        case 'hours':
-          return t('time.hoursAgo', { count });
-        case 'day':
-        case 'days':
-          return t('time.daysAgo', { count });
-        case 'week':
-        case 'weeks':
-          return t('time.weeksAgo', { count });
-        case 'month':
-        case 'months':
-          return t('time.monthsAgo', { count });
+
+      switch (unit) {
+        case "min":
+        case "mins":
+          return t("time.minutesAgo", { count });
+        case "hour":
+        case "hours":
+          return t("time.hoursAgo", { count });
+        case "day":
+        case "days":
+          return t("time.daysAgo", { count });
+        case "week":
+        case "weeks":
+          return t("time.weeksAgo", { count });
+        case "month":
+        case "months":
+          return t("time.monthsAgo", { count });
         default:
           return timeString;
       }
     }
-    
+
     // For other formats like "Just now"
-    if (timeString.toLowerCase().includes('just now')) {
-      return t('time.justNow');
+    if (timeString.toLowerCase().includes("just now")) {
+      return t("time.justNow");
     }
-    
+
     return timeString;
   };
 
@@ -258,21 +280,19 @@ const [notifications, setNotifications] = useState<NotificationItem[]>([
     if (isOpen) {
       // Calculate position immediately
       calculatePosition();
-      
+
       // Refine after a small delay when DOM is updated
       const timer = setTimeout(() => {
         refinePosition();
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [isOpen, calculatePosition, refinePosition]);
 
   const markAsRead = (id: string) => {
     setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
+      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
     );
   };
 
@@ -340,7 +360,7 @@ const [notifications, setNotifications] = useState<NotificationItem[]>([
                 onClick={() => setIsOpen(false)}
               />
             )}
-            
+
             {/* Dropdown */}
             <motion.div
               key="notification-dropdown"
