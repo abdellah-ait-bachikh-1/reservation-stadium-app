@@ -38,6 +38,10 @@ model User {
   monthlyPayments MonthlyPayment[]
   subscriptions MonthlySubscription[]
 
+ @@index([email])
+  @@index([role])
+  @@index([approved])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -60,6 +64,10 @@ model Club {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  @@index([userId])
+  @@index([sportId])
+  @@index([nameFr])
+  @@index([nameAr])
   @@map("clubs")
 }
 
@@ -76,6 +84,8 @@ model Sport {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+   @@index([nameFr])
+  @@index([nameAr])
   @@map("sports")
 }
 
@@ -99,6 +109,10 @@ model Stadium {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  @@index([nameFr])
+  @@index([nameAr])
+  @@index([monthlyPrice])
+  @@index([pricePerSession])
   @@map("stadiums")
 }
 
@@ -126,6 +140,7 @@ model StadiumImage {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+ @@index([stadiumId])
   @@map("stadium_images")
 }
 
@@ -153,6 +168,17 @@ model Reservation {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  @@index([startDateTime])
+  @@index([endDateTime])
+  @@index([status])
+  @@index([userId])
+  @@index([stadiumId])
+  @@index([monthlyPaymentId])
+  @@index([reservationSeriesId])
+  @@index([createdAt])
+  @@index([isPaid])
+  @@index([startDateTime, stadiumId]) // For checking availability
+  @@index([status, startDateTime]) // For filtering by status and date
   @@map("reservations")
 }
 
@@ -179,6 +205,13 @@ model ReservationSeries {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  @@index([userId])
+  @@index([stadiumId])
+  @@index([dayOfWeek])
+  @@index([billingType])
+  @@index([createdAt])
+  @@index([recurrenceEndDate])
+  @@index([startTime, endTime]) // For time-based queries
   @@map("reservation_series")
 }
 
@@ -202,6 +235,13 @@ model MonthlyPayment {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+ @@index([userId])
+  @@index([reservationSeriesId])
+  @@index([status])
+  @@index([month, year])
+  @@index([paymentDate])
+  @@index([createdAt])
+  @@unique([month, year, reservationSeriesId]) // Unique monthly payment per series
   @@map("monthly_payments")
 }
 
@@ -223,6 +263,11 @@ model CashPaymentRecord {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+@@index([userId])
+  @@index([reservationId])
+  @@index([monthlyPaymentId])
+  @@index([paymentDate])
+  @@index([createdAt])
   @@unique([reservationId])
   @@unique([monthlyPaymentId])
   @@map("cash_payment_records")
@@ -245,6 +290,12 @@ model MonthlySubscription {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  @@index([userId])
+  @@index([reservationSeriesId])
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([createdAt])
   @@map("monthly_subscriptions")
 }
 
