@@ -473,7 +473,30 @@
       "contactPageLink": "زيارة صفحة الاتصال",
       "allRightsReserved": "جميع الحقوق محفوظة.",
       "designedFor": "مصمم للجمعيات الرياضية والفرق"
+    },"Dashboard": {
+    "Notifications": {
+      "title": "الإشعارات",
+      "unreadCount": "{count, plural, one {# إشعار غير مقروء} other {# إشعارات غير مقروءة}}",
+      "markAllRead": "تحديد الكل كمقروء",
+      "noNotifications": "لا توجد إشعارات حتى الآن",
+      "viewAll": "عرض جميع الإشعارات",
+      "types": {
+        "account": "حساب",
+        "reservation": "حجز",
+        "payment": "دفع",
+        "email": "بريد إلكتروني",
+        "system": "نظام"
+      },
+      "time": {
+        "justNow": "الآن",
+        "minutesAgo": "{count, plural, one {قبل # دقيقة} other {قبل # دقائق}}",
+        "hoursAgo": "{count, plural, one {قبل # ساعة} other {قبل # ساعات}}",
+        "daysAgo": "{count, plural, one {قبل # يوم} other {قبل # أيام}}",
+        "weeksAgo": "{count, plural, one {قبل # أسبوع} other {قبل # أسابيع}}",
+        "monthsAgo": "{count, plural, one {قبل # شهر} other {قبل # أشهر}}"
+      }
     }
+  }
   },
   "Common": {
     "appName": "ملعب طانطان",
