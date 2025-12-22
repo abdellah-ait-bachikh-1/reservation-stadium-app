@@ -473,35 +473,37 @@
       "contactPageLink": "زيارة صفحة الاتصال",
       "allRightsReserved": "جميع الحقوق محفوظة.",
       "designedFor": "مصمم للجمعيات الرياضية والفرق"
-    },"Dashboard": {
-    "Notifications": {
-      "title": "الإشعارات",
-      "unreadCount": "{count, plural, one {# إشعار غير مقروء} other {# إشعارات غير مقروءة}}",
-      "markAllRead": "تحديد الكل كمقروء",
-      "noNotifications": "لا توجد إشعارات حتى الآن",
-      "viewAll": "عرض جميع الإشعارات",
-      "from": "من: {name}",
-      "loading": "جارٍ تحميل الإشعارات...",
-      "retry": "إعادة المحاولة",
-      "error": "فشل تحميل الإشعارات",
-      "types": {
-        "account": "حساب",
-        "reservation": "حجز",
-        "payment": "دفع",
-        "system": "نظام",
-        "email": "بريد إلكتروني",
-        "club": "نادي"
-      },
-      "time": {
-        "justNow": "الآن",
-        "minutesAgo": "{count, plural, one {قبل # دقيقة} other {قبل # دقائق}}",
-        "hoursAgo": "{count, plural, one {قبل # ساعة} other {قبل # ساعات}}",
-        "daysAgo": "{count, plural, one {قبل # يوم} other {قبل # أيام}}",
-        "weeksAgo": "{count, plural, one {قبل # أسبوع} other {قبل # أسابيع}}",
-        "monthsAgo": "{count, plural, one {قبل # شهر} other {قبل # أشهر}}"
+    },  "Dashboard": {
+      "Notifications": {
+        "title": "الإشعارات",
+        "unreadCount": "{count} غير مقروء",
+        "markAllRead": "تحديد الكل كمقروء",
+        "loading": "جاري تحميل الإشعارات...",
+        "retry": "إعادة المحاولة",
+        "noNotifications": "لا توجد إشعارات",
+        "viewAll": "عرض جميع الإشعارات", 
+        "from": "من: {name}",
+        "close": "إغلاق",
+        "error": "فشل تحميل الإشعارات",
+        "realtimeDisabled": "الإشعارات الفورية غير متوفرة حاليًا",
+        "time": {
+          "justNow": "الآن",
+          "minutesAgo": "قبل {count} دقيقة",
+          "hoursAgo": "قبل {count} ساعة",
+          "daysAgo": "قبل {count} يوم",
+          "weeksAgo": "قبل {count} أسبوع",
+          "monthsAgo": "قبل {count} شهر"
+        },
+        "types": {
+          "account": "حساب",
+          "reservation": "حجز",
+          "payment": "دفع",
+          "system": "نظام",
+          "email": "بريد",
+          "club": "نادي"
+        }
       }
     }
-  }
   },
   "Common": {
     "appName": "ملعب طانطان",

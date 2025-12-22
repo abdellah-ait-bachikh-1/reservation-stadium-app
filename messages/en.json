@@ -477,34 +477,36 @@
       "designedFor": "Designed for sports clubs and teams"
     },
     "Dashboard": {
-    "Notifications": {
-      "title": "Notifications",
-      "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
-      "markAllRead": "Mark all read",
-      "noNotifications": "No notifications yet",
-      "viewAll": "View all notifications",
-      "from": "From: {name}",
-      "loading": "Loading notifications...",
-      "retry": "Retry",
-      "error": "Failed to load notifications",
-      "types": {
-        "account": "Account",
-        "reservation": "Reservation",
-        "payment": "Payment",
-        "system": "System",
-        "email": "Email",
-        "club": "Club"
-      },
-      "time": {
-        "justNow": "Just now",
-        "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
-        "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
-        "daysAgo": "{count, plural, one {# day ago} other {# days ago}}",
-        "weeksAgo": "{count, plural, one {# week ago} other {# weeks ago}}",
-        "monthsAgo": "{count, plural, one {# month ago} other {# months ago}}"
+      "Notifications": {
+        "title": "Notifications",
+        "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
+        "markAllRead": "Mark all read",
+        "noNotifications": "No notifications yet",
+        "viewAll": "View all notifications",
+        "from": "From: {name}",
+        "loading": "Loading notifications...",
+        "retry": "Retry",
+        "error": "Failed to load notifications",
+        "close": "Close", 
+        "realtimeDisabled": "Real-time notifications unavailable", 
+        "types": {
+          "account": "Account",
+          "reservation": "Reservation",
+          "payment": "Payment",
+          "system": "System",
+          "email": "Email",
+          "club": "Club"
+        },
+        "time": {
+          "justNow": "Just now",
+          "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
+          "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+          "daysAgo": "{count, plural, one {# day ago} other {# days ago}}",
+          "weeksAgo": "{count, plural, one {# week ago} other {# weeks ago}}",
+          "monthsAgo": "{count, plural, one {# month ago} other {# months ago}}"
+        }
       }
     }
-  }
   },
   "Common": {
     "appName": "Stadium Tan-Tan",

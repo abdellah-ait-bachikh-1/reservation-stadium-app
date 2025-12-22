@@ -1,15 +1,17 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@heroui/button";
 import { HiBell, HiCheck, HiOutlineBell } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@heroui/badge";
 import { useSafePositionScreen } from "@/hooks/useSafePositionScreen";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from "@/app/actions/notifications";
+import { setupPusher } from "@/lib/pusher-client";
 
 interface NotificationItem {
   id: string;
@@ -25,12 +27,27 @@ interface NotificationItem {
   createdAt: Date;
 }
 
+// دالة مساعدة لإنشاء ID فريد
+const generateId = () => `pusher-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<"connecting" | "connected" | "disconnected">("connecting");
+  // في NotificationBell.tsx بعد useState مباشرة
+const safeTranslate = (key: string, fallback: string) => {
+  try {
+    const translation = t(key);
+    return translation;
+  } catch (error) {
+    console.warn(`Translation missing for key: ${key}, using fallback: ${fallback}`);
+    return fallback;
+  }
+};
   const t = useTranslations("Components.Dashboard.Notifications");
+  const { data: session } = useSession();
 
   // Use the position hook
   const {
@@ -98,30 +115,164 @@ const NotificationBell = () => {
   };
 
   // Fetch notifications from API
- const fetchNotifications = async () => {
-  try {
-    setIsLoading(true);
-    setError(null);
+  const fetchNotifications = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    // احصل على اللغة الحالية
-    const locale = document.documentElement.lang || 'en';
-    
-    const response = await fetch(`/api/notifications?locale=${locale}`);
+      // احصل على اللغة الحالية
+      const locale = document.documentElement.lang || "en";
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch notifications");
+      const response = await fetch(`/api/notifications?locale=${locale}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch notifications");
+      }
+
+      const data = await response.json();
+      setNotifications(data.notifications || []);
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+      setError("Failed to load notifications");
+      setNotifications([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // دالة معالجة الإشعار الجديد من Pusher
+  const handleNewNotification = useCallback((notificationData: any) => {
+    console.log("📩 Processing new push notification:", notificationData);
+  
+  // الحصول على اللغة الحالية من المتصفح أو استخدام اللغة من البيانات
+  let currentLocale = document.documentElement.lang || "ar";
+  
+  // إذا كانت البيانات تحتوي على لغة المستلم، استخدمها
+  if (notificationData.data?.receiverLocale) {
+    currentLocale = notificationData.data.receiverLocale;
+  }
+  
+  // استخدام الترجمات المرسلة أو الترجمة المناسبة
+  let title = notificationData.title;
+  let message = notificationData.message;
+  
+  if (notificationData.data?.translations) {
+    switch (currentLocale) {
+      case "fr":
+        title = notificationData.data.translations.titleFr || title;
+        message = notificationData.data.translations.messageFr || message;
+        break;
+      case "ar":
+        title = notificationData.data.translations.titleAr || title;
+        message = notificationData.data.translations.messageAr || message;
+        break;
+      default: // en
+        title = notificationData.data.translations.titleEn || title;
+        message = notificationData.data.translations.messageEn || message;
+    }
+  }
+  
+    const newNotification: NotificationItem = {
+      id: notificationData.id || generateId(),
+      type: notificationData.type.toLowerCase() as NotificationItem["type"],
+      title,
+      message,
+      time: "just now",
+      read: false,
+      metadata: notificationData.data || notificationData.metadata,
+      actorName: notificationData.data?.actorName || notificationData.actorName,
+      actorEmail: notificationData.data?.actorEmail || notificationData.actorEmail,
+      createdAt: new Date(notificationData.createdAt || new Date()),
+    };
+
+    console.log("📥 Adding new notification:", newNotification);
+
+    // إضافة الإشعار الجديد في الأعلى مع إزالة الإشعارات القديمة إذا تجاوزت الحد
+    setNotifications((prev) => {
+      const newNotifications = [newNotification, ...prev];
+      // حفظ فقط آخر 50 إشعار
+      return newNotifications.slice(0, 50);
+    });
+
+    // إظهار إشعار سطح المكتب (إذا كان مدعوماً)
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        const notification = new Notification(title, {
+          body: message,
+          icon: "/favicon.ico",
+          tag: "notification",
+          silent: false,
+        });
+
+        // عند النقر على الإشعار، افتح dropdown الإشعارات
+        notification.onclick = () => {
+          window.focus();
+          setIsOpen(true);
+        };
+
+        // إغلاق الإشعار تلقائياً بعد 5 ثواني
+        setTimeout(() => notification.close(), 5000);
+      } catch (error) {
+        console.error("Error showing desktop notification:", error);
+      }
     }
 
-    const data = await response.json();
-    setNotifications(data.notifications || []);
-  } catch (err) {
-    console.error("Error fetching notifications:", err);
-    setError("Failed to load notifications");
-    setNotifications([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    // تشغيل صوت للإشعار
+    // playNotificationSound();
+  }, []);
+
+  // دالة لتشغيل صوت الإشعار
+//   const playNotificationSound = () => {
+//     try {
+//       const audio = new Audio("/sounds/notification.mp3");
+//       audio.volume = 0.3;
+//       audio.play().catch(console.error);
+//     } catch (error) {
+//       console.error("Error playing notification sound:", error);
+//     }
+//   };
+
+  // طلب إذن إشعارات سطح المكتب
+  const requestNotificationPermission = () => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        console.log("Notification permission:", permission);
+      });
+    }
+  };
+
+  // إعداد Pusher عندما يتوفر session
+  useEffect(() => {
+    if (!session?.user?.id) {
+      console.log("⏳ Waiting for user session...");
+      return;
+    }
+
+    console.log("🔌 Setting up Pusher for user:", session.user.id);
+    setConnectionStatus("connecting");
+
+    // طلب إذن الإشعارات
+    requestNotificationPermission();
+
+    const cleanup = setupPusher({
+      userId: session.user.id,
+      onNotification: handleNewNotification,
+      onConnected: () => {
+        console.log("✅ Pusher connected successfully");
+        setConnectionStatus("connected");
+      },
+      onError: (error) => {
+        console.error("❌ Pusher error:", error);
+        setConnectionStatus("disconnected");
+      },
+    });
+
+    return () => {
+      console.log("🧹 Cleaning up Pusher connection");
+      cleanup?.();
+      setConnectionStatus("disconnected");
+    };
+  }, [session?.user?.id, handleNewNotification]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -129,19 +280,24 @@ const NotificationBell = () => {
       fetchNotifications();
     }
   }, [isOpen]);
-console.log(notifications)
-  // Format time with translation - IMPROVED VERSION
+
+  // Format time with translation
   const formatTime = (timeString: string) => {
-    // Handle different time string formats
-      if (timeString.includes('قبل') || timeString.includes('دقيقة') || timeString.includes('ساعة')) {
-    return timeString;
-  }
+    // Handle Arabic time strings
+    if (
+      timeString.includes("قبل") ||
+      timeString.includes("دقيقة") ||
+      timeString.includes("ساعة")
+    ) {
+      return timeString;
+    }
+    
     const timeAgoPattern = /(\d+)\s+(minute?|hour?|day?|week?|month?)\w*\s+ago/i;
     const match = timeString.match(timeAgoPattern);
 
     if (match) {
       const count = parseInt(match[1]);
-      const unit = match[2].toLowerCase().replace(/s$/, ""); // Remove plural 's'
+      const unit = match[2].toLowerCase().replace(/s$/, "");
 
       const translationMap: Record<string, string> = {
         min: "time.minutesAgo",
@@ -168,9 +324,43 @@ console.log(notifications)
   };
 
   // Get translated notification type
-  const getTranslatedType = (type: string) => {
-    return t(`types.${type}`) || type;
+// في NotificationBell.tsx
+// Get translated notification type
+const getTranslatedType = (type: string) => {
+  // تحويل الأنواع من Pusher إلى أسماء بسيطة
+  const typeMapping: Record<string, string> = {
+    'reservation_requested': 'reservation',
+    'reservation_approved': 'reservation',
+    'reservation_declined': 'reservation',
+    'reservation_cancelled': 'reservation',
+    'payment_received': 'payment',
+    'payment_overdue': 'payment',
+    'payment_failed': 'payment',
+    'account_approved': 'account',
+    'account_rejected': 'account',
+    'account_created': 'account',
+    'club_registration_submitted': 'club',
+    'club_registration_approved': 'club',
+    'club_registration_rejected': 'club',
+    'system_maintenance': 'system',
+    'system_update': 'system',
+    'new_feature': 'system',
+    'announcement': 'system',
+    'email_sent': 'email',
+    'email_verified': 'email',
+    'welcome_email': 'email',
   };
+  
+  const simpleType = typeMapping[type] || type;
+  
+  try {
+    const translation = t(`types.${simpleType}`);
+    return translation || simpleType;
+  } catch (error) {
+    console.warn(`Translation not found for type: ${type} (mapped to: ${simpleType})`);
+    return simpleType;
+  }
+};
 
   // Pre-calculate position when component mounts
   useEffect(() => {
@@ -248,11 +438,33 @@ console.log(notifications)
     setIsOpen(!isOpen);
     if (!isOpen) {
       calculatePosition();
+      // تحديث الإشعارات عند فتح القائمة
+      fetchNotifications();
     }
   };
 
   return (
     <div className="relative" ref={bellRef}>
+      {/* مؤشر حالة الاتصال */}
+      <div className="absolute -top-1 -right-1 z-10">
+        <div
+          className={`w-3 h-3 rounded-full ${
+            connectionStatus === "connected"
+              ? "bg-green-500 animate-pulse"
+              : connectionStatus === "connecting"
+              ? "bg-yellow-500"
+              : "bg-red-500"
+          }`}
+          title={
+            connectionStatus === "connected"
+              ? "Connected to real-time notifications"
+              : connectionStatus === "connecting"
+              ? "Connecting to real-time notifications..."
+              : "Real-time notifications disconnected"
+          }
+        />
+      </div>
+
       <Badge
         content={unreadCount}
         color="danger"
@@ -264,6 +476,7 @@ console.log(notifications)
           variant="light"
           className="relative"
           onPress={handleBellClick}
+          aria-label="Notifications"
         >
           {isOpen ? (
             <HiOutlineBell className="w-5 h-5" />
@@ -293,13 +506,31 @@ console.log(notifications)
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: -10 }}
               style={positionStyle}
-              className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden w-96"
+              className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden w-96 z-50"
             >
+              {/* Header with connection status */}
               <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {t("title")}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {t("title")}
+                    </h3>
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full ${
+                        connectionStatus === "connected"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                          : connectionStatus === "connecting"
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                      }`}
+                    >
+                      {connectionStatus === "connected"
+                        ? "Live"
+                        : connectionStatus === "connecting"
+                        ? "Connecting..."
+                        : "Offline"}
+                    </span>
+                  </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {t("unreadCount", { count: unreadCount })}
                   </p>
@@ -317,6 +548,7 @@ console.log(notifications)
                 )}
               </div>
 
+              {/* Notifications List */}
               <div className="max-h-80 md:max-h-96 overflow-y-auto overscroll-contain">
                 {isLoading ? (
                   <div className="p-8 text-center">
@@ -344,6 +576,11 @@ console.log(notifications)
                     <p className="text-gray-500 dark:text-gray-400">
                       {t("noNotifications")}
                     </p>
+                    {connectionStatus !== "connected" && (
+                      <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2">
+                        {t("realtimeDisabled")}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -357,7 +594,7 @@ console.log(notifications)
                           notification.read
                             ? ""
                             : "bg-blue-50/50 dark:bg-blue-900/10"
-                        }`}
+                        } ${notification.id.startsWith("pusher-") ? "border-l-4 border-l-blue-500" : ""}`}
                         onClick={() => markAsRead(notification.id)}
                       >
                         <div className="flex gap-3">
@@ -368,6 +605,11 @@ console.log(notifications)
                             <div className="flex justify-between items-start">
                               <h4 className="font-medium text-gray-900 dark:text-white">
                                 {notification.title}
+                                {notification.id.startsWith("pusher-") && (
+                                  <span className="ml-2 text-xs text-blue-500 animate-pulse">
+                                    ●
+                                  </span>
+                                )}
                               </h4>
                               {!notification.read && (
                                 <div
@@ -407,14 +649,23 @@ console.log(notifications)
                 )}
               </div>
 
-              <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center">
+              {/* Footer */}
+              <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-gray-50 dark:bg-gray-800/50">
+                <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-2 px-2">
+                  <span>
+                    {connectionStatus === "connected"
+                      ? "Live updates enabled"
+                      : "Real-time updates disabled"}
+                  </span>
+                  <span>{notifications.length} total</span>
+                </div>
                 <Button
                   variant="light"
                   size="sm"
                   className="w-full text-sm"
                   onPress={() => setIsOpen(false)}
                 >
-                  {t("viewAll")}
+{safeTranslate("close", "Close")}
                 </Button>
               </div>
             </motion.div>

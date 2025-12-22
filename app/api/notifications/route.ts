@@ -1,9 +1,9 @@
+// api/notifications/route.ts
 import { getSession } from '@/auth';
 import { getLocaleFromNextIntlCookie } from '@/lib/api/locale';
 import {
   formatTimeAgo,
   mapNotificationType,
-  getRequestLocale,
   getLocalizedText,
   getActorName,
 } from '@/lib/api/utils';
@@ -18,7 +18,28 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const locale = await getLocaleFromNextIntlCookie();
+    // الخطوة 1: الحصول على لغة المستخدم من قاعدة البيانات (الأولوية)
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { preferredLocale: true }
+    });
+
+    let locale: 'en' | 'fr' | 'ar' = 'ar'; // الافتراضي
+    
+    if (user?.preferredLocale) {
+      // تحويل EN/FR/AR إلى en/fr/ar
+      locale = user.preferredLocale.toLowerCase() as 'en' | 'fr' | 'ar';
+    } else {
+      // إذا لم تكن اللغة مضبوطة، استخدم الكوكي
+      locale = await getLocaleFromNextIntlCookie();
+    }
+
+    console.log('Using locale for notifications:', { 
+      userId: session.user.id, 
+      dbLocale: user?.preferredLocale,
+      finalLocale: locale 
+    });
+
     const limit = 20;
 
     const [notifications, unreadCount] = await Promise.all([
@@ -41,6 +62,7 @@ export async function GET() {
               fullNameFr: true,
               fullNameAr: true,
               email: true,
+              preferredLocale: true, // إضافة preferredLocale
             },
           },
         },
@@ -56,6 +78,7 @@ export async function GET() {
     ]);
 
     const formattedNotifications = notifications.map((notification) => {
+      // استخدام اللغة التي حددناها
       const { title, message } = getLocalizedText(notification, locale);
 
       return {
@@ -69,6 +92,8 @@ export async function GET() {
         actorName: getActorName(notification.actor, locale),
         actorEmail: notification.actor?.email || null,
         createdAt: notification.createdAt,
+        // إضافة اللغة المستخدمة للتصحيح
+        _locale: locale,
       };
     });
 
@@ -76,6 +101,7 @@ export async function GET() {
       notifications: formattedNotifications,
       unreadCount,
       total: notifications.length,
+      userLocale: locale, // إرسال اللغة المستخدمة
     });
   } catch (error) {
     console.error('Error fetching notifications:', error);

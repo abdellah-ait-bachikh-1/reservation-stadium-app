@@ -25,6 +25,7 @@ model User {
 
   emailVerifiedAt   DateTime?
   verificationToken String?   @unique @default(uuid())
+  preferredLocale UserLocale @default(AR) // AR, FR, EN
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -311,7 +312,7 @@ model Notification {
   messageEn String   // English message
   messageFr String   // French message  
   messageAr String   // Arabic message*
-  
+
   isRead    Boolean  @default(false)
   userId    String  // Receiver ID
   actorUserId   String?  // Who performed the action (optional)
@@ -413,4 +414,10 @@ enum SubscriptionStatus {
   CANCELLED
   EXPIRED
   SUSPENDED
+}
+
+enum UserLocale {
+  EN
+  FR
+  AR
 }

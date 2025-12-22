@@ -472,34 +472,36 @@
       "allRightsReserved": "Tous droits réservés.",
       "designedFor": "Conçu pour les clubs et équipes sportives"
     },"Dashboard": {
-    "Notifications": {
-      "title": "Notifications",
-      "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
-      "markAllRead": "Tout marquer comme lu",
-      "noNotifications": "Aucune notification pour l'instant",
-      "viewAll": "Voir toutes les notifications",
-      "from": "De : {name}",
-      "loading": "Chargement des notifications...",
-      "retry": "Réessayer",
-      "error": "Échec du chargement des notifications",
-      "types": {
-        "account": "Compte",
-        "reservation": "Réservation",
-        "payment": "Paiement",
-        "system": "Système",
-        "email": "Email",
-        "club": "Club"
-      },
-      "time": {
-        "justNow": "À l'instant",
-        "minutesAgo": "{count, plural, one {Il y a # minute} other {Il y a # minutes}}",
-        "hoursAgo": "{count, plural, one {Il y a # heure} other {Il y a # heures}}",
-        "daysAgo": "{count, plural, one {Il y a # jour} other {Il y a # jours}}",
-        "weeksAgo": "{count, plural, one {Il y a # semaine} other {Il y a # semaines}}",
-        "monthsAgo": "{count, plural, one {Il y a # mois} other {Il y a # mois}}"
+      "Notifications": {
+        "title": "Notifications",
+        "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
+        "markAllRead": "Tout marquer comme lu",
+        "noNotifications": "Aucune notification pour l'instant",
+        "viewAll": "Voir toutes les notifications",
+        "from": "De : {name}",
+        "loading": "Chargement des notifications...",
+        "retry": "Réessayer",
+        "error": "Échec du chargement des notifications",
+        "close": "Fermer",
+        "realtimeDisabled": "Notifications en temps réel indisponibles", 
+        "types": {
+          "account": "Compte",
+          "reservation": "Réservation",
+          "payment": "Paiement",
+          "system": "Système",
+          "email": "Email",
+          "club": "Club"
+        },
+        "time": {
+          "justNow": "À l'instant",
+          "minutesAgo": "{count, plural, one {Il y a # minute} other {Il y a # minutes}}",
+          "hoursAgo": "{count, plural, one {Il y a # heure} other {Il y a # heures}}",
+          "daysAgo": "{count, plural, one {Il y a # jour} other {Il y a # jours}}",
+          "weeksAgo": "{count, plural, one {Il y a # semaine} other {Il y a # semaines}}",
+          "monthsAgo": "{count, plural, one {Il y a # mois} other {Il y a # mois}}"
+        }
       }
     }
-  }
   },
   "Common": {
     "appName": "Stade Tan-Tan",

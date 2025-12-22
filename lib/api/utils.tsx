@@ -167,19 +167,24 @@ export function getLocalizedText<
     messageAr?: string | null;
   }
 >(notification: T, locale: TLocale) {
+  // التحقق من وجود جميع الحقول
   const titleEn = notification.titleEn || '';
+  const titleFr = notification.titleFr || titleEn;
+  const titleAr = notification.titleAr || titleEn;
   const messageEn = notification.messageEn || '';
+  const messageFr = notification.messageFr || messageEn;
+  const messageAr = notification.messageAr || messageEn;
 
   switch (locale) {
     case 'fr':
       return {
-        title: notification.titleFr || titleEn,
-        message: notification.messageFr || messageEn,
+        title: titleFr,
+        message: messageFr,
       };
     case 'ar':
       return {
-        title: notification.titleAr || titleEn,
-        message: notification.messageAr || messageEn,
+        title: titleAr,
+        message: messageAr,
       };
     default: // en
       return {
@@ -188,7 +193,6 @@ export function getLocalizedText<
       };
   }
 }
-
 
 
 
