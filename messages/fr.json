@@ -178,7 +178,12 @@
       "form": {
         "title": "Envoyez-nous un Message",
         "subtitle": "Remplissez le formulaire ci-dessous et nous vous répondrons dans les 24 heures",
-
+"errorTitle": "Erreur",
+    "checkFieldsMessage": "Veuillez vérifier le formulaire et corriger les erreurs",
+    "successTitle": "Succès !",
+    "successDescription": "Votre message a été envoyé avec succès",
+    "sendingMessage": "Envoi de votre message...",
+    "pleaseWait": "Veuillez patienter",
         "fields": {
           "fullName": {
             "label": "Nom Complet",
@@ -470,7 +475,9 @@
   },
   "Common": {
     "appName": "Stade Tan-Tan",
-    "appSubName": "Clubs et Équipes Sportives"
+    "appSubName": "Clubs et Équipes Sportives", "errorTitle": "Erreur",
+    "errorMessage": "Quelque chose s'est mal passé",
+    "validationError": "Erreur de validation"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Choisir la Langue"

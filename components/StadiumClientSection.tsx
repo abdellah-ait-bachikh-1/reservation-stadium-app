@@ -114,7 +114,7 @@ const StadiumClientSection = ({
   const [stadiums, setStadiums] = useState(initialStadiums);
   const [pagination, setPagination] = useState(initialPagination);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  
+
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showSearchSpinner, setShowSearchSpinner] = useState(false);
@@ -125,10 +125,10 @@ const StadiumClientSection = ({
     if (filtersSectionRef.current) {
       const filtersTop = filtersSectionRef.current.offsetTop;
       const headerOffset = 80; // Account for fixed header if you have one
-      
+
       window.scrollTo({
         top: filtersTop - headerOffset,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, []);
@@ -138,10 +138,10 @@ const StadiumClientSection = ({
     if (resultsSectionRef.current) {
       const resultsTop = resultsSectionRef.current.offsetTop;
       const headerOffset = 80; // Account for fixed header if you have one
-      
+
       window.scrollTo({
         top: resultsTop - headerOffset,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, []);
@@ -156,7 +156,7 @@ const StadiumClientSection = ({
       scrollTo?: "filters" | "results";
     }) => {
       const urlParams = new URLSearchParams(searchParams.toString());
-      
+
       // Update search parameter
       if (params.search !== undefined) {
         if (params.search.trim()) {
@@ -165,12 +165,12 @@ const StadiumClientSection = ({
           urlParams.delete("search");
         }
       }
-      
+
       // Update sports parameters
       if (params.sports !== undefined) {
         // Remove existing sports params
         urlParams.delete("sports");
-        
+
         // Add new sports params
         if (params.sports.length > 0) {
           params.sports.forEach((sport) => {
@@ -178,7 +178,7 @@ const StadiumClientSection = ({
           });
         }
       }
-      
+
       // Update page parameter
       if (params.page !== undefined) {
         if (params.page > 1) {
@@ -190,13 +190,13 @@ const StadiumClientSection = ({
         // Reset to page 1 when filters change
         urlParams.delete("page");
       }
-      
+
       const url = urlParams.toString()
         ? `${pathname}?${urlParams.toString()}`
         : pathname;
-      
+
       router.replace(url, { scroll: false }); // Don't let Next.js auto-scroll
-      
+
       // Handle scrolling manually
       if (params.scrollTo === "filters") {
         // Use setTimeout to ensure DOM is updated
@@ -261,7 +261,7 @@ const StadiumClientSection = ({
       }
 
       setSelectedKeys(selectedKeysSet);
-      
+
       // Update URL with sports filter and reset to page 1
       updateURL({
         search: searchValue,
@@ -278,14 +278,14 @@ const StadiumClientSection = ({
     (page: number) => {
       setIsPaginationLoading(true);
       setCurrentPage(page);
-      
+
       updateURL({
         search: searchValue,
         sports: Array.from(selectedKeys),
         page: page,
         scrollTo: "filters", // Scroll to filters when changing page
       });
-      
+
       // Quick loading state
       setTimeout(() => {
         setIsPaginationLoading(false);
@@ -302,7 +302,7 @@ const StadiumClientSection = ({
 
     setSearchValue("");
     setSelectedKeys(new Set());
-    
+
     // Reset to page 1 and clear all filters
     updateURL({
       search: "",
@@ -310,7 +310,7 @@ const StadiumClientSection = ({
       resetPagination: true,
       scrollTo: "filters", // Scroll to filters when clearing
     });
-    
+
     setShowSearchSpinner(false);
   }, [updateURL]);
 
@@ -338,58 +338,58 @@ const StadiumClientSection = ({
   }, [selectedKeys, updateURL]);
 
   // Fetch data when URL params change (for initial load and back/forward navigation)
- const fetchData = useCallback(async () => {
-  const search = searchParams.get("search") || "";
-  const sports = searchParams.getAll("sports") || [];
-  const page = parseInt(searchParams.get("page") || "1");
-  
-  setIsCardsLoading(true);
-  
-  try {
-    const queryParams = new URLSearchParams();
-    if (search) queryParams.set("search", search);
-    if (sports.length > 0) {
-      sports.forEach(sport => queryParams.append("sports", sport));
+  const fetchData = useCallback(async () => {
+    const search = searchParams.get("search") || "";
+    const sports = searchParams.getAll("sports") || [];
+    const page = parseInt(searchParams.get("page") || "1");
+
+    setIsCardsLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (search) queryParams.set("search", search);
+      if (sports.length > 0) {
+        sports.forEach((sport) => queryParams.append("sports", sport));
+      }
+      if (page > 1) queryParams.set("page", page.toString());
+      // ADD THIS LINE - pass the current locale
+      queryParams.set("locale", locale);
+
+      const response = await fetch(`/api/stadiums?${queryParams.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setStadiums(data.data);
+        setPagination(data.pagination);
+        setCurrentPage(page);
+      }
+    } catch (error) {
+      console.error("Error fetching stadiums:", error);
+    } finally {
+      setIsCardsLoading(false);
     }
-    if (page > 1) queryParams.set("page", page.toString());
-    // ADD THIS LINE - pass the current locale
-    queryParams.set("locale", locale);
-    
-    const response = await fetch(`/api/stadiums?${queryParams.toString()}`);
-    if (response.ok) {
-      const data = await response.json();
-      setStadiums(data.data);
-      setPagination(data.pagination);
-      setCurrentPage(page);
-    }
-  } catch (error) {
-    console.error("Error fetching stadiums:", error);
-  } finally {
-    setIsCardsLoading(false);
-  }
-}, [searchParams, locale]);
+  }, [searchParams, locale]);
 
   // Initialize from URL params on mount
   useEffect(() => {
     // Only run once on mount
     if (isInitialized) return;
-    
+
     const search = searchParams.get("search") || "";
     const sports = searchParams.getAll("sports") || [];
     const page = parseInt(searchParams.get("page") || "1");
-    
+
     // Set initial values from URL
     setSearchValue(search);
     setSelectedKeys(new Set(sports));
     setCurrentPage(page);
-    
+
     setIsInitialized(true);
   }, [searchParams, isInitialized]);
 
   // Fetch new data when URL params change
   useEffect(() => {
     if (!isInitialized) return;
-    
+
     fetchData();
   }, [searchParams, isInitialized, fetchData]);
 
@@ -552,9 +552,13 @@ const StadiumClientSection = ({
         {pagination.totalItems > 0 && (
           <div className="mb-6 text-gray-600 dark:text-gray-400">
             <p>
-              {translations.pagination.showing} <span className="font-semibold">{showingFrom}</span> {translations.pagination.to}{" "}
-              <span className="font-semibold">{showingTo}</span> {translations.pagination.of}{" "}
-              <span className="font-semibold">{pagination.totalItems}</span> {translations.pagination.results}
+              {translations.pagination.showing}{" "}
+              <span className="font-semibold">{showingFrom}</span>{" "}
+              {translations.pagination.to}{" "}
+              <span className="font-semibold">{showingTo}</span>{" "}
+              {translations.pagination.of}{" "}
+              <span className="font-semibold">{pagination.totalItems}</span>{" "}
+              {translations.pagination.results}
             </p>
           </div>
         )}
@@ -617,27 +621,28 @@ const StadiumClientSection = ({
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div
-              className="flex items-center justify-center "
-              >
+              <div className="flex items-center justify-center ">
                 <Pagination
                   total={pagination.totalPages}
                   page={currentPage}
                   onChange={handlePageChange}
                   showControls
                   showShadow
-                  classNames={{next:"rtl:rotate-180", prev:"rtl:rotate-180"}}
+                  classNames={{
+                    next: "rtl:rotate-180",
+                    prev: "rtl:rotate-180",
+                  }}
                   color="default"
                   size="sm"
-                 
-                 
                   isDisabled={isPaginationLoading}
                 />
-                
+
                 {isPaginationLoading && (
                   <div className="flex items-center gap-2 text-gray-500">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                    <span>{translations.pagination.goToPage} {currentPage}...</span>
+                    <span>
+                      {translations.pagination.goToPage} {currentPage}...
+                    </span>
                   </div>
                 )}
               </div>

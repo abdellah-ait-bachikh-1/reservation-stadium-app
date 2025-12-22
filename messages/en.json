@@ -179,7 +179,12 @@
       "form": {
         "title": "Send Us a Message",
         "subtitle": "Fill out the form below and we'll get back to you within 24 hours",
-
+"errorTitle": "Error",
+      "checkFieldsMessage": "Please check the form and fix the errors",
+      "successTitle": "Success!",
+      "successDescription": "Your message has been sent successfully",
+      "sendingMessage": "Sending your message...",
+      "pleaseWait": "Please wait",
         "fields": {
           "fullName": {
             "label": "Full Name",
@@ -265,6 +270,7 @@
         "title": "Secure Communication",
         "description": "Your information is protected with industry-standard encryption. We never share your data with third parties."
       }
+      
     },
     "Stadiums": {
       "headTitle": "Available Stadiums",
@@ -322,7 +328,8 @@
         "perMonth": "per month",
         "type": "Stadium Type",
         "perSession": "Per Session",
-        "from": "from", "additionalSports": "Additional Sports",
+        "from": "from",
+        "additionalSports": "Additional Sports",
         "totalSports": "Total sports",
         "bestForOneTime": "Best for one-time bookings",
         "viewFullDetails": "View full details of",
@@ -344,7 +351,8 @@
         "description": "Contact our municipal sports department for booking inquiries, pricing, and availability",
         "contactSupport": "Contact Support",
         "bookNow": "Book a Stadium"
-      },"pagination": {
+      },
+      "pagination": {
         "showing": "Showing",
         "to": "to",
         "of": "of",
@@ -471,7 +479,9 @@
   },
   "Common": {
     "appName": "Stadium Tan-Tan",
-    "appSubName": "Sports Clubs & Teams"
+    "appSubName": "Sports Clubs & Teams", "errorTitle": "Error",
+    "errorMessage": "Something went wrong",
+    "validationError": "Validation Error"
   },
   "LanguageSwitcher": {
     "selectLanguage": "Select Language"

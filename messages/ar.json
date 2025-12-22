@@ -177,6 +177,12 @@
       "form": {
         "title": "أرسل لنا رسالة",
         "subtitle": "املأ النموذج أدناه وسنرد عليك خلال 24 ساعة",
+        "errorTitle": "خطأ",
+        "checkFieldsMessage": "يرجى التحقق من النموذج وتصحيح الأخطاء",
+        "successTitle": "نجاح!",
+        "successDescription": "تم إرسال رسالتك بنجاح",
+        "sendingMessage": "جاري إرسال رسالتك...",
+        "pleaseWait": "يرجى الانتظار",
 
         "fields": {
           "fullName": {
@@ -320,7 +326,8 @@
         "perMonth": "شهرياً",
         "type": "نوع الملعب",
         "perSession": "للساعة",
-        "from": "من","additionalSports": "الرياضات الإضافية",
+        "from": "من",
+        "additionalSports": "الرياضات الإضافية",
         "totalSports": "إجمالي الرياضات",
         "bestForOneTime": "أفضل للحجوزات لمرة واحدة",
         "viewFullDetails": "عرض التفاصيل الكاملة لـ",
@@ -342,7 +349,8 @@
         "description": "اتصل بقسم الرياضات البلدية لاستفسارات الحجز، الأسعار، والتوفر",
         "contactSupport": "اتصل بالدعم",
         "bookNow": "احجز ملعب"
-      }, "pagination": {
+      },
+      "pagination": {
         "showing": "عرض",
         "to": "إلى",
         "of": "من",
@@ -469,7 +477,10 @@
   },
   "Common": {
     "appName": "ملعب طانطان",
-    "appSubName": "الجمعيات الرياضية والفرق"
+    "appSubName": "الجمعيات الرياضية والفرق",
+    "errorTitle": "خطأ",
+    "errorMessage": "حدث خطأ ما",
+    "validationError": "خطأ في التحقق"
   },
   "LanguageSwitcher": {
     "selectLanguage": "اختر اللغة"
