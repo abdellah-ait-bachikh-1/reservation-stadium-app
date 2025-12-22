@@ -480,12 +480,17 @@
       "markAllRead": "تحديد الكل كمقروء",
       "noNotifications": "لا توجد إشعارات حتى الآن",
       "viewAll": "عرض جميع الإشعارات",
+      "from": "من: {name}",
+      "loading": "جارٍ تحميل الإشعارات...",
+      "retry": "إعادة المحاولة",
+      "error": "فشل تحميل الإشعارات",
       "types": {
         "account": "حساب",
         "reservation": "حجز",
         "payment": "دفع",
+        "system": "نظام",
         "email": "بريد إلكتروني",
-        "system": "نظام"
+        "club": "نادي"
       },
       "time": {
         "justNow": "الآن",

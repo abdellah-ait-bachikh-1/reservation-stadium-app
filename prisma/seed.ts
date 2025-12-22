@@ -499,6 +499,447 @@ async function main() {
   console.log("   3. Navigate through all 11 pages");
   console.log("   4. Test combinations of search + filters");
   console.log("=".repeat(50));
+    // =================== ADD NOTIFICATIONS SEEDING ===================
+  console.log("\n🔔 Creating notifications...");
+  
+  // Get admin and all club users
+  const adminUser = await prisma.user.findFirst({
+    where: { email: "admin@stadium.com" },
+  });
+  
+  const allUsers = await prisma.user.findMany();
+  const clubUsers = allUsers.filter(user => user.role === "CLUB");
+
+  if (!adminUser) {
+    console.error("❌ Admin user not found!");
+    return;
+  }
+
+  // Create notifications for different scenarios
+  const notificationsToCreate = [];
+
+  // 1. Account related notifications (for club users)
+  for (const clubUser of clubUsers.slice(0, 5)) {
+    notificationsToCreate.push({
+      type: "ACCOUNT_APPROVED",
+      title: "Account Approved",
+      message: "Your account has been approved. You can now make reservations.",
+      isRead: false,
+      userId: clubUser.id,
+      actorUserId: adminUser.id,
+      metadata: {
+        userId: clubUser.id,
+        approvedAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+    });
+  }
+
+  // 2. Reservation notifications (for admin)
+  for (let i = 0; i < 8; i++) {
+    const randomClub = getRandomItem(clubUsers);
+    const randomStadium = getRandomItem(stadiums);
+    
+    notificationsToCreate.push({
+      type: "NEW_RESERVATION_REQUEST",
+      title: "New Reservation Request",
+      message: `New reservation request for ${randomStadium.nameFr}`,
+      isRead: i < 4, // Half read, half unread
+      userId: adminUser.id,
+      actorUserId: randomClub.id,
+      metadata: {
+        stadiumId: randomStadium.id,
+        stadiumName: randomStadium.nameFr,
+        clubId: randomClub.id,
+        requestedAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - i * 3 * 60 * 60 * 1000), // Staggered times
+    });
+  }
+
+  // 3. Payment notifications (for club users)
+  for (let i = 0; i < 6; i++) {
+    const randomClub = getRandomItem(clubUsers);
+    
+    notificationsToCreate.push({
+      type: "PAYMENT_RECEIVED",
+      title: "Payment Received",
+      message: "Your monthly subscription payment has been recorded",
+      isRead: i < 3,
+      userId: randomClub.id,
+      actorUserId: adminUser.id,
+      metadata: {
+        amount: randomPrice(100, 300),
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+        recordedAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - i * 12 * 60 * 60 * 1000),
+    });
+  }
+
+  // 4. Reservation status notifications (for club users)
+  for (let i = 0; i < 5; i++) {
+    const randomClub = getRandomItem(clubUsers);
+    const randomStadium = getRandomItem(stadiums);
+    const statuses = ["APPROVED", "DECLINED", "CANCELLED"];
+    const randomStatus = getRandomItem(statuses);
+    
+    notificationsToCreate.push({
+      type: `RESERVATION_${randomStatus}` as any,
+      title: `Reservation ${randomStatus}`,
+      message: `Your reservation for ${randomStadium.nameFr} has been ${randomStatus.toLowerCase()}`,
+      isRead: false,
+      userId: randomClub.id,
+      actorUserId: adminUser.id,
+      metadata: {
+        stadiumId: randomStadium.id,
+        stadiumName: randomStadium.nameFr,
+        status: randomStatus,
+        updatedAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - i * 6 * 60 * 60 * 1000),
+    });
+  }
+
+  // 5. Club registration notifications (for admin)
+  for (let i = 0; i < 4; i++) {
+    const randomClub = getRandomItem(clubUsers);
+    const club = await prisma.club.findFirst({
+      where: { userId: randomClub.id },
+    });
+    
+    if (club) {
+      notificationsToCreate.push({
+        type: "CLUB_REGISTRATION_SUBMITTED",
+        title: "New Club Registration",
+        message: `${club.nameFr} has submitted registration for approval`,
+        isRead: i < 2,
+        userId: adminUser.id,
+        actorUserId: randomClub.id,
+        metadata: {
+          clubId: club.id,
+          clubName: club.nameFr,
+          submittedAt: new Date().toISOString(),
+        },
+        createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000), // Staggered by days
+      });
+    }
+  }
+
+  // 6. System notifications (for all users)
+  const systemNotifications = [
+    {
+      type: "SYSTEM_MAINTENANCE",
+      title: "System Maintenance",
+      message: "Scheduled maintenance tonight at 2:00 AM",
+      isRead: true,
+    },
+    {
+      type: "NEW_FEATURE",
+      title: "New Feature Available",
+      message: "Check out the new reservation calendar feature",
+      isRead: false,
+    },
+    {
+      type: "ANNOUNCEMENT",
+      title: "Important Announcement",
+      message: "New stadium booking policies have been updated",
+      isRead: true,
+    },
+  ];
+
+  for (const sysNotif of systemNotifications) {
+    // Add to admin
+    notificationsToCreate.push({
+      ...sysNotif,
+      userId: adminUser.id,
+      actorUserId: null,
+      metadata: {
+        announcementType: sysNotif.type,
+        publishedAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
+    });
+
+    // Add to a few club users
+    for (const clubUser of clubUsers.slice(0, 3)) {
+      notificationsToCreate.push({
+        ...sysNotif,
+        userId: clubUser.id,
+        actorUserId: null,
+        metadata: {
+          announcementType: sysNotif.type,
+          publishedAt: new Date().toISOString(),
+        },
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      });
+    }
+  }
+
+  // 7. Email notifications (for club users)
+  for (let i = 0; i < 3; i++) {
+    const randomClub = getRandomItem(clubUsers);
+    
+    notificationsToCreate.push({
+      type: "WELCOME_EMAIL",
+      title: "Welcome Email Sent",
+      message: "Account confirmation email delivered successfully",
+      isRead: true,
+      userId: randomClub.id,
+      actorUserId: null,
+      metadata: {
+        emailType: "welcome",
+        sentAt: new Date().toISOString(),
+      },
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+    });
+  }
+
+  console.log("\n🔔 Creating notifications...");
+
+// ... (الكود كما هو حتى إنشاء الإشعارات)
+
+// Helper function to get translations for all languages
+function getTranslations(
+  type: string,
+  title: string,
+  message: string
+): {
+  titleEn: string;
+  titleFr: string;
+  titleAr: string;
+  messageEn: string;
+  messageFr: string;
+  messageAr: string;
+} {
+  // Default translations (use English as base)
+  const translations: Record<
+    string,
+    {
+      titleEn: string;
+      titleFr: string;
+      titleAr: string;
+      messageEn: string;
+      messageFr: string;
+      messageAr: string;
+    }
+  > = {
+    ACCOUNT_APPROVED: {
+      titleEn: "Account Approved",
+      titleFr: "Compte Approuvé",
+      titleAr: "تمت الموافقة على الحساب",
+      messageEn: "Your account has been approved. You can now make reservations.",
+      messageFr: "Votre compte a été approuvé. Vous pouvez maintenant effectuer des réservations.",
+      messageAr: "تمت الموافقة على حسابك. يمكنك الآن إجراء الحجوزات.",
+    },
+    NEW_RESERVATION_REQUEST: {
+      titleEn: "New Reservation Request",
+      titleFr: "Nouvelle Demande de Réservation",
+      titleAr: "طلب حجز جديد",
+      messageEn: "New reservation request for {{stadium}}",
+      messageFr: "Nouvelle demande de réservation pour {{stadium}}",
+      messageAr: "طلب حجز جديد لـ {{stadium}}",
+    },
+    PAYMENT_RECEIVED: {
+      titleEn: "Payment Received",
+      titleFr: "Paiement Reçu",
+      titleAr: "تم استلام الدفع",
+      messageEn: "Your monthly subscription payment has been recorded",
+      messageFr: "Votre paiement d'abonnement mensuel a été enregistré",
+      messageAr: "تم تسجيل دفعة الاشتراك الشهرية الخاصة بك",
+    },
+    RESERVATION_APPROVED: {
+      titleEn: "Reservation Approved",
+      titleFr: "Réservation Approuvée",
+      titleAr: "تمت الموافقة على الحجز",
+      messageEn: "Your reservation for {{stadium}} has been approved",
+      messageFr: "Votre réservation pour {{stadium}} a été approuvée",
+      messageAr: "تمت الموافقة على حجزك لـ {{stadium}}",
+    },
+    RESERVATION_DECLINED: {
+      titleEn: "Reservation Declined",
+      titleFr: "Réservation Refusée",
+      titleAr: "تم رفض الحجز",
+      messageEn: "Your reservation for {{stadium}} has been declined",
+      messageFr: "Votre réservation pour {{stadium}} a été refusée",
+      messageAr: "تم رفض حجزك لـ {{stadium}}",
+    },
+    RESERVATION_CANCELLED: {
+      titleEn: "Reservation Cancelled",
+      titleFr: "Réservation Annulée",
+      titleAr: "تم إلغاء الحجز",
+      messageEn: "Your reservation for {{stadium}} has been cancelled",
+      messageFr: "Votre réservation pour {{stadium}} a été annulée",
+      messageAr: "تم إلغاء حجزك لـ {{stadium}}",
+    },
+    CLUB_REGISTRATION_SUBMITTED: {
+      titleEn: "New Club Registration",
+      titleFr: "Nouvelle Inscription de Club",
+      titleAr: "تسجيل نادي جديد",
+      messageEn: "{{club}} has submitted registration for approval",
+      messageFr: "{{club}} a soumis une inscription pour approbation",
+      messageAr: "قدم {{club}} طلب تسجيل للموافقة عليه",
+    },
+    SYSTEM_MAINTENANCE: {
+      titleEn: "System Maintenance",
+      titleFr: "Maintenance du Système",
+      titleAr: "صيانة النظام",
+      messageEn: "Scheduled maintenance tonight at 2:00 AM",
+      messageFr: "Maintenance planifiée ce soir à 2h00",
+      messageAr: "صيانة مجدولة الليلة في الساعة 2:00 صباحًا",
+    },
+    NEW_FEATURE: {
+      titleEn: "New Feature Available",
+      titleFr: "Nouvelle Fonctionnalité Disponible",
+      titleAr: "ميزة جديدة متاحة",
+      messageEn: "Check out the new reservation calendar feature",
+      messageFr: "Découvrez la nouvelle fonctionnalité du calendrier de réservation",
+      messageAr: "تحقق من ميزة التقويم الجديدة للحجوزات",
+    },
+    ANNOUNCEMENT: {
+      titleEn: "Important Announcement",
+      titleFr: "Annonce Importante",
+      titleAr: "إعلان مهم",
+      messageEn: "New stadium booking policies have been updated",
+      messageFr: "Les nouvelles politiques de réservation de stade ont été mises à jour",
+      messageAr: "تم تحديث سياسات حجز الملاعب الجديدة",
+    },
+    WELCOME_EMAIL: {
+      titleEn: "Welcome Email Sent",
+      titleFr: "Email de Bienvenue Envoyé",
+      titleAr: "تم إرسال بريد الترحيب",
+      messageEn: "Account confirmation email delivered successfully",
+      messageFr: "Email de confirmation de compte livré avec succès",
+      messageAr: "تم تسليم بريد تأكيد الحساب بنجاح",
+    },
+    ACCOUNT_CREATED: {
+      titleEn: "Account Created",
+      titleFr: "Compte Créé",
+      titleAr: "تم إنشاء الحساب",
+      messageEn: "Your account has been created successfully",
+      messageFr: "Votre compte a été créé avec succès",
+      messageAr: "تم إنشاء حسابك بنجاح",
+    },
+    PASSWORD_CHANGED: {
+      titleEn: "Password Changed",
+      titleFr: "Mot de Passe Modifié",
+      titleAr: "تم تغيير كلمة المرور",
+      messageEn: "Your password has been changed successfully",
+      messageFr: "Votre mot de passe a été modifié avec succès",
+      messageAr: "تم تغيير كلمة مرورك بنجاح",
+    },
+    EMAIL_VERIFIED: {
+      titleEn: "Email Verified",
+      titleFr: "Email Vérifié",
+      titleAr: "تم التحقق من البريد الإلكتروني",
+      messageEn: "Your email address has been verified",
+      messageFr: "Votre adresse email a été vérifiée",
+      messageAr: "تم التحقق من عنوان بريدك الإلكتروني",
+    },
+    MONTHLY_SUBSCRIPTION_PAYMENT: {
+      titleEn: "Monthly Subscription Payment",
+      titleFr: "Paiement d'Abonnement Mensuel",
+      titleAr: "دفعة الاشتراك الشهري",
+      messageEn: "Your monthly subscription payment is due",
+      messageFr: "Votre paiement d'abonnement mensuel est dû",
+      messageAr: "دفعة الاشتراك الشهرية الخاصة بك مستحقة",
+    },
+  };
+
+  // Return default translations if type exists, otherwise use provided values
+  if (translations[type]) {
+    return translations[type];
+  }
+
+  // Fallback: use provided title/message for all languages
+  return {
+    titleEn: title,
+    titleFr: title,
+    titleAr: title,
+    messageEn: message,
+    messageFr: message,
+    messageAr: message,
+  };
+}
+
+// Create all notifications
+for (const notifData of notificationsToCreate) {
+  // Get translations for all languages
+  const translations = getTranslations(notifData.type, notifData.title, notifData.message);
+  
+  // Replace placeholders in messages if needed
+  let messageEn = translations.messageEn;
+  let messageFr = translations.messageFr;
+  let messageAr = translations.messageAr;
+  
+  // Replace {{stadium}} placeholder if present
+  if (notifData.metadata?.stadiumName) {
+    const stadiumName = notifData.metadata.stadiumName;
+    messageEn = messageEn.replace("{{stadium}}", stadiumName);
+    messageFr = messageFr.replace("{{stadium}}", stadiumName);
+    messageAr = messageAr.replace("{{stadium}}", stadiumName);
+  }
+  
+  // Replace {{club}} placeholder if present
+  if (notifData.metadata?.clubName) {
+    const clubName = notifData.metadata.clubName;
+    messageEn = messageEn.replace("{{club}}", clubName);
+    messageFr = messageFr.replace("{{club}}", clubName);
+    messageAr = messageAr.replace("{{club}}", clubName);
+  }
+
+  const notificationData = {
+    type: notifData.type,
+    titleEn: translations.titleEn,
+    titleFr: translations.titleFr,
+    titleAr: translations.titleAr,
+    messageEn: messageEn,
+    messageFr: messageFr,
+    messageAr: messageAr,
+    isRead: notifData.isRead,
+    userId: notifData.userId,
+    actorUserId: notifData.actorUserId,
+    metadata: notifData.metadata,
+    createdAt: notifData.createdAt,
+  };
+
+  await prisma.notification.create({
+    data: notificationData,
+  });
+}
+
+console.log(`✅ Created ${notificationsToCreate.length} notifications`);
+  // =================== END NOTIFICATIONS SEEDING ===================
+
+  console.log("=".repeat(50));
+  console.log("\n🔔 NOTIFICATION SUMMARY:");
+  console.log("=".repeat(50));
+  
+  // Count notifications by user
+  const userNotifications = await prisma.notification.groupBy({
+    by: ['userId'],
+    _count: {
+      id: true,
+    },
+    where: {
+      userId: {
+        in: [adminUser.id, ...clubUsers.slice(0, 3).map(u => u.id)],
+      },
+    },
+  });
+  
+  for (const userNotif of userNotifications) {
+    const user = allUsers.find(u => u.id === userNotif.userId);
+    const unreadCount = await prisma.notification.count({
+      where: {
+        userId: userNotif.userId,
+        isRead: false,
+      },
+    });
+    
+    console.log(`   ${user?.email}: ${userNotif._count.id} total, ${unreadCount} unread`);
+  }
 }
 
 export async function seed() {

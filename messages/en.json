@@ -476,19 +476,24 @@
       "allRightsReserved": "All rights reserved.",
       "designedFor": "Designed for sports clubs and teams"
     },
-     "Dashboard": {
+    "Dashboard": {
     "Notifications": {
       "title": "Notifications",
       "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
       "markAllRead": "Mark all read",
       "noNotifications": "No notifications yet",
       "viewAll": "View all notifications",
+      "from": "From: {name}",
+      "loading": "Loading notifications...",
+      "retry": "Retry",
+      "error": "Failed to load notifications",
       "types": {
         "account": "Account",
         "reservation": "Reservation",
         "payment": "Payment",
+        "system": "System",
         "email": "Email",
-        "system": "System"
+        "club": "Club"
       },
       "time": {
         "justNow": "Just now",
