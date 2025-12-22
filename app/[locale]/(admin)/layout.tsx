@@ -7,6 +7,9 @@ import { Metadata } from "next";
 import { APP_NAME } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
 import { cn } from "@heroui/theme";
+import Aside from "@/components/dashboard/Aside";
+import Header from "@/components/dashboard/Header";
+import { SidebarProvider } from "@/components/provider/SidebarProvider";
 
 export async function generateMetadata({
   params,
@@ -48,19 +51,34 @@ export default async function LocaleLayout({
   const isRTL = locale === "ar";
 
   return (
-    <html lang={locale} dir={isRTL ? "rtl" : "ltr"}>
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
         className={cn(
           `${inter.className}`,
-          // "bg-linear-to-br from-stone-50 via-gray-200 to-stone-200",
-          "bg-linear-to-r from-amber-100 via-rose-100 to-red-200",
-          "dark:bg-linear-to-br dark:from-gray-900 dark:via-slate-800 dark:to-slate-900",
+          "bg-white", // Light mode background
+          "dark:bg-gray-800", // Dark mode background
           "transition-colors duration-500 ease-in-out bg-fixed min-h-screen overflow-y-auto"
         )}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers locale={locale}>
-            <main className="min-h-[calc(100vh-96px)]">{children}</main>
+          <Providers locale={locale} className="relative h-full w-full">
+            <SidebarProvider>
+              <div className="flex min-h-screen">
+                <Aside />
+                <section
+                  className={cn(
+                    "flex-1 flex flex-col"
+                  )}
+              
+                >
+                  <Header />
+                  <main className="flex-1 p-2 md:p-3 ">
+                    {children}
+                  </main>
+                </section>
+              </div>
+            </SidebarProvider>
           </Providers>
         </NextIntlClientProvider>
       </body>

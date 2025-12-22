@@ -1,8 +1,9 @@
 import React from 'react'
 
 const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
+  return (<>
+    <div className='h-[200vh]'>Dashboard</div>
+    </>
   )
 }
 

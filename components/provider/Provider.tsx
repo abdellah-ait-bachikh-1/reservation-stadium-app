@@ -7,15 +7,16 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import {SessionProvider} from 'next-auth/react'
 export function Providers({
   children,
-  locale,
+  locale,className
 }: {
   children: React.ReactNode;
   locale: string;
+  className?:string
 }) {
   return (
     <AuthContextProvider>
       <SessionProvider>
-      <HeroUIProvider locale={locale} className="min-h-screen w-fullz-99999">
+      <HeroUIProvider locale={locale} className={`min-h-screen w-fullz-99999 ${className}`}>
         <NextThemesProvider
           attribute="class"
           defaultTheme="light"

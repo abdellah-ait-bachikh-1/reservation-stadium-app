@@ -27,6 +27,7 @@
     "@heroui/dropdown": "^2.3.27",
     "@heroui/image": "^2.2.18",
     "@heroui/input": "^2.4.29",
+    "@heroui/navbar": "^2.2.27",
     "@heroui/pagination": "^2.2.26",
     "@heroui/progress": "^2.2.23",
     "@heroui/select": "^2.4.29",
