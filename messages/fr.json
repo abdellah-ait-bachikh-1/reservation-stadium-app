@@ -343,6 +343,15 @@
         "description": "Contactez notre département des sports municipaux pour les demandes de réservation, tarifs et disponibilités",
         "contactSupport": "Contacter le Support",
         "bookNow": "Réserver un Stade"
+      }, "pagination": {
+        "showing": "Affichage",
+        "to": "à",
+        "of": "sur",
+        "results": "résultats",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "page": "Page",
+        "goToPage": "Aller à la page"
       }
     },
     "VerifyPage": {

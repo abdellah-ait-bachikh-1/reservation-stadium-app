@@ -69,7 +69,7 @@ const StadiumCard = ({ stadium, locale, translations }: StadiumCardProps) => {
   };
 
   const handleViewDetails = () => {
-    router.push(`/stadiums/${stadium.id}`);
+router.push(`/${locale}/stadiums/${stadium.id}`);
   };
 
   // Get additional sports count

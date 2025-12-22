@@ -45,8 +45,8 @@ model Club {
   id             String   @id @default(uuid())
   nameAr         String
   nameFr         String
-  adressFr       String
-  adressAr       String
+  addressFr       String
+  addressAr       String
   monthlyFee     Decimal  @default(100) @db.Decimal(10, 2)
   paymentDueDay  Int      @default(5)
 
@@ -83,8 +83,8 @@ model Stadium {
   id              String   @id @default(uuid())
   nameAr          String
   nameFr          String
-  adressfr        String
-  adressAr        String
+  addressFr        String
+  addressAr        String
   googleMapsUrl   String
   monthlyPrice    Decimal  @db.Decimal(10, 2)
   pricePerSession Decimal  @db.Decimal(10, 2)

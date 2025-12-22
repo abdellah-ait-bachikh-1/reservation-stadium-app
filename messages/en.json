@@ -344,6 +344,15 @@
         "description": "Contact our municipal sports department for booking inquiries, pricing, and availability",
         "contactSupport": "Contact Support",
         "bookNow": "Book a Stadium"
+      },"pagination": {
+        "showing": "Showing",
+        "to": "to",
+        "of": "of",
+        "results": "results",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "goToPage": "Going to page"
       }
     },
     "VerifyPage": {

@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
+import { Pagination } from "@heroui/pagination";
 import {
   FaSearch,
   FaFilter,
@@ -17,11 +18,19 @@ import StadiumCardSkeleton from "@/components/StadiumCardSkeleton";
 
 interface StadiumClientSectionProps {
   locale: string;
-  allStadiums: any[];
+  initialStadiums: any[];
   allSports: any[];
   initialSelectedSports: string[];
   initialSearchTerm: string;
-  initialFilteredStadiums: any[];
+  initialPagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+  initialPage: number;
   translations: {
     allStadiums: string;
     total: string;
@@ -63,16 +72,27 @@ interface StadiumClientSectionProps {
     actions: {
       viewDetails: string;
     };
+    pagination: {
+      showing: string;
+      to: string;
+      of: string;
+      results: string;
+      previous: string;
+      next: string;
+      page: string;
+      goToPage: string;
+    };
   };
 }
 
 const StadiumClientSection = ({
   locale,
-  allStadiums,
+  initialStadiums,
   allSports,
   initialSelectedSports,
   initialSearchTerm,
-  initialFilteredStadiums,
+  initialPagination,
+  initialPage,
   translations,
 }: StadiumClientSectionProps) => {
   const isRTL = locale === "ar";
@@ -80,68 +100,113 @@ const StadiumClientSection = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Get current search params from URL (client-side)
-  const currentSearchParam = searchParams.get("search") || "";
-  const currentSportsParam = searchParams.getAll("sports") || [];
-  
-  // FIXED: Check if we're on client side before using searchParams
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
-  const [isCardsLoading, setIsCardsLoading] = useState(false);
-  const [filteredStadiums, setFilteredStadiums] = useState(
-    initialFilteredStadiums
+  // Refs for scrolling
+  const filtersSectionRef = useRef<HTMLDivElement>(null);
+  const resultsSectionRef = useRef<HTMLDivElement>(null);
+
+  // State variables
+  const [searchValue, setSearchValue] = useState(initialSearchTerm);
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+    new Set(initialSelectedSports)
   );
+  const [isCardsLoading, setIsCardsLoading] = useState(false);
+  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
+  const [stadiums, setStadiums] = useState(initialStadiums);
+  const [pagination, setPagination] = useState(initialPagination);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showSearchSpinner, setShowSearchSpinner] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Update URL when filters change
+  // Scroll to filters section smoothly
+  const scrollToFilters = useCallback(() => {
+    if (filtersSectionRef.current) {
+      const filtersTop = filtersSectionRef.current.offsetTop;
+      const headerOffset = 80; // Account for fixed header if you have one
+      
+      window.scrollTo({
+        top: filtersTop - headerOffset,
+        behavior: "smooth"
+      });
+    }
+  }, []);
+
+  // Scroll to results section
+  const scrollToResults = useCallback(() => {
+    if (resultsSectionRef.current) {
+      const resultsTop = resultsSectionRef.current.offsetTop;
+      const headerOffset = 80; // Account for fixed header if you have one
+      
+      window.scrollTo({
+        top: resultsTop - headerOffset,
+        behavior: "smooth"
+      });
+    }
+  }, []);
+
+  // Update URL when filters or page change
   const updateURL = useCallback(
-    (search: string, sportIds: string[]) => {
-      const params = new URLSearchParams();
-
-      if (search.trim()) {
-        params.set("search", search.trim());
+    (params: {
+      search?: string;
+      sports?: string[];
+      page?: number;
+      resetPagination?: boolean;
+      scrollTo?: "filters" | "results";
+    }) => {
+      const urlParams = new URLSearchParams(searchParams.toString());
+      
+      // Update search parameter
+      if (params.search !== undefined) {
+        if (params.search.trim()) {
+          urlParams.set("search", params.search.trim());
+        } else {
+          urlParams.delete("search");
+        }
       }
-
-      if (sportIds.length > 0) {
-        sportIds.forEach((sport) => {
-          params.append("sports", sport);
-        });
+      
+      // Update sports parameters
+      if (params.sports !== undefined) {
+        // Remove existing sports params
+        urlParams.delete("sports");
+        
+        // Add new sports params
+        if (params.sports.length > 0) {
+          params.sports.forEach((sport) => {
+            urlParams.append("sports", sport);
+          });
+        }
       }
-
-      const url = params.toString()
-        ? `${pathname}?${params.toString()}`
+      
+      // Update page parameter
+      if (params.page !== undefined) {
+        if (params.page > 1) {
+          urlParams.set("page", params.page.toString());
+        } else {
+          urlParams.delete("page");
+        }
+      } else if (params.resetPagination) {
+        // Reset to page 1 when filters change
+        urlParams.delete("page");
+      }
+      
+      const url = urlParams.toString()
+        ? `${pathname}?${urlParams.toString()}`
         : pathname;
-      router.replace(url, { scroll: false });
-    },
-    [router, pathname]
-  );
-
-  // Client-side filtering function
-  const filterStadiums = useCallback(
-    (search: string, sportIds: string[]) => {
-      let results = [...allStadiums];
-
-      if (sportIds.length > 0) {
-        results = results.filter((stadium) =>
-          stadium.sports.some((sport: any) => sportIds.includes(sport.id))
-        );
+      
+      router.replace(url, { scroll: false }); // Don't let Next.js auto-scroll
+      
+      // Handle scrolling manually
+      if (params.scrollTo === "filters") {
+        // Use setTimeout to ensure DOM is updated
+        setTimeout(scrollToFilters, 100);
+      } else if (params.scrollTo === "results") {
+        // Use setTimeout to ensure DOM is updated
+        setTimeout(scrollToResults, 100);
       }
-
-      if (search.trim()) {
-        const term = search.toLowerCase().trim();
-        results = results.filter(
-          (stadium) =>
-            stadium.name.toLowerCase().includes(term) ||
-            stadium.address.toLowerCase().includes(term)
-        );
-      }
-
-      return results;
     },
-    [allStadiums]
+    [router, pathname, searchParams, scrollToFilters, scrollToResults]
   );
 
   // Handle search input change with debouncing
@@ -161,13 +226,16 @@ const StadiumClientSection = ({
       // Create new timeout for debouncing
       searchTimeoutRef.current = setTimeout(() => {
         const sportArray = Array.from(selectedKeys);
-        const filtered = filterStadiums(value, sportArray);
-        setFilteredStadiums(filtered);
-        updateURL(value, sportArray);
+        updateURL({
+          search: value,
+          sports: sportArray,
+          resetPagination: true,
+          scrollTo: "filters", // Scroll to filters when searching
+        });
         setShowSearchSpinner(false);
-      }, 300);
+      }, 500);
     },
-    [selectedKeys, filterStadiums, updateURL]
+    [selectedKeys, updateURL]
   );
 
   // Handle sport selection change
@@ -177,8 +245,6 @@ const StadiumClientSection = ({
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
-
-      setIsCardsLoading(true);
 
       let sportArray: string[];
       let selectedKeysSet: Set<string>;
@@ -195,18 +261,37 @@ const StadiumClientSection = ({
       }
 
       setSelectedKeys(selectedKeysSet);
+      
+      // Update URL with sports filter and reset to page 1
+      updateURL({
+        search: searchValue,
+        sports: sportArray,
+        resetPagination: true,
+        scrollTo: "filters", // Scroll to filters when changing sports
+      });
+    },
+    [searchValue, updateURL]
+  );
 
-      // Filter and update
-      const filtered = filterStadiums(searchValue, sportArray);
-      setFilteredStadiums(filtered);
-      updateURL(searchValue, sportArray);
-
-      // Quick loading state for cards only
+  // Handle page change
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setIsPaginationLoading(true);
+      setCurrentPage(page);
+      
+      updateURL({
+        search: searchValue,
+        sports: Array.from(selectedKeys),
+        page: page,
+        scrollTo: "filters", // Scroll to filters when changing page
+      });
+      
+      // Quick loading state
       setTimeout(() => {
-        setIsCardsLoading(false);
+        setIsPaginationLoading(false);
       }, 200);
     },
-    [searchValue, filterStadiums, updateURL]
+    [searchValue, selectedKeys, updateURL]
   );
 
   // Clear all filters
@@ -217,11 +302,17 @@ const StadiumClientSection = ({
 
     setSearchValue("");
     setSelectedKeys(new Set());
-    setFilteredStadiums(allStadiums);
+    
+    // Reset to page 1 and clear all filters
+    updateURL({
+      search: "",
+      sports: [],
+      resetPagination: true,
+      scrollTo: "filters", // Scroll to filters when clearing
+    });
+    
     setShowSearchSpinner(false);
-    setIsCardsLoading(false);
-    router.replace(pathname, { scroll: false });
-  }, [allStadiums, router, pathname]);
+  }, [updateURL]);
 
   // Clear search input
   const handleClearSearch = useCallback(() => {
@@ -233,15 +324,50 @@ const StadiumClientSection = ({
     }
 
     const sportArray = Array.from(selectedKeys);
-    const filtered = filterStadiums("", sportArray);
-    setFilteredStadiums(filtered);
-    updateURL("", sportArray);
+    updateURL({
+      search: "",
+      sports: sportArray,
+      resetPagination: true,
+      scrollTo: "filters", // Scroll to filters when clearing search
+    });
 
     // Focus back on input after clearing
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [selectedKeys, filterStadiums, updateURL]);
+  }, [selectedKeys, updateURL]);
+
+  // Fetch data when URL params change (for initial load and back/forward navigation)
+ const fetchData = useCallback(async () => {
+  const search = searchParams.get("search") || "";
+  const sports = searchParams.getAll("sports") || [];
+  const page = parseInt(searchParams.get("page") || "1");
+  
+  setIsCardsLoading(true);
+  
+  try {
+    const queryParams = new URLSearchParams();
+    if (search) queryParams.set("search", search);
+    if (sports.length > 0) {
+      sports.forEach(sport => queryParams.append("sports", sport));
+    }
+    if (page > 1) queryParams.set("page", page.toString());
+    // ADD THIS LINE - pass the current locale
+    queryParams.set("locale", locale);
+    
+    const response = await fetch(`/api/stadiums?${queryParams.toString()}`);
+    if (response.ok) {
+      const data = await response.json();
+      setStadiums(data.data);
+      setPagination(data.pagination);
+      setCurrentPage(page);
+    }
+  } catch (error) {
+    console.error("Error fetching stadiums:", error);
+  } finally {
+    setIsCardsLoading(false);
+  }
+}, [searchParams, locale]);
 
   // Initialize from URL params on mount
   useEffect(() => {
@@ -250,47 +376,29 @@ const StadiumClientSection = ({
     
     const search = searchParams.get("search") || "";
     const sports = searchParams.getAll("sports") || [];
+    const page = parseInt(searchParams.get("page") || "1");
     
-    console.log("Initializing from URL:", { search, sports });
+    // Set initial values from URL
+    setSearchValue(search);
+    setSelectedKeys(new Set(sports));
+    setCurrentPage(page);
     
-    // Set initial values from URL - use a slight delay to ensure component is mounted
-    setTimeout(() => {
-      setSearchValue(search);
-      setSelectedKeys(new Set(sports));
-      
-      // Filter based on URL params
-      const filtered = filterStadiums(search, sports);
-      setFilteredStadiums(filtered);
-      
-      setIsInitialized(true);
-    }, 50);
-  }, [searchParams, filterStadiums, isInitialized]);
+    setIsInitialized(true);
+  }, [searchParams, isInitialized]);
 
-  // Also sync when URL params change (for browser back/forward)
+  // Fetch new data when URL params change
   useEffect(() => {
     if (!isInitialized) return;
     
-    const search = searchParams.get("search") || "";
-    const sports = searchParams.getAll("sports") || [];
-    
-    // Only update if values have changed
-    if (search !== searchValue) {
-      setSearchValue(search);
-    }
-    
-    const currentSportsArray = Array.from(selectedKeys);
-    const sportsSet = new Set(sports);
-    
-    // Check if sports have changed
-    if (sportsSet.size !== selectedKeys.size || 
-        !Array.from(sportsSet).every(sport => selectedKeys.has(sport))) {
-      setSelectedKeys(sportsSet);
-    }
-    
-    // Always re-filter when URL params change
-    const filtered = filterStadiums(search, sports);
-    setFilteredStadiums(filtered);
-  }, [searchParams, isInitialized, filterStadiums, searchValue, selectedKeys]);
+    fetchData();
+  }, [searchParams, isInitialized, fetchData]);
+
+  // Calculate showing range
+  const showingFrom = (currentPage - 1) * pagination.itemsPerPage + 1;
+  const showingTo = Math.min(
+    currentPage * pagination.itemsPerPage,
+    pagination.totalItems
+  );
 
   // Prepare sports for Select component
   const sportOptions = allSports.map((sport) => ({
@@ -301,7 +409,7 @@ const StadiumClientSection = ({
   return (
     <>
       {/* Search and Filter Section */}
-      <div className="mb-12">
+      <div ref={filtersSectionRef} className="mb-12">
         <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
@@ -397,12 +505,12 @@ const StadiumClientSection = ({
                         newKeys.delete(sportId);
                         setSelectedKeys(newKeys);
 
-                        const filtered = filterStadiums(
-                          searchValue,
-                          Array.from(newKeys)
-                        );
-                        setFilteredStadiums(filtered);
-                        updateURL(searchValue, Array.from(newKeys));
+                        updateURL({
+                          search: searchValue,
+                          sports: Array.from(newKeys),
+                          resetPagination: true,
+                          scrollTo: "filters",
+                        });
                       }}
                       className="text-gray-400 hover:text-gray-600"
                     >
@@ -425,7 +533,7 @@ const StadiumClientSection = ({
       </div>
 
       {/* All Stadiums Grid */}
-      <div>
+      <div ref={resultsSectionRef}>
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
             {translations.allStadiums}
@@ -434,20 +542,31 @@ const StadiumClientSection = ({
             <div className="flex items-center gap-2">
               <FaFilter className="text-gray-500" />
               <span className="text-gray-600 dark:text-gray-400">
-                {filteredStadiums.length} {translations.total}
+                {pagination.totalItems} {translations.total}
               </span>
             </div>
           </div>
         </div>
 
+        {/* Results summary */}
+        {pagination.totalItems > 0 && (
+          <div className="mb-6 text-gray-600 dark:text-gray-400">
+            <p>
+              {translations.pagination.showing} <span className="font-semibold">{showingFrom}</span> {translations.pagination.to}{" "}
+              <span className="font-semibold">{showingTo}</span> {translations.pagination.of}{" "}
+              <span className="font-semibold">{pagination.totalItems}</span> {translations.pagination.results}
+            </p>
+          </div>
+        )}
+
         {isCardsLoading ? (
           // Loading skeletons
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {Array.from({ length: pagination.itemsPerPage }).map((_, i) => (
               <StadiumCardSkeleton key={i} />
             ))}
           </div>
-        ) : filteredStadiums.length === 0 ? (
+        ) : stadiums.length === 0 ? (
           // No results message
           <div className="text-center py-12">
             <div className="inline-block p-8 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg mb-6">
@@ -468,32 +587,62 @@ const StadiumClientSection = ({
             </button>
           </div>
         ) : (
-          // Show filtered stadiums
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredStadiums.map((stadium) => (
-              <StadiumCard
-                stadium={stadium}
-                locale={locale}
-                key={stadium.id}
-                translations={{
-                  details: {
-                    monthlyRate: translations.details.monthlyRate,
-                    perMonth: translations.details.perMonth,
-                    type: translations.details.type,
-                    perSession: translations.details.perSession,
-                    from: translations.details.from,
-                    additionalSports: translations.details.additionalSports,
-                    totalSports: translations.details.totalSports,
-                    bestForOneTime: translations.details.bestForOneTime,
-                    viewFullDetails: translations.details.viewFullDetails,
-                    viewOnMaps: translations.details.viewOnMaps,
-                  },
-                  type: translations.type,
-                  actions: translations.actions,
-                }}
-              />
-            ))}
-          </div>
+          <>
+            {/* Show stadiums */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {stadiums.map((stadium) => (
+                <StadiumCard
+                  stadium={stadium}
+                  locale={locale}
+                  key={stadium.id}
+                  translations={{
+                    details: {
+                      monthlyRate: translations.details.monthlyRate,
+                      perMonth: translations.details.perMonth,
+                      type: translations.details.type,
+                      perSession: translations.details.perSession,
+                      from: translations.details.from,
+                      additionalSports: translations.details.additionalSports,
+                      totalSports: translations.details.totalSports,
+                      bestForOneTime: translations.details.bestForOneTime,
+                      viewFullDetails: translations.details.viewFullDetails,
+                      viewOnMaps: translations.details.viewOnMaps,
+                    },
+                    type: translations.type,
+                    actions: translations.actions,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
+              <div
+              className="flex items-center justify-center "
+              >
+                <Pagination
+                  total={pagination.totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  showControls
+                  showShadow
+                  classNames={{next:"rtl:rotate-180", prev:"rtl:rotate-180"}}
+                  color="default"
+                  size="sm"
+                 
+                 
+                  isDisabled={isPaginationLoading}
+                />
+                
+                {isPaginationLoading && (
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                    <span>{translations.pagination.goToPage} {currentPage}...</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 
