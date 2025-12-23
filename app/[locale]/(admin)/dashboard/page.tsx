@@ -227,7 +227,15 @@ const Dashboard = () => {
       setDashboardData(data.stats);
       setRecentReservations(data.recentReservations || []);
       setRecentUsers(data.recentUsers || []);
-      setRevenueData(data.revenueData || []);
+      
+      // Transform revenue data based on time range
+      if (data.revenueData) {
+        const transformedData = transformRevenueData(data.revenueData, filters.timeRange, locale);
+        setRevenueData(transformedData);
+      } else {
+        setRevenueData([]);
+      }
+      
       setSportDistribution(data.sportDistribution || []);
       setReservationsByStatus(data.reservationsByStatus || []);
       setUsersByRole(data.usersByRole || []);
@@ -251,6 +259,75 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Transform revenue data based on time range
+  const transformRevenueData = (data: RevenueData[], timeRange: string, locale: string): RevenueData[] => {
+    if (!data || data.length === 0) return [];
+    
+    // If data is already in the right format for the current timeRange, return as is
+    // Otherwise, we need to transform it based on the API response structure
+    // For now, we'll assume the API returns appropriate data structure
+    // but we'll add labels based on timeRange
+    
+    return data.map((item, index) => {
+      // Add time-based labels if needed
+      if (timeRange === 'day') {
+        // For day view, show hours
+        const hour = index * 2; // Assuming 12 data points for 24 hours
+        return {
+          ...item,
+          month: `${hour}:00` // Format as hour:00
+        };
+      } else if (timeRange === 'week') {
+        // For week view, show days of week
+        const days = locale === 'ar' 
+          ? ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+          : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return {
+          ...item,
+          month: days[index % 7] || item.month
+        };
+      }
+      
+      // For month or year, use the month names from API
+      return item;
+    });
+  };
+
+  // Get X-axis label based on time range
+  const getXAxisLabel = () => {
+    switch (filters.timeRange) {
+      case 'day':
+        return t('charts.hours');
+      case 'week':
+        return t('charts.days');
+      case 'month':
+        return t('charts.weeks');
+      case 'year':
+        return t('charts.months');
+      default:
+        return t('charts.months');
+    }
+  };
+
+  // Get chart subtitle based on filters
+  const getChartSubtitle = () => {
+    if (filters.year) {
+      return `${t('filters.year')}: ${filters.year}`;
+    }
+    if (filters.startDate && filters.endDate) {
+      const start = new Date(filters.startDate).toLocaleDateString(locale, { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const end = new Date(filters.endDate).toLocaleDateString(locale, { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      return `${start} - ${end}`;
+    }
+    return t(`filters.${filters.timeRange}`);
   };
 
   useEffect(() => {
@@ -453,7 +530,7 @@ const Dashboard = () => {
       return (
         <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
           <p className="font-medium text-gray-900 dark:text-white mb-2">
-            {label}
+            {filters.timeRange === 'day' ? `${t('charts.time')}: ${label}` : label}
           </p>
           <div className="space-y-1">
             <p className="text-sm">
@@ -768,9 +845,7 @@ const Dashboard = () => {
                 {t("charts.revenueTrend")}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {filters.year
-                  ? `Year: ${filters.year}`
-                  : t("charts.last6Months")}
+                {getChartSubtitle()} • {getXAxisLabel()}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -795,6 +870,12 @@ const Dashboard = () => {
                     dataKey="month"
                     stroke="#9ca3af"
                     tick={{ fill: "#6b7280" }}
+                    label={{ 
+                      value: getXAxisLabel(), 
+                      position: 'insideBottom', 
+                      offset: -5,
+                      style: { fill: '#6b7280', fontSize: 12 }
+                    }}
                   />
                   <YAxis
                     stroke="#9ca3af"
@@ -1182,6 +1263,7 @@ const Dashboard = () => {
         isOpen={showDateRangeModal}
         onClose={() => setShowDateRangeModal(false)}
         placement="center"
+        className="z-99999"
       >
         <ModalContent>
           <ModalHeader>
