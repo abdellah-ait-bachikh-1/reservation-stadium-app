@@ -4,8 +4,6 @@ import { getSession } from '@/auth';
 import db from '@/lib/db';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getSession();

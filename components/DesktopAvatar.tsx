@@ -28,6 +28,7 @@ const DesktopAvatar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Use the viewport space hook for positioning
   const { hasSpaceBelow, elementRef } = useViewportSpace();
@@ -35,6 +36,16 @@ const DesktopAvatar = () => {
 
   useEffect(() => {
     setMounted(true);
+    
+    // Check if mobile on mount and resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Click outside handler
@@ -66,18 +77,28 @@ const DesktopAvatar = () => {
     setIsOpen(false);
   };
 
+  // Loading state
   if (status === "loading") {
     return (
-      <div className="flex items-center space-x-4">
-        <Skeleton className="w-12 h-12 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-32 rounded-md" />
-          <Skeleton className="h-3 w-24 rounded-md" />
+      <div className="flex items-center">
+        {/* Desktop Skeleton */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Skeleton className="w-12 h-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32 rounded-md" />
+            <Skeleton className="h-3 w-24 rounded-md" />
+          </div>
+        </div>
+        
+        {/* Mobile Skeleton */}
+        <div className="md:hidden">
+          <Skeleton className="w-10 h-10 rounded-full" />
         </div>
       </div>
     );
   }
 
+  // Not logged in state
   if (!data?.user) {
     return (
       <div className="flex items-center space-x-3">
@@ -205,17 +226,22 @@ const DesktopAvatar = () => {
   return (
     <>
       <div className="relative" ref={elementRef}>
-        {/* User Profile Trigger */}
+        {/* User Profile Trigger - Responsive */}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex items-center space-x-3 cursor-pointer group p-2 rounded-lg "
+          className="flex items-center cursor-pointer group p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors"
         >
-          <Avatar
-            size="md"
-            className="transition-transform group-hover:scale-105 border-2 border-blue-500/20"
-          />
-          <div className="flex flex-col text-left">
-            <span className="text-sm font-semibold text-gray-900 dark:text-white ">
+          {/* Avatar - Always visible */}
+          <div className="relative">
+            <Avatar
+              size={isMobile ? "sm" : "md"}
+              className="transition-transform group-hover:scale-105 border-2 border-blue-500/20"
+            />
+          </div>
+          
+          {/* User Info - Only on desktop */}
+          <div className="hidden md:flex flex-col text-left ltr:ml-3 rtl:mr-3">
+            <span className="text-sm font-semibold text-gray-900 dark:text-white">
               {isRTL ? data.user.fullNameAr : data.user.fullNameFr}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400 text-left rtl:text-right">
@@ -236,13 +262,13 @@ const DesktopAvatar = () => {
               initial={{ opacity: 0, scale: 0.7, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: -10 }}
-              className={`z-110 min-w-64 absolute p-2 flex flex-col gap-1 rounded-xl bg-amber-50  dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
+              className={`z-110 min-w-64 absolute p-2 flex flex-col gap-1 rounded-xl bg-amber-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
                 hasSpaceBelow
                   ? "top-14 ltr:right-0 rtl:left-0"
                   : "bottom-14 ltr:right-0 rtl:left-0"
               }`}
             >
-              {/* User Info Section */}
+              {/* User Info Section - Always show in dropdown */}
               <div className="px-3 py-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-2">
                 <div className="flex items-center space-x-3">
                   <Avatar
@@ -255,6 +281,13 @@ const DesktopAvatar = () => {
                     </h4>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {data.user.email}
+                    </p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                      {data.user.role === "CLUB"
+                        ? tHeader("labels.sportsClubManager")
+                        : data.user.role === "ADMIN"
+                        ? tHeader("labels.admin")
+                        : tHeader("labels.user")}
                     </p>
                   </div>
                 </div>
@@ -271,7 +304,7 @@ const DesktopAvatar = () => {
                       onClick={() => {
                         item.action?.();
                       }}
-                      className={`p-3 rounded-lg cursor-pointer transition-colors flex items-center  gap-3 ${item.bgColor}`}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 ${item.bgColor}`}
                     >
                       <div className={`p-2 rounded-lg ${item.activeBgColor}`}>
                         <Icon className={`w-4 h-4 ${item.color}`} />

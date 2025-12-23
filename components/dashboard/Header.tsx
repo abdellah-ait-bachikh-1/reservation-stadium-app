@@ -6,6 +6,7 @@ import LanguageSwitcher from "../LanguageSwitcher";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import { Avatar } from "@heroui/avatar";
 import NotificationBell from "./NotificationBell";
+import DesktopAvatar from "../DesktopAvatar";
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
@@ -27,7 +28,7 @@ const Header = () => {
         <NotificationBell /> {/* Add NotificationBell here */}
         <ThemeSwitcher />
         <LanguageSwitcher />
-        <Avatar isBordered />
+        <DesktopAvatar/>
       </div>
     </header>
   );
