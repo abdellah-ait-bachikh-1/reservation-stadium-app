@@ -505,7 +505,23 @@
           "weeksAgo": "{count, plural, one {# week ago} other {# weeks ago}}",
           "monthsAgo": "{count, plural, one {# month ago} other {# months ago}}"
         }
-      }
+      },
+       "Sidebar": {
+      "home": "Dashboard",
+      "profile": "Profile",
+      "reservations": "Reservations",
+      "notifications": "Notifications",
+      "stadiums": "Stadiums",
+      "payments": "Payments",
+      "users": "Users",
+      "logout": "Logout",
+      "returnToPublic": "Public Site",
+      "admin": "Admin",
+      "club": "Club",
+      "approved": "Approved",
+      "pending": "Pending",
+      "version": "v1.0.0"
+    }
     }
   },
   "Common": {

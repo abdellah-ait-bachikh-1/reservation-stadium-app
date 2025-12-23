@@ -1,26 +1,23 @@
 // lib/const.ts
 import {
   FaBasketballBall,
-  FaFutbol,
+
   FaHandPaper,
-  FaRunning,
-  FaSwimmer,
+
   FaVolleyballBall,
 } from "react-icons/fa";
-import { IoMdTennisball } from "react-icons/io";
 import {
-  MdCheckCircle,
-  MdOutlineSportsGymnastics,
+
   MdSportsSoccer,
 } from "react-icons/md";
 
 export const APP_NAME = process.env.APP_NAME;
+// lib/const.ts
 export const APP_NAMES = {
-  en: process.env.APP_NAME_EN as string,
-  fr: process.env.APP_NAME_FR as string,
-  ar: process.env.APP_NAME_AR as string,
+  en: process.env.NEXT_PUBLIC_APP_NAME_EN || "Tan-Tan Stadiums",
+  fr: process.env.NEXT_PUBLIC_APP_NAME_FR || "Tan-Tan Stades",
+  ar: process.env.NEXT_PUBLIC_APP_NAME_AR || "ملاعب طانطان",
 };
-
 // Sport icons mapping
 export const sportIcons = {
   "1": <MdSportsSoccer className="w-5 h-5" />,

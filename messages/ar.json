@@ -502,7 +502,22 @@
           "email": "بريد",
           "club": "نادي"
         }
-      }
+      },  "Sidebar": {
+      "home": "لوحة التحكم",
+      "profile": "الملف الشخصي",
+      "reservations": "الحجوزات",
+      "notifications": "الإشعارات",
+      "stadiums": "الملاعب",
+      "payments": "المدفوعات",
+      "users": "المستخدمين",
+      "logout": "تسجيل الخروج",
+      "returnToPublic": "الموقع العام",
+      "admin": "مدير",
+      "club": "نادي",
+      "approved": "مفعل",
+      "pending": "قيد الانتظار",
+      "version": "v1.0.0"
+    }
     }
   },
   "Common": {
