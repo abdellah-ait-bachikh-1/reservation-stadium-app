@@ -57,14 +57,14 @@ export default async function LocaleLayout({
           `${inter.className}`,
           "bg-white", // Light mode background
           "dark:bg-gray-800", // Dark mode background
-          "transition-colors duration-500 ease-in-out bg-fixed min-h-screen overflow-y-auto"
+          "transition-colors duration-500 ease-in-out bg-fixed min-h-screen overflow-y-auto "
         )}
         suppressHydrationWarning
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers locale={locale} className="relative h-full w-full">
             <SidebarProvider>
-              <div className="flex min-h-screen">
+              <div className="flex min-h-screen z-99999">
                 <Aside />
                 <section
                   className={cn(
@@ -73,7 +73,7 @@ export default async function LocaleLayout({
               
                 >
                   <Header />
-                  <main className="flex-1 p-2 md:p-3 ">
+                  <main className="flex-1 p-2 md:p-3 z-9999">
                     {children}
                   </main>
                 </section>

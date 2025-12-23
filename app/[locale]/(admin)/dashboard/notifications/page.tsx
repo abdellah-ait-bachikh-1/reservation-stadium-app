@@ -27,6 +27,14 @@ export default function NotificationsTestPage() {
     { key: "account", label: "تحديث الحساب" },
   ];
 
+  // دالة للتعامل مع تغيير القيمة في Select
+  const handleNotificationTypeChange = (keys: any) => {
+    if (keys) {
+      const selected = Array.from(keys)[0] as string;
+      setNotificationType(selected);
+    }
+  };
+
   const handleSendTestNotification = async () => {
     try {
       setIsLoading(true);
@@ -50,7 +58,7 @@ export default function NotificationsTestPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container w-full p-6 ">
       <div className="flex items-center gap-3 mb-8">
         <HiBell className="w-8 h-8 text-blue-600" />
         <div>
@@ -129,11 +137,11 @@ export default function NotificationsTestPage() {
                 <Select
                   label="اختر نوع الإشعار"
                   selectedKeys={[notificationType]}
-                  onChange={(e) => setNotificationType(e.target.value)}
+                  onSelectionChange={handleNotificationTypeChange}
                   className="max-w-full"
                 >
                   {notificationTypes.map((type) => (
-                    <SelectItem key={type.key} value={type.key}>
+                    <SelectItem key={type.key}>
                       {type.label}
                     </SelectItem>
                   ))}
@@ -148,7 +156,7 @@ export default function NotificationsTestPage() {
                 <Input
                   placeholder="أدخل رسالة مخصصة للإشعار..."
                   value={customMessage}
-                  onChange={(e) => setCustomMessage(e.target.value)}
+                  onValueChange={setCustomMessage}
                   className="w-full"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

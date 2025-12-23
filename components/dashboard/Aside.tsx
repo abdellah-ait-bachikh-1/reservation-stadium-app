@@ -27,7 +27,7 @@ const Aside = () => {
   return (
     <>
       {/* Mobile sidebar overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden " />}
+      {isOpen && <div className="fixed inset-0 bg-black/50 md:hidden z-99998" />}
 
       {/* Sidebar */}
       <div
@@ -37,8 +37,8 @@ const Aside = () => {
           w-64
           h-screen
           transform transition-transform duration-300 ease-in-out
-          
-          z-50 md:z-auto
+          z-99998
+          md:z-auto
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}

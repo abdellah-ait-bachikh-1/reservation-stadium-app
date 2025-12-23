@@ -34,18 +34,21 @@ const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(false); // لتتبع التحميل الأولي
   const [error, setError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<"connecting" | "connected" | "disconnected">("connecting");
+  
   // في NotificationBell.tsx بعد useState مباشرة
-const safeTranslate = (key: string, fallback: string) => {
-  try {
-    const translation = t(key);
-    return translation;
-  } catch (error) {
-    console.warn(`Translation missing for key: ${key}, using fallback: ${fallback}`);
-    return fallback;
-  }
-};
+  const safeTranslate = (key: string, fallback: string) => {
+    try {
+      const translation = t(key);
+      return translation;
+    } catch (error) {
+      console.warn(`Translation missing for key: ${key}, using fallback: ${fallback}`);
+      return fallback;
+    }
+  };
+  
   const t = useTranslations("Components.Dashboard.Notifications");
   const { data: session } = useSession();
 
@@ -59,6 +62,7 @@ const safeTranslate = (key: string, fallback: string) => {
     isMobile,
   } = useSafePositionScreen();
 
+  // حساب عدد الإشعارات غير المقروءة - هذا سيكون مرئياً في الـ badge دائماً
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   // Function to get icon based on notification type
@@ -131,6 +135,7 @@ const safeTranslate = (key: string, fallback: string) => {
 
       const data = await response.json();
       setNotifications(data.notifications || []);
+      setInitialLoad(true); // تم التحميل الأولي
     } catch (err) {
       console.error("Error fetching notifications:", err);
       setError("Failed to load notifications");
@@ -144,34 +149,34 @@ const safeTranslate = (key: string, fallback: string) => {
   const handleNewNotification = useCallback((notificationData: any) => {
     console.log("📩 Processing new push notification:", notificationData);
   
-  // الحصول على اللغة الحالية من المتصفح أو استخدام اللغة من البيانات
-  let currentLocale = document.documentElement.lang || "ar";
-  
-  // إذا كانت البيانات تحتوي على لغة المستلم، استخدمها
-  if (notificationData.data?.receiverLocale) {
-    currentLocale = notificationData.data.receiverLocale;
-  }
-  
-  // استخدام الترجمات المرسلة أو الترجمة المناسبة
-  let title = notificationData.title;
-  let message = notificationData.message;
-  
-  if (notificationData.data?.translations) {
-    switch (currentLocale) {
-      case "fr":
-        title = notificationData.data.translations.titleFr || title;
-        message = notificationData.data.translations.messageFr || message;
-        break;
-      case "ar":
-        title = notificationData.data.translations.titleAr || title;
-        message = notificationData.data.translations.messageAr || message;
-        break;
-      default: // en
-        title = notificationData.data.translations.titleEn || title;
-        message = notificationData.data.translations.messageEn || message;
+    // الحصول على اللغة الحالية من المتصفح أو استخدام اللغة من البيانات
+    let currentLocale = document.documentElement.lang || "ar";
+    
+    // إذا كانت البيانات تحتوي على لغة المستلم، استخدمها
+    if (notificationData.data?.receiverLocale) {
+      currentLocale = notificationData.data.receiverLocale;
     }
-  }
-  
+    
+    // استخدام الترجمات المرسلة أو الترجمة المناسبة
+    let title = notificationData.title;
+    let message = notificationData.message;
+    
+    if (notificationData.data?.translations) {
+      switch (currentLocale) {
+        case "fr":
+          title = notificationData.data.translations.titleFr || title;
+          message = notificationData.data.translations.messageFr || message;
+          break;
+        case "ar":
+          title = notificationData.data.translations.titleAr || title;
+          message = notificationData.data.translations.messageAr || message;
+          break;
+        default: // en
+          title = notificationData.data.translations.titleEn || title;
+          message = notificationData.data.translations.messageEn || message;
+      }
+    }
+    
     const newNotification: NotificationItem = {
       id: notificationData.id || generateId(),
       type: notificationData.type.toLowerCase() as NotificationItem["type"],
@@ -222,15 +227,15 @@ const safeTranslate = (key: string, fallback: string) => {
   }, []);
 
   // دالة لتشغيل صوت الإشعار
-//   const playNotificationSound = () => {
-//     try {
-//       const audio = new Audio("/sounds/notification.mp3");
-//       audio.volume = 0.3;
-//       audio.play().catch(console.error);
-//     } catch (error) {
-//       console.error("Error playing notification sound:", error);
-//     }
-//   };
+  // const playNotificationSound = () => {
+  //   try {
+  //     const audio = new Audio("/sounds/notification.mp3");
+  //     audio.volume = 0.3;
+  //     audio.play().catch(console.error);
+  //   } catch (error) {
+  //     console.error("Error playing notification sound:", error);
+  //   }
+  // };
 
   // طلب إذن إشعارات سطح المكتب
   const requestNotificationPermission = () => {
@@ -254,6 +259,11 @@ const safeTranslate = (key: string, fallback: string) => {
     // طلب إذن الإشعارات
     requestNotificationPermission();
 
+    // تحميل الإشعارات الأولية عند توفر session
+    if (!initialLoad) {
+      fetchNotifications();
+    }
+
     const cleanup = setupPusher({
       userId: session.user.id,
       onNotification: handleNewNotification,
@@ -274,12 +284,12 @@ const safeTranslate = (key: string, fallback: string) => {
     };
   }, [session?.user?.id, handleNewNotification]);
 
-  // Fetch notifications when dropdown opens
+  // Fetch notifications when dropdown opens (فقط إذا لم يتم تحميلها من قبل)
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !initialLoad) {
       fetchNotifications();
     }
-  }, [isOpen]);
+  }, [isOpen, initialLoad]);
 
   // Format time with translation
   const formatTime = (timeString: string) => {
@@ -323,44 +333,43 @@ const safeTranslate = (key: string, fallback: string) => {
     return timeString;
   };
 
+  // في NotificationBell.tsx
   // Get translated notification type
-// في NotificationBell.tsx
-// Get translated notification type
-const getTranslatedType = (type: string) => {
-  // تحويل الأنواع من Pusher إلى أسماء بسيطة
-  const typeMapping: Record<string, string> = {
-    'reservation_requested': 'reservation',
-    'reservation_approved': 'reservation',
-    'reservation_declined': 'reservation',
-    'reservation_cancelled': 'reservation',
-    'payment_received': 'payment',
-    'payment_overdue': 'payment',
-    'payment_failed': 'payment',
-    'account_approved': 'account',
-    'account_rejected': 'account',
-    'account_created': 'account',
-    'club_registration_submitted': 'club',
-    'club_registration_approved': 'club',
-    'club_registration_rejected': 'club',
-    'system_maintenance': 'system',
-    'system_update': 'system',
-    'new_feature': 'system',
-    'announcement': 'system',
-    'email_sent': 'email',
-    'email_verified': 'email',
-    'welcome_email': 'email',
+  const getTranslatedType = (type: string) => {
+    // تحويل الأنواع من Pusher إلى أسماء بسيطة
+    const typeMapping: Record<string, string> = {
+      'reservation_requested': 'reservation',
+      'reservation_approved': 'reservation',
+      'reservation_declined': 'reservation',
+      'reservation_cancelled': 'reservation',
+      'payment_received': 'payment',
+      'payment_overdue': 'payment',
+      'payment_failed': 'payment',
+      'account_approved': 'account',
+      'account_rejected': 'account',
+      'account_created': 'account',
+      'club_registration_submitted': 'club',
+      'club_registration_approved': 'club',
+      'club_registration_rejected': 'club',
+      'system_maintenance': 'system',
+      'system_update': 'system',
+      'new_feature': 'system',
+      'announcement': 'system',
+      'email_sent': 'email',
+      'email_verified': 'email',
+      'welcome_email': 'email',
+    };
+    
+    const simpleType = typeMapping[type] || type;
+    
+    try {
+      const translation = t(`types.${simpleType}`);
+      return translation || simpleType;
+    } catch (error) {
+      console.warn(`Translation not found for type: ${type} (mapped to: ${simpleType})`);
+      return simpleType;
+    }
   };
-  
-  const simpleType = typeMapping[type] || type;
-  
-  try {
-    const translation = t(`types.${simpleType}`);
-    return translation || simpleType;
-  } catch (error) {
-    console.warn(`Translation not found for type: ${type} (mapped to: ${simpleType})`);
-    return simpleType;
-  }
-};
 
   // Pre-calculate position when component mounts
   useEffect(() => {
@@ -438,33 +447,16 @@ const getTranslatedType = (type: string) => {
     setIsOpen(!isOpen);
     if (!isOpen) {
       calculatePosition();
-      // تحديث الإشعارات عند فتح القائمة
-      fetchNotifications();
+      // تحديث الإشعارات عند فتح القائمة (لكن فقط إذا لم يتم تحميلها مسبقاً)
+      if (!initialLoad) {
+        fetchNotifications();
+      }
     }
   };
 
   return (
     <div className="relative" ref={bellRef}>
-      {/* مؤشر حالة الاتصال */}
-      <div className="absolute -top-1 -right-1 z-10">
-        <div
-          className={`w-3 h-3 rounded-full ${
-            connectionStatus === "connected"
-              ? "bg-green-500 animate-pulse"
-              : connectionStatus === "connecting"
-              ? "bg-yellow-500"
-              : "bg-red-500"
-          }`}
-          title={
-            connectionStatus === "connected"
-              ? "Connected to real-time notifications"
-              : connectionStatus === "connecting"
-              ? "Connecting to real-time notifications..."
-              : "Real-time notifications disconnected"
-          }
-        />
-      </div>
-
+      {/* الـ Badge سيظهر عدد الإشعارات غير المقروءة دائماً حتى لو لم يكن dropdown مفتوحاً */}
       <Badge
         content={unreadCount}
         color="danger"
@@ -665,7 +657,7 @@ const getTranslatedType = (type: string) => {
                   className="w-full text-sm"
                   onPress={() => setIsOpen(false)}
                 >
-{safeTranslate("close", "Close")}
+                  {safeTranslate("close", "Close")}
                 </Button>
               </div>
             </motion.div>

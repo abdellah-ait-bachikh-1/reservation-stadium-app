@@ -2,7 +2,7 @@
 
 import { getSession } from "@/auth";
 import { sendPusherNotification } from "@/lib/pusher-server";
-import db from "@/lib/db"; // استيراد Prisma client
+import db from "@/lib/db";
 
 export async function sendTestNotification({
   receiverId,
@@ -14,7 +14,6 @@ export async function sendTestNotification({
   customMessage?: string;
 }) {
   try {
-    // الحصول على بيانات المستخدم الحالي (المرسل)
     const session = await getSession();
     
     if (!session?.user?.id) {
@@ -27,7 +26,7 @@ export async function sendTestNotification({
     const senderName = session.user.fullNameFr || "مستخدم النظام";
     const senderEmail = session.user.email || "system@example.com";
 
-    // تحديد رسائل الإشعار بجميع اللغات
+    // تحديد نوع الإشعار بناءً على الـ schema الموجود
     const getNotificationTranslations = () => {
       const baseData = {
         senderName,
@@ -97,7 +96,7 @@ export async function sendTestNotification({
 
         case "system":
           return {
-            dbType: "SYSTEM_ANNOUNCEMENT" as const,
+            dbType: "ANNOUNCEMENT" as const, // تغيير هنا
             translations: {
               titleEn: "System Announcement",
               titleFr: "Annonce du Système",
@@ -115,7 +114,7 @@ export async function sendTestNotification({
 
         case "account":
           return {
-            dbType: "ACCOUNT_UPDATED" as const,
+            dbType: "PROFILE_UPDATED" as const, // تغيير هنا
             translations: {
               titleEn: "Account Updated",
               titleFr: "Compte Mis à Jour",
@@ -133,7 +132,7 @@ export async function sendTestNotification({
 
         default:
           return {
-            dbType: "SYSTEM_NOTIFICATION" as const,
+            dbType: "ANNOUNCEMENT" as const, // تغيير هنا
             translations: {
               titleEn: "Test Notification",
               titleFr: "Notification de Test",
@@ -149,11 +148,10 @@ export async function sendTestNotification({
 
     const notificationContent = getNotificationTranslations();
 
-    // الخطوة 1: حفظ الإشعار في قاعدة البيانات بجميع اللغات
+    // حفظ الإشعار في قاعدة البيانات
     const savedNotification = await db.notification.create({
       data: {
         type: notificationContent.dbType,
-        // حفظ جميع الترجمات
         titleEn: notificationContent.translations.titleEn,
         titleFr: notificationContent.translations.titleFr,
         titleAr: notificationContent.translations.titleAr,
@@ -161,19 +159,19 @@ export async function sendTestNotification({
         messageFr: notificationContent.translations.messageFr,
         messageAr: notificationContent.translations.messageAr,
         isRead: false,
-        userId: receiverId, // المستلم
-        actorUserId: session.user.id, // المرسل
+        userId: receiverId,
+        actorUserId: session.user.id,
         metadata: notificationContent.metadata,
       },
     });
 
-    console.log("💾 Notification saved to DB with all languages:", {
+    console.log("💾 Notification saved to DB:", {
       id: savedNotification.id,
       type: savedNotification.type,
       receiverId,
     });
 
-    // الخطوة 2: الحصول على لغة المستلم من قاعدة البيانات
+    // الحصول على لغة المستلم
     const receiver = await db.user.findUnique({
       where: { id: receiverId },
       select: { preferredLocale: true }
@@ -182,18 +180,23 @@ export async function sendTestNotification({
     const receiverLocale = receiver?.preferredLocale?.toLowerCase() || 'ar';
     
     // تحديد النص المناسب للغة
-    let titleForPusher = notificationContent.translations.titleEn;
-    let messageForPusher = notificationContent.translations.messageEn;
-
-    if (receiverLocale === 'fr') {
-      titleForPusher = notificationContent.translations.titleFr;
-      messageForPusher = notificationContent.translations.messageFr;
-    } else if (receiverLocale === 'ar') {
-      titleForPusher = notificationContent.translations.titleAr;
-      messageForPusher = notificationContent.translations.messageAr;
+    let titleForPusher, messageForPusher;
+    
+    switch (receiverLocale) {
+      case 'fr':
+        titleForPusher = notificationContent.translations.titleFr;
+        messageForPusher = notificationContent.translations.messageFr;
+        break;
+      case 'ar':
+        titleForPusher = notificationContent.translations.titleAr;
+        messageForPusher = notificationContent.translations.messageAr;
+        break;
+      default: // en
+        titleForPusher = notificationContent.translations.titleEn;
+        messageForPusher = notificationContent.translations.messageEn;
     }
 
-    // الخطوة 3: إرسال الإشعار عبر Pusher باللغة المناسبة
+    // إرسال عبر Pusher
     await sendPusherNotification({
       userId: receiverId,
       type: notificationContent.dbType,
@@ -202,19 +205,17 @@ export async function sendTestNotification({
       data: {
         ...notificationContent.metadata,
         notificationId: savedNotification.id,
-        // إرسال جميع الترجمات للكلينت للاستخدام الفوري
         translations: notificationContent.translations,
-        receiverLocale: receiverLocale,
+        receiverLocale,
       },
     });
 
-    console.log("✅ Test notification sent and saved:", {
+    console.log("✅ Test notification sent:", {
       from: session.user.id,
       to: receiverId,
       type: notificationContent.dbType,
       savedId: savedNotification.id,
       receiverLocale,
-      time: new Date().toISOString(),
     });
 
     return {
