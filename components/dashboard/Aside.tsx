@@ -4,30 +4,31 @@ import { APP_NAMES } from "@/lib/const";
 import { TLocale } from "@/lib/types";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiX, HiHome, HiUser, HiCalendar, HiBell, HiAdjustments, HiCash, HiUsers, HiGlobe, HiLogout } from "react-icons/hi";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import LogoutButton from "../LogoutButton";
+
 
 const Aside = () => {
   const { isOpen, closeSidebar } = useSidebar();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
   const t = useTranslations("Components.Dashboard.Sidebar");
-  const { data: session } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   
+
   // تحديد إذا كانت اللغة العربية
   const isRTL = locale === 'ar';
   
   // تحديد الـ transform بناءً على الاتجاه
   const getTransformClass = () => {
     if (isRTL) {
-      // للعربية: تبدأ من اليمين وتتحرك لليسار
       return isOpen ? "translate-x-0" : "translate-x-full";
     } else {
-      // للفرنسية والإنجليزية: تبدأ من اليسار وتتحرك لليمين
       return isOpen ? "translate-x-0" : "-translate-x-full";
     }
   };
@@ -35,9 +36,9 @@ const Aside = () => {
   // تحديد موضع السايدبار
   const getPositionClass = () => {
     if (isRTL) {
-      return "top-0 right-0"; // العربية على اليمين
+      return "top-0 right-0";
     } else {
-      return "top-0 left-0"; // الفرنسية والإنجليزية على اليسار
+      return "top-0 left-0";
     }
   };
 
@@ -72,20 +73,27 @@ const Aside = () => {
     closeSidebar();
   };
 
+  // Function to check if a link is active - FIXED VERSION
+  const isActiveLink = (href: string) => {
+    // Remove locale prefix for comparison
+    const currentPath = pathname.replace(`/${locale}`, '') || '/';
+    
+    // For home (/dashboard), only active on exact match
+    if (href === '/dashboard') {
+      return currentPath === '/dashboard';
+    }
+    
+    // For other links, check exact match or starts with (for nested routes)
+    return currentPath === href || currentPath.startsWith(`${href}/`);
+  };
+
   // Navigation items based on user role
   const getNavItems = () => {
-    const isAdmin = session?.user?.role === 'ADMIN';
     const baseItems = [
       { 
         href: '/dashboard', 
         label: t('home'), 
         icon: HiHome,
-        show: true 
-      },
-      { 
-        href: '/dashboard/profiles', 
-        label: t('profile'), 
-        icon: HiUser,
         show: true 
       },
       { 
@@ -110,13 +118,13 @@ const Aside = () => {
         href: '/dashboard/payments', 
         label: t('payments'), 
         icon: HiCash,
-        show: isAdmin 
+        show: true 
       },
       { 
         href: '/dashboard/users', 
         label: t('users'), 
         icon: HiUsers,
-        show: isAdmin 
+        show: true 
       },
     ];
 
@@ -124,6 +132,30 @@ const Aside = () => {
   };
 
   const navItems = getNavItems();
+
+  // Skeleton for user info section
+  const renderUserInfoSkeleton = () => (
+    <div className={`px-4 py-4 mx-4 mb-4 rounded-lg bg-white/60 dark:bg-slate-800/60 border border-amber-100 dark:border-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+      <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        {/* Avatar Skeleton */}
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 dark:from-slate-700 dark:to-slate-600 animate-pulse"></div>
+        </div>
+
+        {/* User Info Skeleton */}
+        <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
+          {/* Name Skeleton */}
+          <div className="h-4 bg-gradient-to-r from-amber-100 to-amber-200 dark:from-slate-700 dark:to-slate-600 rounded animate-pulse mb-2"></div>
+          
+          {/* Badges Skeleton */}
+          <div className="flex items-center gap-2 mt-1">
+            <div className="h-5 w-16 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-slate-700 dark:to-slate-600 rounded-full animate-pulse"></div>
+            <div className="h-5 w-20 bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-slate-700 dark:to-slate-600 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -155,7 +187,6 @@ const Aside = () => {
           {/* Header Section */}
           <div className="px-4 py-5">
             <div className="flex items-center justify-between">
-              {/* Logo and App Name */}
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 bg-white dark:bg-slate-900 rounded-full p-1.5 shadow-md">
                   <Image
@@ -189,47 +220,37 @@ const Aside = () => {
             </div>
           </div>
 
-          {/* User Info Section */}
-          {session?.user && (
-            <div className={`px-4 py-3 mx-4 mb-4 rounded-lg bg-white/50 dark:bg-slate-800/50 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                {session.user.fullNameFr || session.user.email}
-              </p>
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                  {session.user.role === 'ADMIN' ? t('admin') : t('club')}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {session.user.approved ? t('approved') : t('pending')}
-                </span>
-              </div>
-            </div>
-          )}
-
           {/* Navigation Menu */}
           <div className="flex-1 px-3 py-4 overflow-y-auto">
             <nav className="space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeSidebar}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group  ${
-                    typeof window !== 'undefined' && window.location.pathname === item.href
-                      ? 'bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  <item.icon className={`w-5 h-5 flex-shrink-0 ${
-                    typeof window !== 'undefined' && window.location.pathname === item.href
-                      ? 'text-amber-600 dark:text-amber-400'
-                      : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
-                  }`} />
-                  <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
-                    {item.label}
-                  </span>
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isActive = isActiveLink(item.href);
+                
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeSidebar}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+                      isActive
+                        ? 'bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <item.icon className={`w-5 h-5 flex-shrink-0 ${
+                      isActive
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                    }`} />
+                    <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
+                      {item.label}
+                    </span>
+                    {isActive && (
+                      <div className={`w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ${isRTL ? 'mr-auto' : 'ml-auto'}`} />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
@@ -237,7 +258,7 @@ const Aside = () => {
           <div className="px-3 py-4 space-y-2 border-t border-amber-200 dark:border-slate-700">
             <button
               onClick={handleReturnToPublic}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group  text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white`}
+              className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white`}
             >
               <HiGlobe className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" />
               <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
@@ -245,20 +266,21 @@ const Aside = () => {
               </span>
             </button>
 
-            <button
+            {/* <button
               onClick={handleLogout}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group  text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300`}
             >
               <HiLogout className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
               <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
                 {t('logout')}
               </span>
-            </button>
-          </div>
+            </button> */}
+  <LogoutButton variant="mobile"/>
+            </div>
 
           {/* Sidebar Footer */}
           <div className={`px-4 py-4 border-t border-amber-200 dark:border-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
-            <div className={`flex items-center justify-between `}>
+            <div className={`flex items-center justify-between`}>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {t('version')}
               </span>

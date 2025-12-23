@@ -6,3 +6,41 @@
 @custom-variant dark (&:is(.dark *));
 
 
+
+/* Global RTL Scrollbar Styles */
+html[dir="rtl"] {
+  /* For Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    left: 0;
+    right: auto;
+  }
+
+  /* Scrollbar track */
+  ::-webkit-scrollbar-track {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  /* Scrollbar thumb */
+  ::-webkit-scrollbar-thumb {
+    left: 0;
+    right: auto;
+  }
+}
+
+/* Firefox RTL Scrollbar */
+html[dir="rtl"] {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+  
+  /* For Firefox, we need to handle the direction */
+  * {
+    scrollbar-width: thin;
+    direction: rtl;
+  }
+  
+  /* Ensure content direction is correct */
+  body {
+    direction: rtl;
+  }
+}
