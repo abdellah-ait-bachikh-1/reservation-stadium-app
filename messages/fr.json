@@ -22,13 +22,122 @@
         }
       }
     },
-    "Dashboard": {
-      "headTitle": "Tableau de Bord",
-      "pageTitle": "Tableau de Bord à Tan-Tan (Pour les clubs et équipes sportives)",
-      "description": "Votre aperçu des réservations de stade à Tan-Tan, Maroc. Pour les clubs et équipes sportives.",
-      "keywords": "tableau de bord Tan-Tan, mes réservations Tan-Tan, événements sportifs Tan-Tan, réservations stade Maroc, pour les clubs et équipes sportives",
-      "metaDescription": "Visualisez et gérez vos réservations de stade à Tan-Tan, Maroc depuis votre tableau de bord. Pour les clubs et équipes sportives."
+   "Dashboard": {
+  "headTitle": "Tableau de Bord",
+  "pageTitle": "Tableau de Bord à Tan-Tan (Pour clubs sportifs et équipes)",
+  "description": "Votre aperçu des réservations de stades à Tan-Tan, Maroc. Pour clubs sportifs et équipes.",
+  "keywords": "tableau de bord Tan-Tan, mes réservations Tan-Tan, événements sportifs Tan-Tan, réservations de stades Maroc, pour clubs sportifs et équipes",
+  "metaDescription": "Visualisez et gérez vos réservations de stades à Tan-Tan, Maroc depuis votre tableau de bord. Pour clubs sportifs et équipes.",
+  
+  "Home": {
+    "title": "Aperçu du Tableau de Bord",
+    "subtitle": "Bon retour, voici ce qui se passe",
+
+    "stats": {
+      "totalUsers": "Utilisateurs Totaux",
+      "activeUsers": "{count} actifs",
+      "totalReservations": "Réservations Totales",
+      "pendingApproval": "{count} en attente d'approbation",
+      "totalRevenue": "Revenu Total",
+      "monthlyRevenue": "{amount} ce mois-ci",
+      "activeStadiums": "Stades Actifs",
+      "availability": "{rate} disponibilité",
+      "pending": "en attente",
+      "clubs": "clubs",
+      "allApproved": "Tous approuvés"
     },
+
+   
+
+    "tables": {
+      "recentReservations": "Réservations Récentes",
+      "last24Hours": "Dernières 24 heures",
+      "recentUsers": "Utilisateurs Récents",
+      "newRegistrations": "Nouvelles inscriptions",
+      "user": "Utilisateur",
+      "stadium": "Stade",
+      "time": "Heure",
+      "status": "Statut",
+      "amount": "Montant",
+      "email": "Email",
+      "role": "Rôle",
+      "joined": "Rejoint"
+    },
+
+    "months": {
+      "jan": "Jan",
+      "feb": "Fév",
+      "mar": "Mar",
+      "apr": "Avr",
+      "may": "Mai",
+      "jun": "Juin",
+      "jul": "Juil",
+      "aug": "Août",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Déc"
+    },
+
+    "status": {
+      "approved": "Approuvé",
+      "pending": "En attente",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+
+    "time": {
+      "justNow": "À l'instant",
+      "hoursAgo": "il y a {hours}h",
+      "daysAgo": "il y a {days}j"
+    },
+
+  "filters": {
+  "timeRange": "Période",
+  "today": "Aujourd'hui",
+  "thisWeek": "Cette Semaine",
+  "thisMonth": "Ce Mois",
+  "thisYear": "Cette Année",
+  "allTime": "Tout le temps",
+  "selectYear": "Sélectionner l'année",
+  "currentYear": "Année en cours",
+  "customRange": "Plage personnalisée",
+  "customDateRange": "Plage de dates personnalisée",
+  "startDate": "Date de début",
+  "endDate": "Date de fin",
+  "year": "Année",
+  "reset": "Réinitialiser les filtres"
+},
+"charts": {
+  "revenueTrend": "Tendance des Revenus",
+  "last6Months": "6 derniers mois",
+  "growth": "Croissance",
+  "revenue": "Revenu",
+  "sportDistribution": "Distribution des Sports",
+  "byReservation": "Par nombre de réservations",
+  "reservations": "Réservations",
+  "bookings": "Réservations",
+  "reservationsByStatus": "Réservations par Statut",
+  "statusBreakdown": "Répartition par statut",
+  "topStadiums": "Stades les plus populaires",
+  "topClubs": "Clubs les plus actifs",
+  "byReservations": "Par réservations",
+  "mostActive": "Clubs les plus actifs"
+},
+"actions": {
+  "refresh": "Actualiser",
+  "viewAll": "Voir Tout",
+  "retry": "Réessayer",
+  "download": "Télécharger",
+  "cancel": "Annuler",
+  "apply": "Appliquer"
+},
+
+    "error": {
+      "title": "Échec du chargement du tableau de bord"
+    }
+  }
+},
     "About": {
       "headTitle": "À Propos",
       "pageTitle": "À Propos de Nous - Réservations de Stade Tan-Tan",

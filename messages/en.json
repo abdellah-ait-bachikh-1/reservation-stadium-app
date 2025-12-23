@@ -23,12 +23,120 @@
       }
     },
     "Dashboard": {
-      "headTitle": "Dashboard",
-      "pageTitle": "Dashboard in Tan-Tan (For sports clubs and teams)",
-      "description": "Your stadium reservation overview in Tan-Tan, Morocco. For sports clubs and teams.",
-      "keywords": "Tan-Tan dashboard, my bookings Tan-Tan, sports events Tan-Tan, stadium reservations Morocco, for sports clubs and teams",
-      "metaDescription": "View and manage your stadium reservations in Tan-Tan, Morocco from your dashboard. For sports clubs and teams."
+  "headTitle": "Dashboard",
+  "pageTitle": "Dashboard in Tan-Tan (For sports clubs and teams)",
+  "description": "Your stadium reservation overview in Tan-Tan, Morocco. For sports clubs and teams.",
+  "keywords": "Tan-Tan dashboard, my bookings Tan-Tan, sports events Tan-Tan, stadium reservations Morocco, for sports clubs and teams",
+  "metaDescription": "View and manage your stadium reservations in Tan-Tan, Morocco from your dashboard. For sports clubs and teams.",
+  
+  "Home": {
+    "title": "Dashboard Overview",
+    "subtitle": "Welcome back, here's what's happening",
+
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeUsers": "{count} active",
+      "totalReservations": "Total Reservations",
+      "pendingApproval": "{count} pending approval",
+      "totalRevenue": "Total Revenue",
+      "monthlyRevenue": "{amount} this month",
+      "activeStadiums": "Active Stadiums",
+      "availability": "{rate} availability",
+      "pending": "pending",
+      "clubs": "clubs",
+      "allApproved": "All approved"
     },
+
+  
+
+    "tables": {
+      "recentReservations": "Recent Reservations",
+      "last24Hours": "Last 24 hours",
+      "recentUsers": "Recent Users",
+      "newRegistrations": "New registrations",
+      "user": "User",
+      "stadium": "Stadium",
+      "time": "Time",
+      "status": "Status",
+      "amount": "Amount",
+      "email": "Email",
+      "role": "Role",
+      "joined": "Joined"
+    },
+
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+
+    "time": {
+      "justNow": "Just now",
+      "hoursAgo": "{hours}h ago",
+      "daysAgo": "{days}d ago"
+    },
+"filters": {
+  "timeRange": "Time Range",
+  "today": "Today",
+  "thisWeek": "This Week",
+  "thisMonth": "This Month",
+  "thisYear": "This Year",
+  "allTime": "All Time",
+  "selectYear": "Select Year",
+  "currentYear": "Current Year",
+  "customRange": "Custom Range",
+  "customDateRange": "Custom Date Range",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "year": "Year",
+  "reset": "Reset Filters"
+},
+"charts": {
+  "revenueTrend": "Revenue Trend",
+  "last6Months": "Last 6 months",
+  "growth": "Growth",
+  "revenue": "Revenue",
+  "sportDistribution": "Sport Distribution",
+  "byReservation": "By number of reservations",
+  "reservations": "Reservations",
+  "bookings": "Bookings",
+  "reservationsByStatus": "Reservations by Status",
+  "statusBreakdown": "Status breakdown",
+  "topStadiums": "Top Stadiums",
+  "topClubs": "Top Clubs",
+  "byReservations": "By reservations",
+  "mostActive": "Most active clubs"
+},
+"actions": {
+  "refresh": "Refresh",
+  "viewAll": "View All",
+  "retry": "Try Again",
+  "download": "Download",
+  "cancel": "Cancel",
+  "apply": "Apply"
+},
+
+    "error": {
+      "title": "Failed to load dashboard"
+    }
+  }
+},
     "About": {
       "headTitle": "About",
       "pageTitle": "About Us - Tan-Tan Stadium Reservations",
@@ -179,12 +287,12 @@
       "form": {
         "title": "Send Us a Message",
         "subtitle": "Fill out the form below and we'll get back to you within 24 hours",
-"errorTitle": "Error",
-      "checkFieldsMessage": "Please check the form and fix the errors",
-      "successTitle": "Success!",
-      "successDescription": "Your message has been sent successfully",
-      "sendingMessage": "Sending your message...",
-      "pleaseWait": "Please wait",
+        "errorTitle": "Error",
+        "checkFieldsMessage": "Please check the form and fix the errors",
+        "successTitle": "Success!",
+        "successDescription": "Your message has been sent successfully",
+        "sendingMessage": "Sending your message...",
+        "pleaseWait": "Please wait",
         "fields": {
           "fullName": {
             "label": "Full Name",
@@ -270,7 +378,6 @@
         "title": "Secure Communication",
         "description": "Your information is protected with industry-standard encryption. We never share your data with third parties."
       }
-      
     },
     "Stadiums": {
       "headTitle": "Available Stadiums",
@@ -487,8 +594,8 @@
         "loading": "Loading notifications...",
         "retry": "Retry",
         "error": "Failed to load notifications",
-        "close": "Close", 
-        "realtimeDisabled": "Real-time notifications unavailable", 
+        "close": "Close",
+        "realtimeDisabled": "Real-time notifications unavailable",
         "types": {
           "account": "Account",
           "reservation": "Reservation",
@@ -506,27 +613,28 @@
           "monthsAgo": "{count, plural, one {# month ago} other {# months ago}}"
         }
       },
-       "Sidebar": {
-      "home": "Dashboard",
-      "profile": "Profile",
-      "reservations": "Reservations",
-      "notifications": "Notifications",
-      "stadiums": "Stadiums",
-      "payments": "Payments",
-      "users": "Users",
-      "logout": "Logout",
-      "returnToPublic": "Public Site",
-      "admin": "Admin",
-      "club": "Club",
-      "approved": "Approved",
-      "pending": "Pending",
-      "version": "v1.0.0"
-    }
+      "Sidebar": {
+        "home": "Dashboard",
+        "profile": "Profile",
+        "reservations": "Reservations",
+        "notifications": "Notifications",
+        "stadiums": "Stadiums",
+        "payments": "Payments",
+        "users": "Users",
+        "logout": "Logout",
+        "returnToPublic": "Public Site",
+        "admin": "Admin",
+        "club": "Club",
+        "approved": "Approved",
+        "pending": "Pending",
+        "version": "v1.0.0"
+      }
     }
   },
   "Common": {
     "appName": "Stadium Tan-Tan",
-    "appSubName": "Sports Clubs & Teams", "errorTitle": "Error",
+    "appSubName": "Sports Clubs & Teams",
+    "errorTitle": "Error",
     "errorMessage": "Something went wrong",
     "validationError": "Validation Error"
   },
