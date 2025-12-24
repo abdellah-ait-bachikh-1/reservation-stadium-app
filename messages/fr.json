@@ -24,91 +24,32 @@
     },
     "Dashboard": {
       "Home": {
-        "charts": {
-          "months": "mois",
-          "weeks": "semaines",
-          "days": "jours",
-          "hours": "heures",
-          "time": "temps",
-          "revenue": "revenu",
-          "bookings": "réservations",
-          "revenueTrend": "Tendance des revenus",
-          "growth": "croissance",
-          "sportDistribution": "Distribution des sports",
-          "byReservation": "par réservation",
-          "reservationsByStatus": "Réservations par statut",
-          "statusBreakdown": "Répartition des statuts",
-          "topStadiums": "Stades populaires",
-          "byReservations": "par réservations",
-          "topClubs": "Clubs populaires",
-          "mostActive": "les plus actifs",
-          "reservations": "réservations"
-        },
-        "filters": {
-          "timeRange": "Période",
-          "year": "Année",
-          "today": "Aujourd'hui",
-          "thisWeek": "Cette semaine",
-          "thisMonth": "Ce mois",
-          "thisYear": "Cette année",
-          "selectYear": "Sélectionner l'année",
-          "currentYear": "Année en cours",
-          "reset": "Réinitialiser"
-        },
-        "stats": {
-          "totalUsers": "Total utilisateurs",
-          "activeUsers": "Utilisateurs actifs",
-          "totalReservations": "Total réservations",
-
-          "allApproved": "Tous approuvés",
-          "pendingApproval": "En attente d'approbation",
-          "totalRevenue": "Revenu total",
-          "monthlyRevenue": "Revenu mensuel",
-          "activeStadiums": "Stades actifs",
-          "clubs": "clubs",
-          "availability": "Disponibilité",
-          "rate": "Taux",
-          "pending": "En attente"
-
-
-        },
-        "tables": {
-          "recentReservations": "Réservations récentes",
-          "last24Hours": "Dernières 24 heures",
-          "recentUsers": "Utilisateurs récents",
-          "newRegistrations": "Nouvelles inscriptions",
-          "user": "Utilisateur",
-          "stadium": "Stade",
-          "time": "Heure",
-          "status": "Statut",
-          "amount": "Montant",
-          "email": "Email",
-          "role": "Rôle",
-          "joined": "Rejoint"
-        },
-        "status": {
-               "pending": "En attente",
-          "approved": "Approuvé",
-          "declined": "Refusé",
-          "cancelled": "Annulé",
-          "paid": "Payé",
-          "unpaid": "Non payé"
-        },
-        "time": {
-          "justNow": "À l'instant",
-          "hoursAgo": "il y a {hours} heures",
-          "daysAgo": "il y a {days} jours"
-        },
-        "actions": {
-          "viewAll": "Voir tout",
-          "refresh": "Rafraîchir",
-          "retry": "Réessayer"
-        },
-        "error": {
-          "title": "Erreur de chargement"
-        },
-        "title": "Tableau de bord",
-        "subtitle": "Aperçu du système"
+        "headTitle": "Tableau de Bord",
+        "metaDescription": "Vue d'ensemble de votre tableau de bord principal"
+      },
+      "Reservations": {
+        "headTitle": "Réservations",
+        "metaDescription": "Gérez, suivez et traitez toutes vos réservations"
+      },
+      "Notifications": {
+        "headTitle": "Notifications",
+        "metaDescription": "Affichez et gérez vos notifications"
+      },
+      "Stadiums": {
+        "headTitle": "Stades",
+        "metaDescription": "Parcourir et gérer les stades"
+      },
+      "Payments": {
+        "headTitle": "Paiements",
+        "metaDescription": "Gérer et suivre les paiements"
+      },
+      "Users": {
+        "headTitle": "Utilisateurs",
+        "metaDescription": "Gérer les utilisateurs et les permissions du système"
+      },
+      "Profile": {
+        "headTitle": "Profil",
+        "metaDescription": "Afficher et gérer votre profil"
       }
     },
     "About": {

@@ -1,4 +1,3 @@
-
 import { APP_NAMES } from "@/lib/const";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
@@ -10,15 +9,13 @@ export const generateMetadata = async ({
   params: Promise<{ locale: TLocale }>;
 }): Promise<Metadata> => {
   const { locale } = await params;
-  const t = getTranslations({ locale, namespace: "Pages.Dashboard.Home" });
+  const t = await getTranslations({
+    locale,
+    namespace: "Pages.Dashboard.Home",
+  });
   return {
-    title: {
-      template: `%s | ${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
-      default: `${"title"} | ${
-        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
-      }`,
-    },
-    description: "decription",
+    title: t("headTitle"),
+    description: t("metaDescription") || "Dashboard home page",
   };
 };
 

@@ -24,92 +24,32 @@
     },
     "Dashboard": {
       "Home": {
-        "charts": {
-          "months": "أشهر",
-          "weeks": "أسابيع",
-          "days": "أيام",
-          "hours": "ساعات",
-          "time": "الوقت",
-          "revenue": "الإيرادات",
-          "bookings": "الحجوزات",
-          "revenueTrend": "اتجاه الإيرادات",
-          "growth": "نمو",
-          "sportDistribution": "توزيع الرياضات",
-          "byReservation": "حسب الحجز",
-          "reservationsByStatus": "الحجوزات حسب الحالة",
-          "statusBreakdown": "توزيع الحالات",
-          "topStadiums": "أفضل الملاعب",
-          "byReservations": "حسب عدد الحجوزات",
-          "topClubs": "أفضل الأندية",
-          "mostActive": "الأكثر نشاطاً",
-          "reservations": "حجوزات"
-        },
-        "filters": {
-          "timeRange": "الفترة الزمنية",
-          "year": "السنة",
-          "today": "اليوم",
-          "thisWeek": "هذا الأسبوع",
-          "thisMonth": "هذا الشهر",
-          "thisYear": "هذه السنة",
-          "selectYear": "اختر سنة",
-          "currentYear": "السنة الحالية",
-          "reset": "إعادة تعيين"
-        },
-        "stats": {
-          "totalUsers": "إجمالي المستخدمين",
-          "activeUsers": "المستخدمين النشطين",
-          "totalReservations": "إجمالي الحجوزات",
-
-          "allApproved": "جميعها معتمدة",
-          "pendingApproval": "في انتظار الموافقة",
-          "totalRevenue": "إجمالي الإيرادات",
-          "monthlyRevenue": "الإيراد الشهري",
-          "activeStadiums": "الملاعب النشطة",
-          "clubs": "أندية",
-          "availability": "التوافر",
-          "rate": "معدل",
-          "pending": "قيد الانتظار"
-
-        },
-        "tables": {
-          "recentReservations": "الحجوزات الأخيرة",
-          "last24Hours": "آخر 24 ساعة",
-          "recentUsers": "المستخدمون الجدد",
-          "newRegistrations": "تسجيلات جديدة",
-          "user": "المستخدم",
-          "stadium": "الملعب",
-          "time": "الوقت",
-          "status": "الحالة",
-          "amount": "المبلغ",
-          "email": "البريد الإلكتروني",
-          "role": "الدور",
-          "joined": "انضم في"
-        },
-        "status": {
-          "pending": "قيد الانتظار",
-          "approved": "موافق عليه",
-          "declined": "مرفوض",
-          "cancelled": "ملغى",
-          "paid": "مدفوع",
-          "unpaid": "غير مدفوع"
-
-
-        },
-        "time": {
-          "justNow": "الآن",
-          "hoursAgo": "منذ {hours} ساعة",
-          "daysAgo": "منذ {days} يوم"
-        },
-        "actions": {
-          "viewAll": "عرض الكل",
-          "refresh": "تحديث",
-          "retry": "إعادة المحاولة"
-        },
-        "error": {
-          "title": "خطأ في تحميل البيانات"
-        },
-        "title": "لوحة التحكم",
-        "subtitle": "نظرة عامة على النظام"
+        "headTitle": "لوحة التحكم",
+        "metaDescription": "نظرة عامة على لوحة التحكم الرئيسية"
+      },
+      "Reservations": {
+        "headTitle": "الحجوزات",
+        "metaDescription": "إدارة، متابعة، ومعالجة جميع حجوزاتك"
+      },
+      "Notifications": {
+        "headTitle": "الإشعارات",
+        "metaDescription": "عرض وإدارة الإشعارات الخاصة بك"
+      },
+      "Stadiums": {
+        "headTitle": "الملاعب",
+        "metaDescription": "تصفح وإدارة الملاعب"
+      },
+      "Payments": {
+        "headTitle": "المدفوعات",
+        "metaDescription": "إدارة ومتابعة المدفوعات"
+      },
+      "Users": {
+        "headTitle": "المستخدمون",
+        "metaDescription": "إدارة مستخدمي النظام والصلاحيات"
+      },
+      "Profile": {
+        "headTitle": "الملف الشخصي",
+        "metaDescription": "عرض وإدارة ملفك الشخصي"
       }
     },
     "About": {

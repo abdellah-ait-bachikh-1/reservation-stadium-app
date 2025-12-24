@@ -1,7 +1,26 @@
+import { APP_NAMES } from "@/lib/const";
+import { TLocale } from "@/lib/types";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-const ProfilePage = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
-  return <div> {id}</div>;
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ locale: TLocale }>;
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "Pages.Dashboard.Profile",
+  });
+  return {
+    title: t("headTitle"),
+    description: t("metaDescription") || "Dashboard Profile page",
+  };
 };
 
-export default ProfilePage;
+const DashboardProfilePage = () => {
+  return <div>DashboardProfilePage</div>;
+};
+
+export default DashboardProfilePage;

@@ -25,89 +25,31 @@
     "Dashboard": {
       "Home": {
         "headTitle": "Dashboard",
-        "metaDescription": "View your dashboard with analytics, statistics, and quick access to all features",
-        "charts": {
-          "months": "months",
-          "weeks": "weeks",
-          "days": "days",
-          "hours": "hours",
-          "time": "time",
-          "revenue": "revenue",
-          "bookings": "bookings",
-          "revenueTrend": "Revenue Trend",
-          "growth": "growth",
-          "sportDistribution": "Sport Distribution",
-          "byReservation": "by reservation",
-          "reservationsByStatus": "Reservations by Status",
-          "statusBreakdown": "Status Breakdown",
-          "topStadiums": "Top Stadiums",
-          "byReservations": "by reservations",
-          "topClubs": "Top Clubs",
-          "mostActive": "most active",
-          "reservations": "reservations"
-        },
-        "filters": {
-          "timeRange": "Time Range",
-          "year": "Year",
-          "today": "Today",
-          "thisWeek": "This Week",
-          "thisMonth": "This Month",
-          "thisYear": "This Year",
-          "selectYear": "Select Year",
-          "currentYear": "Current Year",
-          "reset": "Reset"
-        },
-        "stats": {
-          "totalUsers": "Total Users",
-          "activeUsers": "Active Users",
-          "totalReservations": "Total Reservations",
-          "allApproved": "All Approved",
-          "pendingApproval": "Pending Approval",
-          "totalRevenue": "Total Revenue",
-          "monthlyRevenue": "Monthly Revenue",
-          "activeStadiums": "Active Stadiums",
-          "clubs": "clubs",
-          "availability": "Availability",
-          "rate": "rate",
-          "pending": "Pending"
-        },
-        "tables": {
-          "recentReservations": "Recent Reservations",
-          "last24Hours": "Last 24 Hours",
-          "recentUsers": "Recent Users",
-          "newRegistrations": "New Registrations",
-          "user": "User",
-          "stadium": "Stadium",
-          "time": "Time",
-          "status": "Status",
-          "amount": "Amount",
-          "email": "Email",
-          "role": "Role",
-          "joined": "Joined"
-        },
-        "status": {
-          "pending": "Pending",
-          "approved": "Approved",
-          "declined": "Declined",
-          "cancelled": "Cancelled",
-          "paid": "Paid",
-          "unpaid": "Unpaid"
-        },
-        "time": {
-          "justNow": "Just now",
-          "hoursAgo": "{hours} hours ago",
-          "daysAgo": "{days} days ago"
-        },
-        "actions": {
-          "viewAll": "View All",
-          "refresh": "Refresh",
-          "retry": "Retry"
-        },
-        "error": {
-          "title": "Error Loading Data"
-        },
-        "title": "Dashboard",
-        "subtitle": "System Overview"
+        "metaDescription": "Your main dashboard overview"
+      },
+      "Reservations": {
+        "headTitle": "Reservations",
+        "metaDescription": "Manage, track, and handle all your reservations"
+      },
+      "Notifications": {
+        "headTitle": "Notifications",
+        "metaDescription": "View and manage your notifications"
+      },
+      "Stadiums": {
+        "headTitle": "Stadiums",
+        "metaDescription": "Browse and manage stadiums"
+      },
+      "Payments": {
+        "headTitle": "Payments",
+        "metaDescription": "Manage and track payments"
+      },
+      "Users": {
+        "headTitle": "Users",
+        "metaDescription": "Manage system users and permissions"
+      },
+      "Profile": {
+        "headTitle": "Profile",
+        "metaDescription": "View and manage your profile"
       }
     },
     "About": {
