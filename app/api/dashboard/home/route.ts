@@ -99,10 +99,6 @@ export async function GET(request: Request) {
             now.getDate()
           );
           break;
-        case "all":
-          // Get data from beginning of records (5 years back as default)
-          startDate = new Date(now.getFullYear() - 5, 0, 1);
-          break;
         default:
           startDate = new Date(
             now.getFullYear(),

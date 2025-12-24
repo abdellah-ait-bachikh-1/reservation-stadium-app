@@ -5,12 +5,22 @@ import { TLocale } from "@/lib/types";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { HiX, HiHome, HiUser, HiCalendar, HiBell, HiAdjustments, HiCash, HiUsers, HiGlobe, HiLogout } from "react-icons/hi";
+import {
+  HiX,
+  HiHome,
+  HiUser,
+  HiCalendar,
+  HiBell,
+  HiAdjustments,
+  HiCash,
+  HiUsers,
+  HiGlobe,
+  HiLogout,
+} from "react-icons/hi";
 import { signOut } from "next-auth/react";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import LogoutButton from "../LogoutButton";
-
 
 const Aside = () => {
   const { isOpen, closeSidebar } = useSidebar();
@@ -19,11 +29,10 @@ const Aside = () => {
   const t = useTranslations("Components.Dashboard.Sidebar");
   const router = useRouter();
   const pathname = usePathname();
-  
 
   // تحديد إذا كانت اللغة العربية
-  const isRTL = locale === 'ar';
-  
+  const isRTL = locale === "ar";
+
   // تحديد الـ transform بناءً على الاتجاه
   const getTransformClass = () => {
     if (isRTL) {
@@ -32,7 +41,7 @@ const Aside = () => {
       return isOpen ? "translate-x-0" : "-translate-x-full";
     }
   };
-  
+
   // تحديد موضع السايدبار
   const getPositionClass = () => {
     if (isRTL) {
@@ -63,26 +72,26 @@ const Aside = () => {
   // Handle logout
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.push('/auth/login');
+    router.push("/auth/login");
     closeSidebar();
   };
 
   // Handle return to public site
   const handleReturnToPublic = () => {
-    router.push('/');
+    router.push("/");
     closeSidebar();
   };
 
   // Function to check if a link is active - FIXED VERSION
   const isActiveLink = (href: string) => {
     // Remove locale prefix for comparison
-    const currentPath = pathname.replace(`/${locale}`, '') || '/';
-    
+    const currentPath = pathname.replace(`/${locale}`, "") || "/";
+
     // For home (/dashboard), only active on exact match
-    if (href === '/dashboard') {
-      return currentPath === '/dashboard';
+    if (href === "/dashboard") {
+      return currentPath === "/dashboard";
     }
-    
+
     // For other links, check exact match or starts with (for nested routes)
     return currentPath === href || currentPath.startsWith(`${href}/`);
   };
@@ -90,72 +99,48 @@ const Aside = () => {
   // Navigation items based on user role
   const getNavItems = () => {
     const baseItems = [
-      { 
-        href: '/dashboard', 
-        label: t('home'), 
+      {
+        href: "/dashboard",
+        label: t("home"),
         icon: HiHome,
-        show: true 
+        show: true,
       },
-      { 
-        href: '/dashboard/reservations', 
-        label: t('reservations'), 
+      {
+        href: "/dashboard/reservations",
+        label: t("reservations"),
         icon: HiCalendar,
-        show: true 
+        show: true,
       },
-      { 
-        href: '/dashboard/notifications', 
-        label: t('notifications'), 
+      {
+        href: "/dashboard/notifications",
+        label: t("notifications"),
         icon: HiBell,
-        show: true 
+        show: true,
       },
-      { 
-        href: '/dashboard/stadiums', 
-        label: t('stadiums'), 
+      {
+        href: "/dashboard/stadiums",
+        label: t("stadiums"),
         icon: HiAdjustments,
-        show: true 
+        show: true,
       },
-      { 
-        href: '/dashboard/payments', 
-        label: t('payments'), 
+      {
+        href: "/dashboard/payments",
+        label: t("payments"),
         icon: HiCash,
-        show: true 
+        show: true,
       },
-      { 
-        href: '/dashboard/users', 
-        label: t('users'), 
+      {
+        href: "/dashboard/users",
+        label: t("users"),
         icon: HiUsers,
-        show: true 
+        show: true,
       },
     ];
 
-    return baseItems.filter(item => item.show);
+    return baseItems.filter((item) => item.show);
   };
 
   const navItems = getNavItems();
-
-  // Skeleton for user info section
-  const renderUserInfoSkeleton = () => (
-    <div className={`px-4 py-4 mx-4 mb-4 rounded-lg bg-white/60 dark:bg-slate-800/60 border border-amber-100 dark:border-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
-      <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        {/* Avatar Skeleton */}
-        <div className="relative">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 dark:from-slate-700 dark:to-slate-600 animate-pulse"></div>
-        </div>
-
-        {/* User Info Skeleton */}
-        <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
-          {/* Name Skeleton */}
-          <div className="h-4 bg-gradient-to-r from-amber-100 to-amber-200 dark:from-slate-700 dark:to-slate-600 rounded animate-pulse mb-2"></div>
-          
-          {/* Badges Skeleton */}
-          <div className="flex items-center gap-2 mt-1">
-            <div className="h-5 w-16 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-slate-700 dark:to-slate-600 rounded-full animate-pulse"></div>
-            <div className="h-5 w-20 bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-slate-700 dark:to-slate-600 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -170,7 +155,7 @@ const Aside = () => {
         className={`
           fixed md:sticky
           ${getPositionClass()}
-          w-64 sm:w-72
+          w-64 sm:w-60
           h-screen
           transform transition-transform duration-300 ease-in-out
           z-99998
@@ -178,38 +163,41 @@ const Aside = () => {
           ${getTransformClass()}
           md:translate-x-0
           overscroll-contain
-          shadow-xl md:shadow-lg
-          ${isRTL ? 'md:border-l' : 'md:border-r'} border-amber-200 dark:border-slate-700
+          
         `}
       >
         {/* Sidebar Header */}
-        <div className={`bg-amber-50 dark:bg-slate-900 h-full flex flex-col ${isRTL ? 'text-right' : 'text-left'}`}>
+        <div
+          className={`bg-white dark:bg-slate-900 h-full flex flex-col ${
+            isRTL ? "text-right" : "text-left"
+          }`}
+        >
           {/* Header Section */}
           <div className="px-4 py-5">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 bg-white dark:bg-slate-900 rounded-full p-1.5 shadow-md">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo"
-                    width={32}
-                    height={32}
-                    className="object-contain"
-                    priority
-                  />
-                </div>
+              <div className="flex items-start gap-3">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={45}
+                  height={45}
+                  className="object-contain"
+                  priority
+                />
                 <div className="text-left">
                   <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
                     {APP_NAMES[locale as TLocale]}
                   </h1>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {locale === 'en' ? 'Management System' : 
-                     locale === 'fr' ? 'Système de Gestion' : 
-                     'نظام الإدارة'}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 rtl:text-right">
+                    {locale === "en"
+                      ? "Management System"
+                      : locale === "fr"
+                      ? "Système de Gestion"
+                      : "نظام الإدارة"}
                   </p>
                 </div>
               </div>
-              
+
               <button
                 onClick={closeSidebar}
                 className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white shadow-sm hover:shadow transition-all duration-200"
@@ -225,7 +213,7 @@ const Aside = () => {
             <nav className="space-y-1">
               {navItems.map((item) => {
                 const isActive = isActiveLink(item.href);
-                
+
                 return (
                   <Link
                     key={item.href}
@@ -233,20 +221,30 @@ const Aside = () => {
                     onClick={closeSidebar}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
                       isActive
-                        ? 'bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white'
+                        ? "bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white"
                     }`}
                   >
-                    <item.icon className={`w-5 h-5 flex-shrink-0 ${
-                      isActive
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
-                    }`} />
-                    <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
+                    <item.icon
+                      className={`w-5 h-5 flex-shrink-0 ${
+                        isActive
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                      }`}
+                    />
+                    <span
+                      className={`font-medium ${
+                        isRTL ? "text-right flex-1" : "text-left flex-1"
+                      }`}
+                    >
                       {item.label}
                     </span>
                     {isActive && (
-                      <div className={`w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ${isRTL ? 'mr-auto' : 'ml-auto'}`} />
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ${
+                          isRTL ? "mr-auto" : "ml-auto"
+                        }`}
+                      />
                     )}
                   </Link>
                 );
@@ -255,14 +253,18 @@ const Aside = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="px-3 py-4 space-y-2 border-t border-amber-200 dark:border-slate-700">
+          <div className="px-3 py-4 space-y-2 ">
             <button
               onClick={handleReturnToPublic}
               className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white`}
             >
               <HiGlobe className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" />
-              <span className={`font-medium ${isRTL ? 'text-right flex-1' : 'text-left flex-1'}`}>
-                {t('returnToPublic')}
+              <span
+                className={`font-medium ${
+                  isRTL ? "text-right flex-1" : "text-left flex-1"
+                }`}
+              >
+                {t("returnToPublic")}
               </span>
             </button>
 
@@ -275,14 +277,18 @@ const Aside = () => {
                 {t('logout')}
               </span>
             </button> */}
-  <LogoutButton variant="mobile"/>
-            </div>
+            <LogoutButton variant="mobile" />
+          </div>
 
           {/* Sidebar Footer */}
-          <div className={`px-4 py-4 border-t border-amber-200 dark:border-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+          <div
+            className={`px-4 py-4 border-t border-default-200 dark:border-slate-700 ${
+              isRTL ? "text-right" : "text-left"
+            }`}
+          >
             <div className={`flex items-center justify-between`}>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {t('version')}
+                {t("version")}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 © 2024

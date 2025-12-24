@@ -2,30 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
-import { Avatar } from "@heroui/avatar";
-
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/table";
-import { Skeleton } from "@heroui/skeleton";
-import { Badge } from "@heroui/badge";
-import { Tooltip } from "@heroui/tooltip";
-import { Select, SelectItem } from "@heroui/select";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@heroui/modal";
 
 // CORRECTED ICON IMPORTS - Use only existing icons from hi2
 import {
@@ -39,10 +15,19 @@ import {
   HiArrowPath,
   HiExclamationCircle,
   HiTrophy,
+  HiCurrencyDollar,
+  HiBuildingStorefront,
 } from "react-icons/hi2";
 
 // Add lucide-react for missing icons
-import { Filter, Calendar } from "lucide-react";
+import {
+  Filter,
+  TrendingUp,
+  Users,
+  Calendar,
+  DollarSign,
+  Building,
+} from "lucide-react";
 
 import {
   Line,
@@ -58,6 +43,8 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import { FaFutbol } from "react-icons/fa";
+import { Link } from "@/i18n/navigation";
 
 // Types based on your Prisma schema
 interface DashboardStats {
@@ -149,8 +136,6 @@ interface CustomTooltipProps {
 interface Filters {
   timeRange: string;
   year: string | null;
-  startDate: string;
-  endDate: string;
 }
 
 const Dashboard = () => {
@@ -159,9 +144,6 @@ const Dashboard = () => {
   const isRTL = locale === "ar";
 
   const [loading, setLoading] = useState(true);
-  const [customStartDate, setCustomStartDate] = useState<string>("");
-  const [customEndDate, setCustomEndDate] = useState<string>("");
-  const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
 
   const [dashboardData, setDashboardData] = useState<DashboardStats | null>(
@@ -185,8 +167,6 @@ const Dashboard = () => {
   const [filters, setFilters] = useState<Filters>({
     timeRange: "year",
     year: new Date().getFullYear().toString(),
-    startDate: "",
-    endDate: "",
   });
 
   // Build query string based on filters
@@ -195,8 +175,6 @@ const Dashboard = () => {
 
     if (filters.timeRange) params.set("timeRange", filters.timeRange);
     if (filters.year) params.set("year", filters.year);
-    if (filters.startDate) params.set("startDate", filters.startDate);
-    if (filters.endDate) params.set("endDate", filters.endDate);
 
     return params.toString();
   };
@@ -208,7 +186,7 @@ const Dashboard = () => {
       setError(null);
 
       const queryString = buildQueryString();
-      const response = await fetch(`/api/dashboard/stats?${queryString}`, {
+      const response = await fetch(`/api/dashboard/home?${queryString}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -227,15 +205,19 @@ const Dashboard = () => {
       setDashboardData(data.stats);
       setRecentReservations(data.recentReservations || []);
       setRecentUsers(data.recentUsers || []);
-      
+
       // Transform revenue data based on time range
       if (data.revenueData) {
-        const transformedData = transformRevenueData(data.revenueData, filters.timeRange, locale);
+        const transformedData = transformRevenueData(
+          data.revenueData,
+          filters.timeRange,
+          locale
+        );
         setRevenueData(transformedData);
       } else {
         setRevenueData([]);
       }
-      
+
       setSportDistribution(data.sportDistribution || []);
       setReservationsByStatus(data.reservationsByStatus || []);
       setUsersByRole(data.usersByRole || []);
@@ -249,8 +231,6 @@ const Dashboard = () => {
           ...prev,
           timeRange: data.filters.timeRange || prev.timeRange,
           year: data.filters.year || prev.year,
-          startDate: data.filters.startDate || prev.startDate,
-          endDate: data.filters.endDate || prev.endDate,
         }));
       }
     } catch (err) {
@@ -262,34 +242,42 @@ const Dashboard = () => {
   };
 
   // Transform revenue data based on time range
-  const transformRevenueData = (data: RevenueData[], timeRange: string, locale: string): RevenueData[] => {
+  const transformRevenueData = (
+    data: RevenueData[],
+    timeRange: string,
+    locale: string
+  ): RevenueData[] => {
     if (!data || data.length === 0) return [];
-    
-    // If data is already in the right format for the current timeRange, return as is
-    // Otherwise, we need to transform it based on the API response structure
-    // For now, we'll assume the API returns appropriate data structure
-    // but we'll add labels based on timeRange
-    
+
     return data.map((item, index) => {
       // Add time-based labels if needed
-      if (timeRange === 'day') {
+      if (timeRange === "day") {
         // For day view, show hours
         const hour = index * 2; // Assuming 12 data points for 24 hours
         return {
           ...item,
-          month: `${hour}:00` // Format as hour:00
+          month: `${hour}:00`, // Format as hour:00
         };
-      } else if (timeRange === 'week') {
+      } else if (timeRange === "week") {
         // For week view, show days of week
-        const days = locale === 'ar' 
-          ? ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
-          : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const days =
+          locale === "ar"
+            ? [
+                "الأحد",
+                "الإثنين",
+                "الثلاثاء",
+                "الأربعاء",
+                "الخميس",
+                "الجمعة",
+                "السبت",
+              ]
+            : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         return {
           ...item,
-          month: days[index % 7] || item.month
+          month: days[index % 7] || item.month,
         };
       }
-      
+
       // For month or year, use the month names from API
       return item;
     });
@@ -297,42 +285,47 @@ const Dashboard = () => {
 
   // Get X-axis label based on time range
   const getXAxisLabel = () => {
-    switch (filters.timeRange) {
-      case 'day':
-        return t('charts.hours');
-      case 'week':
-        return t('charts.days');
-      case 'month':
-        return t('charts.weeks');
-      case 'year':
-        return t('charts.months');
-      default:
-        return t('charts.months');
+    try {
+      switch (filters.timeRange) {
+        case "day":
+          return t("charts.hours", { defaultValue: "Hours" });
+        case "week":
+          return t("charts.days", { defaultValue: "Days" });
+        case "month":
+          return t("charts.weeks", { defaultValue: "Weeks" });
+        case "year":
+          return t("charts.months", { defaultValue: "Months" });
+        default:
+          return t("charts.months", { defaultValue: "Months" });
+      }
+    } catch (error) {
+      // Fallback to English labels if translation is missing
+      switch (filters.timeRange) {
+        case "day":
+          return "Hours";
+        case "week":
+          return "Days";
+        case "month":
+          return "Weeks";
+        case "year":
+          return "Months";
+        default:
+          return "Months";
+      }
     }
   };
 
   // Get chart subtitle based on filters
   const getChartSubtitle = () => {
     if (filters.year) {
-      return `${t('filters.year')}: ${filters.year}`;
-    }
-    if (filters.startDate && filters.endDate) {
-      const start = new Date(filters.startDate).toLocaleDateString(locale, { 
-        month: 'short', 
-        day: 'numeric' 
-      });
-      const end = new Date(filters.endDate).toLocaleDateString(locale, { 
-        month: 'short', 
-        day: 'numeric' 
-      });
-      return `${start} - ${end}`;
+      return `${t("filters.year")}: ${filters.year}`;
     }
     return t(`filters.${filters.timeRange}`);
   };
 
   useEffect(() => {
     fetchDashboardData();
-  }, [filters.timeRange, filters.year, filters.startDate, filters.endDate]);
+  }, [filters.timeRange, filters.year]);
 
   // Apply year filter
   const handleYearChange = (year: string | null) => {
@@ -340,23 +333,7 @@ const Dashboard = () => {
       ...prev,
       year: year || null,
       timeRange: year ? "year" : prev.timeRange,
-      startDate: "",
-      endDate: "",
     }));
-  };
-
-  // Apply custom date range
-  const handleCustomDateRange = () => {
-    if (customStartDate && customEndDate) {
-      setFilters((prev) => ({
-        ...prev,
-        timeRange: "custom",
-        year: null,
-        startDate: customStartDate,
-        endDate: customEndDate,
-      }));
-      setShowDateRangeModal(false);
-    }
   };
 
   // Reset to default filters
@@ -364,11 +341,7 @@ const Dashboard = () => {
     setFilters({
       timeRange: "year",
       year: new Date().getFullYear().toString(),
-      startDate: "",
-      endDate: "",
     });
-    setCustomStartDate("");
-    setCustomEndDate("");
   };
 
   // Refresh data
@@ -422,11 +395,6 @@ const Dashboard = () => {
     if (filters.year) {
       return `${t("filters.year")}: ${filters.year}`;
     }
-    if (filters.startDate && filters.endDate) {
-      const start = new Date(filters.startDate).toLocaleDateString(locale);
-      const end = new Date(filters.endDate).toLocaleDateString(locale);
-      return `${start} - ${end}`;
-    }
     return t(`filters.${filters.timeRange}`);
   };
 
@@ -440,7 +408,8 @@ const Dashboard = () => {
     return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
   };
 
-  // Stats cards data
+ 
+  // Stats cards data with enhanced design
   const statsCards = dashboardData
     ? [
         {
@@ -452,10 +421,10 @@ const Dashboard = () => {
             dashboardData.totalUsers - dashboardData.activeUsers
           ),
           isPositive: true,
-          icon: HiUsers,
-          color: "bg-blue-500",
-          chartColor: "#3b82f6",
+          icon: Users,
+          color: " from-primary-400  to-primary-200 ",
           details: t("stats.activeUsers", { count: dashboardData.activeUsers }),
+          trendIcon: HiArrowTrendingUp,
         },
         {
           id: 2,
@@ -466,12 +435,16 @@ const Dashboard = () => {
               ? `${dashboardData.pendingReservations} ${t("stats.pending")}`
               : t("stats.allApproved"),
           isPositive: dashboardData.pendingReservations === 0,
-          icon: HiCalendar,
-          color: "bg-green-500",
-          chartColor: "#10b981",
+          icon: Calendar,
+          color:"from-secondary-400  to-secondary-200  ",
+
           details: t("stats.pendingApproval", {
             count: dashboardData.pendingReservations,
           }),
+          trendIcon:
+            dashboardData.pendingReservations === 0
+              ? HiArrowTrendingUp
+              : HiArrowTrendingDown,
         },
         {
           id: 3,
@@ -482,12 +455,15 @@ const Dashboard = () => {
             dashboardData.totalRevenue - dashboardData.monthlyRevenue
           ),
           isPositive: dashboardData.monthlyRevenue > 0,
-          icon: HiUser,
-          color: "bg-amber-500",
-          chartColor: "#f59e0b",
+          icon: DollarSign,
+          color: "from-success-400  to-success-200   ",
           details: t("stats.monthlyRevenue", {
             amount: formatCurrency(dashboardData.monthlyRevenue),
           }),
+          trendIcon:
+            dashboardData.monthlyRevenue > 0
+              ? HiArrowTrendingUp
+              : HiArrowTrendingDown,
         },
         {
           id: 4,
@@ -498,22 +474,22 @@ const Dashboard = () => {
               ? `${dashboardData.totalClubs} ${t("stats.clubs")}`
               : "0",
           isPositive: true,
-          icon: HiHome,
-          color: "bg-purple-500",
-          chartColor: "#8b5cf6",
+          icon: Building,
+          color:"from-warning-400 to-warning-200  ",
           details: t("stats.availability", { rate: "78%" }),
+          trendIcon: HiArrowTrendingUp,
         },
       ]
     : [];
 
   // Colors for charts
   const COLORS = [
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#8884d8",
-    "#82ca9d",
+    "#3b82f6", // Primary
+    "#10b981", // Success
+    "#f59e0b", // Warning
+    "#8b5cf6", // Secondary
+    "#ef4444", // Danger
+    "#6b7280", // Default
   ];
   const STATUS_COLORS = {
     APPROVED: "#10b981",
@@ -528,9 +504,11 @@ const Dashboard = () => {
   const RevenueTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white  dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg">
           <p className="font-medium text-gray-900 dark:text-white mb-2">
-            {filters.timeRange === 'day' ? `${t('charts.time')}: ${label}` : label}
+            {filters.timeRange === "day"
+              ? `${t("charts.time")}: ${label}`
+              : label}
           </p>
           <div className="space-y-1">
             <p className="text-sm">
@@ -556,7 +534,7 @@ const Dashboard = () => {
   const PieTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg">
           <p className="font-medium text-gray-900 dark:text-white">
             {payload[0].payload.name}
           </p>
@@ -600,6 +578,91 @@ const Dashboard = () => {
     return null;
   };
 
+  // Custom Badge Component
+  const Badge = ({
+    children,
+    color = "default",
+    className = "",
+    variant = "flat",
+  }: {
+    children: React.ReactNode;
+    color?: "primary" | "success" | "warning" | "danger" | "default";
+    className?: string;
+    variant?: "flat" | "solid";
+  }) => {
+    const colorClasses = {
+      primary:
+        variant === "solid"
+          ? "bg-blue-600 text-white"
+          : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+      success:
+        variant === "solid"
+          ? "bg-green-600 text-white"
+          : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      warning:
+        variant === "solid"
+          ? "bg-amber-600 text-white"
+          : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+      danger:
+        variant === "solid"
+          ? "bg-red-600 text-white"
+          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+      default:
+        variant === "solid"
+          ? "bg-gray-600 text-white"
+          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+    };
+
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${colorClasses[color]} ${className}`}
+      >
+        {children}
+      </span>
+    );
+  };
+
+  // Custom Chip Component
+  const Chip = ({
+    children,
+    color = "default",
+    size = "md",
+    startContent,
+    className = "",
+  }: {
+    children: React.ReactNode;
+    color?: "primary" | "success" | "warning" | "danger" | "default";
+    size?: "sm" | "md" | "lg";
+    startContent?: React.ReactNode;
+    className?: string;
+  }) => {
+    const sizeClasses = {
+      sm: "px-2 py-0.5 text-xs",
+      md: "px-3 py-1 text-sm",
+      lg: "px-4 py-2 text-base",
+    };
+
+    const colorClasses = {
+      primary:
+        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+      success:
+        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      warning:
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+      danger: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+      default: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+    };
+
+    return (
+      <div
+        className={`inline-flex items-center gap-1 rounded-full ${sizeClasses[size]} ${colorClasses[color]} ${className}`}
+      >
+        {startContent && <span>{startContent}</span>}
+        <span>{children}</span>
+      </div>
+    );
+  };
+
   // Render loading state
   if (loading) {
     return (
@@ -607,43 +670,39 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <Skeleton className="h-10 w-48 rounded-lg" />
-            <Skeleton className="h-4 w-64 mt-2 rounded-lg" />
+            <div className="h-10 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div className="h-4 w-64 mt-2 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
           </div>
           <div className="flex gap-2">
-            <Skeleton className="h-10 w-32 rounded-lg" />
-            <Skeleton className="h-10 w-10 rounded-lg" />
+            <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div className="h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
           </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <Card
+            <div
               key={i}
-              className="border border-slate-200 dark:border-slate-700"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl p-6"
             >
-              <CardBody className="space-y-4">
-                <Skeleton className="h-6 w-32 rounded-lg" />
-                <Skeleton className="h-12 w-24 rounded-lg" />
-                <Skeleton className="h-4 w-48 rounded-lg" />
-              </CardBody>
-            </Card>
+              <div className="space-y-4">
+                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                <div className="h-12 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                <div className="h-4 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+              </div>
+            </div>
           ))}
         </div>
 
         {/* Charts and Tables */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="border border-slate-200 dark:border-slate-700">
-            <CardBody>
-              <Skeleton className="h-64 w-full rounded-lg" />
-            </CardBody>
-          </Card>
-          <Card className="border border-slate-200 dark:border-slate-700">
-            <CardBody>
-              <Skeleton className="h-64 w-full rounded-lg" />
-            </CardBody>
-          </Card>
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+            <div className="h-64 w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+          </div>
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+            <div className="h-64 w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+          </div>
         </div>
       </div>
     );
@@ -661,14 +720,13 @@ const Dashboard = () => {
             {t("error.title")}
           </h3>
           <p className="text-gray-600 dark:text-gray-400 max-w-md">{error}</p>
-          <Button
-            color="primary"
-            variant="flat"
-            onPress={handleRefresh}
-            startContent={<HiArrowPath className="w-4 h-4" />}
+          <button
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
           >
+            <HiArrowPath className="w-4 h-4" />
             {t("actions.retry")}
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -676,7 +734,7 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`space-y-6 p-4 md:p-6 ${isRTL ? "rtl" : "ltr"}`}
+      className={`space-y-6 p-4 md:p-6 ${isRTL ? "rtl" : "ltr"} `}
       dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Header */}
@@ -687,633 +745,691 @@ const Dashboard = () => {
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             {t("subtitle")} •{" "}
-            {new Date().toLocaleDateString(
-              locale === "ar" ? "ar-MA" : "fr-FR",
-              {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }
-            )}
+            <span className="font-medium text-blue-600 dark:text-blue-400">
+              {new Date().toLocaleDateString(
+                locale === "ar" ? "ar-MA" : "fr-FR",
+                {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+            </span>
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Active Filter Display */}
-          <Chip color="primary" variant="flat" size="sm">
-            <Filter className="w-3 h-3 mr-1" />
+          <Chip
+            color="primary"
+            startContent={<Filter className="w-3 h-3 mr-1" />}
+          >
             {getActiveFilterLabel()}
           </Chip>
 
           {/* Time Range Selector */}
-          <Select
-            label={t("filters.timeRange")}
-            selectedKeys={new Set([filters.timeRange])}
-            onSelectionChange={(keys) => {
-              const selected = Array.from(keys)[0] as string;
-              if (selected) {
-                setFilters((prev) => ({
-                  ...prev,
-                  timeRange: selected,
-                  year: selected === "year" ? prev.year : null,
-                  startDate: "",
-                  endDate: "",
-                }));
-              }
+          <select
+            value={filters.timeRange}
+            onChange={(e) => {
+              const selected = e.target.value;
+              setFilters((prev) => ({
+                ...prev,
+                timeRange: selected,
+                year: selected === "year" ? prev.year : null,
+              }));
             }}
-            className="min-w-32"
-            size="sm"
+            className="min-w-32 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           >
-            <SelectItem key="day">{t("filters.today")}</SelectItem>
-            <SelectItem key="week">{t("filters.thisWeek")}</SelectItem>
-            <SelectItem key="month">{t("filters.thisMonth")}</SelectItem>
-            <SelectItem key="year">{t("filters.thisYear")}</SelectItem>
-            <SelectItem key="all">{t("filters.allTime")}</SelectItem>
-          </Select>
+            <option value="day">{t("filters.today")}</option>
+            <option value="week">{t("filters.thisWeek")}</option>
+            <option value="month">{t("filters.thisMonth")}</option>
+            <option value="year">{t("filters.thisYear")}</option>
+          </select>
 
           {/* Year Selector */}
           {filters.timeRange === "year" && (
-            <Select
-              label={t("filters.selectYear")}
-              selectedKeys={filters.year ? new Set([filters.year]) : new Set()}
-              onSelectionChange={(keys) => {
-                const selected = Array.from(keys)[0] as string;
+            <select
+              value={filters.year || ""}
+              onChange={(e) => {
+                const selected = e.target.value;
                 handleYearChange(selected || null);
               }}
-              className="min-w-32"
-              size="sm"
+              className="min-w-32 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             >
-              <SelectItem key="">{t("filters.currentYear")}</SelectItem>
+              <option value="">{t("filters.currentYear")}</option>
               {availableYears.map((year) => (
-                <SelectItem key={year.toString()}>{year.toString()}</SelectItem>
+                <option key={year.toString()} value={year.toString()}>
+                  {year.toString()}
+                </option>
               ))}
-            </Select>
+            </select>
           )}
-
-          {/* Custom Date Range Button */}
-          <Button
-            size="sm"
-            variant="flat"
-            onPress={() => setShowDateRangeModal(true)}
-            startContent={<Calendar className="w-4 h-4" />}
-          >
-            {t("filters.customRange")}
-          </Button>
 
           {/* Reset Filters Button */}
           {(filters.year !== new Date().getFullYear().toString() ||
-            filters.startDate ||
             filters.timeRange !== "year") && (
-            <Button size="sm" variant="light" onPress={handleResetFilters}>
+            <button
+              onClick={handleResetFilters}
+              className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+            >
               {t("filters.reset")}
-            </Button>
+            </button>
           )}
 
           {/* Refresh Button */}
-          <Button
-            isIconOnly
-            variant="flat"
-            onPress={handleRefresh}
+          <button
+            onClick={handleRefresh}
             aria-label={t("actions.refresh")}
+            className="p-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition-colors"
           >
             <HiArrowPath className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Grid - Beautiful Redesign */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat) => {
           const Icon = stat.icon;
+          const TrendIcon = stat.trendIcon;
           return (
-            <Card
+            <div
               key={stat.id}
-              className="border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow duration-200"
+              className={`group relative overflow-hidden border-2 border-slate-200 dark:border-slate-600 bg-linear-to-br ${stat.color} rounded-xl p-6 transition-all duration-300 hover:border-opacity-80`}
             >
-              <CardBody className="p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      {stat.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {stat.value}
-                      </h3>
-                      <Chip
-                        size="sm"
-                        color={stat.isPositive ? "success" : "danger"}
-                        variant="flat"
-                        startContent={
-                          stat.isPositive ? (
-                            <HiArrowTrendingUp className="w-3 h-3" />
-                          ) : (
-                            <HiArrowTrendingDown className="w-3 h-3" />
-                          )
-                        }
-                      >
-                        {stat.change}
-                      </Chip>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      {stat.details}
-                    </p>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  {/* Title */}
+                  <p className="text-sm font-medium text-white mb-3">
+                    {stat.title}
+                  </p>
+
+                  {/* Main Value with large, bold display */}
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <h3 className="text-3xl font-bold text-white tracking-tight text-shadow-2xs ">
+                      {stat.value}
+                    </h3>
+
+                    {/* Change indicator with icon */}
+                    <Chip
+                      color={stat.isPositive ? "success" : "danger"}
+                      size="sm"
+                      startContent={
+                        <TrendIcon
+                          className={`w-3.5 h-3.5 ${
+                            stat.isPositive
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-red-600 dark:text-red-400"
+                          }`}
+                        />
+                      }
+                    >
+                      {stat.change}
+                    </Chip>
                   </div>
-                  <div className={`p-3 rounded-lg ${stat.color} bg-opacity-10`}>
-                    <Icon
-                      className={`w-6 h-6 ${stat.color.replace(
-                        "bg-",
-                        "text-"
-                      )}`}
-                    />
+
+                  {/* Details with subtle styling */}
+                  <p className="text-xs text-white text-shadow-2xs mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    {stat.details}
+                  </p>
+                </div>
+
+                {/* Icon in a circular container */}
+                <div
+                  className={`relative  ${isRTL ? "mr-4 ml-0" : "ml-4"}`}
+                >
+                  {/* Icon container */}
+                  <div
+                    className={`relative w-14 h-14 rounded-full  flex items-center justify-center group-hover:scale-105  transition-transform duration-300`}
+                  >
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           );
         })}
       </div>
-
-      {/* Main Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-0">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t("charts.revenueTrend")}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {getChartSubtitle()} • {getXAxisLabel()}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Chip color="success" variant="flat" size="sm">
-                <HiArrowUp className="w-3 h-3 mr-1" />
-                {t("charts.growth")}:{" "}
-                {dashboardData && dashboardData.monthlyRevenue > 0
-                  ? calculatePercentageChange(
-                      dashboardData.monthlyRevenue,
-                      dashboardData.totalRevenue - dashboardData.monthlyRevenue
-                    )
-                  : "0%"}
-              </Chip>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#9ca3af"
-                    tick={{ fill: "#6b7280" }}
-                    label={{ 
-                      value: getXAxisLabel(), 
-                      position: 'insideBottom', 
-                      offset: -5,
-                      style: { fill: '#6b7280', fontSize: 12 }
-                    }}
-                  />
-                  <YAxis
-                    stroke="#9ca3af"
-                    tick={{ fill: "#6b7280" }}
-                    tickFormatter={(value) => `د.م ${value}`}
-                  />
-                  <RechartsTooltip content={<RevenueTooltip />} />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#f59e0b"
-                    fill="#f59e0b"
-                    fillOpacity={0.2}
-                    strokeWidth={2}
-                    name={t("charts.revenue")}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="bookings"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={{ stroke: "#3b82f6", strokeWidth: 2, r: 3 }}
-                    activeDot={{ r: 5 }}
-                    name={t("charts.bookings")}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardBody>
-        </Card>
-
-        {/* Sport Distribution */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-0">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t("charts.sportDistribution")}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("charts.byReservation")}
-              </p>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={sportDistribution}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    outerRadius={80}
-                    innerRadius={40}
-                    paddingAngle={2}
-                    dataKey="value"
-                    nameKey="name"
-                  >
-                    {sportDistribution.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <RechartsTooltip content={<PieTooltip />} />
-                  <Legend
-                    layout="vertical"
-                    verticalAlign="middle"
-                    align="right"
-                    wrapperStyle={{ paddingLeft: "20px" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardBody>
-        </Card>
+{/* Main Charts Section */}
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  {/* Revenue Chart */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-10 h-10 rounded-lg bg-amber-500 dark:bg-amber-600 flex items-center justify-center">
+            <HiCurrencyDollar className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {t("charts.revenueTrend")}
+          </h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {getChartSubtitle()} • {getXAxisLabel()}
+        </p>
       </div>
-
-      {/* Additional Insights Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Reservations by Status */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t("charts.reservationsByStatus")}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t("charts.statusBreakdown")}
-            </p>
-          </CardHeader>
-          <CardBody>
-            <div className="space-y-3">
-              {reservationsByStatus.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{
-                        backgroundColor:
-                          STATUS_COLORS[
-                            item.status as keyof typeof STATUS_COLORS
-                          ] || "#6b7280",
-                      }}
-                    />
-                    <span className="text-sm font-medium">{item.status}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold">{item.count}</span>
-                    <span className="text-xs text-gray-500">
-                      (
-                      {(
-                        (item.count / (dashboardData?.totalReservations || 1)) *
-                        100
-                      ).toFixed(1)}
-                      %)
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
-
-        {/* Top Stadiums */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t("charts.topStadiums")}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t("charts.byReservations")}
-            </p>
-          </CardHeader>
-          <CardBody>
-            <div className="space-y-3">
-              {topStadiums.map((stadium, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <HiHome className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <span className="text-sm font-medium truncate">
-                      {stadium.name}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold">
-                      {stadium.reservations}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("charts.reservations")}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
-
-        {/* Top Clubs */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t("charts.topClubs")}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t("charts.mostActive")}
-            </p>
-          </CardHeader>
-          <CardBody>
-            <div className="space-y-3">
-              {topClubs.map((club, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                      <HiTrophy className="w-4 h-4 text-green-600" />
-                    </div>
-                    <span className="text-sm font-medium truncate">
-                      {club.name}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold">
-                      {club.reservations}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("charts.reservations")}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
+      <div className="flex items-center gap-2">
+        <Chip
+          color="success"
+          size="sm"
+          startContent={<HiArrowUp className="w-3 h-3 mr-1" />}
+        >
+          {t("charts.growth")}:{" "}
+          {dashboardData && dashboardData.monthlyRevenue > 0
+            ? calculatePercentageChange(
+                dashboardData.monthlyRevenue,
+                dashboardData.totalRevenue - dashboardData.monthlyRevenue
+              )
+            : "0%"}
+        </Chip>
       </div>
+    </div>
+    <div className="h-72">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={revenueData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <XAxis
+            dataKey="month"
+            stroke="#9ca3af"
+            tick={{ fill: "#6b7280" }}
+            label={{
+              value: getXAxisLabel(),
+              position: "insideBottom",
+              offset: -5,
+              style: { fill: "#6b7280", fontSize: 12 },
+            }}
+          />
+          <YAxis
+            stroke="#9ca3af"
+            tick={{ fill: "#6b7280" }}
+            tickFormatter={(value) => `د.م ${value}`}
+          />
+          <RechartsTooltip content={<RevenueTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="revenue"
+            stroke="url(#colorRevenue)"
+            fill="url(#fillRevenue)"
+            fillOpacity={0.3}
+            strokeWidth={3}
+            name={t("charts.revenue")}
+          />
+          <Line
+            type="monotone"
+            dataKey="bookings"
+            stroke="url(#colorBookings)"
+            strokeWidth={2}
+            dot={{ stroke: "#3b82f6", strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6 }}
+            name={t("charts.bookings")}
+          />
+          <defs>
+            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.1} />
+            </linearGradient>
+            <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Reservations */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader className="flex items-center justify-between pb-0">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t("tables.recentReservations")}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("tables.last24Hours")}
-              </p>
+  {/* Sport Distribution */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-10 h-10 rounded-lg bg-green-500 dark:bg-green-600 flex items-center justify-center">
+            <FaFutbol className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {t("charts.sportDistribution")}
+          </h3>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {t("charts.byReservation")}
+        </p>
+      </div>
+    </div>
+    <div className="h-72">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={sportDistribution}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={85}
+            innerRadius={45}
+            paddingAngle={3}
+            dataKey="value"
+            nameKey="name"
+          >
+            {sportDistribution.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+                stroke="#fff"
+                strokeWidth={2}
+              />
+            ))}
+          </Pie>
+          <RechartsTooltip content={<PieTooltip />} />
+          <Legend
+            layout="vertical"
+            verticalAlign="middle"
+            align="right"
+            wrapperStyle={{
+              paddingLeft: "20px",
+              fontSize: "12px",
+            }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+</div>
+
+{/* Additional Insights Section */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  {/* Reservations by Status */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-10 h-10 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
+        <HiCalendar className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {t("charts.reservationsByStatus")}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {t("charts.statusBreakdown")}
+        </p>
+      </div>
+    </div>
+    <div className="space-y-4">
+      {reservationsByStatus.map((item, index) => {
+        const percentage = (
+          (item.count / (dashboardData?.totalReservations || 1)) *
+          100
+        ).toFixed(1);
+        const color =
+          STATUS_COLORS[item.status as keyof typeof STATUS_COLORS] ||
+          "#6b7280";
+
+        return (
+          <div key={index} className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-3 h-3 rounded-full shadow-sm"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {item.status}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-gray-900 dark:text-white">
+                  {item.count.toLocaleString()}
+                </span>
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                  ({percentage}%)
+                </span>
+              </div>
             </div>
-            <Button
-              variant="light"
-              size="sm"
-              onPress={() => (window.location.href = "/dashboard/reservations")}
-            >
-              {t("actions.viewAll")}
-            </Button>
-          </CardHeader>
-          <CardBody>
-            <div className="overflow-x-auto">
-              <Table
-                aria-label="Recent reservations table"
-                removeWrapper
-                classNames={{
-                  base: "max-h-[400px] overflow-y-auto",
-                  th: "bg-transparent text-gray-600 dark:text-gray-400",
-                  td: "text-gray-900 dark:text-white",
+            {/* Progress bar */}
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div
+                className="h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${percentage}%`,
+                  backgroundColor: color,
                 }}
-              >
-                <TableHeader>
-                  <TableColumn>{t("tables.user")}</TableColumn>
-                  <TableColumn>{t("tables.stadium")}</TableColumn>
-                  <TableColumn>{t("tables.time")}</TableColumn>
-                  <TableColumn>{t("tables.status")}</TableColumn>
-                  <TableColumn>{t("tables.amount")}</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {recentReservations.slice(0, 5).map((reservation) => (
-                    <TableRow key={reservation.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Avatar size="sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {isRTL
-                                ? reservation.user.fullNameAr
-                                : reservation.user.fullNameFr}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {reservation.user.email}
-                            </span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {isRTL
-                          ? reservation.stadium.nameAr
-                          : reservation.stadium.nameFr}
-                      </TableCell>
-                      <TableCell>
-                        <Tooltip
-                          content={formatDate(reservation.startDateTime)}
-                        >
-                          <span className="cursor-help">
-                            {formatRelativeTime(reservation.startDateTime)}
-                          </span>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          color={
-                            reservation.status === "APPROVED"
-                              ? "success"
-                              : reservation.status === "PENDING"
-                              ? "warning"
-                              : reservation.status === "DECLINED"
-                              ? "danger"
-                              : "default"
-                          }
-                          variant="flat"
-                        >
-                          {reservation.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(reservation.sessionPrice)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              />
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        );
+      })}
+    </div>
+  </div>
 
-        {/* Recent Users */}
-        <Card className="border border-slate-200 dark:border-slate-700">
-          <CardHeader className="flex items-center justify-between pb-0">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t("tables.recentUsers")}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t("tables.newRegistrations")}
-              </p>
-            </div>
-            <Button
-              variant="light"
-              size="sm"
-              onPress={() => (window.location.href = "/dashboard/users")}
-            >
-              {t("actions.viewAll")}
-            </Button>
-          </CardHeader>
-          <CardBody>
-            <div className="overflow-x-auto">
-              <Table
-                aria-label="Recent users table"
-                removeWrapper
-                classNames={{
-                  base: "max-h-[400px] overflow-y-auto",
-                  th: "bg-transparent text-gray-600 dark:text-gray-400",
-                  td: "text-gray-900 dark:text-white",
-                }}
-              >
-                <TableHeader>
-                  <TableColumn>{t("tables.user")}</TableColumn>
-                  <TableColumn>{t("tables.email")}</TableColumn>
-                  <TableColumn>{t("tables.role")}</TableColumn>
-                  <TableColumn>{t("tables.status")}</TableColumn>
-                  <TableColumn>{t("tables.joined")}</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {recentUsers.slice(0, 5).map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Avatar size="sm" />
-                          <span>
-                            {isRTL ? user.fullNameAr : user.fullNameFr}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Chip
-                          size="sm"
-                          color={
-                            user.role === "ADMIN"
-                              ? "danger"
-                              : user.role === "CLUB"
-                              ? "success"
-                              : "default"
-                          }
-                          variant="flat"
-                        >
-                          {user.role}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          color={user.approved ? "success" : "warning"}
-                          variant="flat"
-                        >
-                          {user.approved
-                            ? t("status.approved")
-                            : t("status.pending")}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {formatRelativeTime(user.createdAt)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardBody>
-        </Card>
+  {/* Top Stadiums */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-10 h-10 rounded-lg bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+        <HiBuildingStorefront className="w-5 h-5 text-white" />
       </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {t("charts.topStadiums")}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {t("charts.byReservations")}
+        </p>
+      </div>
+    </div>
+    <div className="space-y-4">
+      {topStadiums.map((stadium, index) => (
+        <div
+          key={index}
+          className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
+        >
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-lg bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                <HiHome className="w-5 h-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                  {index + 1}
+                </span>
+              </div>
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white block">
+                {stadium.name}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Stadium
+              </span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {stadium.reservations}
+            </div>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {t("charts.reservations")}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
 
-      {/* Custom Date Range Modal */}
-      <Modal
-        isOpen={showDateRangeModal}
-        onClose={() => setShowDateRangeModal(false)}
-        placement="center"
-        className="z-99999"
+  {/* Top Clubs */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-10 h-10 rounded-lg bg-amber-500 dark:bg-amber-600 flex items-center justify-center">
+        <HiTrophy className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {t("charts.topClubs")}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {t("charts.mostActive")}
+        </p>
+      </div>
+    </div>
+    <div className="space-y-4">
+      {topClubs.map((club, index) => (
+        <div
+          key={index}
+          className="flex items-center justify-between p-3 rounded-lg bg-amber-50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/20 transition-all duration-300"
+        >
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-lg bg-amber-500 dark:bg-amber-600 flex items-center justify-center">
+                <HiTrophy className="w-5 h-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-300">
+                  {index + 1}
+                </span>
+              </div>
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white block">
+                {club.name}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Club
+              </span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {club.reservations}
+            </div>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {t("charts.reservations")}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+{/* Recent Activity */}
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  {/* Recent Reservations */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-amber-500 dark:bg-amber-600 flex items-center justify-center">
+          <HiCalendar className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {t("tables.recentReservations")}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t("tables.last24Hours")}
+          </p>
+        </div>
+      </div>
+      <Link
+        href="/dashboard/reservations"
+        className="px-3 py-2 bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg transition-colors text-sm"
       >
-        <ModalContent>
-          <ModalHeader>
-            <h3 className="text-lg font-semibold">
-              {t("filters.customDateRange")}
-            </h3>
-          </ModalHeader>
-          <ModalBody>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  {t("filters.startDate")}
-                </label>
-                <input
-                  type="date"
-                  value={customStartDate}
-                  onChange={(e) => setCustomStartDate(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  {t("filters.endDate")}
-                </label>
-                <input
-                  type="date"
-                  value={customEndDate}
-                  onChange={(e) => setCustomEndDate(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700"
-                />
-              </div>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              variant="light"
-              onPress={() => setShowDateRangeModal(false)}
+        {t("actions.viewAll")}
+      </Link>
+    </div>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700">
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.user")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.stadium")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.time")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.status")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.amount")}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentReservations.slice(0, 5).map((reservation) => (
+            <tr
+              key={reservation.id}
+              className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200"
             >
-              {t("actions.cancel")}
-            </Button>
-            <Button
-              color="primary"
-              onPress={handleCustomDateRange}
-              isDisabled={!customStartDate || !customEndDate}
+              <td className="py-3 px-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      {reservation.user.fullNameFr.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {isRTL
+                        ? reservation.user.fullNameAr
+                        : reservation.user.fullNameFr}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {reservation.user.email}
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td className="py-3 px-4">
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {isRTL
+                    ? reservation.stadium.nameAr
+                    : reservation.stadium.nameFr}
+                </span>
+              </td>
+              <td className="py-3 px-4">
+                <div className="group relative">
+                  <span className="cursor-help text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {formatRelativeTime(reservation.startDateTime)}
+                  </span>
+                  <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10">
+                    {formatDate(reservation.startDateTime)}
+                  </div>
+                </div>
+              </td>
+              <td className="py-3 px-4">
+                <Badge
+                  color={
+                    reservation.status === "APPROVED"
+                      ? "success"
+                      : reservation.status === "PENDING"
+                      ? "warning"
+                      : reservation.status === "DECLINED"
+                      ? "danger"
+                      : "default"
+                  }
+                  className="font-medium px-3 py-1"
+                >
+                  {reservation.status}
+                </Badge>
+              </td>
+              <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">
+                {formatCurrency(reservation.sessionPrice)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {/* Recent Users */}
+  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
+          <Users className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {t("tables.recentUsers")}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t("tables.newRegistrations")}
+          </p>
+        </div>
+      </div>
+      <Link
+        href="/dashboard/users"
+        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg transition-colors text-sm"
+      >
+        {t("actions.viewAll")}
+      </Link>
+    </div>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700">
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.user")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.email")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.role")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.status")}
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {t("tables.joined")}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentUsers.slice(0, 5).map((user) => (
+            <tr
+              key={user.id}
+              className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200"
             >
-              {t("actions.apply")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              <td className="py-3 px-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      {user.fullNameFr.charAt(0)}
+                    </span>
+                  </div>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {isRTL ? user.fullNameAr : user.fullNameFr}
+                  </span>
+                </div>
+              </td>
+              <td className="py-3 px-4">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {user.email}
+                </span>
+              </td>
+              <td className="py-3 px-4">
+                <Chip
+                  color={
+                    user.role === "ADMIN"
+                      ? "danger"
+                      : user.role === "CLUB"
+                      ? "success"
+                      : "default"
+                  }
+                  className="font-medium px-3 py-1"
+                >
+                  {user.role}
+                </Chip>
+              </td>
+              <td className="py-3 px-4">
+                <Badge
+                  color={user.approved ? "success" : "warning"}
+                  className="font-medium px-3 py-1"
+                >
+                  {user.approved
+                    ? t("status.approved")
+                    : t("status.pending")}
+                </Badge>
+              </td>
+              <td className="py-3 px-4">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {formatRelativeTime(user.createdAt)}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
     </div>
   );
 };

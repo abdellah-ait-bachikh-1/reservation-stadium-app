@@ -55,7 +55,7 @@ export default async function LocaleLayout({
       <body
         className={cn(
           `${inter.className}`,
-          "bg-white", // Light mode background
+          "bg-gray-50", // Light mode background
           "dark:bg-gray-800", // Dark mode background
           "transition-colors duration-500 ease-in-out bg-fixed min-h-screen overflow-y-auto "
         )}

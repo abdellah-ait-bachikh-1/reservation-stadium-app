@@ -12,7 +12,7 @@ const Header = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <header className="bg-amber-50 dark:bg-slate-900 sticky top-0 flex items-center p-4 justify-between z-99997">
+    <header className="bg-white dark:bg-slate-900  sticky top-0 flex items-center p-4 justify-between z-99997">
       <div>
         <Button
           onPress={toggleSidebar}
