@@ -59,15 +59,18 @@
           "totalUsers": "Total utilisateurs",
           "activeUsers": "Utilisateurs actifs",
           "totalReservations": "Total réservations",
-          "pending": "en attente",
-          "allApproved": "tous approuvés",
-          "pendingApproval": "en attente d'approbation",
+
+          "allApproved": "Tous approuvés",
+          "pendingApproval": "En attente d'approbation",
           "totalRevenue": "Revenu total",
           "monthlyRevenue": "Revenu mensuel",
           "activeStadiums": "Stades actifs",
           "clubs": "clubs",
           "availability": "Disponibilité",
-          "rate": "taux"
+          "rate": "Taux",
+          "pending": "En attente"
+
+
         },
         "tables": {
           "recentReservations": "Réservations récentes",
@@ -84,8 +87,12 @@
           "joined": "Rejoint"
         },
         "status": {
+               "pending": "En attente",
           "approved": "Approuvé",
-          "pending": "En attente"
+          "declined": "Refusé",
+          "cancelled": "Annulé",
+          "paid": "Payé",
+          "unpaid": "Non payé"
         },
         "time": {
           "justNow": "À l'instant",
@@ -253,12 +260,12 @@
       "form": {
         "title": "Envoyez-nous un Message",
         "subtitle": "Remplissez le formulaire ci-dessous et nous vous répondrons dans les 24 heures",
-"errorTitle": "Erreur",
-    "checkFieldsMessage": "Veuillez vérifier le formulaire et corriger les erreurs",
-    "successTitle": "Succès !",
-    "successDescription": "Votre message a été envoyé avec succès",
-    "sendingMessage": "Envoi de votre message...",
-    "pleaseWait": "Veuillez patienter",
+        "errorTitle": "Erreur",
+        "checkFieldsMessage": "Veuillez vérifier le formulaire et corriger les erreurs",
+        "successTitle": "Succès !",
+        "successDescription": "Votre message a été envoyé avec succès",
+        "sendingMessage": "Envoi de votre message...",
+        "pleaseWait": "Veuillez patienter",
         "fields": {
           "fullName": {
             "label": "Nom Complet",
@@ -401,7 +408,8 @@
         "perMonth": "par mois",
         "type": "Type de Stade",
         "perSession": "Par Séance",
-        "from": "à partir de","additionalSports": "Sports Additionnels",
+        "from": "à partir de",
+        "additionalSports": "Sports Additionnels",
         "totalSports": "Sports totaux",
         "bestForOneTime": "Idéal pour les réservations ponctuelles",
         "viewFullDetails": "Voir les détails complets de",
@@ -423,7 +431,8 @@
         "description": "Contactez notre département des sports municipaux pour les demandes de réservation, tarifs et disponibilités",
         "contactSupport": "Contacter le Support",
         "bookNow": "Réserver un Stade"
-      }, "pagination": {
+      },
+      "pagination": {
         "showing": "Affichage",
         "to": "à",
         "of": "sur",
@@ -546,7 +555,8 @@
       "contactPageLink": "Visiter la Page de Contact",
       "allRightsReserved": "Tous droits réservés.",
       "designedFor": "Conçu pour les clubs et équipes sportives"
-    },"Dashboard": {
+    },
+    "Dashboard": {
       "Notifications": {
         "title": "Notifications",
         "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
@@ -558,7 +568,7 @@
         "retry": "Réessayer",
         "error": "Échec du chargement des notifications",
         "close": "Fermer",
-        "realtimeDisabled": "Notifications en temps réel indisponibles", 
+        "realtimeDisabled": "Notifications en temps réel indisponibles",
         "types": {
           "account": "Compte",
           "reservation": "Réservation",
@@ -575,27 +585,29 @@
           "weeksAgo": "{count, plural, one {Il y a # semaine} other {Il y a # semaines}}",
           "monthsAgo": "{count, plural, one {Il y a # mois} other {Il y a # mois}}"
         }
-      }, "Sidebar": {
-      "home": "Tableau de bord",
-      "profile": "Profil",
-      "reservations": "Réservations",
-      "notifications": "Notifications",
-      "stadiums": "Stades",
-      "payments": "Paiements",
-      "users": "Utilisateurs",
-      "logout": "Déconnexion",
-      "returnToPublic": "Site Public",
-      "admin": "Administrateur",
-      "club": "Club",
-      "approved": "Approuvé",
-      "pending": "En attente",
-      "version": "v1.0.0"
-    }
+      },
+      "Sidebar": {
+        "home": "Tableau de bord",
+        "profile": "Profil",
+        "reservations": "Réservations",
+        "notifications": "Notifications",
+        "stadiums": "Stades",
+        "payments": "Paiements",
+        "users": "Utilisateurs",
+        "logout": "Déconnexion",
+        "returnToPublic": "Site Public",
+        "admin": "Administrateur",
+        "club": "Club",
+        "approved": "Approuvé",
+        "pending": "En attente",
+        "version": "v1.0.0"
+      }
     }
   },
   "Common": {
     "appName": "Stade Tan-Tan",
-    "appSubName": "Clubs et Équipes Sportives", "errorTitle": "Erreur",
+    "appSubName": "Clubs et Équipes Sportives",
+    "errorTitle": "Erreur",
     "errorMessage": "Quelque chose s'est mal passé",
     "validationError": "Erreur de validation"
   },

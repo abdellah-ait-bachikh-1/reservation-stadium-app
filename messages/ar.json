@@ -59,7 +59,7 @@
           "totalUsers": "إجمالي المستخدمين",
           "activeUsers": "المستخدمين النشطين",
           "totalReservations": "إجمالي الحجوزات",
-          "pending": "معلق",
+
           "allApproved": "جميعها معتمدة",
           "pendingApproval": "في انتظار الموافقة",
           "totalRevenue": "إجمالي الإيرادات",
@@ -67,7 +67,9 @@
           "activeStadiums": "الملاعب النشطة",
           "clubs": "أندية",
           "availability": "التوافر",
-          "rate": "معدل"
+          "rate": "معدل",
+          "pending": "قيد الانتظار"
+
         },
         "tables": {
           "recentReservations": "الحجوزات الأخيرة",
@@ -84,8 +86,14 @@
           "joined": "انضم في"
         },
         "status": {
-          "approved": "معتمد",
-          "pending": "قيد الانتظار"
+          "pending": "قيد الانتظار",
+          "approved": "موافق عليه",
+          "declined": "مرفوض",
+          "cancelled": "ملغى",
+          "paid": "مدفوع",
+          "unpaid": "غير مدفوع"
+
+
         },
         "time": {
           "justNow": "الآن",
@@ -548,7 +556,8 @@
       "contactPageLink": "زيارة صفحة الاتصال",
       "allRightsReserved": "جميع الحقوق محفوظة.",
       "designedFor": "مصمم للجمعيات الرياضية والفرق"
-    },  "Dashboard": {
+    },
+    "Dashboard": {
       "Notifications": {
         "title": "الإشعارات",
         "unreadCount": "{count} غير مقروء",
@@ -556,7 +565,7 @@
         "loading": "جاري تحميل الإشعارات...",
         "retry": "إعادة المحاولة",
         "noNotifications": "لا توجد إشعارات",
-        "viewAll": "عرض جميع الإشعارات", 
+        "viewAll": "عرض جميع الإشعارات",
         "from": "من: {name}",
         "close": "إغلاق",
         "error": "فشل تحميل الإشعارات",
@@ -577,22 +586,23 @@
           "email": "بريد",
           "club": "نادي"
         }
-      },  "Sidebar": {
-      "home": "لوحة التحكم",
-      "profile": "الملف الشخصي",
-      "reservations": "الحجوزات",
-      "notifications": "الإشعارات",
-      "stadiums": "الملاعب",
-      "payments": "المدفوعات",
-      "users": "المستخدمين",
-      "logout": "تسجيل الخروج",
-      "returnToPublic": "الموقع العام",
-      "admin": "مدير",
-      "club": "نادي",
-      "approved": "مفعل",
-      "pending": "قيد الانتظار",
-      "version": "v1.0.0"
-    }
+      },
+      "Sidebar": {
+        "home": "لوحة التحكم",
+        "profile": "الملف الشخصي",
+        "reservations": "الحجوزات",
+        "notifications": "الإشعارات",
+        "stadiums": "الملاعب",
+        "payments": "المدفوعات",
+        "users": "المستخدمين",
+        "logout": "تسجيل الخروج",
+        "returnToPublic": "الموقع العام",
+        "admin": "مدير",
+        "club": "نادي",
+        "approved": "مفعل",
+        "pending": "قيد الانتظار",
+        "version": "v1.0.0"
+      }
     }
   },
   "Common": {

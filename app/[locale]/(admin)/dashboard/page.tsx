@@ -1042,67 +1042,70 @@ const Dashboard = () => {
 
 {/* Additional Insights Section */}
 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  {/* Reservations by Status */}
-  <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
-    <div className="flex items-center gap-3 mb-6">
-      <div className="w-10 h-10 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
-        <HiCalendar className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {t("charts.reservationsByStatus")}
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {t("charts.statusBreakdown")}
-        </p>
-      </div>
+{/* Reservations by Status */}
+<div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">
+  <div className="flex items-center gap-3 mb-6">
+    <div className="w-10 h-10 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
+      <HiCalendar className="w-5 h-5 text-white" />
     </div>
-    <div className="space-y-4">
-      {reservationsByStatus.map((item, index) => {
-        const percentage = (
-          (item.count / (dashboardData?.totalReservations || 1)) *
-          100
-        ).toFixed(1);
-        const color =
-          STATUS_COLORS[item.status as keyof typeof STATUS_COLORS] ||
-          "#6b7280";
-
-        return (
-          <div key={index} className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-3 h-3 rounded-full shadow-sm"
-                  style={{ backgroundColor: color }}
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {item.status}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-gray-900 dark:text-white">
-                  {item.count.toLocaleString()}
-                </span>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  ({percentage}%)
-                </span>
-              </div>
-            </div>
-            {/* Progress bar */}
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                className="h-2 rounded-full transition-all duration-500"
-                style={{
-                  width: `${percentage}%`,
-                  backgroundColor: color,
-                }}
-              />
-            </div>
-          </div>
-        );
-      })}
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        {t("charts.reservationsByStatus")}
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        {t("charts.statusBreakdown")}
+      </p>
     </div>
   </div>
+  <div className="space-y-4">
+    {reservationsByStatus.map((item, index) => {
+      const percentage = (
+        (item.count / (dashboardData?.totalReservations || 1)) *
+        100
+      ).toFixed(1);
+      const color =
+        STATUS_COLORS[item.status as keyof typeof STATUS_COLORS] ||
+        "#6b7280";
+
+      // Translate the status - use reservation.status as the key path
+      const translatedStatus = t(`status.${item.status.toLowerCase()}`);
+
+      return (
+        <div key={index} className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-3 h-3 rounded-full shadow-sm"
+                style={{ backgroundColor: color }}
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {translatedStatus}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-gray-900 dark:text-white">
+                {item.count.toLocaleString()}
+              </span>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                ({percentage}%)
+              </span>
+            </div>
+          </div>
+          {/* Progress bar */}
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              className="h-2 rounded-full transition-all duration-500"
+              style={{
+                width: `${percentage}%`,
+                backgroundColor: color,
+              }}
+            />
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
   {/* Top Stadiums */}
   <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-950 rounded-xl p-6 transition-all duration-300">

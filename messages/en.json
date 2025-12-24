@@ -22,7 +22,7 @@
         }
       }
     },
-   "Dashboard": {
+    "Dashboard": {
       "Home": {
         "charts": {
           "months": "months",
@@ -59,15 +59,16 @@
           "totalUsers": "Total Users",
           "activeUsers": "Active Users",
           "totalReservations": "Total Reservations",
-          "pending": "pending",
-          "allApproved": "all approved",
-          "pendingApproval": "pending approval",
+          "allApproved": "All Approved",
+          "pendingApproval": "Pending Approval",
           "totalRevenue": "Total Revenue",
           "monthlyRevenue": "Monthly Revenue",
           "activeStadiums": "Active Stadiums",
           "clubs": "clubs",
           "availability": "Availability",
-          "rate": "rate"
+          "rate": "rate",
+          "pending": "Pending"
+         
         },
         "tables": {
           "recentReservations": "Recent Reservations",
@@ -84,8 +85,12 @@
           "joined": "Joined"
         },
         "status": {
+          "pending": "Pending",
           "approved": "Approved",
-          "pending": "Pending"
+          "declined": "Declined",
+          "cancelled": "Cancelled",
+          "paid": "Paid",
+          "unpaid": "Unpaid"
         },
         "time": {
           "justNow": "Just now",

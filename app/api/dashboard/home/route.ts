@@ -1,4 +1,4 @@
-// app/api/dashboard/stats/route.ts
+// app/api/dashboard/home/route.ts
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { getSession } from "@/auth";
@@ -121,6 +121,19 @@ export async function GET(request: Request) {
       monthlyRevenueAgg,
       activeStadiums,
       activeUsers,
+      // NEW: Pending Approvals
+      pendingUserApprovals,
+      // NEW: Payment Stats
+      totalCashPayments,
+      totalMonthlyPayments,
+      pendingMonthlyPaymentsCount,
+      overduePaymentsCount,
+      // NEW: Subscription Stats
+      activeSubscriptionsCount,
+      cancelledSubscriptionsCount,
+      expiredSubscriptionsCount,
+      suspendedSubscriptionsCount,
+      subscriptionRevenueAgg,
     ] = await Promise.all([
       // Total Users (not deleted)
       db.user.count({
@@ -202,6 +215,88 @@ export async function GET(request: Request) {
           },
         },
       }),
+
+      // NEW: Pending User Approvals (User.approved = false)
+      db.user.count({
+        where: {
+          deletedAt: null,
+          approved: false,
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Total Cash Payments
+      db.cashPaymentRecord.count({
+        where: {
+          paymentDate: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Total Monthly Payments
+      db.monthlyPayment.count({
+        where: {
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Pending Monthly Payments (MonthlyPayment.status = PENDING)
+      db.monthlyPayment.count({
+        where: {
+          status: "PENDING",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Overdue Payments (MonthlyPayment.status = OVERDUE)
+      db.monthlyPayment.count({
+        where: {
+          status: "OVERDUE",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Active Subscriptions (MonthlySubscription.status = ACTIVE)
+      db.monthlySubscription.count({
+        where: {
+          status: "ACTIVE",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Cancelled Subscriptions
+      db.monthlySubscription.count({
+        where: {
+          status: "CANCELLED",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Expired Subscriptions
+      db.monthlySubscription.count({
+        where: {
+          status: "EXPIRED",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Suspended Subscriptions
+      db.monthlySubscription.count({
+        where: {
+          status: "SUSPENDED",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+      }),
+
+      // NEW: Subscription Revenue
+      db.monthlyPayment.aggregate({
+        where: {
+          status: "PAID",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+        _sum: {
+          amount: true,
+        },
+      }),
     ]);
 
     // Fetch remaining data with better error handling
@@ -210,13 +305,19 @@ export async function GET(request: Request) {
       recentUsers,
       revenueData,
       sportDistribution,
-      totalPayments,
-      pendingPayments,
       reservationsByStatus,
-      usersByRole,
-      revenueByMonth,
       topStadiumsRaw,
       topClubsRaw,
+      // NEW: Recent pending users for review
+      pendingUsersForReview,
+      // NEW: Payments by status breakdown
+      paymentsByStatus,
+      // NEW: Subscription breakdown by status
+      subscriptionsByStatus,
+      // NEW: Payment type breakdown
+      paymentTypeBreakdown,
+      // NEW: Recent pending payments
+      recentPendingPayments,
     ] = await Promise.all([
       // Recent Reservations (last 24 hours)
       db.reservation.findMany({
@@ -411,21 +512,6 @@ export async function GET(request: Request) {
         }
       })(),
 
-      // Total Payments (cash payments)
-      db.cashPaymentRecord.count({
-        where: {
-          paymentDate: { gte: startDate, lte: endDate },
-        },
-      }),
-
-      // Pending Monthly Payments
-      db.monthlyPayment.count({
-        where: {
-          status: "PENDING",
-          createdAt: { gte: startDate, lte: endDate },
-        },
-      }),
-
       // Reservations by status - FIXED QUERY
       (async () => {
         try {
@@ -444,68 +530,6 @@ export async function GET(request: Request) {
           }));
         } catch (error) {
           console.error("Error fetching reservations by status:", error);
-          return [];
-        }
-      })(),
-
-      // Users by role - FIXED QUERY
-      (async () => {
-        try {
-          const roleCounts = await db.user.groupBy({
-            by: ["role"],
-            where: {
-              deletedAt: null,
-              createdAt: { gte: startDate, lte: endDate },
-            },
-            _count: true,
-          });
-
-          return roleCounts.map((item) => ({
-            role: item.role,
-            count: item._count,
-          }));
-        } catch (error) {
-          console.error("Error fetching users by role:", error);
-          return [];
-        }
-      })(),
-
-      // Revenue by month for the year
-      (async () => {
-        try {
-          const monthlyRevenue = [];
-          const currentYear = year ? parseInt(year) : now.getFullYear();
-
-          for (let month = 0; month < 12; month++) {
-            const monthStart = new Date(currentYear, month, 1);
-            const monthEnd = new Date(currentYear, month + 1, 0, 23, 59, 59);
-
-            const revenue = await db.reservation.aggregate({
-              where: {
-                deletedAt: null,
-                isPaid: true,
-                createdAt: {
-                  gte: monthStart,
-                  lte: monthEnd,
-                },
-              },
-              _sum: {
-                sessionPrice: true,
-              },
-            });
-
-            monthlyRevenue.push({
-              month: monthStart.toLocaleDateString(
-                locale === "ar" ? "ar-MA" : locale === "fr" ? "fr-FR" : "en-US",
-                { month: "short" }
-              ),
-              revenue: revenue._sum.sessionPrice?.toNumber() || 0,
-            });
-          }
-
-          return monthlyRevenue;
-        } catch (error) {
-          console.error("Error fetching revenue by month:", error);
           return [];
         }
       })(),
@@ -604,6 +628,114 @@ export async function GET(request: Request) {
           return [];
         }
       })(),
+
+      // NEW: Recent pending users for review
+      db.user.findMany({
+        where: {
+          deletedAt: null,
+          approved: false,
+          createdAt: { gte: startDate, lte: endDate },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 5,
+      }),
+
+      // NEW: Payments by status breakdown
+      (async () => {
+        try {
+          const statusCounts = await db.monthlyPayment.groupBy({
+            by: ["status"],
+            where: {
+              createdAt: { gte: startDate, lte: endDate },
+            },
+            _count: true,
+          });
+
+          return statusCounts.map((item) => ({
+            status: item.status,
+            count: item._count,
+          }));
+        } catch (error) {
+          console.error("Error fetching payments by status:", error);
+          return [];
+        }
+      })(),
+
+      // NEW: Subscription breakdown by status
+      (async () => {
+        try {
+          const statusCounts = await db.monthlySubscription.groupBy({
+            by: ["status"],
+            where: {
+              createdAt: { gte: startDate, lte: endDate },
+            },
+            _count: true,
+          });
+
+          return statusCounts.map((item) => ({
+            status: item.status,
+            count: item._count,
+          }));
+        } catch (error) {
+          console.error("Error fetching subscriptions by status:", error);
+          return [];
+        }
+      })(),
+
+      // NEW: Payment type breakdown
+      (async () => {
+        try {
+          const typeCounts = await db.reservation.groupBy({
+            by: ["paymentType"],
+            where: {
+              deletedAt: null,
+              createdAt: { gte: startDate, lte: endDate },
+            },
+            _count: true,
+          });
+
+          return typeCounts.map((item) => ({
+            type: item.paymentType,
+            count: item._count,
+          }));
+        } catch (error) {
+          console.error("Error fetching payment type breakdown:", error);
+          return [];
+        }
+      })(),
+
+      // NEW: Recent pending payments
+      db.monthlyPayment.findMany({
+        where: {
+          status: "PENDING",
+          createdAt: { gte: startDate, lte: endDate },
+        },
+        include: {
+          user: {
+            select: {
+              fullNameFr: true,
+              fullNameAr: true,
+              email: true,
+            },
+          },
+          reservationSeries: {
+            select: {
+              stadium: {
+                select: {
+                  nameFr: true,
+                  nameAr: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 5,
+      }),
     ]);
 
     // Process top stadiums and clubs
@@ -611,6 +743,7 @@ export async function GET(request: Request) {
     const topClubs = Array.isArray(topClubsRaw) ? topClubsRaw : [];
 
     const stats = {
+      // Existing stats
       totalUsers,
       totalClubs,
       totalReservations,
@@ -619,22 +752,48 @@ export async function GET(request: Request) {
       monthlyRevenue: monthlyRevenueAgg._sum.sessionPrice?.toNumber() || 0,
       activeStadiums,
       activeUsers,
-      totalPayments,
-      pendingPayments,
+      
+      // NEW: Pending Approvals
+      pendingUserApprovals,
+      
+      // NEW: Payment Stats
+      totalPayments: totalCashPayments + totalMonthlyPayments,
+      totalCashPayments,
+      totalMonthlyPayments,
+      pendingMonthlyPayments: pendingMonthlyPaymentsCount,
+      overduePayments: overduePaymentsCount,
+      
+      // NEW: Subscription Stats
+      activeSubscriptions: activeSubscriptionsCount,
+      cancelledSubscriptions: cancelledSubscriptionsCount,
+      expiredSubscriptions: expiredSubscriptionsCount,
+      suspendedSubscriptions: suspendedSubscriptionsCount,
+      subscriptionRevenue: subscriptionRevenueAgg._sum.amount?.toNumber() || 0,
     };
 
     return NextResponse.json({
+      // Existing data
       stats,
       recentReservations,
       recentUsers,
       revenueData,
       sportDistribution,
       reservationsByStatus,
-      usersByRole,
-      revenueByMonth,
       topStadiums,
       topClubs,
       availableYears,
+      
+      // NEW: Pending Approvals Data
+      pendingUsersForReview,
+      
+      // NEW: Payment Data
+      paymentsByStatus,
+      paymentTypeBreakdown,
+      recentPendingPayments,
+      
+      // NEW: Subscription Data
+      subscriptionsByStatus,
+      
       filters: {
         timeRange,
         year,
