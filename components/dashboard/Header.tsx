@@ -26,9 +26,9 @@ const Header = () => {
       </div>
       <div className="flex items-center gap-2">
         <NotificationBell /> {/* Add NotificationBell here */}
-        <ThemeSwitcher />
-        <LanguageSwitcher />
-        <DesktopAvatar/>
+        <ThemeSwitcher dropDownClassNames="bg-white dark:bg-slate-900" />
+        <LanguageSwitcher dropDownClassNames="bg-white dark:bg-slate-900" />
+        <DesktopAvatar dropDownClassNames="bg-white dark:bg-slate-900" />
       </div>
     </header>
   );

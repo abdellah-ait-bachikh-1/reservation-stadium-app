@@ -21,7 +21,11 @@ import { motion } from "framer-motion";
 import { useViewportSpace } from "@/hooks/useViewportSpace";
 import { createPortal } from "react-dom";
 
-const DesktopAvatar = () => {
+const DesktopAvatar = ({
+  dropDownClassNames = "bg-amber-50 dark:bg-slate-900",
+}: {
+  dropDownClassNames?: string;
+}) => {
   const { data, status } = useSession();
   const locale = useLocale();
   const tHeader = useTranslations("Components.Header");
@@ -29,23 +33,23 @@ const DesktopAvatar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Use the viewport space hook for positioning
   const { hasSpaceBelow, elementRef } = useViewportSpace();
   const isRTL = locale === "ar";
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Check if mobile on mount and resize
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768); // md breakpoint
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Click outside handler
@@ -89,7 +93,7 @@ const DesktopAvatar = () => {
             <Skeleton className="h-3 w-24 rounded-md" />
           </div>
         </div>
-        
+
         {/* Mobile Skeleton */}
         <div className="md:hidden">
           <Skeleton className="w-10 h-10 rounded-full" />
@@ -145,15 +149,7 @@ const DesktopAvatar = () => {
       bgColor: "hover:bg-green-50 dark:hover:bg-green-900/20",
       activeBgColor: "bg-green-100 dark:bg-green-900/30",
     },
-    {
-      id: "bookings",
-      href: "/dashboard/bookings",
-      label: tHeader("userMenu.myBookings"),
-      icon: FaTicketAlt,
-      color: "text-purple-600",
-      bgColor: "hover:bg-purple-50 dark:hover:bg-purple-900/20",
-      activeBgColor: "bg-purple-100 dark:bg-purple-900/30",
-    },
+
     {
       id: "logout",
       label: tHeader("userMenu.logout"),
@@ -171,7 +167,7 @@ const DesktopAvatar = () => {
     <div className="fixed inset-0 z-[99999]">
       {/* Full screen blurred backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-      
+
       {/* Center container for the modal */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <motion.div
@@ -182,7 +178,11 @@ const DesktopAvatar = () => {
         >
           <div className="p-6">
             {/* Modal Header */}
-            <div className={`flex items-center gap-4 mb-5 ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
+            <div
+              className={`flex items-center gap-4 mb-5 ${
+                isRTL ? "flex-row-reverse" : "flex-row"
+              }`}
+            >
               <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30">
                 <FaSignOutAlt className="w-6 h-6 text-red-600" />
               </div>
@@ -197,7 +197,11 @@ const DesktopAvatar = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className={`flex gap-3 mt-6 ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
+            <div
+              className={`flex gap-3 mt-6 ${
+                isRTL ? "flex-row-reverse" : "flex-row"
+              }`}
+            >
               <button
                 onClick={() => setShowLogoutModal(false)}
                 className={cn(
@@ -238,7 +242,7 @@ const DesktopAvatar = () => {
               className="transition-transform group-hover:scale-105 border-2 border-blue-500/20"
             />
           </div>
-          
+
           {/* User Info - Only on desktop */}
           <div className="hidden md:flex flex-col text-left ltr:ml-3 rtl:mr-3">
             <span className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -262,7 +266,7 @@ const DesktopAvatar = () => {
               initial={{ opacity: 0, scale: 0.7, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: -10 }}
-              className={`z-110 min-w-64 absolute p-2 flex flex-col gap-1 rounded-xl bg-amber-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
+              className={`z-110 min-w-64 absolute p-2 flex flex-col gap-1 rounded-xl ${dropDownClassNames} shadow-lg border border-slate-200 dark:border-slate-800 ${
                 hasSpaceBelow
                   ? "top-14 ltr:right-0 rtl:left-0"
                   : "bottom-14 ltr:right-0 rtl:left-0"
@@ -271,10 +275,7 @@ const DesktopAvatar = () => {
               {/* User Info Section - Always show in dropdown */}
               <div className="px-3 py-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-2">
                 <div className="flex items-center space-x-3">
-                  <Avatar
-                    size="md"
-                    className="border-2 border-blue-500/30"
-                  />
+                  <Avatar size="md" className="border-2 border-blue-500/30" />
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
                       {isRTL ? data.user.fullNameAr : data.user.fullNameFr}
@@ -296,7 +297,7 @@ const DesktopAvatar = () => {
               {/* Menu Items */}
               {userMenuItems.map((item) => {
                 const Icon = item.icon;
-                
+
                 if (item.isAction) {
                   return (
                     <button
@@ -309,7 +310,9 @@ const DesktopAvatar = () => {
                       <div className={`p-2 rounded-lg ${item.activeBgColor}`}>
                         <Icon className={`w-4 h-4 ${item.color}`} />
                       </div>
-                      <span className={`font-medium flex-1 text-left rtl:text-right ${item.color}`}>
+                      <span
+                        className={`font-medium flex-1 text-left rtl:text-right ${item.color}`}
+                      >
                         {item.label}
                       </span>
                     </button>
@@ -338,12 +341,13 @@ const DesktopAvatar = () => {
       </div>
 
       {/* Render modal via portal */}
-      {mounted && createPortal(
-        <Activity mode={showLogoutModal ? "visible" : "hidden"}>
-          {modalContent}
-        </Activity>,
-        document.body
-      )}
+      {mounted &&
+        createPortal(
+          <Activity mode={showLogoutModal ? "visible" : "hidden"}>
+            {modalContent}
+          </Activity>,
+          document.body
+        )}
     </>
   );
 };

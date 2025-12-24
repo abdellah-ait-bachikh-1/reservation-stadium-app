@@ -8,7 +8,7 @@ import { Theme } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useViewportSpace } from "@/hooks/useViewportSpace";
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({dropDownClassNames="bg-amber-50 dark:bg-slate-900"}:{dropDownClassNames?: string}) {
   const { theme, setTheme, systemTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -91,7 +91,7 @@ export function ThemeSwitcher() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.7, y: -10 }}
             // Use hasSpaceBelow to conditionally position the menu
-            className={`z-110 min-w-36 absolute p-2 flex flex-col gap-0.5 rounded-xl bg-amber-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 ${
+            className={`z-110 min-w-36 absolute p-2 flex flex-col gap-0.5 rounded-xl ${dropDownClassNames}  shadow-lg border border-slate-200 dark:border-slate-800 ${
               hasSpaceBelow
                 ? "top-12 ltr:right-0 rtl:left-0"
                 : "bottom-12 ltr:right-0 rtl:left-0"

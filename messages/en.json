@@ -456,7 +456,6 @@
       },
       "userMenu": {
         "dashboard": "Dashboard",
-        "myBookings": "My Bookings",
         "profile": "Profile",
         "logout": "Logout"
       },

@@ -455,7 +455,6 @@
       },
       "userMenu": {
         "dashboard": "لوحة التحكم",
-        "myBookings": "حجوزاتي",
         "profile": "الملف الشخصي",
         "logout": "تسجيل الخروج"
       },

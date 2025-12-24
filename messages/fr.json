@@ -455,7 +455,6 @@
       },
       "userMenu": {
         "dashboard": "Tableau de Bord",
-        "myBookings": "Mes Réservations",
         "profile": "Profil",
         "logout": "Déconnexion"
       },
