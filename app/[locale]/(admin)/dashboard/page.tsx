@@ -1,4 +1,3 @@
-import { APP_NAMES } from "@/lib/const";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -19,8 +18,9 @@ export const generateMetadata = async ({
   };
 };
 
-const DashboardHomePage = () => {
-  return <div>DashboardHomePage</div>;
+const DashboardHomePage = async () => {
+
+  return <section>DashboardHomePage</section>;
 };
 
 export default DashboardHomePage;

@@ -168,7 +168,7 @@ const Aside = () => {
       >
         {/* Sidebar Header */}
         <div
-          className={`bg-white dark:bg-slate-900 h-full flex flex-col ${
+          className={`bg-white dark:bg-slate-900 transition-colors duration-500 ease-in-out h-full flex flex-col ${
             isRTL ? "text-right" : "text-left"
           }`}
         >

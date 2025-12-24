@@ -24,8 +24,8 @@ model User {
   phoneNumber String
 
   emailVerifiedAt   DateTime?
-  verificationToken String?   @unique @default(uuid())
-  preferredLocale UserLocale @default(AR) // AR, FR, EN
+  verificationToken String?    @unique @default(uuid())
+  preferredLocale   UserLocale @default(AR) // AR, FR, EN
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -38,8 +38,8 @@ model User {
   cashPayments      CashPaymentRecord[]
   monthlyPayments   MonthlyPayment[]
   subscriptions     MonthlySubscription[]
-  notifications     Notification[]  // As receiver
-  sentNotifications Notification[] @relation("NotificationActor") // As actor
+  notifications     Notification[] // As receiver
+  sentNotifications Notification[]        @relation("NotificationActor") // As actor
 
   @@index([email])
   @@index([role])
@@ -303,24 +303,24 @@ model MonthlySubscription {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
-  type      NotificationType
-  
-  titleEn   String   // English title
-  titleFr   String   // French title
-  titleAr   String   // Arabic title
-  messageEn String   // English message
-  messageFr String   // French message  
-  messageAr String   // Arabic message*
+  id   String           @id @default(uuid())
+  type NotificationType
 
-  isRead    Boolean  @default(false)
-  userId    String  // Receiver ID
-  actorUserId   String?  // Who performed the action (optional)
-  metadata  Json? // For additional dynamic data
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  actor     User?    @relation("NotificationActor", fields: [actorUserId], references: [id])
-  
+  titleEn   String // English title
+  titleFr   String // French title
+  titleAr   String // Arabic title
+  messageEn String // English message
+  messageFr String // French message  
+  messageAr String // Arabic message*
+
+  isRead      Boolean @default(false)
+  userId      String // Receiver ID
+  actorUserId String? // Who performed the action (optional)
+  metadata    Json? // For additional dynamic data
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actor User? @relation("NotificationActor", fields: [actorUserId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -330,6 +330,7 @@ model Notification {
   @@index([type])
   @@map("notifications")
 }
+
 enum NotificationType {
   // Account related
   ACCOUNT_CREATED
@@ -373,7 +374,6 @@ enum NotificationType {
   NEW_RESERVATION_REQUEST
   PAYMENT_REQUIRES_ATTENTION
 }
-
 
 // =====================
 // Enums

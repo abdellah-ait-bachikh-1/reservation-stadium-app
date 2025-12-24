@@ -62,11 +62,7 @@ const Header = () => {
       label: tHeader("userMenu.dashboard"),
       icon: <MdDashboard className="w-5 h-5" />,
     },
-    {
-      href: "/dashboard/bookings",
-      label: tHeader("userMenu.myBookings"),
-      icon: <FaTicketAlt className="w-5 h-5" />,
-    },
+    
     {
       href: "/dashboard/profile",
       label: tHeader("userMenu.profile"),
