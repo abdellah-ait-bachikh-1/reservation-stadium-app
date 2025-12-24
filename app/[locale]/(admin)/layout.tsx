@@ -15,6 +15,7 @@ import Aside from "@/components/dashboard/Aside";
 import Header from "@/components/dashboard/Header";
 import { SidebarProvider } from "@/components/provider/SidebarProvider";
 import { TLocale } from "@/lib/types";
+import { isDeletedUser } from "@/lib/data/auth";
 
 export const generateMetadata = async ({
   params,
@@ -56,7 +57,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages({ locale });
   const isRTL = locale === "ar";
-
+  // const user = await isDeletedUser();
   return (
     <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body

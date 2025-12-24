@@ -1,3 +1,4 @@
+import { isDeletedUser } from "@/lib/data/auth";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
 };
 
 const DashboardHomePage = async () => {
-
+  // const user = await isDeletedUser();
   return <section>DashboardHomePage</section>;
 };
 
