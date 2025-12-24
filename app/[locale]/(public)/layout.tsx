@@ -27,7 +27,7 @@ export const generateMetadata = async ({
   return {
     title: {
       template: `%s | ${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
-      default: `${messages.Pages.Home.headTitle} | ${
+      default: `${
         APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
       }`,
     },

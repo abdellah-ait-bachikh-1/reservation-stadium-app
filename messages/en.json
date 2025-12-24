@@ -24,6 +24,8 @@
     },
     "Dashboard": {
       "Home": {
+        "headTitle": "Dashboard",
+        "metaDescription": "View your dashboard with analytics, statistics, and quick access to all features",
         "charts": {
           "months": "months",
           "weeks": "weeks",
@@ -68,7 +70,6 @@
           "availability": "Availability",
           "rate": "rate",
           "pending": "Pending"
-         
         },
         "tables": {
           "recentReservations": "Recent Reservations",
@@ -111,10 +112,10 @@
     },
     "About": {
       "headTitle": "About",
+      "metaDescription": "Discover more about our stadium reservation services in Tan-Tan, Morocco and how we help sports fans, clubs, and teams book their seats.",
       "pageTitle": "About Us - Tan-Tan Stadium Reservations",
       "description": "Learn more about our stadium booking service in Tan-Tan, Morocco. For sports clubs and teams.",
       "keywords": "about us Tan-Tan, stadium booking Morocco, sports events Tan-Tan, for sports clubs and teams",
-      "metaDescription": "Discover more about our stadium reservation services in Tan-Tan, Morocco and how we help sports fans, clubs, and teams book their seats.",
 
       "heroTitle": "Empowering Sports in Tan-Tan",
       "heroSubtitle": "A digital initiative by Tan-Tan Municipality",

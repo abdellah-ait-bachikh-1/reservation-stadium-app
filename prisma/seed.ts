@@ -68,7 +68,7 @@ const tantanLocations = [
   },
   {
     streetAr: "شارع الاستقلال",
-    streetFr: "Avenue de l’Indépendance",
+    streetFr: "Avenue de l'Indépendance",
     neighborhoodAr: "حي الأمل",
     neighborhoodFr: "Quartier Al Amal",
   },
@@ -98,16 +98,6 @@ const clubNames = [
   { nameAr: "نادي الاتحاد الرياضي", nameFr: "Club Ittihad Sportif" },
   { nameAr: "نادي التقدم الرياضي", nameFr: "Club Taqadom Sportif" },
   { nameAr: "نادي الشباب الرياضي", nameFr: "Club Chabab Sportif" },
-  { nameAr: "نادي النجمة الرياضي", nameFr: "Club Najma Sportif" },
-  { nameAr: "نادي القمة الرياضي", nameFr: "Club Qima Sportif" },
-  { nameAr: "نادي الأمل الرياضي", nameFr: "Club Amal Sportif" },
-  { nameAr: "نادي المستقبل الرياضي", nameFr: "Club Mustaqbal Sportif" },
-  { nameAr: "نادي الوحدة الرياضي", nameFr: "Club Wahda Sportif" },
-  { nameAr: "نادي السلام الرياضي", nameFr: "Club Salam Sportif" },
-  { nameAr: "نادي النصر الرياضي", nameFr: "Club Nasr Sportif" },
-  { nameAr: "نادي الفرسان الرياضي", nameFr: "Club Fursan Sportif" },
-  { nameAr: "نادي الأسود الرياضي", nameFr: "Club Ousoud Sportif" },
-  { nameAr: "نادي الصقور الرياضي", nameFr: "Club Souqour Sportif" },
 ];
 
 // Generate random price between min and max
@@ -126,98 +116,47 @@ function getRandomItems<T>(array: T[], count: number): T[] {
   return shuffled.slice(0, Math.min(count, array.length));
 }
 
-// Generate stadium names for 65 stadiums
-function generateStadiumNames(count: number) {
-  const adjectivesAr = [
-    "الكبير",
-    "الصغير",
-    "الجديد",
-    "القديم",
-    "الحديث",
-    "التقليدي",
-    "الشمالي",
-    "الجنوبي",
-    "الشرقي",
-    "الغربي",
-    "المركزي",
-    "الحيوي",
-    "النشيط",
-    "الهادئ",
-    "الصاخب",
-    "المزدحم",
-    "الواسع",
-    "الضيق",
-    "الطويل",
-    "العريض",
+// Generate random date in 2025
+function randomDate2025(startDate?: Date, endDate?: Date): Date {
+  const start = startDate || new Date('2025-01-01');
+  const end = endDate || new Date('2025-12-30');
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+// Generate random time between 8 AM and 10 PM
+function randomTime(): { hours: number; minutes: number } {
+  const hours = Math.floor(Math.random() * 14) + 8; // 8-21
+  const minutes = Math.random() > 0.5 ? 30 : 0; // 00 or 30
+  return { hours, minutes };
+}
+
+// Generate unique receipt number
+function generateReceiptNumber(): string {
+  const prefix = 'REC';
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return `${prefix}${year}${month}${random}`;
+}
+
+// Generate month name
+function getMonthName(month: number, locale: 'fr' | 'ar' | 'en' = 'fr'): string {
+  const monthsFr = [
+    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
   ];
-  const adjectivesFr = [
-    "Grand",
-    "Petit",
-    "Nouveau",
-    "Ancien",
-    "Moderne",
-    "Traditionnel",
-    "Nord",
-    "Sud",
-    "Est",
-    "Ouest",
-    "Central",
-    "Dynamique",
-    "Actif",
-    "Calme",
-    "Bruyant",
-    "Animé",
-    "Large",
-    "Étroit",
-    "Long",
-    "Large",
+  
+  const monthsAr = [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
   ];
-
-  const stadiumTypesAr = [
-    "ملعب",
-    "مجمع",
-    "ساحة",
-    "حلبة",
-    "مركز",
-    "ميدان",
-    "قاعة",
-    "صالة",
-    "حقل",
-    "مضمار",
-  ];
-  const stadiumTypesFr = [
-    "Stade",
-    "Complexe",
-    "Arène",
-    "Piste",
-    "Centre",
-    "Terrain",
-    "Salle",
-    "Hall",
-    "Champ",
-    "Parcours",
-  ];
-
-  const stadiumNames = [];
-
-  for (let i = 1; i <= count; i++) {
-    const adjAr = getRandomItem(adjectivesAr);
-    const adjFr = getRandomItem(adjectivesFr);
-    const typeAr = getRandomItem(stadiumTypesAr);
-    const typeFr = getRandomItem(stadiumTypesFr);
-
-    stadiumNames.push({
-      nameAr: `${typeAr} ${adjAr} ${i}`,
-      nameFr: `${typeFr} ${adjFr} ${i}`,
-      description: `${typeAr} رياضي ${adjAr} في طانطان`,
-    });
-  }
-
-  return stadiumNames;
+  
+  return locale === 'fr' ? monthsFr[month - 1] : monthsAr[month - 1];
 }
 
 async function main() {
-  console.log("🌱 Starting database seeding...");
+  console.log("🌱 Starting database seeding for 2025...");
 
   // Clear existing data
   console.log("🧹 Clearing existing data...");
@@ -267,12 +206,13 @@ async function main() {
   });
   console.log(`✅ Created admin user: ${admin.email}`);
 
-  // Create Club Users (Team Captains) - 20 clubs
+  // Create Club Users (Team Captains) - 10 clubs
   console.log("🏆 Creating club users and clubs...");
 
   const clubs = [];
+  const clubUsers = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 10; i++) {
     const clubName = clubNames[i];
     const location = getRandomItem(tantanLocations);
 
@@ -288,6 +228,8 @@ async function main() {
         emailVerifiedAt: new Date(),
       },
     });
+
+    clubUsers.push(clubUser);
 
     // Randomly assign a sport to each club
     const randomSport = getRandomItem(allSports);
@@ -311,27 +253,26 @@ async function main() {
     );
   }
 
-  // Create 65 Stadiums to test pagination (6 per page = 11 pages!)
-  console.log("🏟️ Creating 65 stadiums for pagination testing...");
-
-  // Generate 65 unique stadium names
-  const stadiumsData = generateStadiumNames(65);
+  // Create 15 Stadiums
+  console.log("🏟️ Creating 15 stadiums...");
 
   const stadiums = [];
 
-  for (let i = 0; i < stadiumsData.length; i++) {
-    const stadiumInfo = stadiumsData[i];
+  for (let i = 1; i <= 15; i++) {
     const location = getRandomItem(tantanLocations);
+    
+    const stadiumNameFr = `Stade ${i}`;
+    const stadiumNameAr = `ملعب ${i}`;
 
     // Create stadium
     const stadium = await prisma.stadium.create({
       data: {
-        nameAr: stadiumInfo.nameAr,
-        nameFr: stadiumInfo.nameFr,
+        nameAr: stadiumNameAr,
+        nameFr: stadiumNameFr,
         addressAr: `${location.streetAr}، ${location.neighborhoodAr}، طانطان`,
         addressFr: `${location.streetFr}, ${location.neighborhoodFr}, Tan-Tan`,
         googleMapsUrl: `https://maps.google.com/?q=${encodeURIComponent(
-          stadiumInfo.nameFr + " Tan-Tan"
+          stadiumNameFr + " Tan-Tan"
         )}`,
         monthlyPrice: randomPrice(50, 250), // Random monthly price 50-250 MAD
         pricePerSession: randomPrice(20, 120), // Random session price 20-120 MAD
@@ -349,7 +290,7 @@ async function main() {
       })),
     });
 
-    // Add 1-4 random sports for each stadium (more variety)
+    // Add 1-4 random sports for each stadium
     const sportsCount = Math.floor(Math.random() * 4) + 1;
     const randomSports = getRandomItems(allSports, sportsCount);
 
@@ -361,585 +302,565 @@ async function main() {
     });
 
     stadiums.push(stadium);
-
-    // Show progress every 10 stadiums
-    if ((i + 1) % 10 === 0) {
-      console.log(`✅ Created ${i + 1} stadiums...`);
-    }
   }
 
   console.log(`✅ Total stadiums created: ${stadiums.length}`);
 
-  // Create example reservations
-  console.log("📅 Creating example reservations...");
+  // =================== CREATE SUBSCRIPTIONS ===================
+  console.log("\n💳 Creating monthly subscriptions for 2025...");
 
-  // Create 50 random reservations
-  const reservations = [];
-  for (let i = 0; i < 50; i++) {
+  const subscriptions = [];
+  const reservationSeries = [];
+
+  // Create 15-20 subscriptions
+  const subscriptionCount = Math.floor(Math.random() * 6) + 15; // 15-20
+
+  for (let i = 0; i < subscriptionCount; i++) {
+    const randomClubUser = getRandomItem(clubUsers);
     const randomStadium = getRandomItem(stadiums);
-    const randomClub = getRandomItem(clubs);
-    const clubUser = await prisma.user.findFirst({
-      where: { email: `club${clubs.indexOf(randomClub) + 1}@stadium.com` },
-    });
+    
+    // Random day of week (1=Monday, 7=Sunday)
+    const dayOfWeek = Math.floor(Math.random() * 7) + 1;
+    
+    // Random time between 14:00 and 20:00
+    const startHour = Math.floor(Math.random() * 7) + 14;
+    const endHour = startHour + Math.floor(Math.random() * 3) + 1; // 1-3 hours duration
+    
+    const startDate = new Date('2025-01-01');
+    const endDate = new Date('2025-12-31');
 
-    if (!clubUser) continue;
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 60));
-    startDate.setHours(Math.floor(Math.random() * 12) + 8, 0, 0, 0);
-
-    const endDate = new Date(startDate);
-    endDate.setHours(startDate.getHours() + Math.floor(Math.random() * 4) + 1);
-
-    const statuses = ["PENDING", "APPROVED", "DECLINED", "PAID"] as const;
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-
-    const reservation = await prisma.reservation.create({
-      data: {
-        startDateTime: startDate,
-        endDateTime: endDate,
-        status: randomStatus,
-        sessionPrice: randomStadium.pricePerSession.toNumber(),
-        isPaid: randomStatus === "PAID" || Math.random() > 0.7,
-        paymentType:
-          Math.random() > 0.5 ? "SINGLE_SESSION" : "MONTHLY_SUBSCRIPTION",
-        stadiumId: randomStadium.id,
-        userId: clubUser.id,
-      },
-    });
-
-    reservations.push(reservation);
-  }
-
-  console.log(`✅ Created ${reservations.length} example reservations`);
-
-  // Create some monthly subscriptions
-  console.log("💳 Creating monthly subscriptions...");
-
-  for (let i = 0; i < 10; i++) {
-    const randomClub = getRandomItem(clubs);
-    const clubUser = await prisma.user.findFirst({
-      where: { email: `club${clubs.indexOf(randomClub) + 1}@stadium.com` },
-    });
-    const randomStadium = getRandomItem(stadiums);
-
-    if (!clubUser) continue;
-
+    // Create reservation series
     const series = await prisma.reservationSeries.create({
       data: {
-        startTime: new Date(
-          `2024-01-01T${Math.floor(Math.random() * 6) + 14}:00:00Z`
-        ),
-        endTime: new Date(
-          `2024-01-01T${Math.floor(Math.random() * 6) + 16}:00:00Z`
-        ),
-        dayOfWeek: Math.floor(Math.random() * 7) + 1,
-        recurrenceEndDate: new Date("2024-12-31T23:59:59Z"),
+        startTime: new Date(`2025-01-01T${startHour}:00:00Z`),
+        endTime: new Date(`2025-01-01T${endHour}:00:00Z`),
+        dayOfWeek: dayOfWeek,
+        recurrenceEndDate: endDate,
         isFixed: true,
         billingType: "MONTHLY_SUBSCRIPTION",
         monthlyPrice: randomStadium.monthlyPrice.toNumber(),
         stadiumId: randomStadium.id,
-        userId: clubUser.id,
+        userId: randomClubUser.id,
       },
     });
 
-    await prisma.monthlySubscription.create({
+    reservationSeries.push(series);
+
+    // Create subscription
+    const subscription = await prisma.monthlySubscription.create({
       data: {
-        startDate: new Date("2024-01-01"),
+        startDate: startDate,
+        endDate: endDate,
         monthlyAmount: randomStadium.monthlyPrice.toNumber(),
         status: "ACTIVE",
-        autoRenew: Math.random() > 0.5,
-        userId: clubUser.id,
+        autoRenew: Math.random() > 0.3, // 70% auto-renew
+        userId: randomClubUser.id,
         reservationSeriesId: series.id,
       },
     });
+
+    subscriptions.push(subscription);
+    
+    console.log(`✅ Created subscription ${i + 1} for ${randomClubUser.email} at ${randomStadium.nameFr}`);
   }
 
-  console.log("✅ Created 10 monthly subscriptions");
+  console.log(`✅ Created ${subscriptions.length} monthly subscriptions`);
 
-  console.log("\n🎉 Database seeding completed successfully!");
-  console.log("=".repeat(50));
-  console.log("📊 SUMMARY:");
-  console.log("=".repeat(50));
-  console.log(`   ⚽ Sports: ${sportsData.length} sports created`);
-  console.log(
-    `   👥 Users: ${clubs.length + 1} users (1 admin + ${clubs.length} clubs)`
-  );
-  console.log(`   🏆 Clubs: ${clubs.length} clubs created`);
-  console.log(`   🏟️ Stadiums: ${stadiums.length} stadiums created`);
-  console.log(
-    `   📅 Reservations: ${reservations.length} reservations created`
-  );
-  console.log(`   💳 Subscriptions: 10 monthly subscriptions created`);
-  console.log("=".repeat(50));
-  console.log("\n🔑 LOGIN CREDENTIALS:");
-  console.log("   👑 Admin: admin@stadium.com / 123456789");
-  console.log(
-    `   🏆 Clubs: club1@stadium.com to club${clubs.length}@stadium.com / 123456789`
-  );
-  console.log("=".repeat(50));
-  console.log("\n📱 PAGINATION TESTING:");
-  console.log(
-    `   With 6 items per page, you'll have ${Math.ceil(
-      stadiums.length / 6
-    )} pages!`
-  );
-  console.log(`   Page 1: Stadiums 1-6`);
-  console.log(`   Page 2: Stadiums 7-12`);
-  console.log(`   ...`);
-  console.log(
-    `   Page ${Math.ceil(stadiums.length / 6)}: Stadiums ${
-      stadiums.length - 5
-    }-${stadiums.length}`
-  );
-  console.log("=".repeat(50));
-  console.log("\n🔍 TESTING TIPS:");
-  console.log('   1. Try searching for "ملعب" or "Stade"');
-  console.log("   2. Filter by different sports");
-  console.log("   3. Navigate through all 11 pages");
-  console.log("   4. Test combinations of search + filters");
-  console.log("=".repeat(50));
-    // =================== ADD NOTIFICATIONS SEEDING ===================
+  // =================== CREATE MONTHLY PAYMENTS ===================
+  console.log("\n💰 Creating monthly payments for 2025...");
+
+  const monthlyPayments = [];
+
+  // For each subscription, create monthly payments
+  for (const series of reservationSeries) {
+    // Get the associated subscription
+    const subscription = subscriptions.find(s => s.reservationSeriesId === series.id);
+    if (!subscription) continue;
+
+    const user = clubUsers.find(u => u.id === series.userId);
+    if (!user) continue;
+
+    // Create payments for some months (not all, to show different statuses)
+    const monthsToPay = getRandomItems([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], Math.floor(Math.random() * 8) + 4); // 4-12 months
+
+    for (const month of monthsToPay) {
+      // Randomly decide payment status
+      const statuses = ["PENDING", "PAID", "OVERDUE", "PARTIALLY_PAID"];
+      const status = getRandomItem(statuses) as "PENDING" | "PAID" | "OVERDUE" | "PARTIALLY_PAID";
+      
+      const paymentData: any = {
+        month: month,
+        year: 2025,
+        amount: series.monthlyPrice!,
+        status: status,
+        userId: series.userId,
+        reservationSeriesId: series.id,
+      };
+
+      // If paid, add payment date
+      if (status === "PAID" || status === "PARTIALLY_PAID") {
+        paymentData.paymentDate = randomDate2025(
+          new Date(2025, month - 1, 1),
+          new Date(2025, month - 1, 28)
+        );
+        paymentData.receiptNumber = generateReceiptNumber();
+      }
+
+      const payment = await prisma.monthlyPayment.create({
+        data: paymentData,
+      });
+
+      monthlyPayments.push(payment);
+
+      // If paid, create cash payment record
+      if (status === "PAID") {
+        await prisma.cashPaymentRecord.create({
+          data: {
+            amount: series.monthlyPrice!,
+            paymentDate: paymentData.paymentDate,
+            receiptNumber: paymentData.receiptNumber,
+            notes: `Paiement mensuel ${getMonthName(month, 'fr')} 2025`,
+            monthlyPaymentId: payment.id,
+            userId: series.userId,
+          },
+        });
+      }
+    }
+  }
+
+  console.log(`✅ Created ${monthlyPayments.length} monthly payments`);
+
+  // =================== CREATE RESERVATIONS ===================
+  console.log("\n📅 Creating reservations for 2025...");
+
+  const reservations = [];
+  const reservationsToCreate = Math.floor(Math.random() * 21) + 40; // 40-60 reservations
+
+  for (let i = 0; i < reservationsToCreate; i++) {
+    const randomStadium = getRandomItem(stadiums);
+    const randomClubUser = getRandomItem(clubUsers);
+    
+    // Decide if this is a subscription reservation or single session
+    const isSubscription = Math.random() > 0.4; // 60% subscription, 40% single
+    
+    let monthlyPaymentId: string | undefined;
+    let reservationSeriesId: string | undefined;
+    let paymentType: "SINGLE_SESSION" | "MONTHLY_SUBSCRIPTION";
+    
+    if (isSubscription) {
+      // Find a subscription for this user
+      const userSeries = reservationSeries.filter(rs => rs.userId === randomClubUser.id);
+      if (userSeries.length > 0) {
+        const series = getRandomItem(userSeries);
+        reservationSeriesId = series.id;
+        
+        // Find a monthly payment for this series
+        const seriesPayments = monthlyPayments.filter(mp => mp.reservationSeriesId === series.id);
+        if (seriesPayments.length > 0) {
+          const payment = getRandomItem(seriesPayments);
+          monthlyPaymentId = payment.id;
+        }
+      }
+      paymentType = "MONTHLY_SUBSCRIPTION";
+    } else {
+      paymentType = "SINGLE_SESSION";
+    }
+
+    // Random date in 2025
+    const startDateTime = randomDate2025();
+    const endDateTime = new Date(startDateTime);
+    endDateTime.setHours(startDateTime.getHours() + Math.floor(Math.random() * 3) + 1); // 1-3 hours later
+
+    // Random status with weights
+    const statusWeights = [
+      { status: "APPROVED", weight: 0.5 },
+      { status: "PENDING", weight: 0.2 },
+      { status: "DECLINED", weight: 0.1 },
+      { status: "PAID", weight: 0.15 },
+      { status: "UNPAID", weight: 0.05 },
+    ];
+    
+    const randomNum = Math.random();
+    let cumulativeWeight = 0;
+    let selectedStatus = "APPROVED";
+    
+    for (const { status, weight } of statusWeights) {
+      cumulativeWeight += weight;
+      if (randomNum <= cumulativeWeight) {
+        selectedStatus = status;
+        break;
+      }
+    }
+
+    const isPaid = selectedStatus === "PAID" || (Math.random() > 0.3 && selectedStatus === "APPROVED");
+
+    // Create reservation
+    const reservation = await prisma.reservation.create({
+      data: {
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        status: selectedStatus as any,
+        sessionPrice: randomStadium.pricePerSession.toNumber(),
+        isPaid: isPaid,
+        paymentType: paymentType,
+        stadiumId: randomStadium.id,
+        userId: randomClubUser.id,
+        monthlyPaymentId: monthlyPaymentId,
+        reservationSeriesId: reservationSeriesId,
+      },
+    });
+
+    reservations.push(reservation);
+
+    // Create cash payment record for paid single sessions
+    if (isPaid && paymentType === "SINGLE_SESSION") {
+      await prisma.cashPaymentRecord.create({
+        data: {
+          amount: randomStadium.pricePerSession.toNumber(),
+          paymentDate: startDateTime,
+          receiptNumber: generateReceiptNumber(),
+          notes: `Paiement session unique - ${randomStadium.nameFr}`,
+          reservationId: reservation.id,
+          userId: randomClubUser.id,
+        },
+      });
+    }
+
+    // Show progress
+    if ((i + 1) % 10 === 0) {
+      console.log(`✅ Created ${i + 1} reservations...`);
+    }
+  }
+
+  console.log(`✅ Created ${reservations.length} reservations for 2025`);
+
+  // =================== CREATE CASH PAYMENTS ===================
+  console.log("\n💵 Creating additional cash payments...");
+
+  // Create some extra cash payments not linked to reservations
+  const extraCashPaymentsCount = Math.floor(Math.random() * 11) + 10; // 10-20 extra payments
+
+  for (let i = 0; i < extraCashPaymentsCount; i++) {
+    const randomClubUser = getRandomItem(clubUsers);
+    const randomStadium = getRandomItem(stadiums);
+    
+    await prisma.cashPaymentRecord.create({
+      data: {
+        amount: randomPrice(50, 300),
+        paymentDate: randomDate2025(),
+        receiptNumber: generateReceiptNumber(),
+        notes: `Paiement divers - ${randomStadium.nameFr}`,
+        userId: randomClubUser.id,
+      },
+    });
+  }
+
+  console.log(`✅ Created ${extraCashPaymentsCount} additional cash payments`);
+
+  // =================== CREATE NOTIFICATIONS ===================
   console.log("\n🔔 Creating notifications...");
-  
-  // Get admin and all club users
-  const adminUser = await prisma.user.findFirst({
-    where: { email: "admin@stadium.com" },
-  });
-  
-  const allUsers = await prisma.user.findMany();
-  const clubUsers = allUsers.filter(user => user.role === "CLUB");
 
-  if (!adminUser) {
-    console.error("❌ Admin user not found!");
-    return;
+  // Helper function to get translations for all languages
+  function getTranslations(
+    type: string,
+    title: string,
+    message: string
+  ): {
+    titleEn: string;
+    titleFr: string;
+    titleAr: string;
+    messageEn: string;
+    messageFr: string;
+    messageAr: string;
+  } {
+    // Default translations (use English as base)
+    const translations: Record<
+      string,
+      {
+        titleEn: string;
+        titleFr: string;
+        titleAr: string;
+        messageEn: string;
+        messageFr: string;
+        messageAr: string;
+      }
+    > = {
+      ACCOUNT_APPROVED: {
+        titleEn: "Account Approved",
+        titleFr: "Compte Approuvé",
+        titleAr: "تمت الموافقة على الحساب",
+        messageEn: "Your account has been approved. You can now make reservations.",
+        messageFr: "Votre compte a été approuvé. Vous pouvez maintenant effectuer des réservations.",
+        messageAr: "تمت الموافقة على حسابك. يمكنك الآن إجراء الحجوزات.",
+      },
+      NEW_RESERVATION_REQUEST: {
+        titleEn: "New Reservation Request",
+        titleFr: "Nouvelle Demande de Réservation",
+        titleAr: "طلب حجز جديد",
+        messageEn: "New reservation request for {{stadium}}",
+        messageFr: "Nouvelle demande de réservation pour {{stadium}}",
+        messageAr: "طلب حجز جديد لـ {{stadium}}",
+      },
+      PAYMENT_RECEIVED: {
+        titleEn: "Payment Received",
+        titleFr: "Paiement Reçu",
+        titleAr: "تم استلام الدفع",
+        messageEn: "Your monthly subscription payment has been recorded",
+        messageFr: "Votre paiement d'abonnement mensuel a été enregistré",
+        messageAr: "تم تسجيل دفعة الاشتراك الشهرية الخاصة بك",
+      },
+      RESERVATION_APPROVED: {
+        titleEn: "Reservation Approved",
+        titleFr: "Réservation Approuvée",
+        titleAr: "تمت الموافقة على الحجز",
+        messageEn: "Your reservation for {{stadium}} has been approved",
+        messageFr: "Votre réservation pour {{stadium}} a été approuvée",
+        messageAr: "تمت الموافقة على حجزك لـ {{stadium}}",
+      },
+      RESERVATION_DECLINED: {
+        titleEn: "Reservation Declined",
+        titleFr: "Réservation Refusée",
+        titleAr: "تم رفض الحجز",
+        messageEn: "Your reservation for {{stadium}} has been declined",
+        messageFr: "Votre réservation pour {{stadium}} a été refusée",
+        messageAr: "تم رفض حجزك لـ {{stadium}}",
+      },
+      RESERVATION_CANCELLED: {
+        titleEn: "Reservation Cancelled",
+        titleFr: "Réservation Annulée",
+        titleAr: "تم إلغاء الحجز",
+        messageEn: "Your reservation for {{stadium}} has been cancelled",
+        messageFr: "Votre réservation pour {{stadium}} a été annulée",
+        messageAr: "تم إلغاء حجزك لـ {{stadium}}",
+      },
+      MONTHLY_SUBSCRIPTION_PAYMENT: {
+        titleEn: "Monthly Subscription Payment",
+        titleFr: "Paiement d'Abonnement Mensuel",
+        titleAr: "دفعة الاشتراك الشهري",
+        messageEn: "Your monthly subscription payment is due for {{month}} {{year}}",
+        messageFr: "Votre paiement d'abonnement mensuel est dû pour {{month}} {{year}}",
+        messageAr: "دفعة الاشتراك الشهرية الخاصة بك مستحقة لـ {{month}} {{year}}",
+      },
+      PAYMENT_OVERDUE: {
+        titleEn: "Payment Overdue",
+        titleFr: "Paiement En Retard",
+        titleAr: "دفعة متأخرة",
+        messageEn: "Your payment for {{month}} {{year}} is overdue",
+        messageFr: "Votre paiement pour {{month}} {{year}} est en retard",
+        messageAr: "دفعتك لـ {{month}} {{year}} متأخرة",
+      },
+    };
+
+    // Return default translations if type exists, otherwise use provided values
+    if (translations[type]) {
+      return translations[type];
+    }
+
+    // Fallback: use provided title/message for all languages
+    return {
+      titleEn: title,
+      titleFr: title,
+      titleAr: title,
+      messageEn: message,
+      messageFr: message,
+      messageAr: message,
+    };
   }
 
-  // Create notifications for different scenarios
+  // Create notifications based on created data
   const notificationsToCreate = [];
 
-  // 1. Account related notifications (for club users)
-  for (const clubUser of clubUsers.slice(0, 5)) {
-    notificationsToCreate.push({
-      type: "ACCOUNT_APPROVED",
-      title: "Account Approved",
-      message: "Your account has been approved. You can now make reservations.",
-      isRead: false,
-      userId: clubUser.id,
-      actorUserId: adminUser.id,
-      metadata: {
-        userId: clubUser.id,
-        approvedAt: new Date().toISOString(),
-      },
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    });
+  // 1. Monthly payment due notifications
+  for (const payment of monthlyPayments) {
+    if (payment.status === "PENDING" || payment.status === "OVERDUE") {
+      const user = clubUsers.find(u => u.id === payment.userId);
+      if (!user) continue;
+
+      const translations = getTranslations(
+        payment.status === "OVERDUE" ? "PAYMENT_OVERDUE" : "MONTHLY_SUBSCRIPTION_PAYMENT",
+        payment.status === "OVERDUE" ? "Payment Overdue" : "Monthly Payment Due",
+        payment.status === "OVERDUE" 
+          ? `Your payment for ${getMonthName(payment.month, 'en')} ${payment.year} is overdue`
+          : `Your monthly payment for ${getMonthName(payment.month, 'en')} ${payment.year} is due`
+      );
+
+      notificationsToCreate.push({
+        type: payment.status === "OVERDUE" ? "PAYMENT_OVERDUE" : "MONTHLY_SUBSCRIPTION_PAYMENT",
+        titleEn: translations.titleEn,
+        titleFr: translations.titleFr,
+        titleAr: translations.titleAr,
+        messageEn: translations.messageEn,
+        messageFr: translations.messageFr,
+        messageAr: translations.messageAr,
+        isRead: Math.random() > 0.7,
+        userId: user.id,
+        actorUserId: admin.id,
+        metadata: {
+          month: payment.month,
+          year: payment.year,
+          amount: payment.amount.toString(),
+          status: payment.status,
+        },
+        createdAt: randomDate2025(),
+      });
+    }
   }
 
-  // 2. Reservation notifications (for admin)
-  for (let i = 0; i < 8; i++) {
-    const randomClub = getRandomItem(clubUsers);
-    const randomStadium = getRandomItem(stadiums);
+  // 2. Reservation status notifications
+  for (const reservation of reservations) {
+    const user = clubUsers.find(u => u.id === reservation.userId);
+    const stadium = stadiums.find(s => s.id === reservation.stadiumId);
     
+    if (!user || !stadium) continue;
+
+    if (reservation.status === "APPROVED" || reservation.status === "DECLINED" || reservation.status === "CANCELLED") {
+      const translations = getTranslations(
+        `RESERVATION_${reservation.status}`,
+        `Reservation ${reservation.status}`,
+        `Your reservation for ${stadium.nameFr} has been ${reservation.status.toLowerCase()}`
+      );
+
+      notificationsToCreate.push({
+        type: `RESERVATION_${reservation.status}` as any,
+        titleEn: translations.titleEn,
+        titleFr: translations.titleFr,
+        titleAr: translations.titleAr,
+        messageEn: translations.messageEn.replace("{{stadium}}", stadium.nameFr),
+        messageFr: translations.messageFr.replace("{{stadium}}", stadium.nameFr),
+        messageAr: translations.messageAr.replace("{{stadium}}", stadium.nameAr),
+        isRead: Math.random() > 0.5,
+        userId: user.id,
+        actorUserId: admin.id,
+        metadata: {
+          reservationId: reservation.id,
+          stadiumId: stadium.id,
+          stadiumName: stadium.nameFr,
+          status: reservation.status,
+        },
+        createdAt: randomDate2025(reservation.startDateTime, new Date('2025-12-31')),
+      });
+    }
+  }
+
+  // 3. New reservation requests for admin
+  const pendingReservations = reservations.filter(r => r.status === "PENDING");
+  for (const reservation of pendingReservations.slice(0, 10)) { // Limit to 10
+    const user = clubUsers.find(u => u.id === reservation.userId);
+    const stadium = stadiums.find(s => s.id === reservation.stadiumId);
+    
+    if (!user || !stadium) continue;
+
+    const translations = getTranslations(
+      "NEW_RESERVATION_REQUEST",
+      "New Reservation Request",
+      `New reservation request for ${stadium.nameFr}`
+    );
+
     notificationsToCreate.push({
       type: "NEW_RESERVATION_REQUEST",
-      title: "New Reservation Request",
-      message: `New reservation request for ${randomStadium.nameFr}`,
-      isRead: i < 4, // Half read, half unread
-      userId: adminUser.id,
-      actorUserId: randomClub.id,
+      titleEn: translations.titleEn,
+      titleFr: translations.titleFr,
+      titleAr: translations.titleAr,
+      messageEn: translations.messageEn.replace("{{stadium}}", stadium.nameFr),
+      messageFr: translations.messageFr.replace("{{stadium}}", stadium.nameFr),
+      messageAr: translations.messageAr.replace("{{stadium}}", stadium.nameAr),
+      isRead: Math.random() > 0.3,
+      userId: admin.id,
+      actorUserId: user.id,
       metadata: {
-        stadiumId: randomStadium.id,
-        stadiumName: randomStadium.nameFr,
-        clubId: randomClub.id,
-        requestedAt: new Date().toISOString(),
+        reservationId: reservation.id,
+        stadiumId: stadium.id,
+        stadiumName: stadium.nameFr,
+        requestedBy: user.email,
       },
-      createdAt: new Date(Date.now() - i * 3 * 60 * 60 * 1000), // Staggered times
+      createdAt: randomDate2025(reservation.createdAt, new Date('2025-12-31')),
     });
   }
 
-  // 3. Payment notifications (for club users)
-  for (let i = 0; i < 6; i++) {
-    const randomClub = getRandomItem(clubUsers);
-    
-    notificationsToCreate.push({
-      type: "PAYMENT_RECEIVED",
-      title: "Payment Received",
-      message: "Your monthly subscription payment has been recorded",
-      isRead: i < 3,
-      userId: randomClub.id,
-      actorUserId: adminUser.id,
-      metadata: {
-        amount: randomPrice(100, 300),
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        recordedAt: new Date().toISOString(),
+  // Create all notifications
+  for (const notifData of notificationsToCreate) {
+    await prisma.notification.create({
+      data: {
+        type: notifData.type,
+        titleEn: notifData.titleEn,
+        titleFr: notifData.titleFr,
+        titleAr: notifData.titleAr,
+        messageEn: notifData.messageEn,
+        messageFr: notifData.messageFr,
+        messageAr: notifData.messageAr,
+        isRead: notifData.isRead,
+        userId: notifData.userId,
+        actorUserId: notifData.actorUserId,
+        metadata: notifData.metadata,
+        createdAt: notifData.createdAt,
       },
-      createdAt: new Date(Date.now() - i * 12 * 60 * 60 * 1000),
     });
   }
 
-  // 4. Reservation status notifications (for club users)
-  for (let i = 0; i < 5; i++) {
-    const randomClub = getRandomItem(clubUsers);
-    const randomStadium = getRandomItem(stadiums);
-    const statuses = ["APPROVED", "DECLINED", "CANCELLED"];
-    const randomStatus = getRandomItem(statuses);
-    
-    notificationsToCreate.push({
-      type: `RESERVATION_${randomStatus}` as any,
-      title: `Reservation ${randomStatus}`,
-      message: `Your reservation for ${randomStadium.nameFr} has been ${randomStatus.toLowerCase()}`,
-      isRead: false,
-      userId: randomClub.id,
-      actorUserId: adminUser.id,
-      metadata: {
-        stadiumId: randomStadium.id,
-        stadiumName: randomStadium.nameFr,
-        status: randomStatus,
-        updatedAt: new Date().toISOString(),
-      },
-      createdAt: new Date(Date.now() - i * 6 * 60 * 60 * 1000),
-    });
-  }
+  console.log(`✅ Created ${notificationsToCreate.length} notifications`);
 
-  // 5. Club registration notifications (for admin)
-  for (let i = 0; i < 4; i++) {
-    const randomClub = getRandomItem(clubUsers);
-    const club = await prisma.club.findFirst({
-      where: { userId: randomClub.id },
-    });
-    
-    if (club) {
-      notificationsToCreate.push({
-        type: "CLUB_REGISTRATION_SUBMITTED",
-        title: "New Club Registration",
-        message: `${club.nameFr} has submitted registration for approval`,
-        isRead: i < 2,
-        userId: adminUser.id,
-        actorUserId: randomClub.id,
-        metadata: {
-          clubId: club.id,
-          clubName: club.nameFr,
-          submittedAt: new Date().toISOString(),
-        },
-        createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000), // Staggered by days
-      });
-    }
-  }
-
-  // 6. System notifications (for all users)
-  const systemNotifications = [
-    {
-      type: "SYSTEM_MAINTENANCE",
-      title: "System Maintenance",
-      message: "Scheduled maintenance tonight at 2:00 AM",
-      isRead: true,
-    },
-    {
-      type: "NEW_FEATURE",
-      title: "New Feature Available",
-      message: "Check out the new reservation calendar feature",
-      isRead: false,
-    },
-    {
-      type: "ANNOUNCEMENT",
-      title: "Important Announcement",
-      message: "New stadium booking policies have been updated",
-      isRead: true,
-    },
-  ];
-
-  for (const sysNotif of systemNotifications) {
-    // Add to admin
-    notificationsToCreate.push({
-      ...sysNotif,
-      userId: adminUser.id,
-      actorUserId: null,
-      metadata: {
-        announcementType: sysNotif.type,
-        publishedAt: new Date().toISOString(),
-      },
-      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-    });
-
-    // Add to a few club users
-    for (const clubUser of clubUsers.slice(0, 3)) {
-      notificationsToCreate.push({
-        ...sysNotif,
-        userId: clubUser.id,
-        actorUserId: null,
-        metadata: {
-          announcementType: sysNotif.type,
-          publishedAt: new Date().toISOString(),
-        },
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      });
-    }
-  }
-
-  // 7. Email notifications (for club users)
-  for (let i = 0; i < 3; i++) {
-    const randomClub = getRandomItem(clubUsers);
-    
-    notificationsToCreate.push({
-      type: "WELCOME_EMAIL",
-      title: "Welcome Email Sent",
-      message: "Account confirmation email delivered successfully",
-      isRead: true,
-      userId: randomClub.id,
-      actorUserId: null,
-      metadata: {
-        emailType: "welcome",
-        sentAt: new Date().toISOString(),
-      },
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-    });
-  }
-
-  console.log("\n🔔 Creating notifications...");
-
-// ... (الكود كما هو حتى إنشاء الإشعارات)
-
-// Helper function to get translations for all languages
-function getTranslations(
-  type: string,
-  title: string,
-  message: string
-): {
-  titleEn: string;
-  titleFr: string;
-  titleAr: string;
-  messageEn: string;
-  messageFr: string;
-  messageAr: string;
-} {
-  // Default translations (use English as base)
-  const translations: Record<
-    string,
-    {
-      titleEn: string;
-      titleFr: string;
-      titleAr: string;
-      messageEn: string;
-      messageFr: string;
-      messageAr: string;
-    }
-  > = {
-    ACCOUNT_APPROVED: {
-      titleEn: "Account Approved",
-      titleFr: "Compte Approuvé",
-      titleAr: "تمت الموافقة على الحساب",
-      messageEn: "Your account has been approved. You can now make reservations.",
-      messageFr: "Votre compte a été approuvé. Vous pouvez maintenant effectuer des réservations.",
-      messageAr: "تمت الموافقة على حسابك. يمكنك الآن إجراء الحجوزات.",
-    },
-    NEW_RESERVATION_REQUEST: {
-      titleEn: "New Reservation Request",
-      titleFr: "Nouvelle Demande de Réservation",
-      titleAr: "طلب حجز جديد",
-      messageEn: "New reservation request for {{stadium}}",
-      messageFr: "Nouvelle demande de réservation pour {{stadium}}",
-      messageAr: "طلب حجز جديد لـ {{stadium}}",
-    },
-    PAYMENT_RECEIVED: {
-      titleEn: "Payment Received",
-      titleFr: "Paiement Reçu",
-      titleAr: "تم استلام الدفع",
-      messageEn: "Your monthly subscription payment has been recorded",
-      messageFr: "Votre paiement d'abonnement mensuel a été enregistré",
-      messageAr: "تم تسجيل دفعة الاشتراك الشهرية الخاصة بك",
-    },
-    RESERVATION_APPROVED: {
-      titleEn: "Reservation Approved",
-      titleFr: "Réservation Approuvée",
-      titleAr: "تمت الموافقة على الحجز",
-      messageEn: "Your reservation for {{stadium}} has been approved",
-      messageFr: "Votre réservation pour {{stadium}} a été approuvée",
-      messageAr: "تمت الموافقة على حجزك لـ {{stadium}}",
-    },
-    RESERVATION_DECLINED: {
-      titleEn: "Reservation Declined",
-      titleFr: "Réservation Refusée",
-      titleAr: "تم رفض الحجز",
-      messageEn: "Your reservation for {{stadium}} has been declined",
-      messageFr: "Votre réservation pour {{stadium}} a été refusée",
-      messageAr: "تم رفض حجزك لـ {{stadium}}",
-    },
-    RESERVATION_CANCELLED: {
-      titleEn: "Reservation Cancelled",
-      titleFr: "Réservation Annulée",
-      titleAr: "تم إلغاء الحجز",
-      messageEn: "Your reservation for {{stadium}} has been cancelled",
-      messageFr: "Votre réservation pour {{stadium}} a été annulée",
-      messageAr: "تم إلغاء حجزك لـ {{stadium}}",
-    },
-    CLUB_REGISTRATION_SUBMITTED: {
-      titleEn: "New Club Registration",
-      titleFr: "Nouvelle Inscription de Club",
-      titleAr: "تسجيل نادي جديد",
-      messageEn: "{{club}} has submitted registration for approval",
-      messageFr: "{{club}} a soumis une inscription pour approbation",
-      messageAr: "قدم {{club}} طلب تسجيل للموافقة عليه",
-    },
-    SYSTEM_MAINTENANCE: {
-      titleEn: "System Maintenance",
-      titleFr: "Maintenance du Système",
-      titleAr: "صيانة النظام",
-      messageEn: "Scheduled maintenance tonight at 2:00 AM",
-      messageFr: "Maintenance planifiée ce soir à 2h00",
-      messageAr: "صيانة مجدولة الليلة في الساعة 2:00 صباحًا",
-    },
-    NEW_FEATURE: {
-      titleEn: "New Feature Available",
-      titleFr: "Nouvelle Fonctionnalité Disponible",
-      titleAr: "ميزة جديدة متاحة",
-      messageEn: "Check out the new reservation calendar feature",
-      messageFr: "Découvrez la nouvelle fonctionnalité du calendrier de réservation",
-      messageAr: "تحقق من ميزة التقويم الجديدة للحجوزات",
-    },
-    ANNOUNCEMENT: {
-      titleEn: "Important Announcement",
-      titleFr: "Annonce Importante",
-      titleAr: "إعلان مهم",
-      messageEn: "New stadium booking policies have been updated",
-      messageFr: "Les nouvelles politiques de réservation de stade ont été mises à jour",
-      messageAr: "تم تحديث سياسات حجز الملاعب الجديدة",
-    },
-    WELCOME_EMAIL: {
-      titleEn: "Welcome Email Sent",
-      titleFr: "Email de Bienvenue Envoyé",
-      titleAr: "تم إرسال بريد الترحيب",
-      messageEn: "Account confirmation email delivered successfully",
-      messageFr: "Email de confirmation de compte livré avec succès",
-      messageAr: "تم تسليم بريد تأكيد الحساب بنجاح",
-    },
-    ACCOUNT_CREATED: {
-      titleEn: "Account Created",
-      titleFr: "Compte Créé",
-      titleAr: "تم إنشاء الحساب",
-      messageEn: "Your account has been created successfully",
-      messageFr: "Votre compte a été créé avec succès",
-      messageAr: "تم إنشاء حسابك بنجاح",
-    },
-    PASSWORD_CHANGED: {
-      titleEn: "Password Changed",
-      titleFr: "Mot de Passe Modifié",
-      titleAr: "تم تغيير كلمة المرور",
-      messageEn: "Your password has been changed successfully",
-      messageFr: "Votre mot de passe a été modifié avec succès",
-      messageAr: "تم تغيير كلمة مرورك بنجاح",
-    },
-    EMAIL_VERIFIED: {
-      titleEn: "Email Verified",
-      titleFr: "Email Vérifié",
-      titleAr: "تم التحقق من البريد الإلكتروني",
-      messageEn: "Your email address has been verified",
-      messageFr: "Votre adresse email a été vérifiée",
-      messageAr: "تم التحقق من عنوان بريدك الإلكتروني",
-    },
-    MONTHLY_SUBSCRIPTION_PAYMENT: {
-      titleEn: "Monthly Subscription Payment",
-      titleFr: "Paiement d'Abonnement Mensuel",
-      titleAr: "دفعة الاشتراك الشهري",
-      messageEn: "Your monthly subscription payment is due",
-      messageFr: "Votre paiement d'abonnement mensuel est dû",
-      messageAr: "دفعة الاشتراك الشهرية الخاصة بك مستحقة",
-    },
-  };
-
-  // Return default translations if type exists, otherwise use provided values
-  if (translations[type]) {
-    return translations[type];
-  }
-
-  // Fallback: use provided title/message for all languages
-  return {
-    titleEn: title,
-    titleFr: title,
-    titleAr: title,
-    messageEn: message,
-    messageFr: message,
-    messageAr: message,
-  };
-}
-
-// Create all notifications
-for (const notifData of notificationsToCreate) {
-  // Get translations for all languages
-  const translations = getTranslations(notifData.type, notifData.title, notifData.message);
-  
-  // Replace placeholders in messages if needed
-  let messageEn = translations.messageEn;
-  let messageFr = translations.messageFr;
-  let messageAr = translations.messageAr;
-  
-  // Replace {{stadium}} placeholder if present
-  if (notifData.metadata?.stadiumName) {
-    const stadiumName = notifData.metadata.stadiumName;
-    messageEn = messageEn.replace("{{stadium}}", stadiumName);
-    messageFr = messageFr.replace("{{stadium}}", stadiumName);
-    messageAr = messageAr.replace("{{stadium}}", stadiumName);
-  }
-  
-  // Replace {{club}} placeholder if present
-  if (notifData.metadata?.clubName) {
-    const clubName = notifData.metadata.clubName;
-    messageEn = messageEn.replace("{{club}}", clubName);
-    messageFr = messageFr.replace("{{club}}", clubName);
-    messageAr = messageAr.replace("{{club}}", clubName);
-  }
-
-  const notificationData = {
-    type: notifData.type,
-    titleEn: translations.titleEn,
-    titleFr: translations.titleFr,
-    titleAr: translations.titleAr,
-    messageEn: messageEn,
-    messageFr: messageFr,
-    messageAr: messageAr,
-    isRead: notifData.isRead,
-    userId: notifData.userId,
-    actorUserId: notifData.actorUserId,
-    metadata: notifData.metadata,
-    createdAt: notifData.createdAt,
-  };
-
-  await prisma.notification.create({
-    data: notificationData,
-  });
-}
-
-console.log(`✅ Created ${notificationsToCreate.length} notifications`);
-  // =================== END NOTIFICATIONS SEEDING ===================
-
+  // =================== SUMMARY ===================
+  console.log("\n" + "=".repeat(50));
+  console.log("📊 2025 DATA SEEDING SUMMARY:");
   console.log("=".repeat(50));
-  console.log("\n🔔 NOTIFICATION SUMMARY:");
+  console.log(`   ⚽ Sports: ${sportsData.length}`);
+  console.log(`   👥 Users: ${clubs.length + 1} (1 admin + ${clubs.length} clubs)`);
+  console.log(`   🏆 Clubs: ${clubs.length}`);
+  console.log(`   🏟️ Stadiums: ${stadiums.length}`);
+  console.log(`   💳 Subscriptions: ${subscriptions.length}`);
+  console.log(`   💰 Monthly Payments: ${monthlyPayments.length}`);
+  console.log(`   📅 Reservations: ${reservations.length} (2025)`);
+  console.log(`   💵 Cash Payments: ${extraCashPaymentsCount + reservations.filter(r => r.isPaid).length}`);
+  console.log(`   🔔 Notifications: ${notificationsToCreate.length}`);
+  
+  // Payment statistics
+  const paidPayments = monthlyPayments.filter(p => p.status === "PAID").length;
+  const pendingPayments = monthlyPayments.filter(p => p.status === "PENDING").length;
+  const overduePayments = monthlyPayments.filter(p => p.status === "OVERDUE").length;
+  
+  console.log("\n💳 PAYMENT STATISTICS:");
   console.log("=".repeat(50));
+  console.log(`   Paid: ${paidPayments}`);
+  console.log(`   Pending: ${pendingPayments}`);
+  console.log(`   Overdue: ${overduePayments}`);
+  console.log(`   Partially Paid: ${monthlyPayments.filter(p => p.status === "PARTIALLY_PAID").length}`);
   
-  // Count notifications by user
-  const userNotifications = await prisma.notification.groupBy({
-    by: ['userId'],
-    _count: {
-      id: true,
-    },
-    where: {
-      userId: {
-        in: [adminUser.id, ...clubUsers.slice(0, 3).map(u => u.id)],
-      },
-    },
-  });
+  // Reservation statistics
+  const approvedReservations = reservations.filter(r => r.status === "APPROVED").length;
+  const pendingReservationsCount = reservations.filter(r => r.status === "PENDING").length;
+  const paidReservations = reservations.filter(r => r.status === "PAID").length;
   
-  for (const userNotif of userNotifications) {
-    const user = allUsers.find(u => u.id === userNotif.userId);
-    const unreadCount = await prisma.notification.count({
-      where: {
-        userId: userNotif.userId,
-        isRead: false,
-      },
-    });
-    
-    console.log(`   ${user?.email}: ${userNotif._count.id} total, ${unreadCount} unread`);
-  }
+  console.log("\n📅 RESERVATION STATISTICS:");
+  console.log("=".repeat(50));
+  console.log(`   Approved: ${approvedReservations}`);
+  console.log(`   Pending: ${pendingReservationsCount}`);
+  console.log(`   Declined: ${reservations.filter(r => r.status === "DECLINED").length}`);
+  console.log(`   Paid: ${paidReservations}`);
+  console.log(`   Unpaid: ${reservations.filter(r => r.status === "UNPAID").length}`);
+  
+  // Payment type statistics
+  const subscriptionReservations = reservations.filter(r => r.paymentType === "MONTHLY_SUBSCRIPTION").length;
+  const singleSessionReservations = reservations.filter(r => r.paymentType === "SINGLE_SESSION").length;
+  
+  console.log("\n💵 PAYMENT TYPE BREAKDOWN:");
+  console.log("=".repeat(50));
+  console.log(`   Monthly Subscriptions: ${subscriptionReservations} (${((subscriptionReservations / reservations.length) * 100).toFixed(1)}%)`);
+  console.log(`   Single Sessions: ${singleSessionReservations} (${((singleSessionReservations / reservations.length) * 100).toFixed(1)}%)`);
+  
+  console.log("\n" + "=".repeat(50));
+  console.log("🔑 LOGIN CREDENTIALS:");
+  console.log("=".repeat(50));
+  console.log("   👑 Admin: admin@stadium.com / 123456789");
+  console.log("   🏆 Clubs: club1@stadium.com to club10@stadium.com / 123456789");
+  
+  console.log("\n📱 TESTING TIPS FOR 2025 DATA:");
+  console.log("=".repeat(50));
+  console.log("   1. Filter reservations by year 2025");
+  console.log("   2. View monthly payment reports");
+  console.log("   3. Check subscription statuses");
+  console.log("   4. Test dashboard with real 2025 data");
+  console.log("   5. Verify payment status distributions");
+  console.log("=".repeat(50));
 }
 
 export async function seed() {

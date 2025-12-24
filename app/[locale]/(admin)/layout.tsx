@@ -1,32 +1,39 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { Rubik } from "next/font/google";
 import { Metadata } from "next";
-import { APP_NAME } from "@/lib/const";
+import { APP_NAME, APP_NAMES } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
 import { cn } from "@heroui/theme";
 import Aside from "@/components/dashboard/Aside";
 import Header from "@/components/dashboard/Header";
 import { SidebarProvider } from "@/components/provider/SidebarProvider";
+import { TLocale } from "@/lib/types";
 
-export async function generateMetadata({
+export const generateMetadata = async ({
   params,
 }: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+  params: Promise<{ locale: TLocale }>;
+}): Promise<Metadata> => {
   const { locale } = await params;
-  const messages = await getMessages({ locale });
-  const appName = APP_NAME || "Stades Tan-Tan";
-
+  const t = await getTranslations({
+    locale,
+    namespace: "Pages.Dashboard.Home",
+  });
   return {
-    title: `${messages.HomePage?.headTitle || "Home"} | ${appName}`,
-    description:
-      messages.HomePage?.metaDescription || "Stadium reservation platform",
-    keywords: messages.HomePage?.keywords || "stadium, reservation, booking",
+    title: {
+      template: `%s | ${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
+      default: `${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
+    },
+    description: t("metaDescription") || "Dashboard home page",
   };
-}
+};
 
 const inter = Rubik({
   subsets: ["latin"],
@@ -66,16 +73,9 @@ export default async function LocaleLayout({
             <SidebarProvider>
               <div className="flex min-h-screen z-99999">
                 <Aside />
-                <section
-                  className={cn(
-                    "flex-1 flex flex-col"
-                  )}
-              
-                >
+                <section className={cn("flex-1 flex flex-col")}>
                   <Header />
-                  <main className="flex-1 p-2 md:p-3 z-9999">
-                    {children}
-                  </main>
+                  <main className="flex-1 p-2 md:p-3 z-9999">{children}</main>
                 </section>
               </div>
             </SidebarProvider>
