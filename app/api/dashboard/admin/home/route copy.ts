@@ -6,6 +6,7 @@ import { getLocaleFromNextIntlCookie } from "@/lib/api/locale";
 
 // Helper function to get available years from database
 async function getAvailableYears(): Promise<number[]> {
+  
   try {
     const reservations = await db.reservation.findMany({
       where: { deletedAt: null },

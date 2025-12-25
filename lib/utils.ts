@@ -1,6 +1,3 @@
-import { getSession } from "@/auth";
-import { redirect } from "next/navigation";
-
 export function isError(error: unknown): error is Error {
   return (
     typeof error === "object" &&
@@ -16,4 +13,3 @@ export function isFieldHasError(
   if (!validationErrors) return false;
   return !!validationErrors[field] && validationErrors[field].length > 0;
 }
-

@@ -6,14 +6,14 @@ import db from '@/lib/db';
 export async function GET(
 ) {
   try {
-    const session = await getSession();
-    
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+   const session = await getSession();
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
    
 

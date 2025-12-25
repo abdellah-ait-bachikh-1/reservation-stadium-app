@@ -1,109 +1,74 @@
-// middleware.ts
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import db from "@/lib/db";
+import db from "@/lib/db"; // استيراد Prisma client
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   try {
-    const { nextUrl } = request;
-    const pathname = nextUrl.pathname;
-    
-    // Check if the route is under /dashboard
-    const isDashboardRoute = pathname.includes('/dashboard');
-    
-    // Get token for authentication check
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-    // Protect dashboard routes
-    if (isDashboardRoute) {
-      // If no token, redirect to login
-      if (!token?.sub) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
-      }
-      
-      // Check if user exists and isn't deleted
-      const user = await db.user.findUnique({
-        where: { id: token.sub },
-      });
-     
-      // If user doesn't exist or is deleted, clear session and redirect
-      if (!user || user.deletedAt !== null) {
-        const loginUrl = new URL('/auth/login', request.url);
-        const response = NextResponse.redirect(loginUrl);
-        
-        // Clear the auth cookie
-        const cookieName = process.env.NODE_ENV === 'production' 
-          ? '__Secure-next-auth.session-token' 
-          : 'next-auth.session-token';
-        response.cookies.delete(cookieName);
-        
-        return response;
-      }
-      
-      // Check if user is approved (if needed)
-      if (!user.approved) {
-        // Redirect to pending approval page
-        return NextResponse.redirect(new URL('/auth/pending-approval', request.url));
-      }
-      
-      // Check if email is verified
-      if (!user.emailVerifiedAt) {
-        // Redirect to email verification page
-        return NextResponse.redirect(new URL('/auth/verify-email', request.url));
-      }
-    }
-    
-    // Continue with internationalization middleware
+    // 1. الحصول على اللغة من next-intl
     const intlMiddleware = createMiddleware(routing);
     const response = intlMiddleware(request);
     
-    let currentLocale = "en";
+    // 2. الحصول على اللغة الحالية من URL أو cookies
+    const { nextUrl } = request;
+    const pathname = nextUrl.pathname;
+    
+    let currentLocale = 'ar'; // اللغة الافتراضية
+    
+    // استخراج اللغة من URL (مثل /ar/dashboard أو /en/dashboard)
     const localeMatch = pathname.match(/^\/(ar|en|fr)(\/|$)/);
     if (localeMatch) {
       currentLocale = localeMatch[1];
     } else {
-      const localeCookie = request.cookies.get("NEXT_LOCALE")?.value;
-      if (localeCookie && ["ar", "en", "fr"].includes(localeCookie)) {
+      // أو من cookie الخاص بـ next-intl
+      const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
+      if (localeCookie && ['ar', 'en', 'fr'].includes(localeCookie)) {
         currentLocale = localeCookie;
       }
     }
-
-    // Update user locale if needed (only for authenticated users)
+    
+    // 3. الحصول على token المستخدم من next-auth
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    
+    // 4. إذا كان المستخدم مسجلاً، تحديث preferredLocale إذا اختلفت
     if (token?.sub && currentLocale) {
       try {
+        // الحصول على اللغة الحالية للمستخدم من قاعدة البيانات
         const user = await db.user.findUnique({
           where: { id: token.sub },
-          select: { preferredLocale: true },
+          select: { preferredLocale: true }
         });
-
+        
         const dbLocale = user?.preferredLocale?.toLowerCase();
-
+        
+        // إذا كانت اللغة مختلفة، قم بالتحديث
         if (dbLocale !== currentLocale) {
           console.log(`🔄 Updating user locale: ${dbLocale} → ${currentLocale}`);
-
+          
+          // تحديث preferredLocale في قاعدة البيانات
           await db.user.update({
             where: { id: token.sub },
             data: {
-              preferredLocale: currentLocale.toUpperCase() as any,
+              preferredLocale: currentLocale.toUpperCase() as any, // 'ar' → 'AR'
             },
           });
-
-          console.log(
-            `✅ User ${token.sub} locale updated to ${currentLocale.toUpperCase()}`
-          );
+          
+          console.log(`✅ User ${token.sub} locale updated to ${currentLocale.toUpperCase()}`);
         }
       } catch (dbError) {
-        console.error("❌ Error updating user locale:", dbError);
+        console.error('❌ Error updating user locale:', dbError);
+        // لا توقف التنفيذ إذا فشل تحديث اللغة
       }
     }
-
+    
     return response;
   } catch (error) {
-    console.error("❌ Middleware error:", error);
+    console.error('❌ Middleware error:', error);
+    // استمر حتى إذا حدث خطأ
     return NextResponse.next();
   }
 }

@@ -1,8 +1,19 @@
 import {NextConfig} from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
  
-const nextConfig: NextConfig = {images: {
-    domains: ["images.unsplash.com",'img.freepik.com'], // whitelist external host
+const nextConfig: NextConfig = { images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+        pathname: '/**',
+      }
+    ],
   },};
  
 const withNextIntl = createNextIntlPlugin();

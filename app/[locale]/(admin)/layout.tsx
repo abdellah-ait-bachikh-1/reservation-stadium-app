@@ -1,5 +1,5 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import {
   getMessages,
@@ -57,7 +57,10 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages({ locale });
   const isRTL = locale === "ar";
-  // const user = await isDeletedUser();
+  const user = await isDeletedUser();
+  if (!user) {
+    redirect("/auth/login");
+  }
   return (
     <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body

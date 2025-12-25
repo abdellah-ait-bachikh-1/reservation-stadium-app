@@ -5,13 +5,13 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const session = await getSession();
-    
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
     // قراءة البيانات كـ form-data
     const formData = await request.formData();

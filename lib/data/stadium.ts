@@ -1,4 +1,5 @@
 import db from "@/lib/db";
+import { StadiumWhereInput } from "../generated/prisma/models";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -26,7 +27,7 @@ export async function getStadiums({
     const isArabic = locale === "ar";
 
     // Build where clause
-    const whereClause: any = {
+    const whereClause: StadiumWhereInput = {
       deletedAt: null,
     };
 
@@ -41,10 +42,10 @@ export async function getStadiums({
   if (search && search.trim()) {
   const searchTerm = search.trim();
   whereClause.OR = [
-    { nameFr: { contains: searchTerm, mode: "insensitive" } },
-    { nameAr: { contains: searchTerm, mode: "insensitive" } },
-    { addressFr: { contains: searchTerm, mode: "insensitive" } }, 
-    { addressAr: { contains: searchTerm, mode: "insensitive" } }, 
+    { nameFr: { contains: searchTerm ,} },
+    { nameAr: { contains: searchTerm } },
+    { addressFr: { contains: searchTerm } }, 
+    { addressAr: { contains: searchTerm } }, 
   ];
 }
 

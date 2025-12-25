@@ -17,10 +17,9 @@ export const isDeletedUser = async () => {
   const user = await db.user.findUnique({
     where: { id: session.user.id },
   });
-  console.log(user)
   if (!user || user.deletedAt !== null) {
     await signOutServer();
-    // redirect("/auth/login");
+    redirect("/auth/login");
   }
   return user;
 };
