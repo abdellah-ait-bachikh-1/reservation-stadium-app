@@ -1,12 +1,13 @@
 import { getSession } from '@/auth';
+import { isDeletedUserInApi } from '@/lib/data/auth';
 import { pusherServer } from '@/lib/pusher-server';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const session = await getSession();
+    const user = await isDeletedUserInApi();
 
-  if (!session || !session.user || !session.user.id) {
+  if (!user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     }
 
     // التحقق من أن المستخدم يحاول الاشتراك في قناته الخاصة فقط
-    const userId = session.user.id;
+    const userId = user.id;
     const expectedChannelName = `private-user-${userId}`;
 
     if (channel_name !== expectedChannelName) {
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
       socket_id,
       channel_name,
       userId,
-      userName: session.user.fullNameFr
+      userName: user.fullNameFr
     });
 
     // إنشاء مصادقة Pusher
@@ -62,8 +63,8 @@ export async function POST(request: Request) {
       {
         user_id: userId,
         user_info: {
-          name: session.user.fullNameFr,
-          email: session.user.email,
+          name: user.fullNameFr,
+          email: user.email,
         },
       }
     );

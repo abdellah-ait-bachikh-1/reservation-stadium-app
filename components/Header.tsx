@@ -61,12 +61,14 @@ const Header = () => {
       href: "/dashboard",
       label: tHeader("userMenu.dashboard"),
       icon: <MdDashboard className="w-5 h-5" />,
+      isShow: data?.user.role === "ADMIN",
     },
-    
+
     {
-      href: "/dashboard/profile",
+      href: `/dashboard/profile/${data?.user?.id}`,
       label: tHeader("userMenu.profile"),
       icon: <FaUser className="w-5 h-5" />,
+      isShow: true,
     },
   ];
 
@@ -135,7 +137,7 @@ const Header = () => {
 
             {/* Desktop Right Section */}
             <div className="hidden lg:flex items-center space-x-4">
-              <DesktopAvatar  />
+              <DesktopAvatar />
 
               <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" />
 
@@ -328,32 +330,35 @@ const Header = () => {
                 >
                   {tHeader("labels.myAccount")}
                 </h4>
-                {userNavLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-3 rounded-lg transition-all",
-                      isActive(link.href)
-                        ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    )}
-                    dir={isRTL ? "rtl" : "ltr"}
-                  >
-                    <div
-                      className={cn(
-                        "p-2 rounded-lg",
-                        isActive(link.href)
-                          ? "bg-green-100 dark:bg-green-800/30"
-                          : "bg-gray-100 dark:bg-gray-800"
-                      )}
-                    >
-                      {link.icon}
-                    </div>
-                    <span className="font-medium flex-1">{link.label}</span>
-                  </Link>
-                ))}
+                {userNavLinks.map(
+                  (link) =>
+                    link.isShow && (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-3 rounded-lg transition-all",
+                          isActive(link.href)
+                            ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        )}
+                        dir={isRTL ? "rtl" : "ltr"}
+                      >
+                        <div
+                          className={cn(
+                            "p-2 rounded-lg",
+                            isActive(link.href)
+                              ? "bg-green-100 dark:bg-green-800/30"
+                              : "bg-gray-100 dark:bg-gray-800"
+                          )}
+                        >
+                          {link.icon}
+                        </div>
+                        <span className="font-medium flex-1">{link.label}</span>
+                      </Link>
+                    )
+                )}
               </div>
             )}
 

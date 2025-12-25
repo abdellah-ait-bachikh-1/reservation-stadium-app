@@ -20,7 +20,12 @@ export const authConfig: AuthOptions = {
           },
         });
         console.log({ user });
-        if (!user || user?.deletedAt !== null) {
+        if (
+          !user ||
+          user?.deletedAt !== null ||
+          !user.approved ||
+          !user.emailVerifiedAt
+        ) {
           return null;
         }
         const validPassword = await compare(

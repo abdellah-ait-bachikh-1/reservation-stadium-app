@@ -1,50 +1,26 @@
 // app/api/users/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/auth';
-import db from '@/lib/db';
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/auth";
+import db from "@/lib/db";
+import { isDeletedUserInApi } from "@/lib/data/auth";
 
-export async function GET(
-) {
+export async function GET() {
   try {
-   const session = await getSession();
-
-  if (!session || !session.user || !session.user.id) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-   
-
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        fullNameFr: true,
-        fullNameAr: true,
-        email: true,
-        role: true,
-        approved: true,
-        phoneNumber: true,
-        preferredLocale: true,
-        emailVerifiedAt: true,
-        club: true,
-      }
-    });
+    const user = await isDeletedUserInApi();
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
+
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error("Error fetching user:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

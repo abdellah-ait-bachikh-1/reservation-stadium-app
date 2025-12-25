@@ -24,28 +24,28 @@ import LogoutButton from "../LogoutButton";
 import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
 
 type AsideProps = {
-    id: string;
-    email: string;
-    fullNameFr: string;
-    fullNameAr: string;
-    approved: boolean;
-    role: UserRole;
-    phoneNumber: string;
-    emailVerifiedAt: Date | null;
-    preferredLocale: UserLocale;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}
+  id: string;
+  email: string;
+  fullNameFr: string;
+  fullNameAr: string;
+  approved: boolean;
+  role: UserRole;
+  phoneNumber: string;
+  emailVerifiedAt: Date | null;
+  preferredLocale: UserLocale;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+};
 
-const Aside = ({user}:{user:AsideProps}) => {
+const Aside = ({ user }: { user: AsideProps }) => {
   const { isOpen, closeSidebar } = useSidebar();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
   const t = useTranslations("Components.Dashboard.Sidebar");
   const router = useRouter();
   const pathname = usePathname();
- const {role} = user
+  const { role } = user;
   // تحديد إذا كانت اللغة العربية
   const isRTL = locale === "ar";
 
@@ -229,41 +229,42 @@ const Aside = ({user}:{user:AsideProps}) => {
             <nav className="space-y-1">
               {navItems.map((item) => {
                 const isActive = isActiveLink(item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={closeSidebar}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
-                      isActive
-                        ? "bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <item.icon
-                      className={`w-5 h-5 flex-shrink-0 ${
+                if (item.show) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeSidebar}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "text-amber-600 dark:text-amber-400"
-                          : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
-                      }`}
-                    />
-                    <span
-                      className={`font-medium ${
-                        isRTL ? "text-right flex-1" : "text-left flex-1"
+                          ? "bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-400"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:text-gray-900 dark:hover:text-white"
                       }`}
                     >
-                      {item.label}
-                    </span>
-                    {isActive && (
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ${
-                          isRTL ? "mr-auto" : "ml-auto"
+                      <item.icon
+                        className={`w-5 h-5 flex-shrink-0 ${
+                          isActive
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                         }`}
                       />
-                    )}
-                  </Link>
-                );
+                      <span
+                        className={`font-medium ${
+                          isRTL ? "text-right flex-1" : "text-left flex-1"
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                      {isActive && (
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 ${
+                            isRTL ? "mr-auto" : "ml-auto"
+                          }`}
+                        />
+                      )}
+                    </Link>
+                  );
+                }
               })}
             </nav>
           </div>

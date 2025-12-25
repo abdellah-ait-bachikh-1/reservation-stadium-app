@@ -9,20 +9,20 @@ import NotificationBell from "./NotificationBell";
 import DesktopAvatar from "../DesktopAvatar";
 import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
 type HeaderProps = {
-    id: string;
-    email: string;
-    fullNameFr: string;
-    fullNameAr: string;
-    approved: boolean;
-    role: UserRole;
-    phoneNumber: string;
-    emailVerifiedAt: Date | null;
-    preferredLocale: UserLocale;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}
-const Header = ({user}:{user:HeaderProps}) => {
+  id: string;
+  email: string;
+  fullNameFr: string;
+  fullNameAr: string;
+  approved: boolean;
+  role: UserRole;
+  phoneNumber: string;
+  emailVerifiedAt: Date | null;
+  preferredLocale: UserLocale;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+};
+const Header = ({ user }: { user: HeaderProps }) => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -42,7 +42,7 @@ const Header = ({user}:{user:HeaderProps}) => {
         <NotificationBell /> {/* Add NotificationBell here */}
         <ThemeSwitcher dropDownClassNames="bg-white dark:bg-slate-900" />
         <LanguageSwitcher dropDownClassNames="bg-white dark:bg-slate-900" />
-        <DesktopAvatar  dropDownClassNames="bg-white dark:bg-slate-900" />
+        <DesktopAvatar dropDownClassNames="bg-white dark:bg-slate-900" />
       </div>
     </header>
   );
