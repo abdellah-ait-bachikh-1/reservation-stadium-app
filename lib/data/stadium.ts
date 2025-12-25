@@ -42,7 +42,7 @@ export async function getStadiums({
   if (search && search.trim()) {
   const searchTerm = search.trim();
   whereClause.OR = [
-    { nameFr: { contains: searchTerm ,} },
+    { nameFr: { contains: searchTerm } },
     { nameAr: { contains: searchTerm } },
     { addressFr: { contains: searchTerm } }, 
     { addressAr: { contains: searchTerm } }, 
