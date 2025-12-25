@@ -76,9 +76,9 @@ export default async function LocaleLayout({
           <Providers locale={locale} className="relative h-full w-full">
             <SidebarProvider>
               <div className="flex min-h-screen z-99999">
-                <Aside />
+                <Aside user={user}/>
                 <section className={cn("flex-1 flex flex-col")}>
-                  <Header />
+                  <Header user={user} />
                   <main className="flex-1 p-2 md:p-3 z-9999">{children}</main>
                 </section>
               </div>

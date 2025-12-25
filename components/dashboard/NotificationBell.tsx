@@ -28,7 +28,8 @@ interface NotificationItem {
 }
 
 // دالة مساعدة لإنشاء ID فريد
-const generateId = () => `pusher-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateId = () =>
+  `pusher-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,19 +37,23 @@ const NotificationBell = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(false); // لتتبع التحميل الأولي
   const [error, setError] = useState<string | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<"connecting" | "connected" | "disconnected">("connecting");
-  
+  const [connectionStatus, setConnectionStatus] = useState<
+    "connecting" | "connected" | "disconnected"
+  >("connecting");
+
   // في NotificationBell.tsx بعد useState مباشرة
   const safeTranslate = (key: string, fallback: string) => {
     try {
       const translation = t(key);
       return translation;
     } catch (error) {
-      console.warn(`Translation missing for key: ${key}, using fallback: ${fallback}`);
+      console.warn(
+        `Translation missing for key: ${key}, using fallback: ${fallback}`
+      );
       return fallback;
     }
   };
-  
+
   const t = useTranslations("Components.Dashboard.Notifications");
   const { data: session } = useSession();
 
@@ -127,7 +132,9 @@ const NotificationBell = () => {
       // احصل على اللغة الحالية
       const locale = document.documentElement.lang || "en";
 
-      const response = await fetch(`/api/notifications?locale=${locale}`);
+      const response = await fetch(
+        `/api/dashboard/notifications?locale=${locale}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch notifications");
@@ -148,19 +155,19 @@ const NotificationBell = () => {
   // دالة معالجة الإشعار الجديد من Pusher
   const handleNewNotification = useCallback((notificationData: any) => {
     console.log("📩 Processing new push notification:", notificationData);
-  
+
     // الحصول على اللغة الحالية من المتصفح أو استخدام اللغة من البيانات
     let currentLocale = document.documentElement.lang || "ar";
-    
+
     // إذا كانت البيانات تحتوي على لغة المستلم، استخدمها
     if (notificationData.data?.receiverLocale) {
       currentLocale = notificationData.data.receiverLocale;
     }
-    
+
     // استخدام الترجمات المرسلة أو الترجمة المناسبة
     let title = notificationData.title;
     let message = notificationData.message;
-    
+
     if (notificationData.data?.translations) {
       switch (currentLocale) {
         case "fr":
@@ -176,7 +183,7 @@ const NotificationBell = () => {
           message = notificationData.data.translations.messageEn || message;
       }
     }
-    
+
     const newNotification: NotificationItem = {
       id: notificationData.id || generateId(),
       type: notificationData.type.toLowerCase() as NotificationItem["type"],
@@ -186,7 +193,8 @@ const NotificationBell = () => {
       read: false,
       metadata: notificationData.data || notificationData.metadata,
       actorName: notificationData.data?.actorName || notificationData.actorName,
-      actorEmail: notificationData.data?.actorEmail || notificationData.actorEmail,
+      actorEmail:
+        notificationData.data?.actorEmail || notificationData.actorEmail,
       createdAt: new Date(notificationData.createdAt || new Date()),
     };
 
@@ -301,8 +309,9 @@ const NotificationBell = () => {
     ) {
       return timeString;
     }
-    
-    const timeAgoPattern = /(\d+)\s+(minute?|hour?|day?|week?|month?)\w*\s+ago/i;
+
+    const timeAgoPattern =
+      /(\d+)\s+(minute?|hour?|day?|week?|month?)\w*\s+ago/i;
     const match = timeString.match(timeAgoPattern);
 
     if (match) {
@@ -338,35 +347,37 @@ const NotificationBell = () => {
   const getTranslatedType = (type: string) => {
     // تحويل الأنواع من Pusher إلى أسماء بسيطة
     const typeMapping: Record<string, string> = {
-      'reservation_requested': 'reservation',
-      'reservation_approved': 'reservation',
-      'reservation_declined': 'reservation',
-      'reservation_cancelled': 'reservation',
-      'payment_received': 'payment',
-      'payment_overdue': 'payment',
-      'payment_failed': 'payment',
-      'account_approved': 'account',
-      'account_rejected': 'account',
-      'account_created': 'account',
-      'club_registration_submitted': 'club',
-      'club_registration_approved': 'club',
-      'club_registration_rejected': 'club',
-      'system_maintenance': 'system',
-      'system_update': 'system',
-      'new_feature': 'system',
-      'announcement': 'system',
-      'email_sent': 'email',
-      'email_verified': 'email',
-      'welcome_email': 'email',
+      reservation_requested: "reservation",
+      reservation_approved: "reservation",
+      reservation_declined: "reservation",
+      reservation_cancelled: "reservation",
+      payment_received: "payment",
+      payment_overdue: "payment",
+      payment_failed: "payment",
+      account_approved: "account",
+      account_rejected: "account",
+      account_created: "account",
+      club_registration_submitted: "club",
+      club_registration_approved: "club",
+      club_registration_rejected: "club",
+      system_maintenance: "system",
+      system_update: "system",
+      new_feature: "system",
+      announcement: "system",
+      email_sent: "email",
+      email_verified: "email",
+      welcome_email: "email",
     };
-    
+
     const simpleType = typeMapping[type] || type;
-    
+
     try {
       const translation = t(`types.${simpleType}`);
       return translation || simpleType;
     } catch (error) {
-      console.warn(`Translation not found for type: ${type} (mapped to: ${simpleType})`);
+      console.warn(
+        `Translation not found for type: ${type} (mapped to: ${simpleType})`
+      );
       return simpleType;
     }
   };
@@ -586,7 +597,11 @@ const NotificationBell = () => {
                           notification.read
                             ? ""
                             : "bg-blue-50/50 dark:bg-blue-900/10"
-                        } ${notification.id.startsWith("pusher-") ? "border-l-4 border-l-blue-500" : ""}`}
+                        } ${
+                          notification.id.startsWith("pusher-")
+                            ? "border-l-4 border-l-blue-500"
+                            : ""
+                        }`}
                         onClick={() => markAsRead(notification.id)}
                       >
                         <div className="flex gap-3">

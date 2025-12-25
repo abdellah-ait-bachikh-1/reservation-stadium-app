@@ -21,15 +21,31 @@ import { signOut } from "next-auth/react";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import LogoutButton from "../LogoutButton";
+import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
 
-const Aside = () => {
+type AsideProps = {
+    id: string;
+    email: string;
+    fullNameFr: string;
+    fullNameAr: string;
+    approved: boolean;
+    role: UserRole;
+    phoneNumber: string;
+    emailVerifiedAt: Date | null;
+    preferredLocale: UserLocale;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+}
+
+const Aside = ({user}:{user:AsideProps}) => {
   const { isOpen, closeSidebar } = useSidebar();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
   const t = useTranslations("Components.Dashboard.Sidebar");
   const router = useRouter();
   const pathname = usePathname();
-
+ const {role} = user
   // تحديد إذا كانت اللغة العربية
   const isRTL = locale === "ar";
 
@@ -103,7 +119,7 @@ const Aside = () => {
         href: "/dashboard",
         label: t("home"),
         icon: HiHome,
-        show: true,
+        show: role === "ADMIN",
       },
       {
         href: "/dashboard/reservations",
@@ -121,7 +137,7 @@ const Aside = () => {
         href: "/dashboard/stadiums",
         label: t("stadiums"),
         icon: HiAdjustments,
-        show: true,
+        show: role === "ADMIN",
       },
       {
         href: "/dashboard/payments",
@@ -133,7 +149,7 @@ const Aside = () => {
         href: "/dashboard/users",
         label: t("users"),
         icon: HiUsers,
-        show: true,
+        show: role === "ADMIN",
       },
     ];
 

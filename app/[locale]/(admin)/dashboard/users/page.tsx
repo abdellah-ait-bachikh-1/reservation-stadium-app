@@ -1,9 +1,8 @@
 import { APP_NAMES } from "@/lib/const";
-import { isDeletedUser } from "@/lib/data/auth";
+import { isAdminUser, isDeletedUser } from "@/lib/data/auth";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { redirect } from "next/navigation";
 
 export const generateMetadata = async ({
   params,
@@ -22,10 +21,8 @@ export const generateMetadata = async ({
 };
 
 const DashboardUsersPage = async () => {
-   const user = await isDeletedUser();
-    if (!user) {
-      redirect("/auth/login");
-    }
+  const user = await isAdminUser();
+
   return <div>DashboardUsersPage</div>;
 };
 

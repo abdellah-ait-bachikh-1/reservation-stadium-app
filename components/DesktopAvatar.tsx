@@ -20,9 +20,11 @@ import { Activity } from "react";
 import { motion } from "framer-motion";
 import { useViewportSpace } from "@/hooks/useViewportSpace";
 import { createPortal } from "react-dom";
+import { UserRole } from "@/lib/generated/prisma/enums";
 
 const DesktopAvatar = ({
   dropDownClassNames = "bg-amber-50 dark:bg-slate-900",
+
 }: {
   dropDownClassNames?: string;
 }) => {
@@ -129,7 +131,6 @@ const DesktopAvatar = ({
       </div>
     );
   }
-
   const userMenuItems = [
     {
       id: "profile",
@@ -139,6 +140,7 @@ const DesktopAvatar = ({
       color: "text-blue-600",
       bgColor: "hover:bg-blue-50 dark:hover:bg-blue-900/20",
       activeBgColor: "bg-blue-100 dark:bg-blue-900/30",
+      show: true,
     },
     {
       id: "dashboard",
@@ -148,6 +150,7 @@ const DesktopAvatar = ({
       color: "text-green-600",
       bgColor: "hover:bg-green-50 dark:hover:bg-green-900/20",
       activeBgColor: "bg-green-100 dark:bg-green-900/30",
+      show: data.user.role == "ADMIN",
     },
 
     {
@@ -158,6 +161,7 @@ const DesktopAvatar = ({
       bgColor: "hover:bg-red-50 dark:hover:bg-red-900/20",
       activeBgColor: "bg-red-100 dark:bg-red-900/30",
       isAction: true,
+      show: true,
       action: () => setShowLogoutModal(true),
     },
   ];
@@ -297,43 +301,43 @@ const DesktopAvatar = ({
               {/* Menu Items */}
               {userMenuItems.map((item) => {
                 const Icon = item.icon;
-
-                if (item.isAction) {
+                if (item.show) {
+                  if (item.isAction) {
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          item.action?.();
+                        }}
+                        className={`p-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 ${item.bgColor}`}
+                      >
+                        <div className={`p-2 rounded-lg ${item.activeBgColor}`}>
+                          <Icon className={`w-4 h-4 ${item.color}`} />
+                        </div>
+                        <span
+                          className={`font-medium flex-1 text-left rtl:text-right ${item.color}`}
+                        >
+                          {item.label}
+                        </span>
+                      </button>
+                    );
+                  }
                   return (
-                    <button
+                    <Link
                       key={item.id}
-                      onClick={() => {
-                        item.action?.();
-                      }}
+                      href={item.href!}
+                      onClick={() => setIsOpen(false)}
                       className={`p-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 ${item.bgColor}`}
                     >
                       <div className={`p-2 rounded-lg ${item.activeBgColor}`}>
                         <Icon className={`w-4 h-4 ${item.color}`} />
                       </div>
-                      <span
-                        className={`font-medium flex-1 text-left rtl:text-right ${item.color}`}
-                      >
+                      <span className="font-medium flex-1 text-left rtl:text-right text-gray-700 dark:text-gray-300">
                         {item.label}
                       </span>
-                    </button>
+                    </Link>
                   );
                 }
-
-                return (
-                  <Link
-                    key={item.id}
-                    href={item.href!}
-                    onClick={() => setIsOpen(false)}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 ${item.bgColor}`}
-                  >
-                    <div className={`p-2 rounded-lg ${item.activeBgColor}`}>
-                      <Icon className={`w-4 h-4 ${item.color}`} />
-                    </div>
-                    <span className="font-medium flex-1 text-left rtl:text-right text-gray-700 dark:text-gray-300">
-                      {item.label}
-                    </span>
-                  </Link>
-                );
               })}
             </motion.div>
           )}
