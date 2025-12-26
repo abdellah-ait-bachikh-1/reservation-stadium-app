@@ -3,10 +3,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import TextType from "@/components/ui/TextType";
 import { button, cn } from "@heroui/theme";
 import { Link } from "@/i18n/navigation";
-import Team from "@/components/Team";
 import { APP_NAMES } from "@/lib/const";
+import {
+  getAuthenticatedUserFromSession,
+  isExistsAuthenticatedUser,
+} from "@/lib/data/auth";
+import { getSession } from "@/auth";
+import { getServerSession } from "next-auth";
+import HeroButton from "@/components/HeroButton";
 import { TLocale } from "@/lib/types";
-import db from "@/lib/db";
 
 // Move feature cards outside the component to avoid recreation on every render
 const FEATURE_ICONS = ["⚡", "🎯", "🛡️"];
@@ -18,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const appName = APP_NAMES[locale as "ar" | "fr" | "en"];
- 
+
   const tPages = await getTranslations({ locale, namespace: "Pages" });
   const tSchema = await getTranslations({ locale, namespace: "Schema" });
 
@@ -81,7 +86,6 @@ export async function generateMetadata({
   };
 
   return {
-   
     description: homePageMeta.metaDescription,
     keywords: homePageMeta.keywords,
 
@@ -157,15 +161,11 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  // await new Promise(res=>setTimeout(res,5000))
-
   // Fetch all translations at once to minimize requests
   const t = await getTranslations();
 
   // Use proper namespace structure
   const pageT = (key: string) => t(`Pages.Home.${key}`);
-  const commonT = (key: string) => t(`Common.${key}`);
-
   // Feature cards data with translations
   const features = [
     {
@@ -202,45 +202,11 @@ export default async function HomePage({
           pauseDuration={8000}
           showCursor={true}
           cursorCharacter="|"
-          className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto min-h-[3.5rem]"
+          className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto min-h-14"
         />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            color="primary"
-            className={cn(
-              button({
-                variant: "shadow",
-                size: "lg",
-                color: "default",
-                radius: "lg",
-              }),
-              "px-8 py-6 text-lg font-semibold hover:scale-105 transition-transform duration-200"
-            )}
-            href="/auth/login"
-            hrefLang={locale}
-            prefetch={true}
-          >
-            {t("Components.Header.labels.signIn")}
-          </Link>
-
-          <Link
-            color="primary"
-            className={cn(
-              button({
-                variant: "flat",
-                size: "lg",
-                color: "warning",
-                radius: "lg",
-              }),
-              "px-8 py-6 text-lg font-semibold hover:scale-105 transition-transform duration-200"
-            )}
-            href="/auth/register"
-            hrefLang={locale}
-            prefetch={true}
-          >
-            {t("Components.Header.labels.register")}
-          </Link>
+         <HeroButton locale={locale as TLocale}/>
         </div>
       </div>
 

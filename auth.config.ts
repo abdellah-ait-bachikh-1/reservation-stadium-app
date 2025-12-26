@@ -19,7 +19,6 @@ export const authConfig: AuthOptions = {
             email: credentials.email,
           },
         });
-        console.log({ user });
         if (
           !user ||
           user?.deletedAt !== null ||

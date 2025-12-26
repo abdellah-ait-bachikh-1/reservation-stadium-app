@@ -123,15 +123,15 @@
     "Login": {
       "headTitle": "Login",
       "pageTitle": "Login - Tan-Tan (For sports clubs and teams)",
-      "description": "Enter your credentials to sign in. For sports clubs and teams.",
-      "keywords": "Tan-Tan login, sign in Morocco, sports events Tan-Tan, for sports clubs and teams",
+      "description": "Enter your credentials to Login. For sports clubs and teams.",
+      "keywords": "Tan-Tan login, Login Morocco, sports events Tan-Tan, for sports clubs and teams",
       "metaDescription": "Access your account to manage your stadium bookings in Tan-Tan, Morocco. For sports clubs and teams.",
-      "heading": "Sign In",
+      "heading": "Login",
       "email": "Email",
       "password": "Password",
       "remember": "Remember me",
       "forgot": "Forgot password?",
-      "signIn": "Sign In",
+      "signIn": "Login",
       "noAccount": "Don't have an account?",
       "register": "Register"
     },
@@ -152,7 +152,7 @@
       "forgot": "Forgot password?",
       "register": "Register",
       "loginPrompt": "Already have an account?",
-      "signIn": "Sign in",
+      "signIn": "Login",
       "registrationFailed": "Registration Failed",
       "unknownError": "An unknown error occurred",
       "networkError": "Network error. Please check your connection"
@@ -167,7 +167,7 @@
       "email": "Email",
       "resetButton": "Reset Password",
       "rememberPassword": "Remember your password?",
-      "signIn": "Sign in",
+      "signIn": "Login",
       "noAccount": "Don't have an account?",
       "createAccount": "Create account"
     },
@@ -461,7 +461,7 @@
       },
       "labels": {
         "welcomeGuest": "Welcome Guest",
-        "signInToAccess": "Sign in to access your dashboard",
+        "signInToAccess": "Login to access your dashboard",
         "sportsClubManager": "Sports Club Manager",
         "admin": "Admin",
         "mainNavigation": "Main Navigation",
@@ -469,8 +469,9 @@
         "appSettings": "App Settings",
         "theme": "Theme",
         "language": "Language",
-        "signIn": "Sign In",
-        "register": "Register"
+        "signIn": "Login",
+        "register": "Register",
+        "dashboard": "Go to Dashboard"
       },
       "logoutModal": {
         "title": "Confirm Logout",

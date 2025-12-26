@@ -469,7 +469,8 @@
         "theme": "Thème",
         "language": "Langue",
         "signIn": "Se Connecter",
-        "register": "S'inscrire"
+        "register": "S'inscrire",        "dashboard": "Accéder au Tableau de Bord"
+
       },
       "logoutModal": {
         "title": "Confirmer la déconnexion",

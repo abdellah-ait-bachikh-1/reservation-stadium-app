@@ -2,8 +2,48 @@ import { getSession } from "@/auth";
 import { redirect } from "next/navigation";
 import db from "../db";
 
+export const getAuthenticatedUserFromSession = async () => {
+  console.log("Getting session...");
+  const session = await getSession();
+  console.log("Session result:", session);
+
+  // Also check if we're in the right environment
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+
+  if (!session || !session.user) {
+    console.log("No session or user found");
+    return null;
+  }
+
+  console.log("Session user ID:", session.user.id);
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      id: true,
+      fullNameAr: true,
+      fullNameFr: true,
+      approved: true,
+      email: true,
+      role: true,
+      preferredLocale: true,
+      emailVerifiedAt: true,
+      deletedAt: true,
+    },
+  });
+  if (
+    !user ||
+    user.deletedAt !== null ||
+    !user.approved ||
+    !user.emailVerifiedAt
+  ) {
+    return null;
+  }
+  return user;
+};
+
 export const isAuthenticated = async () => {
   const session = await getSession();
+  console.log("Session in isAuthenticated:", session);
   if (!session || !session.user) {
     redirect("/auth/login");
   }
@@ -45,7 +85,7 @@ export const isExistsAuthenticatedUser = async () => {
 
 export const isAdminUser = async () => {
   const user = await isExistsAuthenticatedUser();
-
+  console.log(user);
   if (!user || user.role !== "ADMIN") {
     redirect(
       `/${user?.preferredLocale.toLocaleLowerCase()}/dashboard/profile/${

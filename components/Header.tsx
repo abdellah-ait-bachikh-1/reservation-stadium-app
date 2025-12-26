@@ -41,12 +41,10 @@ const Header = () => {
   const pathname = usePathname();
   const locale = useLocale();
   const { data } = useSession();
-  console.log({ data });
   // Use only Header translations
   const tHeader = useTranslations("Components.Header");
   const tCommon = useTranslations("Common");
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isRTL = locale === "ar";
 
   const mainNavLinks = [
