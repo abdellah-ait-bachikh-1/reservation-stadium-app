@@ -33,7 +33,7 @@ const DashboardProfilePage = async () => {
   if (!user) {
     redirect("/auth/login");
   }
-  
+
   const t = await getTranslations("Pages.Dashboard.Profile");
 
   return (
@@ -66,7 +66,7 @@ const DashboardProfilePage = async () => {
               <SportsInfo />
             </CardBody>
           </Card>
-          
+
           {/* Active Subscriptions */}
           <Card className="shadow-lg bg-white dark:bg-gray-950 rounded-xl border border-slate-200 dark:border-slate-700">
             <CardHeader className="pb-0 pt-6 px-6">

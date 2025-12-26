@@ -49,7 +49,8 @@
       },
       "Profile": {
         "headTitle": "الملف الشخصي",
-        "metaDescription": "عرض وإدارة ملفك الشخصي",  "pageTitle": "الملف الشخصي والإعدادات",
+        "metaDescription": "عرض وإدارة ملفك الشخصي",
+        "pageTitle": "الملف الشخصي والإعدادات",
         "pageDescription": "إدارة معلومات حسابك، التفضيلات، وعرض نشاطك",
         "sportsInfo": {
           "title": "معلومات الرياضة",
@@ -62,6 +63,41 @@
         "reservations": {
           "title": "الحجوزات الحديثة",
           "description": "أحدث حجوزاتك للملعب"
+        },
+        "SettingsTabs": {
+          "ariaLabel": "خيارات الإعدادات",
+          "tabs": {
+            "profile": "الملف الشخصي",
+            "password": "كلمة المرور",
+            "club": "المعلومات"
+          },  "profileInfo": {
+            "fullNameFr": "الاسم الكامل (فرنسي)",
+            "fullNameAr": "الاسم الكامل (عربي)",
+            "email": "البريد الإلكتروني",
+            "phoneNumber": "رقم الهاتف",
+            "preferredLocale": "اللغة المفضلة",
+            "saveChanges": "حفظ التغييرات",
+            "cancel": "إلغاء",
+            "editProfile": "تعديل الملف الشخصي",
+            "accountInformation": "معلومات الحساب",
+            "role": "الدور",
+            "accountStatus": "حالة الحساب",
+            "approved": "موافق عليه",
+            "pending": "قيد الانتظار",
+            "emailVerified": "تم التحقق من البريد الإلكتروني",
+            "yes": "نعم",
+            "no": "لا",
+            "memberSince": "عضو منذ",
+            "clubNameFr": "اسم النادي (فرنسي)",
+            "clubNameAr": "اسم النادي (عربي)",
+            "loading": "جار التحميل...",
+            "signInPrompt": "يرجى تسجيل الدخول لعرض ملفك الشخصي.",
+            "language": {
+              "en": "الإنجليزية",
+              "fr": "الفرنسية",
+              "ar": "العربية"
+            }
+          }
         }
       }
     },

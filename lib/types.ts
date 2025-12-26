@@ -20,15 +20,34 @@ export type ValidateRegisterCredentialsResult =
     }
   | { data: RegisterCredentials; validationErrors: null };
 
-
-  //------------login
+//------------login
 export type LoginCredentials = Pick<RegisterCredentials, "email" | "password">;
 export type ValidateLoginCredentialsErrorResult = Pick<
   ValidateRegisterCredentialsErrorResult,
   "email" | "password"
 >;
-export type ValidateLoginCredentialsResult =  | {
+export type ValidateLoginCredentialsResult =
+  | {
       data: null;
       validationErrors: ValidateLoginCredentialsErrorResult;
     }
   | { data: LoginCredentials; validationErrors: null };
+
+export type UserProfileCredentials = {
+  fullNameAr: string;
+  fullNameFr: string;
+  email: string;
+  phoneNumber: string;
+  preferredLocale: TLocale;
+};
+
+export type ValidateUserProfileCredentialsErrorResult = Partial<
+  Record<keyof UserProfileCredentials, string[]>
+>;
+
+export type ValidateUserProfileCredentialsResult =
+  | {
+      data: null;
+      validationErrors: ValidateUserProfileCredentialsErrorResult;
+    }
+  | { data: UserProfileCredentials; validationErrors: null };

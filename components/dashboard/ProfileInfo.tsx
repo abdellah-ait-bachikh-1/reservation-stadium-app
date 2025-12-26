@@ -1,112 +1,244 @@
 // components/dashboard/ProfileInfo.tsx
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
+import { Skeleton } from "@heroui/skeleton";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  UserProfileCredentials,
+  TLocale,
+  ValidateUserProfileCredentialsErrorResult,
+} from "@/lib/types";
+import { validateUserProfileCredentials } from "@/lib/validation/profile";
+import { isFieldHasError } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
-interface FormErrors {
-  [key: string]: string[];
-}
-
-interface ProfileFormData {
+interface ApiUser {
   fullNameFr: string;
   fullNameAr: string;
   email: string;
   phoneNumber: string;
-  preferredLocale: "EN" | "FR" | "AR";
+  preferredLocale: TLocale;
+  id: string;
+  role: string;
+  club: {
+    id: string;
+    nameAr: string;
+    nameFr: string;
+  } | null;
+  approved: boolean;
+  emailVerifiedAt: string | null;
+  createdAt: string;
 }
 
 export default function ProfileInfo() {
+  const locale = useLocale() as TLocale;
+  const t = useTranslations("Pages.Dashboard.Profile.SettingsTabs.profileInfo");
+
+  const { data: session, status } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<ProfileFormData>({
-    fullNameFr: "Admin Stadium",
-    fullNameAr: "مدير النظام",
-    email: "admin@stadium.com",
-    phoneNumber: "0612345678",
-    preferredLocale: "EN",
+  const [isFetching, setIsFetching] = useState(true);
+  const [userData, setUserData] = useState<ApiUser | null>(null);
+
+  // Form data state
+  const [formData, setFormData] = useState<UserProfileCredentials>({
+    fullNameFr: "",
+    fullNameAr: "",
+    email: "",
+    phoneNumber: "",
+    preferredLocale: locale || "en",
   });
-  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (field: keyof ProfileFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
+  // Validation errors state
+  const [validationErrors, setValidationErrors] =
+    useState<ValidateUserProfileCredentialsErrorResult | null>(null);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchUserData();
+    }
+  }, [status]);
+
+  const fetchUserData = async () => {
+    try {
+      setIsFetching(true);
+      const response = await fetch("/api/users/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      if (response.ok) {
+        const user: ApiUser = await response.json();
+        setUserData(user);
+
+        // Populate form data with user data
+        setFormData({
+          fullNameFr: user.fullNameFr || "",
+          fullNameAr: user.fullNameAr || "",
+          email: user.email || "",
+          phoneNumber: user.phoneNumber || "",
+          preferredLocale: user.preferredLocale.toLowerCase() as TLocale,
+        });
+      } else {
+        console.error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
-  const isFieldHasError = (field: string): boolean => {
-    return !!errors[field] && errors[field].length > 0;
+  // Handle input changes with real-time validation
+  const handleChange = (field: keyof UserProfileCredentials, value: string) => {
+    const updatedFormData = { ...formData, [field]: value };
+    setFormData(updatedFormData);
+
+    // Run validation on this field
+    const { validationErrors: newErrors } = validateUserProfileCredentials(
+      locale,
+      updatedFormData
+    );
+
+    // Update validation errors
+    setValidationErrors((prev) => {
+      const merged = prev ? { ...prev } : {};
+
+      if (!newErrors) {
+        delete merged[field];
+        return Object.keys(merged).length > 0 ? merged : null;
+      }
+
+      if (newErrors[field] && newErrors[field].length > 0) {
+        merged[field] = newErrors[field];
+      } else {
+        delete merged[field];
+      }
+
+      Object.keys(newErrors).forEach((key) => {
+        if (key !== field) {
+          merged[key as keyof ValidateUserProfileCredentialsErrorResult] =
+            newErrors[key as keyof ValidateUserProfileCredentialsErrorResult] ??
+            [];
+        }
+      });
+
+      return Object.keys(merged).length > 0 ? merged : null;
+    });
   };
 
-  const renderErrorMessages = (field: string) => {
-    if (!errors[field] || errors[field].length === 0) return null;
-    
-    return errors[field].map((error, index) => (
-      <p key={index} className="text-red-600 dark:text-red-400 text-sm mt-1">
-        - {error}
-      </p>
-    ));
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.fullNameFr.trim() || formData.fullNameFr.length < 2) {
-      newErrors.fullNameFr = ["French name must be at least 2 characters"];
-    }
-
-    if (!formData.fullNameAr.trim() || formData.fullNameAr.length < 2) {
-      newErrors.fullNameAr = ["Arabic name must be at least 2 characters"];
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
-      newErrors.email = ["Please enter a valid email address"];
-    }
-
-    const phoneRegex = /^[0-9]{10,}$/;
-    if (!formData.phoneNumber.trim() || !phoneRegex.test(formData.phoneNumber.replace(/\D/g, ''))) {
-      newErrors.phoneNumber = ["Phone number must be at least 10 digits"];
-    }
-
-    if (!["EN", "FR", "AR"].includes(formData.preferredLocale)) {
-      newErrors.preferredLocale = ["Please select a valid language"];
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      console.log("Validation failed:", errors);
+
+    // Final validation
+    const { validationErrors: finalErrors } = validateUserProfileCredentials(
+      locale,
+      formData
+    );
+
+    if (finalErrors) {
+      setValidationErrors(finalErrors);
+      console.log("Validation failed:", finalErrors);
       return;
     }
 
     setIsLoading(true);
     try {
-      console.log("Updating profile with data:", formData);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      console.log("Profile updated successfully");
-      setIsEditing(false);
+      console.log("Submitting profile data:", formData);
+
+      // Update API call
+      const response = await fetch("/api/users/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUserData(updatedUser);
+        console.log("Profile updated successfully");
+        setIsEditing(false);
+        setValidationErrors(null);
+
+        // Refresh session if needed
+        // await updateSession();
+      } else {
+        const error = await response.json();
+        console.error("Failed to update profile:", error);
+        // Handle API errors here
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setValidationErrors(null);
+
+    // Reset form to original user data
+    if (userData) {
+      setFormData({
+        fullNameFr: userData.fullNameFr || "",
+        fullNameAr: userData.fullNameAr || "",
+        email: userData.email || "",
+        phoneNumber: userData.phoneNumber || "",
+        preferredLocale: userData.preferredLocale || locale || "en",
+      });
+    }
+  };
+
+  // Loading skeleton
+  if (isFetching) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="h-14 rounded-lg" />
+          <Skeleton className="h-14 rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="h-14 rounded-lg" />
+          <Skeleton className="h-14 rounded-lg" />
+        </div>
+        <Skeleton className="h-14 rounded-lg" />
+        <div className="flex justify-end gap-3 pt-4">
+          <Skeleton className="h-10 w-24 rounded-lg" />
+        </div>
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <Skeleton className="h-6 w-48 mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Skeleton className="h-16 rounded-lg" />
+            <Skeleton className="h-16 rounded-lg" />
+            <Skeleton className="h-16 rounded-lg" />
+            <Skeleton className="h-16 rounded-lg" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated
+  if (status === "unauthenticated") {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-600 dark:text-gray-400">
+          Please sign in to view your profile.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -118,18 +250,36 @@ export default function ProfileInfo() {
             onValueChange={(value) => handleChange("fullNameFr", value)}
             variant="bordered"
             isDisabled={!isEditing}
-            isInvalid={isFieldHasError("fullNameFr")}
-            errorMessage={renderErrorMessages("fullNameFr")}
+            isInvalid={isFieldHasError(validationErrors, "fullNameFr")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "fullNameFr")
+                ? validationErrors["fullNameFr"]?.map((item, index) => (
+                    <p key={index} className="text-sm">
+                      - {item}
+                    </p>
+                  ))
+                : null)
+            }
           />
-          
+
           <Input
             label="Full Name (Arabic)"
             value={formData.fullNameAr}
             onValueChange={(value) => handleChange("fullNameAr", value)}
             variant="bordered"
             isDisabled={!isEditing}
-            isInvalid={isFieldHasError("fullNameAr")}
-            errorMessage={renderErrorMessages("fullNameAr")}
+            isInvalid={isFieldHasError(validationErrors, "fullNameAr")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "fullNameAr")
+                ? validationErrors["fullNameAr"]?.map((item, index) => (
+                    <p key={index} className="text-sm">
+                      - {item}
+                    </p>
+                  ))
+                : null)
+            }
           />
         </div>
 
@@ -141,18 +291,36 @@ export default function ProfileInfo() {
             onValueChange={(value) => handleChange("email", value)}
             variant="bordered"
             isDisabled={!isEditing}
-            isInvalid={isFieldHasError("email")}
-            errorMessage={renderErrorMessages("email")}
+            isInvalid={isFieldHasError(validationErrors, "email")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "email")
+                ? validationErrors["email"]?.map((item, index) => (
+                    <p key={index} className="text-sm">
+                      - {item}
+                    </p>
+                  ))
+                : null)
+            }
           />
-          
+
           <Input
             label="Phone Number"
             value={formData.phoneNumber}
             onValueChange={(value) => handleChange("phoneNumber", value)}
             variant="bordered"
             isDisabled={!isEditing}
-            isInvalid={isFieldHasError("phoneNumber")}
-            errorMessage={renderErrorMessages("phoneNumber")}
+            isInvalid={isFieldHasError(validationErrors, "phoneNumber")}
+            errorMessage={
+              validationErrors &&
+              (isFieldHasError(validationErrors, "phoneNumber")
+                ? validationErrors["phoneNumber"]?.map((item, index) => (
+                    <p key={index} className="text-sm">
+                      - {item}
+                    </p>
+                  ))
+                : null)
+            }
           />
         </div>
 
@@ -160,21 +328,30 @@ export default function ProfileInfo() {
           label="Preferred Language"
           selectedKeys={[formData.preferredLocale]}
           onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0] as "EN" | "FR" | "AR";
+            const selected = Array.from(keys)[0] as TLocale;
             handleChange("preferredLocale", selected);
           }}
           variant="bordered"
           isDisabled={!isEditing}
-          isInvalid={isFieldHasError("preferredLocale")}
-          errorMessage={renderErrorMessages("preferredLocale")}
+          isInvalid={isFieldHasError(validationErrors, "preferredLocale")}
+          errorMessage={
+            validationErrors &&
+            (isFieldHasError(validationErrors, "preferredLocale")
+              ? validationErrors["preferredLocale"]?.map((item, index) => (
+                  <p key={index} className="text-sm">
+                    - {item}
+                  </p>
+                ))
+              : null)
+          }
         >
-          <SelectItem key="EN" textValue="English">
+          <SelectItem key="en" textValue="English">
             English
           </SelectItem>
-          <SelectItem key="FR" textValue="Français">
+          <SelectItem key="fr" textValue="Français">
             Français
           </SelectItem>
-          <SelectItem key="AR" textValue="العربية">
+          <SelectItem key="ar" textValue="العربية">
             العربية
           </SelectItem>
         </Select>
@@ -185,19 +362,12 @@ export default function ProfileInfo() {
               <Button
                 color="danger"
                 variant="flat"
-                onPress={() => {
-                  setIsEditing(false);
-                  setErrors({});
-                }}
+                onPress={handleCancel}
                 isDisabled={isLoading}
               >
                 Cancel
               </Button>
-              <Button
-                color="primary"
-                type="submit"
-                isLoading={isLoading}
-              >
+              <Button color="primary" type="submit" isLoading={isLoading}>
                 Save Changes
               </Button>
             </>
@@ -205,6 +375,7 @@ export default function ProfileInfo() {
             <Button
               color="primary"
               onPress={() => setIsEditing(true)}
+              isDisabled={isFetching}
             >
               Edit Profile
             </Button>
@@ -212,32 +383,58 @@ export default function ProfileInfo() {
         </div>
       </form>
 
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-medium mb-4">Account Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Role</p>
-            <p className="font-medium">ADMIN</p>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Account Status</p>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-success" />
-              <p className="font-medium">Approved</p>
+      {userData && (
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-medium mb-4">Account Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Role</p>
+              <p className="font-medium">{userData.role || "USER"}</p>
             </div>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Email Verified</p>
-            <p className="font-medium">Yes</p>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Member Since</p>
-            <p className="font-medium">
-              {new Date().toLocaleDateString()}
-            </p>
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Account Status</p>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    userData.approved ? "bg-success" : "bg-warning"
+                  }`}
+                />
+                <p className="font-medium">
+                  {userData.approved ? "Approved" : "Pending"}
+                </p>
+              </div>
+            </div>
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Email Verified</p>
+              <p className="font-medium">
+                {userData.emailVerifiedAt ? "Yes" : "No"}
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Member Since</p>
+              <p className="font-medium">
+                {new Date(userData.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+            {userData.club && (
+              <>
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Club Name (Fr)
+                  </p>
+                  <p className="font-medium">{userData.club.nameFr}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Club Name (Ar)
+                  </p>
+                  <p className="font-medium">{userData.club.nameAr}</p>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

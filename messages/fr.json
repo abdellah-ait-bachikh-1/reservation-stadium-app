@@ -49,7 +49,8 @@
       },
       "Profile": {
         "headTitle": "Profil",
-        "metaDescription": "Afficher et gérer votre profil","pageTitle": "Profil & Paramètres",
+        "metaDescription": "Afficher et gérer votre profil",
+        "pageTitle": "Profil & Paramètres",
         "pageDescription": "Gérez vos informations de compte, préférences et consultez votre activité",
         "sportsInfo": {
           "title": "Informations Sportives",
@@ -62,6 +63,42 @@
         "reservations": {
           "title": "Réservations Récentes",
           "description": "Vos dernières réservations de stade"
+        },
+        "SettingsTabs": {
+          "ariaLabel": "Options des Paramètres",
+          "tabs": {
+            "profile": "Profil",
+            "password": "Mot de passe",
+            "club": "Information"
+          },
+          "profileInfo": {
+            "fullNameFr": "Nom complet (Français)",
+            "fullNameAr": "Nom complet (Arabe)",
+            "email": "Email",
+            "phoneNumber": "Numéro de téléphone",
+            "preferredLocale": "Langue préférée",
+            "saveChanges": "Enregistrer les modifications",
+            "cancel": "Annuler",
+            "editProfile": "Modifier le profil",
+            "accountInformation": "Informations du compte",
+            "role": "Rôle",
+            "accountStatus": "Statut du compte",
+            "approved": "Approuvé",
+            "pending": "En attente",
+            "emailVerified": "Email vérifié",
+            "yes": "Oui",
+            "no": "Non",
+            "memberSince": "Membre depuis",
+            "clubNameFr": "Nom du club (Français)",
+            "clubNameAr": "Nom du club (Arabe)",
+            "loading": "Chargement...",
+            "signInPrompt": "Veuillez vous connecter pour voir votre profil.",
+            "language": {
+              "en": "Anglais",
+              "fr": "Français",
+              "ar": "Arabe"
+            }
+          }
         }
       }
     },
@@ -482,8 +519,8 @@
         "theme": "Thème",
         "language": "Langue",
         "signIn": "Se Connecter",
-        "register": "S'inscrire",        "dashboard": "Accéder au Tableau de Bord"
-
+        "register": "S'inscrire",
+        "dashboard": "Accéder au Tableau de Bord"
       },
       "logoutModal": {
         "title": "Confirmer la déconnexion",

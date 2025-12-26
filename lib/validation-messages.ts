@@ -250,6 +250,22 @@ export const validationMessages: ValidationMessages = {
     en: "Email confirmation sent successfully",
     fr: "Confirmation par email envoyée avec succès",
     ar: "تم إرسال تأكيد البريد الإلكتروني بنجاح",
+  }, "preferredLocale.invalid": {
+    en: "Please select a valid language preference (EN, FR, AR)",
+    fr: "Veuillez sélectionner une préférence de langue valide (EN, FR, AR)",
+    ar: "يرجى تحديد تفضيل لغة صالح (EN, FR, AR)",
+  },
+
+  // User Profile specific messages
+  "profile.updateSuccess": {
+    en: "Profile updated successfully",
+    fr: "Profil mis à jour avec succès",
+    ar: "تم تحديث الملف الشخصي بنجاح",
+  },
+  "profile.updateFailed": {
+    en: "Failed to update profile",
+    fr: "Échec de la mise à jour du profil",
+    ar: "فشل تحديث الملف الشخصي",
   },
 };
 

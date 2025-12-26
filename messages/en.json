@@ -49,7 +49,8 @@
       },
       "Profile": {
         "headTitle": "Profile",
-        "metaDescription": "View and manage your profile","pageTitle": "Profile & Settings",
+        "metaDescription": "View and manage your profile",
+        "pageTitle": "Profile & Settings",
         "pageDescription": "Manage your account information, preferences, and view your activity",
         "sportsInfo": {
           "title": "Sports Information",
@@ -62,6 +63,53 @@
         "reservations": {
           "title": "Recent Reservations",
           "description": "Your latest stadium bookings"
+        },
+        "SettingsTabs": {
+          "ariaLabel": "Settings Options",
+          "tabs": {
+            "profile": "Profile",
+            "password": "Password",
+            "club": "Information"
+          },
+          "profileInfo": {
+            "fullNameFr": "Full Name (French)",
+            "fullNameAr": "Full Name (Arabic)",
+            "email": "Email",
+            "phoneNumber": "Phone Number",
+            "preferredLocale": "Preferred Language",
+            "saveChanges": "Save Changes",
+            "cancel": "Cancel",
+            "editProfile": "Edit Profile",
+            "accountInformation": "Account Information",
+            "role": "Role",
+            "accountStatus": "Account Status",
+            "approved": "Approved",
+            "pending": "Pending",
+            "emailVerified": "Email Verified",
+            "yes": "Yes",
+            "no": "No",
+            "memberSince": "Member Since",
+            "clubNameFr": "Club Name (French)",
+            "clubNameAr": "Club Name (Arabic)",
+            "loading": "Loading...",
+            "signInPrompt": "Please sign in to view your profile.",
+            "language": {
+              "en": "English",
+              "fr": "Français",
+              "ar": "العربية"
+            }
+          },
+          "changePassword": {
+            "currentPassword": "Current Password",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm Password",
+            "changePassword": "Change Password"
+          },
+          "clubInfo": {
+            "clubName": "Club Name",
+            "sport": "Sport",
+            "members": "Members"
+          }
         }
       }
     },
