@@ -49,7 +49,20 @@
       },
       "Profile": {
         "headTitle": "Profile",
-        "metaDescription": "View and manage your profile"
+        "metaDescription": "View and manage your profile","pageTitle": "Profile & Settings",
+        "pageDescription": "Manage your account information, preferences, and view your activity",
+        "sportsInfo": {
+          "title": "Sports Information",
+          "description": "Information about your club's sport"
+        },
+        "subscriptions": {
+          "title": "Active Subscriptions",
+          "description": "Your current subscription plans"
+        },
+        "reservations": {
+          "title": "Recent Reservations",
+          "description": "Your latest stadium bookings"
+        }
       }
     },
     "About": {

@@ -49,7 +49,20 @@
       },
       "Profile": {
         "headTitle": "Profil",
-        "metaDescription": "Afficher et gérer votre profil"
+        "metaDescription": "Afficher et gérer votre profil","pageTitle": "Profil & Paramètres",
+        "pageDescription": "Gérez vos informations de compte, préférences et consultez votre activité",
+        "sportsInfo": {
+          "title": "Informations Sportives",
+          "description": "Informations sur le sport de votre club"
+        },
+        "subscriptions": {
+          "title": "Abonnements Actifs",
+          "description": "Vos plans d'abonnement actuels"
+        },
+        "reservations": {
+          "title": "Réservations Récentes",
+          "description": "Vos dernières réservations de stade"
+        }
       }
     },
     "About": {

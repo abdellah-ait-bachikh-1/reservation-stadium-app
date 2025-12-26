@@ -67,8 +67,8 @@ export default async function LocaleLayout({
         className={cn(
           `${inter.className}`,
           "bg-gray-50", // Light mode background
-          "dark:bg-gray-800", // Dark mode background
-          "transition-colors duration-500 ease-in-out bg-fixed min-h-screen overflow-y-auto "
+          "dark:bg-gray-800 ", // Dark mode background
+          "transition-colors duration-500 ease-in-out bg-fixed min-h-screen  overflow-y-auto "
         )}
         suppressHydrationWarning
       >

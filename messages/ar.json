@@ -49,7 +49,20 @@
       },
       "Profile": {
         "headTitle": "الملف الشخصي",
-        "metaDescription": "عرض وإدارة ملفك الشخصي"
+        "metaDescription": "عرض وإدارة ملفك الشخصي",  "pageTitle": "الملف الشخصي والإعدادات",
+        "pageDescription": "إدارة معلومات حسابك، التفضيلات، وعرض نشاطك",
+        "sportsInfo": {
+          "title": "معلومات الرياضة",
+          "description": "معلومات حول رياضة ناديك"
+        },
+        "subscriptions": {
+          "title": "الاشتراكات النشطة",
+          "description": "خطط الاشتراك الحالية الخاصة بك"
+        },
+        "reservations": {
+          "title": "الحجوزات الحديثة",
+          "description": "أحدث حجوزاتك للملعب"
+        }
       }
     },
     "About": {
