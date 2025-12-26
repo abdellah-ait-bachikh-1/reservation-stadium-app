@@ -70,7 +70,8 @@
             "profile": "الملف الشخصي",
             "password": "كلمة المرور",
             "club": "المعلومات"
-          },  "profileInfo": {
+          },
+          "profileInfo": {
             "fullNameFr": "الاسم الكامل (فرنسي)",
             "fullNameAr": "الاسم الكامل (عربي)",
             "email": "البريد الإلكتروني",

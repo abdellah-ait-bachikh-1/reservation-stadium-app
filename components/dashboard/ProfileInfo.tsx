@@ -230,11 +230,12 @@ export default function ProfileInfo() {
   }
 
   // Not authenticated
+// Not authenticated
   if (status === "unauthenticated") {
     return (
       <div className="text-center py-10">
         <p className="text-gray-600 dark:text-gray-400">
-          Please sign in to view your profile.
+          {t("signInPrompt")}
         </p>
       </div>
     );
@@ -245,7 +246,7 @@ export default function ProfileInfo() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Full Name (French)"
+            label={t("fullNameFr")}
             value={formData.fullNameFr}
             onValueChange={(value) => handleChange("fullNameFr", value)}
             variant="bordered"
@@ -264,7 +265,7 @@ export default function ProfileInfo() {
           />
 
           <Input
-            label="Full Name (Arabic)"
+            label={t("fullNameAr")}
             value={formData.fullNameAr}
             onValueChange={(value) => handleChange("fullNameAr", value)}
             variant="bordered"
@@ -285,7 +286,7 @@ export default function ProfileInfo() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Email"
+            label={t("email")}
             type="email"
             value={formData.email}
             onValueChange={(value) => handleChange("email", value)}
@@ -305,7 +306,7 @@ export default function ProfileInfo() {
           />
 
           <Input
-            label="Phone Number"
+            label={t("phoneNumber")}
             value={formData.phoneNumber}
             onValueChange={(value) => handleChange("phoneNumber", value)}
             variant="bordered"
@@ -325,7 +326,7 @@ export default function ProfileInfo() {
         </div>
 
         <Select
-          label="Preferred Language"
+          label={t("preferredLocale")}
           selectedKeys={[formData.preferredLocale]}
           onSelectionChange={(keys) => {
             const selected = Array.from(keys)[0] as TLocale;
@@ -346,13 +347,13 @@ export default function ProfileInfo() {
           }
         >
           <SelectItem key="en" textValue="English">
-            English
+            {t("language.en")}
           </SelectItem>
           <SelectItem key="fr" textValue="Français">
-            Français
+            {t("language.fr")}
           </SelectItem>
           <SelectItem key="ar" textValue="العربية">
-            العربية
+            {t("language.ar")}
           </SelectItem>
         </Select>
 
@@ -365,10 +366,10 @@ export default function ProfileInfo() {
                 onPress={handleCancel}
                 isDisabled={isLoading}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button color="primary" type="submit" isLoading={isLoading}>
-                Save Changes
+                {t("saveChanges")}
               </Button>
             </>
           ) : (
@@ -377,7 +378,7 @@ export default function ProfileInfo() {
               onPress={() => setIsEditing(true)}
               isDisabled={isFetching}
             >
-              Edit Profile
+              {t("editProfile")}
             </Button>
           )}
         </div>
@@ -385,14 +386,14 @@ export default function ProfileInfo() {
 
       {userData && (
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium mb-4">Account Information</h3>
+          <h3 className="text-lg font-medium mb-4">{t("accountInformation")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-gray-500 dark:text-gray-400">Role</p>
+              <p className="text-gray-500 dark:text-gray-400">{t("role")}</p>
               <p className="font-medium">{userData.role || "USER"}</p>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">Account Status</p>
+              <p className="text-gray-500 dark:text-gray-400">{t("accountStatus")}</p>
               <div className="flex items-center gap-2">
                 <div
                   className={`w-2 h-2 rounded-full ${
@@ -400,18 +401,18 @@ export default function ProfileInfo() {
                   }`}
                 />
                 <p className="font-medium">
-                  {userData.approved ? "Approved" : "Pending"}
+                  {userData.approved ? t("approved") : t("pending")}
                 </p>
               </div>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">Email Verified</p>
+              <p className="text-gray-500 dark:text-gray-400">{t("emailVerified")}</p>
               <p className="font-medium">
-                {userData.emailVerifiedAt ? "Yes" : "No"}
+                {userData.emailVerifiedAt ? t("yes") : t("no")}
               </p>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">Member Since</p>
+              <p className="text-gray-500 dark:text-gray-400">{t("memberSince")}</p>
               <p className="font-medium">
                 {new Date(userData.createdAt).toLocaleDateString()}
               </p>
@@ -420,13 +421,13 @@ export default function ProfileInfo() {
               <>
                 <div>
                   <p className="text-gray-500 dark:text-gray-400">
-                    Club Name (Fr)
+                    {t("clubNameFr")}
                   </p>
                   <p className="font-medium">{userData.club.nameFr}</p>
                 </div>
                 <div>
                   <p className="text-gray-500 dark:text-gray-400">
-                    Club Name (Ar)
+                    {t("clubNameAr")}
                   </p>
                   <p className="font-medium">{userData.club.nameAr}</p>
                 </div>
