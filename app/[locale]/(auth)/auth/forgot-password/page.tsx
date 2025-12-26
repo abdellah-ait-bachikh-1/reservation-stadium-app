@@ -1,5 +1,5 @@
-import ForgotPasswordForm from "@/components/ForgotPasswordForm";
-import RegisterForm from "@/components/RegisterForm";
+import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
+import RegisterForm from "@/components/auth/RegisterForm";
 import { Metadata } from "next";
 import { getMessages } from "next-intl/server";
 

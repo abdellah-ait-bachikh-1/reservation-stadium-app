@@ -1,8 +1,8 @@
 // app/[locale]/stadiums/page.tsx
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import StadiumHeroSection from "@/components/StadiumHeroSection";
-import StadiumClientSection from "@/components/StadiumClientSection";
+import StadiumHeroSection from "@/components/public/StadiumHeroSection";
+import StadiumClientSection from "@/components/public/StadiumClientSection";
 import db from "@/lib/db";
 import { getSports, getStadiums } from "@/lib/data/stadium";
 
@@ -59,11 +59,11 @@ const StadiumsPage = async ({
   const searchTerm = sp.search || "";
   const sportParam = sp.sports;
   const page = parseInt(sp.page || "1");
-  
+
   // Convert sports param to array
-  const selectedSports = Array.isArray(sportParam) 
-    ? sportParam 
-    : sportParam 
+  const selectedSports = Array.isArray(sportParam)
+    ? sportParam
+    : sportParam
     ? [sportParam]
     : [];
 
@@ -80,7 +80,7 @@ const StadiumsPage = async ({
     }),
     getSports(locale as "ar" | "fr" | "en"),
   ]);
-console.log(stadiumsData)
+  console.log(stadiumsData);
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
@@ -90,7 +90,7 @@ console.log(stadiumsData)
       <StadiumHeroSection locale={locale} />
 
       {/* Client Component with all filtering logic */}
-      <StadiumClientSection 
+      <StadiumClientSection
         locale={locale}
         initialStadiums={stadiumsData.data}
         allSports={allSports}
@@ -104,21 +104,21 @@ console.log(stadiumsData)
           noResults: {
             title: t("noResults.title"),
             message: t("noResults.message"),
-            resetFilters: t("noResults.resetFilters")
+            resetFilters: t("noResults.resetFilters"),
           },
           cta: {
             title: t("cta.title"),
             description: t("cta.description"),
             contactSupport: t("cta.contactSupport"),
-            bookNow: t("cta.bookNow")
+            bookNow: t("cta.bookNow"),
           },
           search: {
-            placeholder: t("search.placeholder")
+            placeholder: t("search.placeholder"),
           },
           filter: {
             sport: t("filter.sport"),
             selectSports: t("filter.selectSports"),
-            activeFilters: t("filter.activeFilters")
+            activeFilters: t("filter.activeFilters"),
           },
           details: {
             monthlyRate: t("details.monthlyRate"),
@@ -130,14 +130,14 @@ console.log(stadiumsData)
             totalSports: t("details.totalSports"),
             bestForOneTime: t("details.bestForOneTime"),
             viewFullDetails: t("details.viewFullDetails"),
-            viewOnMaps: t("details.viewOnMaps")
+            viewOnMaps: t("details.viewOnMaps"),
           },
           type: {
             multipleSports: t("type.multipleSports"),
-            singleSport: t("type.singleSport")
+            singleSport: t("type.singleSport"),
           },
           actions: {
-            viewDetails: t("actions.viewDetails")
+            viewDetails: t("actions.viewDetails"),
           },
           pagination: {
             showing: t("pagination.showing"),
@@ -148,7 +148,7 @@ console.log(stadiumsData)
             next: t("pagination.next"),
             page: t("pagination.page"),
             goToPage: t("pagination.goToPage"),
-          }
+          },
         }}
       />
     </section>

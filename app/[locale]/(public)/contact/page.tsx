@@ -13,9 +13,9 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { MdEmail, MdSend } from "react-icons/md";
-import ContactForm from "@/components/ContactForm";
+import ContactForm from "@/components/public/ContactForm";
 import { Link as NavigationLink } from "@/i18n/navigation";
-import FAQAccordion from "@/components/FAQAccordion";
+import FAQAccordion from "@/components/public/FAQAccordion";
 
 export async function generateMetadata({
   params,
@@ -78,21 +78,21 @@ const ContactPage = async ({
 
   // Other ways to connect
   const otherWays = [
-    { 
-      label: t("otherWays.options.stadiumBookings"), 
-      link: "/stadiums" 
+    {
+      label: t("otherWays.options.stadiumBookings"),
+      link: "/stadiums",
     },
-    { 
-      label: t("otherWays.options.sportsPrograms"), 
-      link: "/about" 
+    {
+      label: t("otherWays.options.sportsPrograms"),
+      link: "/about",
     },
-    { 
-      label: t("otherWays.options.partnerships"), 
-      link: "/about" 
+    {
+      label: t("otherWays.options.partnerships"),
+      link: "/about",
     },
-    { 
-      label: t("otherWays.options.facilityInfo"), 
-      link: "/about" 
+    {
+      label: t("otherWays.options.facilityInfo"),
+      link: "/about",
     },
   ];
 

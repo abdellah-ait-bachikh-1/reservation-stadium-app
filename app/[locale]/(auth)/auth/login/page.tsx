@@ -1,4 +1,4 @@
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/auth/LoginForm";
 import { Link } from "@/i18n/navigation";
 import { button, cn } from "@heroui/theme";
 import { Metadata } from "next";

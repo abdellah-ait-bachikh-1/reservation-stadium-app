@@ -7,8 +7,8 @@ import { Rubik } from "next/font/google";
 import { Metadata } from "next";
 import { APP_NAME, APP_NAMES } from "@/lib/const";
 import { Providers } from "@/components/provider/Provider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/public/Header";
+import Footer from "@/components/public/Footer";
 import { cn } from "@heroui/theme";
 import { TLocale } from "@/lib/types";
 export const dynamic = "force-static";
@@ -27,9 +27,7 @@ export const generateMetadata = async ({
   return {
     title: {
       template: `%s | ${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
-      default: `${
-        APP_NAMES[locale as TLocale] || "Tan-Tan Stades"
-      }`,
+      default: `${APP_NAMES[locale as TLocale] || "Tan-Tan Stades"}`,
     },
     description: messages.Pages.Register.metaDescription,
     keywords: messages.Pages.Register.keywords,

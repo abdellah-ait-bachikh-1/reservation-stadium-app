@@ -1,4 +1,4 @@
-import RegisterForm from "@/components/RegisterForm";
+import RegisterForm from "@/components/auth/RegisterForm";
 import { Metadata } from "next";
 import { getMessages } from "next-intl/server";
 

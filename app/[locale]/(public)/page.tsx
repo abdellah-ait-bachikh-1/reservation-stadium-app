@@ -10,7 +10,7 @@ import {
 } from "@/lib/data/auth";
 import { getSession } from "@/auth";
 import { getServerSession } from "next-auth";
-import HeroButton from "@/components/HeroButton";
+import HeroButton from "@/components/public/HeroButton";
 import { TLocale } from "@/lib/types";
 
 // Move feature cards outside the component to avoid recreation on every render
@@ -206,7 +206,7 @@ export default async function HomePage({
         />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-         <HeroButton locale={locale as TLocale}/>
+          <HeroButton locale={locale as TLocale} />
         </div>
       </div>
 

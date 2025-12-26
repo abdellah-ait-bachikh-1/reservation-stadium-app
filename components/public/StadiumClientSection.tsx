@@ -13,8 +13,8 @@ import {
   FaPhone,
   FaTimes,
 } from "react-icons/fa";
-import StadiumCard from "@/components/StadiumCard";
-import StadiumCardSkeleton from "@/components/StadiumCardSkeleton";
+import StadiumCard from "@/components/public/StadiumCard";
+import StadiumCardSkeleton from "@/components/public/StadiumCardSkeleton";
 
 interface StadiumClientSectionProps {
   locale: string;

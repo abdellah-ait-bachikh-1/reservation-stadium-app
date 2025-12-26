@@ -6,8 +6,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { usePathname } from "next/navigation";
 import { cn } from "@heroui/theme";
 import { button } from "@heroui/theme";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 import {
   Dropdown,
   DropdownTrigger,
@@ -32,9 +32,9 @@ import {
 } from "react-icons/fa";
 import { MdDashboard, MdMenu, MdClose, MdSettings } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
-import MobileAvatar from "./MobileAvatar";
-import DesktopAvatar from "./DesktopAvatar";
-import LogoutButton from "./LogoutButton";
+import MobileAvatar from "../MobileAvatar";
+import DesktopAvatar from "../DesktopAvatar";
+import LogoutButton from "../auth/LogoutButton";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
