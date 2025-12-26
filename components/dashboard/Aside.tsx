@@ -22,6 +22,7 @@ import { useRouter, usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import LogoutButton from "../LogoutButton";
 import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
+import { MdPerson } from "react-icons/md";
 
 type AsideProps = {
   id: string;
@@ -120,6 +121,11 @@ const Aside = ({ user }: { user: AsideProps }) => {
         label: t("home"),
         icon: HiHome,
         show: role === "ADMIN",
+      }, {
+        href: `/dashboard/profile/${user.id}`,
+        label: t("profile"),
+        icon: MdPerson,
+        show: true,
       },
       {
         href: "/dashboard/reservations",

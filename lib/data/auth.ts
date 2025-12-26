@@ -2,6 +2,7 @@ import { getSession } from "@/auth";
 import { redirect } from "next/navigation";
 import db from "../db";
 
+//server components functions
 export const getAuthenticatedUserFromSession = async () => {
   console.log("Getting session...");
   const session = await getSession();
@@ -96,6 +97,7 @@ export const isAdminUser = async () => {
   return user;
 };
 
+//api functions
 export const isAuthenticatedUserInApi = async () => {
   const session = await getSession();
   if (!session || !session.user) {
