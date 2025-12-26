@@ -7,20 +7,21 @@ import {
   getLocalizedText,
   getActorName,
 } from '@/lib/api/utils';
+import { isExistsAuthenticatedUserInApi } from '@/lib/data/auth';
 import db from '@/lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const session = await getSession();
+    const authUser = await isExistsAuthenticatedUserInApi();
 
-    if (!session?.user?.id) {
+    if (!authUser || !authUser.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // الخطوة 1: الحصول على لغة المستخدم من قاعدة البيانات (الأولوية)
     const user = await db.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: authUser.id },
       select: { preferredLocale: true }
     });
 
@@ -35,7 +36,7 @@ export async function GET() {
     }
 
     console.log('Using locale for notifications:', { 
-      userId: session.user.id, 
+      userId: authUser.id, 
       dbLocale: user?.preferredLocale,
       finalLocale: locale 
     });
@@ -44,7 +45,7 @@ export async function GET() {
 
     const [notifications, unreadCount] = await Promise.all([
       db.notification.findMany({
-        where: { userId: session.user.id },
+        where: { userId: authUser.id },
         select: {
           id: true,
           type: true,
@@ -71,7 +72,7 @@ export async function GET() {
       }),
       db.notification.count({
         where: {
-          userId: session.user.id,
+          userId: authUser.id,
           isRead: false,
         },
       }),

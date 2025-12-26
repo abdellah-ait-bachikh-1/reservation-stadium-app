@@ -1,4 +1,4 @@
-import { isAdminUser, isDeletedUser } from "@/lib/data/auth";
+import { isAdminUser } from "@/lib/data/auth";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";

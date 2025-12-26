@@ -1,11 +1,11 @@
 import { getSession } from '@/auth';
-import { isDeletedUserInApi } from '@/lib/data/auth';
+import { isExistsAuthenticatedUserInApi } from '@/lib/data/auth';
 import { pusherServer } from '@/lib/pusher-server';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const user = await isDeletedUserInApi();
+    const user = await isExistsAuthenticatedUserInApi();
 
   if (!user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {

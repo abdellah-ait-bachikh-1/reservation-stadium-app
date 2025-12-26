@@ -2,11 +2,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/auth";
 import db from "@/lib/db";
-import { isDeletedUserInApi } from "@/lib/data/auth";
+import { isExistsAuthenticatedUserInApi } from "@/lib/data/auth";
 
 export async function GET() {
   try {
-    const user = await isDeletedUserInApi();
+    const user = await isExistsAuthenticatedUserInApi();
 
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {

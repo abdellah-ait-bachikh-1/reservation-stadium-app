@@ -1,5 +1,5 @@
 import { APP_NAMES } from "@/lib/const";
-import { isDeletedUser } from "@/lib/data/auth";
+import { isExistsAuthenticatedUser } from "@/lib/data/auth";
 import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -22,7 +22,7 @@ export const generateMetadata = async ({
 };
 
 const DashboardReservationsPage = async () => {
-   const user = await isDeletedUser();
+   const user = await isExistsAuthenticatedUser();
     if (!user) {
       redirect("/auth/login");
     }

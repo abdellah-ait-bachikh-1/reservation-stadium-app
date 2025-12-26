@@ -1,8 +1,6 @@
-import { getSession, signOutServer } from "@/auth";
+import { getSession } from "@/auth";
 import { redirect } from "next/navigation";
 import db from "../db";
-import { signOut } from "next-auth/react";
-import { forceLogout } from "@/app/actions/auth";
 
 export const isAuthenticated = async () => {
   const session = await getSession();
@@ -12,7 +10,7 @@ export const isAuthenticated = async () => {
   return session;
 };
 
-export const isDeletedUser = async () => {
+export const isExistsAuthenticatedUser = async () => {
   const session = await isAuthenticated();
   const user = await db.user.findUnique({
     where: { id: session.user.id },
@@ -29,7 +27,7 @@ export const isDeletedUser = async () => {
       updatedAt: true,
       phoneNumber: true,
       emailVerifiedAt: true,
-      club: {select: { id: true, nameAr: true,nameFr: true }},
+      club: { select: { id: true, nameAr: true, nameFr: true } },
       verificationToken: true,
     },
   });
@@ -46,7 +44,7 @@ export const isDeletedUser = async () => {
 };
 
 export const isAdminUser = async () => {
-  const user = await isDeletedUser();
+  const user = await isExistsAuthenticatedUser();
 
   if (!user || user.role !== "ADMIN") {
     redirect(
@@ -66,7 +64,7 @@ export const isAuthenticatedUserInApi = async () => {
   return session;
 };
 
-export const isDeletedUserInApi = async () => {
+export const isExistsAuthenticatedUserInApi = async () => {
   const session = await isAuthenticatedUserInApi();
   if (!session) {
     return null;
@@ -102,7 +100,7 @@ export const isDeletedUserInApi = async () => {
 };
 
 export const isAdminUserInApi = async () => {
-  const user = await isDeletedUserInApi();
+  const user = await isExistsAuthenticatedUserInApi();
   if (!user || user.role !== "ADMIN") {
     return null;
   }
