@@ -1,14 +1,28 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `users` (
+    `id` VARCHAR(191) NOT NULL,
+    `fullNameFr` VARCHAR(191) NOT NULL,
+    `fullNameAr` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `approved` BOOLEAN NOT NULL DEFAULT false,
+    `role` ENUM('ADMIN', 'CLUB') NOT NULL DEFAULT 'CLUB',
+    `phoneNumber` VARCHAR(191) NOT NULL,
+    `emailVerifiedAt` DATETIME(3) NULL,
+    `verificationToken` VARCHAR(191) NULL,
+    `preferredLocale` ENUM('EN', 'FR', 'AR') NOT NULL DEFAULT 'AR',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
-  - A unique constraint covering the columns `[verificationToken]` on the table `users` will be added. If there are existing duplicate values, this will fail.
-
-*/
--- AlterTable
-ALTER TABLE `users` ADD COLUMN `verificationToken` VARCHAR(191) NULL,
-    MODIFY `role` ENUM('ADMIN', 'CLUB') NOT NULL DEFAULT 'CLUB',
-    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    MODIFY `deletedAt` DATETIME(3) NULL;
+    UNIQUE INDEX `users_email_key`(`email`),
+    UNIQUE INDEX `users_verificationToken_key`(`verificationToken`),
+    INDEX `users_email_idx`(`email`),
+    INDEX `users_role_idx`(`role`),
+    INDEX `users_approved_idx`(`approved`),
+    INDEX `users_createdAt_idx`(`createdAt`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `clubs` (
@@ -26,6 +40,10 @@ CREATE TABLE `clubs` (
     `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `clubs_userId_key`(`userId`),
+    INDEX `clubs_userId_idx`(`userId`),
+    INDEX `clubs_sportId_idx`(`sportId`),
+    INDEX `clubs_nameFr_idx`(`nameFr`),
+    INDEX `clubs_nameAr_idx`(`nameAr`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -38,6 +56,8 @@ CREATE TABLE `sports` (
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
+    INDEX `sports_nameFr_idx`(`nameFr`),
+    INDEX `sports_nameAr_idx`(`nameAr`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -55,6 +75,10 @@ CREATE TABLE `stadiums` (
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
+    INDEX `stadiums_nameFr_idx`(`nameFr`),
+    INDEX `stadiums_nameAr_idx`(`nameAr`),
+    INDEX `stadiums_monthlyPrice_idx`(`monthlyPrice`),
+    INDEX `stadiums_pricePerSession_idx`(`pricePerSession`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -75,6 +99,7 @@ CREATE TABLE `stadium_images` (
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
+    INDEX `stadium_images_stadiumId_idx`(`stadiumId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -95,6 +120,17 @@ CREATE TABLE `reservations` (
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
+    INDEX `reservations_startDateTime_idx`(`startDateTime`),
+    INDEX `reservations_endDateTime_idx`(`endDateTime`),
+    INDEX `reservations_status_idx`(`status`),
+    INDEX `reservations_userId_idx`(`userId`),
+    INDEX `reservations_stadiumId_idx`(`stadiumId`),
+    INDEX `reservations_monthlyPaymentId_idx`(`monthlyPaymentId`),
+    INDEX `reservations_reservationSeriesId_idx`(`reservationSeriesId`),
+    INDEX `reservations_createdAt_idx`(`createdAt`),
+    INDEX `reservations_isPaid_idx`(`isPaid`),
+    INDEX `reservations_startDateTime_stadiumId_idx`(`startDateTime`, `stadiumId`),
+    INDEX `reservations_status_startDateTime_idx`(`status`, `startDateTime`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -114,6 +150,13 @@ CREATE TABLE `reservation_series` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `reservation_series_userId_idx`(`userId`),
+    INDEX `reservation_series_stadiumId_idx`(`stadiumId`),
+    INDEX `reservation_series_dayOfWeek_idx`(`dayOfWeek`),
+    INDEX `reservation_series_billingType_idx`(`billingType`),
+    INDEX `reservation_series_createdAt_idx`(`createdAt`),
+    INDEX `reservation_series_recurrenceEndDate_idx`(`recurrenceEndDate`),
+    INDEX `reservation_series_startTime_endTime_idx`(`startTime`, `endTime`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -131,6 +174,13 @@ CREATE TABLE `monthly_payments` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `monthly_payments_userId_idx`(`userId`),
+    INDEX `monthly_payments_reservationSeriesId_idx`(`reservationSeriesId`),
+    INDEX `monthly_payments_status_idx`(`status`),
+    INDEX `monthly_payments_month_year_idx`(`month`, `year`),
+    INDEX `monthly_payments_paymentDate_idx`(`paymentDate`),
+    INDEX `monthly_payments_createdAt_idx`(`createdAt`),
+    UNIQUE INDEX `monthly_payments_month_year_reservationSeriesId_key`(`month`, `year`, `reservationSeriesId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -147,6 +197,11 @@ CREATE TABLE `cash_payment_records` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    INDEX `cash_payment_records_userId_idx`(`userId`),
+    INDEX `cash_payment_records_reservationId_idx`(`reservationId`),
+    INDEX `cash_payment_records_monthlyPaymentId_idx`(`monthlyPaymentId`),
+    INDEX `cash_payment_records_paymentDate_idx`(`paymentDate`),
+    INDEX `cash_payment_records_createdAt_idx`(`createdAt`),
     UNIQUE INDEX `cash_payment_records_reservationId_key`(`reservationId`),
     UNIQUE INDEX `cash_payment_records_monthlyPaymentId_key`(`monthlyPaymentId`),
     PRIMARY KEY (`id`)
@@ -166,11 +221,38 @@ CREATE TABLE `monthly_subscriptions` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `monthly_subscriptions_reservationSeriesId_key`(`reservationSeriesId`),
+    INDEX `monthly_subscriptions_userId_idx`(`userId`),
+    INDEX `monthly_subscriptions_reservationSeriesId_idx`(`reservationSeriesId`),
+    INDEX `monthly_subscriptions_status_idx`(`status`),
+    INDEX `monthly_subscriptions_startDate_idx`(`startDate`),
+    INDEX `monthly_subscriptions_endDate_idx`(`endDate`),
+    INDEX `monthly_subscriptions_createdAt_idx`(`createdAt`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateIndex
-CREATE UNIQUE INDEX `users_verificationToken_key` ON `users`(`verificationToken`);
+-- CreateTable
+CREATE TABLE `notifications` (
+    `id` VARCHAR(191) NOT NULL,
+    `type` ENUM('ACCOUNT_CREATED', 'ACCOUNT_APPROVED', 'ACCOUNT_REJECTED', 'PROFILE_UPDATED', 'PASSWORD_CHANGED', 'RESERVATION_REQUESTED', 'RESERVATION_APPROVED', 'RESERVATION_DECLINED', 'RESERVATION_CANCELLED', 'RESERVATION_REMINDER', 'PAYMENT_RECEIVED', 'PAYMENT_OVERDUE', 'PAYMENT_FAILED', 'PAYMENT_REFUNDED', 'MONTHLY_SUBSCRIPTION_PAYMENT', 'SYSTEM_MAINTENANCE', 'SYSTEM_UPDATE', 'NEW_FEATURE', 'ANNOUNCEMENT', 'CLUB_REGISTRATION_SUBMITTED', 'CLUB_REGISTRATION_APPROVED', 'CLUB_REGISTRATION_REJECTED', 'EMAIL_SENT', 'EMAIL_VERIFIED', 'WELCOME_EMAIL', 'NEW_USER_REGISTERED', 'NEW_RESERVATION_REQUEST', 'PAYMENT_REQUIRES_ATTENTION') NOT NULL,
+    `titleEn` VARCHAR(191) NOT NULL,
+    `titleFr` VARCHAR(191) NOT NULL,
+    `titleAr` VARCHAR(191) NOT NULL,
+    `messageEn` VARCHAR(191) NOT NULL,
+    `messageFr` VARCHAR(191) NOT NULL,
+    `messageAr` VARCHAR(191) NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT false,
+    `userId` VARCHAR(191) NOT NULL,
+    `actorUserId` VARCHAR(191) NULL,
+    `metadata` JSON NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    INDEX `notifications_actorUserId_idx`(`actorUserId`),
+    INDEX `notifications_userId_isRead_idx`(`userId`, `isRead`),
+    INDEX `notifications_createdAt_idx`(`createdAt`),
+    INDEX `notifications_type_idx`(`type`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
 ALTER TABLE `clubs` ADD CONSTRAINT `clubs_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -225,3 +307,9 @@ ALTER TABLE `monthly_subscriptions` ADD CONSTRAINT `monthly_subscriptions_userId
 
 -- AddForeignKey
 ALTER TABLE `monthly_subscriptions` ADD CONSTRAINT `monthly_subscriptions_reservationSeriesId_fkey` FOREIGN KEY (`reservationSeriesId`) REFERENCES `reservation_series`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notifications` ADD CONSTRAINT `notifications_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notifications` ADD CONSTRAINT `notifications_actorUserId_fkey` FOREIGN KEY (`actorUserId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
