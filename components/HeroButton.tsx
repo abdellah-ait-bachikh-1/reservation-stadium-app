@@ -5,6 +5,8 @@ import { Spinner } from "@heroui/spinner";
 import { button, cn } from "@heroui/theme";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { TbLayoutDashboard } from "react-icons/tb";
 
 const HeroButton = ({ locale }: { locale: TLocale }) => {
   const session = useSession();
@@ -33,6 +35,7 @@ const HeroButton = ({ locale }: { locale: TLocale }) => {
           hrefLang={locale}
           prefetch={true}
         >
+          <FaSignInAlt className="w-4 h-4 mr-2" />
           {t("signIn")}
         </Link>
 
@@ -50,6 +53,8 @@ const HeroButton = ({ locale }: { locale: TLocale }) => {
           hrefLang={locale}
           prefetch={true}
         >
+          <FaUserPlus className="w-4 h-4 mr-2" />
+
           {t("register")}
         </Link>
       </div>
@@ -71,7 +76,8 @@ const HeroButton = ({ locale }: { locale: TLocale }) => {
         hrefLang={locale}
         prefetch={true}
       >
-        Dashboard
+        <TbLayoutDashboard className="w-4 h-4 mr-2" />
+        {t("dashboard")}
       </Link>
     </div>
   );
