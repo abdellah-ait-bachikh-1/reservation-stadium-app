@@ -230,13 +230,11 @@ export default function ProfileInfo() {
   }
 
   // Not authenticated
-// Not authenticated
+  // Not authenticated
   if (status === "unauthenticated") {
     return (
       <div className="text-center py-10">
-        <p className="text-gray-600 dark:text-gray-400">
-          {t("signInPrompt")}
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">{t("signInPrompt")}</p>
       </div>
     );
   }
@@ -386,14 +384,21 @@ export default function ProfileInfo() {
 
       {userData && (
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium mb-4">{t("accountInformation")}</h3>
+          <h3 className="text-lg font-medium mb-4">
+            {t("accountInformation")}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-500 dark:text-gray-400">{t("role")}</p>
-              <p className="font-medium">{userData.role || "USER"}</p>
+              <p className="font-medium">
+                {" "}
+                {t(`roles.${userData.role}` as any) || userData.role || "USER"}
+              </p>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">{t("accountStatus")}</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {t("accountStatus")}
+              </p>
               <div className="flex items-center gap-2">
                 <div
                   className={`w-2 h-2 rounded-full ${
@@ -406,13 +411,17 @@ export default function ProfileInfo() {
               </div>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">{t("emailVerified")}</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {t("emailVerified")}
+              </p>
               <p className="font-medium">
                 {userData.emailVerifiedAt ? t("yes") : t("no")}
               </p>
             </div>
             <div>
-              <p className="text-gray-500 dark:text-gray-400">{t("memberSince")}</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {t("memberSince")}
+              </p>
               <p className="font-medium">
                 {new Date(userData.createdAt).toLocaleDateString()}
               </p>

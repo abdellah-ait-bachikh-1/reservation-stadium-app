@@ -11,27 +11,27 @@ export const createUserProfileValidationSchema = (
 ) => {
   return z
     .object({
-      fullNameAr: z
-        .string(getLocalizedValidationMessage('fullNameAr.string', locale))
-        .trim()
-        .min(1, getLocalizedValidationMessage('fullNameAr.required', locale))
-        .min(2, getLocalizedValidationMessage('fullNameAr.min', locale))
-        .max(100, getLocalizedValidationMessage('fullNameAr.max', locale))
-        .regex(
-          /^[\u0600-\u06FF\s]+$/,
-          getLocalizedValidationMessage('fullNameAr.regex', locale)
-        ),
-
-      fullNameFr: z
-        .string(getLocalizedValidationMessage('fullNameFr.string', locale))
-        .trim()
-        .min(1, getLocalizedValidationMessage('fullNameFr.required', locale))
-        .min(2, getLocalizedValidationMessage('fullNameFr.min', locale))
-        .max(100, getLocalizedValidationMessage('fullNameFr.max', locale))
-        .regex(
-          /^[a-zA-ZÀ-ÿ\s]+$/,
-          getLocalizedValidationMessage('fullNameFr.regex', locale)
-        ),
+       fullNameAr: z
+              .string(getLocalizedValidationMessage('fullNameAr.string', locale))
+              .trim()
+              .min(1, getLocalizedValidationMessage('fullNameAr.required', locale))
+              .min(2, getLocalizedValidationMessage('fullNameAr.min', locale))
+              .max(100, getLocalizedValidationMessage('fullNameAr.max', locale))
+              .regex(
+                /^[\u0600-\u06FF\s]+$/,
+                getLocalizedValidationMessage('fullNameAr.regex', locale)
+              ),
+      
+            fullNameFr: z
+              .string(getLocalizedValidationMessage('fullNameFr.string', locale))
+              .trim()
+              .min(1, getLocalizedValidationMessage('fullNameFr.required', locale))
+              .min(2, getLocalizedValidationMessage('fullNameFr.min', locale))
+              .max(100, getLocalizedValidationMessage('fullNameFr.max', locale))
+              .regex(
+                /^[a-zA-ZÀ-ÿ\s]+$/, // Removed hyphen and apostrophe
+                getLocalizedValidationMessage('fullNameFr.regex', locale)
+              ),
 
       email: z
         .string(getLocalizedValidationMessage('email.string', locale))

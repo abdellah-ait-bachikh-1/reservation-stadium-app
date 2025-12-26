@@ -89,7 +89,7 @@ export default function SubscriptionsSummary() {
         <Card key={subscription.id} className="shadow-sm">
           <CardBody className="space-y-4">
             <div className="flex justify-between items-start">
-              <div>
+              <div >
                 <h4 className="font-semibold">
                   {subscription.reservationSeries?.stadium?.nameFr}
                 </h4>

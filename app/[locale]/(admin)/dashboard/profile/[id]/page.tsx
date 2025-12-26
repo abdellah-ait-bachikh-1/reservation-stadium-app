@@ -50,11 +50,9 @@ const DashboardProfilePage = async () => {
         <SettingsTabs />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Settings Tabs */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Sports Information */}
           <Card className="shadow-lg bg-white dark:bg-gray-950 rounded-xl border border-slate-200 dark:border-slate-700">
-            <CardHeader className="pb-0 pt-6 px-6">
+            <CardHeader className="pb-0 pt-6 px-6 flex flex-col  items-start">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {t("sportsInfo.title")}
               </h2>
@@ -69,7 +67,7 @@ const DashboardProfilePage = async () => {
 
           {/* Active Subscriptions */}
           <Card className="shadow-lg bg-white dark:bg-gray-950 rounded-xl border border-slate-200 dark:border-slate-700">
-            <CardHeader className="pb-0 pt-6 px-6">
+            <CardHeader className="pb-0 pt-6 px-6 flex flex-col  items-start">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {t("subscriptions.title")}
               </h2>
@@ -90,8 +88,8 @@ const DashboardProfilePage = async () => {
 
           {/* Recent Reservations */}
           <Card className="shadow-lg bg-white dark:bg-gray-950 rounded-xl border border-slate-200 dark:border-slate-700">
-            <CardHeader className="pb-0 pt-6 px-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <CardHeader className="pb-0 pt-6 px-6 flex flex-col  items-start">
+              <h2 className="text-xl  font-semibold text-gray-900 dark:text-white">
                 {t("reservations.title")}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

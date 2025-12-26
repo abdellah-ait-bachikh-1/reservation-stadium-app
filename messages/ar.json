@@ -97,7 +97,37 @@
               "en": "الإنجليزية",
               "fr": "الفرنسية",
               "ar": "العربية"
+            }, "roles": {
+              "ADMIN": "مسؤول",
+              "CLUB": "مسؤول النادي"
+             
             }
+          },
+          "changePassword": {
+            "currentPassword": "كلمة المرور الحالية",
+            "newPassword": "كلمة المرور الجديدة",
+            "confirmPassword": "تأكيد كلمة المرور الجديدة",
+            "changePassword": "تغيير كلمة المرور",
+            "passwordRequirements": "متطلبات كلمة المرور",
+            "requirementsList": {
+              "minLength": "8 أحرف على الأقل",
+              "uppercase": "تحتوي على حرف كبير واحد على الأقل",
+              "lowercase": "تحتوي على حرف صغير واحد على الأقل",
+              "number": "تحتوي على رقم واحد على الأقل"
+            },
+            "validationErrors": {
+              "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+              "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+              "minLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+              "uppercase": "يجب أن تحتوي على حرف كبير واحد على الأقل",
+              "lowercase": "يجب أن تحتوي على حرف صغير واحد على الأقل",
+              "number": "يجب أن تحتوي على رقم واحد على الأقل",
+              "confirmPasswordRequired": "يرجى تأكيد كلمة المرور الخاصة بك",
+              "passwordsMatch": "كلمات المرور غير متطابقة"
+            },
+            "showPassword": "إظهار كلمة المرور",
+            "hidePassword": "إخفاء كلمة المرور",
+            "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح"
           }
         }
       }

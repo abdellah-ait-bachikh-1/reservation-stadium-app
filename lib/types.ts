@@ -51,3 +51,22 @@ export type ValidateUserProfileCredentialsResult =
       validationErrors: ValidateUserProfileCredentialsErrorResult;
     }
   | { data: UserProfileCredentials; validationErrors: null };
+
+
+  export type ChangePasswordCredentials = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+//change password
+export type ValidateChangePasswordCredentialsErrorResult = Partial<
+  Record<keyof ChangePasswordCredentials, string[]>
+>;
+
+export type ValidateChangePasswordCredentialsResult =
+  | {
+      data: null;
+      validationErrors: ValidateChangePasswordCredentialsErrorResult;
+    }
+  | { data: ChangePasswordCredentials; validationErrors: null };

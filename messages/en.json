@@ -97,13 +97,37 @@
               "en": "English",
               "fr": "Français",
               "ar": "العربية"
+            },"roles": {
+              "ADMIN": "Admin",
+              "CLUB":  "Club Admin"
+              
             }
           },
-          "changePassword": {
+           "changePassword": {
             "currentPassword": "Current Password",
             "newPassword": "New Password",
-            "confirmPassword": "Confirm Password",
-            "changePassword": "Change Password"
+            "confirmPassword": "Confirm New Password",
+            "changePassword": "Change Password",
+            "passwordRequirements": "Password Requirements",
+            "requirementsList": {
+              "minLength": "At least 8 characters long",
+              "uppercase": "Contains at least one uppercase letter",
+              "lowercase": "Contains at least one lowercase letter",
+              "number": "Contains at least one number"
+            },
+            "validationErrors": {
+              "currentPasswordRequired": "Current password is required",
+              "newPasswordRequired": "New password is required",
+              "minLength": "Password must be at least 8 characters",
+              "uppercase": "Must contain at least one uppercase letter",
+              "lowercase": "Must contain at least one lowercase letter",
+              "number": "Must contain at least one number",
+              "confirmPasswordRequired": "Please confirm your password",
+              "passwordsMatch": "Passwords do not match"
+            },
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "passwordChangedSuccess": "Password changed successfully"
           },
           "clubInfo": {
             "clubName": "Club Name",

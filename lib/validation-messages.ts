@@ -266,7 +266,16 @@ export const validationMessages: ValidationMessages = {
     en: "Failed to update profile",
     fr: "Échec de la mise à jour du profil",
     ar: "فشل تحديث الملف الشخصي",
-  },
+  },"password.regex": {
+  en: "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+  fr: "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre",
+  ar: "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل",
+},
+"password.sameAsCurrent": {
+  en: "New password must be different from current password",
+  fr: "Le nouveau mot de passe doit être différent du mot de passe actuel",
+  ar: "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور الحالية",
+},
 };
 
 // Utility function to get localized validation message
