@@ -1,4 +1,9 @@
-import { errorMessages, getLocaleFromNextIntlCookie, getLocalizedError } from "@/lib/api/locale";
+import {
+  errorMessages,
+  getLocaleFromNextIntlCookie,
+  getLocalizedError,
+  getLocalizedSuccess,
+} from "@/lib/api/locale";
 import { isExistsAuthenticatedUserInApi } from "@/lib/data/auth";
 import db from "@/lib/db";
 import { TLocale } from "@/lib/types";
@@ -78,16 +83,17 @@ export async function PUT(req: NextRequest) {
       phoneNumber,
       preferredLocale,
     });
-    if(validationErrors) {
+    if (validationErrors) {
       return NextResponse.json(
-              {
-                message:
-                  getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
-                validationErrors,
-              },
-              { status: 400 }
-            ); 
+        {
+          message:
+            getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
+          validationErrors,
+        },
+        { status: 400 }
+      );
     }
+    return NextResponse.json({ message: getLocalizedSuccess(locale, "200") });
   } catch (error) {
     console.log(error);
     if (isError(error)) {

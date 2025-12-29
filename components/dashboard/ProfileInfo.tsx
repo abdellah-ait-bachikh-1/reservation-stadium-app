@@ -16,6 +16,7 @@ import { validateUserProfileCredentials } from "@/lib/validation/profile";
 import { isFieldHasError } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { UserProfile } from "./SettingsTabs";
+import { addToast } from "@heroui/toast";
 // import { UserProfile } from "@/app/[locale]/(admin)/dashboard/profile/[id]/page";
 
 export default function ProfileInfo({ user }: { user: UserProfile }) {
@@ -98,28 +99,36 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
       console.log("Submitting profile data:", formData);
 
       // Update API call
-      // const response = await fetch("/api/users/me", {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
 
-      // if (response.ok) {
-      //   const updatedUser = await response.json();
-
-      //   console.log("Profile updated successfully");
-      //   setIsEditing(false);
-      //   setValidationErrors(null);
-
-      //   // Refresh session if needed
-      //   // await updateSession();
-      // } else {
-      //   const error = await response.json();
-      //   console.error("Failed to update profile:", error);
-      //   // Handle API errors here
-      // }
+      const response = await fetch("/api/dashboard/profile/info", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.status === 400) {
+        setValidationErrors(responseData.validationErrors);
+        addToast({
+          title: "",
+          description: responseData.message,
+          color: "danger",
+        });
+        // Refresh session if needed
+        // await updateSession();
+      } else if (response.status === 200) {
+        addToast({
+          title: "dsdsds",
+          description: responseData.message,
+          color: "success",
+        });
+      } else {
+        const error = await response.json();
+        console.error("Failed to update profile:", error);
+        // Handle API errors here
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
