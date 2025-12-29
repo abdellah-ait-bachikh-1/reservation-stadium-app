@@ -98,28 +98,28 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
       console.log("Submitting profile data:", formData);
 
       // Update API call
-      const response = await fetch("/api/users/me", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // const response = await fetch("/api/users/me", {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (response.ok) {
-        const updatedUser = await response.json();
+      // if (response.ok) {
+      //   const updatedUser = await response.json();
 
-        console.log("Profile updated successfully");
-        setIsEditing(false);
-        setValidationErrors(null);
+      //   console.log("Profile updated successfully");
+      //   setIsEditing(false);
+      //   setValidationErrors(null);
 
-        // Refresh session if needed
-        // await updateSession();
-      } else {
-        const error = await response.json();
-        console.error("Failed to update profile:", error);
-        // Handle API errors here
-      }
+      //   // Refresh session if needed
+      //   // await updateSession();
+      // } else {
+      //   const error = await response.json();
+      //   console.error("Failed to update profile:", error);
+      //   // Handle API errors here
+      // }
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
