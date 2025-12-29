@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     // const channel_name = params.get('channel_name');
 
     if (!socket_id || !channel_name) {
-      console.log('Missing socket_id or channel_name:', { socket_id, channel_name });
+      // console.log('Missing socket_id or channel_name:', { socket_id, channel_name });
       return NextResponse.json(
         { error: 'Missing socket_id or channel_name' },
         { status: 400 }
@@ -38,23 +38,23 @@ export async function POST(request: Request) {
     const expectedChannelName = `private-user-${userId}`;
 
     if (channel_name !== expectedChannelName) {
-      console.log('Unauthorized channel access:', {
-        channel_name,
-        expectedChannelName,
-        userId
-      });
+      // console.log('Unauthorized channel access:', {
+      //   channel_name,
+      //   expectedChannelName,
+      //   userId
+      // });
       return NextResponse.json(
         { error: 'Unauthorized channel access' },
         { status: 403 }
       );
     }
 
-    console.log('Authorizing Pusher channel:', {
-      socket_id,
-      channel_name,
-      userId,
-      userName: user.fullNameFr
-    });
+    // console.log('Authorizing Pusher channel:', {
+    //   socket_id,
+    //   channel_name,
+    //   userId,
+    //   userName: user.fullNameFr
+    // });
 
     // إنشاء مصادقة Pusher
     const authResponse = pusherServer.authorizeChannel(
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       }
     );
 
-    console.log('Pusher auth response generated');
+    // console.log('Pusher auth response generated');
     return NextResponse.json(authResponse);
   } catch (error) {
     console.error('Pusher auth error:', error);

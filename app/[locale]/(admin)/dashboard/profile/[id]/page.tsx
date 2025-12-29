@@ -1,8 +1,8 @@
 // app/[locale]/dashboard/profile/page.tsx
 import { isExistsAuthenticatedUser } from "@/lib/data/auth";
-import { TLocale } from "@/lib/types";
+import { TLocale, TPreferredLocale } from "@/lib/types";
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 import { Card, CardBody, CardHeader } from "@heroui/card";
@@ -11,7 +11,11 @@ import SportsInfo from "@/components/dashboard/SportsInfo";
 import QuickStats from "@/components/dashboard/QuickStats";
 import ReservationsSummary from "@/components/dashboard/ReservationsSummary";
 import SubscriptionsSummary from "@/components/dashboard/SubscriptionsSummary";
-
+import { Suspense } from "react";
+import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
+import db from "@/lib/db";
+import { isError } from "@/lib/utils";
+import { getLocalizedError } from "@/lib/api/locale";
 export const generateMetadata = async ({
   params,
 }: {
@@ -28,12 +32,14 @@ export const generateMetadata = async ({
   };
 };
 
+
+
 const DashboardProfilePage = async () => {
   const user = await isExistsAuthenticatedUser();
+  const locale = (await getLocale()) as TLocale;
   if (!user) {
     redirect("/auth/login");
   }
-
   const t = await getTranslations("Pages.Dashboard.Profile");
 
   return (
@@ -47,7 +53,7 @@ const DashboardProfilePage = async () => {
         </p>
       </div>
       <div className="mb-8">
-        <SettingsTabs />
+          <SettingsTabs  />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

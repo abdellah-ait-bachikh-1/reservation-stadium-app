@@ -9,7 +9,7 @@ import { isAdminUserInApi } from "@/lib/data/auth";
 export const GET = async (request: Request) => {
   try {
      const user = await isAdminUserInApi();
-   
+     console.log('is admin user',user)
        if (!user) {
          return new Response(JSON.stringify({ error: "Unauthorized" }), {
            status: 401,

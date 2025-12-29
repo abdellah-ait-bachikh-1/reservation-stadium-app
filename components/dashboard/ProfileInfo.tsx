@@ -15,86 +15,29 @@ import {
 import { validateUserProfileCredentials } from "@/lib/validation/profile";
 import { isFieldHasError } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import { UserProfile } from "./SettingsTabs";
+// import { UserProfile } from "@/app/[locale]/(admin)/dashboard/profile/[id]/page";
 
-interface ApiUser {
-  fullNameFr: string;
-  fullNameAr: string;
-  email: string;
-  phoneNumber: string;
-  preferredLocale: TLocale;
-  id: string;
-  role: string;
-  club: {
-    id: string;
-    nameAr: string;
-    nameFr: string;
-  } | null;
-  approved: boolean;
-  emailVerifiedAt: string | null;
-  createdAt: string;
-}
-
-export default function ProfileInfo() {
+export default function ProfileInfo({ user }: { user: UserProfile }) {
   const locale = useLocale() as TLocale;
   const t = useTranslations("Pages.Dashboard.Profile.SettingsTabs.profileInfo");
 
   const { data: session, status } = useSession();
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
-  const [userData, setUserData] = useState<ApiUser | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
   // Form data state
   const [formData, setFormData] = useState<UserProfileCredentials>({
-    fullNameFr: "",
-    fullNameAr: "",
-    email: "",
-    phoneNumber: "",
-    preferredLocale: locale || "en",
+    fullNameFr: user.fullNameFr,
+    fullNameAr: user.fullNameAr,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    preferredLocale: user.preferredLocale,
   });
 
   // Validation errors state
   const [validationErrors, setValidationErrors] =
     useState<ValidateUserProfileCredentialsErrorResult | null>(null);
-
-  // Fetch user data on component mount
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchUserData();
-    }
-  }, [status]);
-
-  const fetchUserData = async () => {
-    try {
-      setIsFetching(true);
-      const response = await fetch("/api/users/me", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const user: ApiUser = await response.json();
-        setUserData(user);
-
-        // Populate form data with user data
-        setFormData({
-          fullNameFr: user.fullNameFr || "",
-          fullNameAr: user.fullNameAr || "",
-          email: user.email || "",
-          phoneNumber: user.phoneNumber || "",
-          preferredLocale: user.preferredLocale.toLowerCase() as TLocale,
-        });
-      } else {
-        console.error("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
 
   // Handle input changes with real-time validation
   const handleChange = (field: keyof UserProfileCredentials, value: string) => {
@@ -150,7 +93,7 @@ export default function ProfileInfo() {
       return;
     }
 
-    setIsLoading(true);
+    setIsPending(true);
     try {
       console.log("Submitting profile data:", formData);
 
@@ -165,7 +108,7 @@ export default function ProfileInfo() {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUserData(updatedUser);
+
         console.log("Profile updated successfully");
         setIsEditing(false);
         setValidationErrors(null);
@@ -180,7 +123,7 @@ export default function ProfileInfo() {
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {
-      setIsLoading(false);
+      setIsPending(false);
     }
   };
 
@@ -189,45 +132,18 @@ export default function ProfileInfo() {
     setValidationErrors(null);
 
     // Reset form to original user data
-    if (userData) {
+    if (user) {
       setFormData({
-        fullNameFr: userData.fullNameFr || "",
-        fullNameAr: userData.fullNameAr || "",
-        email: userData.email || "",
-        phoneNumber: userData.phoneNumber || "",
-        preferredLocale: userData.preferredLocale || locale || "en",
+        fullNameFr: user.fullNameFr || "",
+        fullNameAr: user.fullNameAr || "",
+        email: user.email || "",
+        phoneNumber: user.phoneNumber || "",
+        preferredLocale: user.preferredLocale || locale || "en",
       });
     }
   };
 
   // Loading skeleton
-  if (isFetching) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Skeleton className="h-14 rounded-lg" />
-          <Skeleton className="h-14 rounded-lg" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Skeleton className="h-14 rounded-lg" />
-          <Skeleton className="h-14 rounded-lg" />
-        </div>
-        <Skeleton className="h-14 rounded-lg" />
-        <div className="flex justify-end gap-3 pt-4">
-          <Skeleton className="h-10 w-24 rounded-lg" />
-        </div>
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <Skeleton className="h-6 w-48 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Skeleton className="h-16 rounded-lg" />
-            <Skeleton className="h-16 rounded-lg" />
-            <Skeleton className="h-16 rounded-lg" />
-            <Skeleton className="h-16 rounded-lg" />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Not authenticated
   // Not authenticated
@@ -344,13 +260,13 @@ export default function ProfileInfo() {
               : null)
           }
         >
-          <SelectItem key="en" textValue="English">
+          <SelectItem key="EN" textValue="English">
             {t("language.en")}
           </SelectItem>
-          <SelectItem key="fr" textValue="Français">
+          <SelectItem key="FR" textValue="Français">
             {t("language.fr")}
           </SelectItem>
-          <SelectItem key="ar" textValue="العربية">
+          <SelectItem key="AR" textValue="العربية">
             {t("language.ar")}
           </SelectItem>
         </Select>
@@ -362,11 +278,11 @@ export default function ProfileInfo() {
                 color="danger"
                 variant="flat"
                 onPress={handleCancel}
-                isDisabled={isLoading}
+                isDisabled={isPending}
               >
                 {t("cancel")}
               </Button>
-              <Button color="primary" type="submit" isLoading={isLoading}>
+              <Button color="primary" type="submit" isLoading={isPending}>
                 {t("saveChanges")}
               </Button>
             </>
@@ -374,7 +290,7 @@ export default function ProfileInfo() {
             <Button
               color="primary"
               onPress={() => setIsEditing(true)}
-              isDisabled={isFetching}
+              isDisabled={isPending}
             >
               {t("editProfile")}
             </Button>
@@ -382,7 +298,7 @@ export default function ProfileInfo() {
         </div>
       </form>
 
-      {userData && (
+      {user && (
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-medium mb-4">
             {t("accountInformation")}
@@ -392,7 +308,7 @@ export default function ProfileInfo() {
               <p className="text-gray-500 dark:text-gray-400">{t("role")}</p>
               <p className="font-medium">
                 {" "}
-                {t(`roles.${userData.role}` as any) || userData.role || "USER"}
+                {t(`roles.${user.role}` as any) || user.role || "USER"}
               </p>
             </div>
             <div>
@@ -402,11 +318,11 @@ export default function ProfileInfo() {
               <div className="flex items-center gap-2">
                 <div
                   className={`w-2 h-2 rounded-full ${
-                    userData.approved ? "bg-success" : "bg-warning"
+                    user.approved ? "bg-success" : "bg-warning"
                   }`}
                 />
                 <p className="font-medium">
-                  {userData.approved ? t("approved") : t("pending")}
+                  {user.approved ? t("approved") : t("pending")}
                 </p>
               </div>
             </div>
@@ -415,7 +331,7 @@ export default function ProfileInfo() {
                 {t("emailVerified")}
               </p>
               <p className="font-medium">
-                {userData.emailVerifiedAt ? t("yes") : t("no")}
+                {user.emailVerifiedAt ? t("yes") : t("no")}
               </p>
             </div>
             <div>
@@ -423,22 +339,22 @@ export default function ProfileInfo() {
                 {t("memberSince")}
               </p>
               <p className="font-medium">
-                {new Date(userData.createdAt).toLocaleDateString()}
+                {new Date(user.createdAt).toLocaleDateString()}
               </p>
             </div>
-            {userData.club && (
+            {user.club && (
               <>
                 <div>
                   <p className="text-gray-500 dark:text-gray-400">
                     {t("clubNameFr")}
                   </p>
-                  <p className="font-medium">{userData.club.nameFr}</p>
+                  <p className="font-medium">{user.club.nameFr}</p>
                 </div>
                 <div>
                   <p className="text-gray-500 dark:text-gray-400">
                     {t("clubNameAr")}
                   </p>
-                  <p className="font-medium">{userData.club.nameAr}</p>
+                  <p className="font-medium">{user.club.nameAr}</p>
                 </div>
               </>
             )}

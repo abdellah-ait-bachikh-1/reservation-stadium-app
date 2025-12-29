@@ -1,6 +1,10 @@
+import { Decimal } from "@prisma/client/runtime/client";
+import { UserLocale, UserRole } from "./generated/prisma/enums";
+import { User } from "./generated/prisma/client";
+
 export type Theme = "light" | "dark" | "system";
 export type TLocale = "fr" | "ar" | "en";
-
+export type TPreferredLocale = User['preferredLocale']
 // -----------register
 export type RegisterCredentials = {
   fullNameAr: string;
@@ -38,7 +42,7 @@ export type UserProfileCredentials = {
   fullNameFr: string;
   email: string;
   phoneNumber: string;
-  preferredLocale: TLocale;
+  preferredLocale: UserLocale;
 };
 
 export type ValidateUserProfileCredentialsErrorResult = Partial<
@@ -70,3 +74,34 @@ export type ValidateChangePasswordCredentialsResult =
       validationErrors: ValidateChangePasswordCredentialsErrorResult;
     }
   | { data: ChangePasswordCredentials; validationErrors: null };
+
+
+  export type ApiUser = {
+    fullNameFr: string;
+    fullNameAr: string;
+    email: string;
+    phoneNumber: string;
+    preferredLocale: UserLocale;
+    id: string;
+    role: UserRole;
+    club: {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+        nameAr: string;
+        nameFr: string;
+        addressFr: string;
+        addressAr: string;
+        monthlyFee: Decimal;
+        paymentDueDay: number;
+        userId: string;
+        sportId: string;
+    } | null;
+    approved: boolean;
+    verificationToken: string | null;
+    emailVerifiedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+}

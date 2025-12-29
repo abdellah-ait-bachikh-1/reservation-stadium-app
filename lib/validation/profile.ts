@@ -48,9 +48,9 @@ export const createUserProfileValidationSchema = (
         ),
 
       preferredLocale: z
-        .enum(["en", "fr", "ar"])
+        .enum(["EN", "FR", "AR"])
         .refine(
-          (val) => ["en", "fr", "ar"].includes(val),
+          (val) => ["EN", "FR", "AR"].includes(val),
           {
             message: getLocalizedValidationMessage('preferredLocale.invalid', locale)
           }
