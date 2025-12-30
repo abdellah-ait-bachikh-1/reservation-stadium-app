@@ -93,6 +93,12 @@ export async function PUT(req: NextRequest) {
         { status: 400 }
       );
     }
+    // const newUser = await db.user.update({
+    //   where: {
+    //     id: authUser.id,
+    //   },
+    //   data: {},
+    // });
     return NextResponse.json({ message: getLocalizedSuccess(locale, "200") });
   } catch (error) {
     console.log(error);

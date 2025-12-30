@@ -12,7 +12,7 @@ import {
   ValidateUserProfileCredentialsErrorResult,
 } from "@/lib/types";
 import { validateUserProfileCredentials } from "@/lib/validation/profile";
-import { isFieldHasError } from "@/lib/utils";
+import { haveSameValues, isFieldHasError } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { UserProfile } from "./SettingsTabs";
 import { addToast } from "@heroui/toast";
@@ -162,7 +162,7 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
       </div>
     );
   }
-console.log({user})
+  console.log({ user });
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -290,7 +290,28 @@ console.log({user})
               >
                 {t("cancel")}
               </Button>
-              <Button color="primary" type="submit" isLoading={isPending}>
+              <Button
+                color="primary"
+                type="submit"
+                isLoading={isPending}
+                isDisabled={haveSameValues<UserProfileCredentials>(
+                  formData,
+                  {
+                    fullNameAr: user.fullNameAr,
+                    fullNameFr: user.fullNameFr,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    preferredLocale: user.preferredLocale,
+                  },
+                  [
+                    "fullNameAr",
+                    "fullNameFr",
+                    "email",
+                    "phoneNumber",
+                    "preferredLocale",
+                  ]
+                )}
+              >
                 {t("saveChanges")}
               </Button>
             </>
