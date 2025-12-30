@@ -8,6 +8,7 @@ import { isExistsAuthenticatedUserInApi } from "@/lib/data/auth";
 import db from "@/lib/db";
 import { TLocale } from "@/lib/types";
 import { isError } from "@/lib/utils";
+import { getLocalizedValidationMessage } from "@/lib/validation-messages";
 import { validateUserProfileCredentials } from "@/lib/validation/profile";
 import { getLocale } from "next-intl/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -93,12 +94,36 @@ export async function PUT(req: NextRequest) {
         { status: 400 }
       );
     }
-    // const newUser = await db.user.update({
-    //   where: {
-    //     id: authUser.id,
-    //   },
-    //   data: {},
-    // });
+    const existUserWithEmail = await db.user.findUnique({
+      where: {
+        NOT: { id: authUser.id },
+        email,
+      },
+    });
+    if (existUserWithEmail) {
+      return NextResponse.json(
+        {
+          message:
+            getLocalizedError(locale, "400") || errorMessages["en"]?.["400"],
+          validationErrors: {
+            email: [getLocalizedValidationMessage("email.exists", locale)],
+          },
+        },
+        { status: 400 }
+      );
+    }
+    const newUser = await db.user.update({
+      where: {
+        id: authUser.id,
+      },
+      data: {
+        fullNameAr,
+        fullNameFr,
+        email,
+        phoneNumber,
+        preferredLocale,
+      },
+    });
     return NextResponse.json({ message: getLocalizedSuccess(locale, "200") });
   } catch (error) {
     console.log(error);

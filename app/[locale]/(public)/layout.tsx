@@ -69,9 +69,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers locale={locale}>
             <Header />
-            <main className="min-h-[calc(100vh-96px)]  z-99980">
-              {children}
-            </main>
+            <main className="min-h-[calc(100vh-96px)]  z-99">{children}</main>
             <Footer locale={locale} />
           </Providers>
         </NextIntlClientProvider>
