@@ -5,7 +5,6 @@ import { useState, FormEvent, useEffect } from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
-import { Skeleton } from "@heroui/skeleton";
 import { useLocale, useTranslations } from "next-intl";
 import {
   UserProfileCredentials,
@@ -163,7 +162,7 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
       </div>
     );
   }
-
+console.log({user})
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
