@@ -621,7 +621,7 @@ const StadiumClientSection = ({
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div className="flex items-center justify-center ">
+              <div className="flex items-center justify-center overflow-hidden">
                 <Pagination
                   total={pagination.totalPages}
                   page={currentPage}

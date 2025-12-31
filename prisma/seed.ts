@@ -118,9 +118,11 @@ function getRandomItems<T>(array: T[], count: number): T[] {
 
 // Generate random date in 2025
 function randomDate2025(startDate?: Date, endDate?: Date): Date {
-  const start = startDate || new Date('2025-01-01');
-  const end = endDate || new Date('2025-12-30');
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  const start = startDate || new Date("2025-01-01");
+  const end = endDate || new Date("2025-12-30");
+  return new Date(
+    start.getTime() + Math.random() * (end.getTime() - start.getTime())
+  );
 }
 
 // Generate random time between 8 AM and 10 PM
@@ -132,27 +134,52 @@ function randomTime(): { hours: number; minutes: number } {
 
 // Generate unique receipt number
 function generateReceiptNumber(): string {
-  const prefix = 'REC';
+  const prefix = "REC";
   const date = new Date();
   const year = date.getFullYear().toString().slice(-2);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const random = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, "0");
   return `${prefix}${year}${month}${random}`;
 }
 
 // Generate month name
-function getMonthName(month: number, locale: 'fr' | 'ar' | 'en' = 'fr'): string {
+function getMonthName(
+  month: number,
+  locale: "fr" | "ar" | "en" = "fr"
+): string {
   const monthsFr = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
   ];
-  
+
   const monthsAr = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو",
+    "يونيو",
+    "يوليو",
+    "أغسطس",
+    "سبتمبر",
+    "أكتوبر",
+    "نوفمبر",
+    "ديسمبر",
   ];
-  
-  return locale === 'fr' ? monthsFr[month - 1] : monthsAr[month - 1];
+
+  return locale === "fr" ? monthsFr[month - 1] : monthsAr[month - 1];
 }
 
 async function main() {
@@ -257,12 +284,26 @@ async function main() {
   console.log("🏟️ Creating 15 stadiums...");
 
   const stadiums = [];
+  const stadiumNamesFr = [
+    "Parc des Lions",
+    "Arena du Soleil",
+    "Stade des Étoiles",
+    "Champ de la Victoire",
+    "Cité du Sport",
+  ];
 
+  const stadiumNamesAr = [
+    "ملعب الأبطال",
+    "ستاد الشمس",
+    "ملعب النجوم",
+    "ميدان النصر",
+    "مدينة الرياضة",
+  ];
   for (let i = 1; i <= 15; i++) {
     const location = getRandomItem(tantanLocations);
-    
-    const stadiumNameFr = `Stade ${i}`;
-    const stadiumNameAr = `ملعب ${i}`;
+
+    const stadiumNameFr = `Stade ${stadiumNamesFr[i % stadiumNamesFr.length]}`;
+    const stadiumNameAr = `ملعب ${stadiumNamesAr[i % stadiumNamesAr.length]}`;
 
     // Create stadium
     const stadium = await prisma.stadium.create({
@@ -318,16 +359,16 @@ async function main() {
   for (let i = 0; i < subscriptionCount; i++) {
     const randomClubUser = getRandomItem(clubUsers);
     const randomStadium = getRandomItem(stadiums);
-    
+
     // Random day of week (1=Monday, 7=Sunday)
     const dayOfWeek = Math.floor(Math.random() * 7) + 1;
-    
+
     // Random time between 14:00 and 20:00
     const startHour = Math.floor(Math.random() * 7) + 14;
     const endHour = startHour + Math.floor(Math.random() * 3) + 1; // 1-3 hours duration
-    
-    const startDate = new Date('2025-01-01');
-    const endDate = new Date('2025-12-31');
+
+    const startDate = new Date("2025-01-01");
+    const endDate = new Date("2025-12-31");
 
     // Create reservation series
     const series = await prisma.reservationSeries.create({
@@ -360,8 +401,12 @@ async function main() {
     });
 
     subscriptions.push(subscription);
-    
-    console.log(`✅ Created subscription ${i + 1} for ${randomClubUser.email} at ${randomStadium.nameFr}`);
+
+    console.log(
+      `✅ Created subscription ${i + 1} for ${randomClubUser.email} at ${
+        randomStadium.nameFr
+      }`
+    );
   }
 
   console.log(`✅ Created ${subscriptions.length} monthly subscriptions`);
@@ -374,20 +419,29 @@ async function main() {
   // For each subscription, create monthly payments
   for (const series of reservationSeries) {
     // Get the associated subscription
-    const subscription = subscriptions.find(s => s.reservationSeriesId === series.id);
+    const subscription = subscriptions.find(
+      (s) => s.reservationSeriesId === series.id
+    );
     if (!subscription) continue;
 
-    const user = clubUsers.find(u => u.id === series.userId);
+    const user = clubUsers.find((u) => u.id === series.userId);
     if (!user) continue;
 
     // Create payments for some months (not all, to show different statuses)
-    const monthsToPay = getRandomItems([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], Math.floor(Math.random() * 8) + 4); // 4-12 months
+    const monthsToPay = getRandomItems(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      Math.floor(Math.random() * 8) + 4
+    ); // 4-12 months
 
     for (const month of monthsToPay) {
       // Randomly decide payment status
       const statuses = ["PENDING", "PAID", "OVERDUE", "PARTIALLY_PAID"];
-      const status = getRandomItem(statuses) as "PENDING" | "PAID" | "OVERDUE" | "PARTIALLY_PAID";
-      
+      const status = getRandomItem(statuses) as
+        | "PENDING"
+        | "PAID"
+        | "OVERDUE"
+        | "PARTIALLY_PAID";
+
       const paymentData: any = {
         month: month,
         year: 2025,
@@ -419,7 +473,7 @@ async function main() {
             amount: series.monthlyPrice!,
             paymentDate: paymentData.paymentDate,
             receiptNumber: paymentData.receiptNumber,
-            notes: `Paiement mensuel ${getMonthName(month, 'fr')} 2025`,
+            notes: `Paiement mensuel ${getMonthName(month, "fr")} 2025`,
             monthlyPaymentId: payment.id,
             userId: series.userId,
           },
@@ -439,23 +493,27 @@ async function main() {
   for (let i = 0; i < reservationsToCreate; i++) {
     const randomStadium = getRandomItem(stadiums);
     const randomClubUser = getRandomItem(clubUsers);
-    
+
     // Decide if this is a subscription reservation or single session
     const isSubscription = Math.random() > 0.4; // 60% subscription, 40% single
-    
+
     let monthlyPaymentId: string | undefined;
     let reservationSeriesId: string | undefined;
     let paymentType: "SINGLE_SESSION" | "MONTHLY_SUBSCRIPTION";
-    
+
     if (isSubscription) {
       // Find a subscription for this user
-      const userSeries = reservationSeries.filter(rs => rs.userId === randomClubUser.id);
+      const userSeries = reservationSeries.filter(
+        (rs) => rs.userId === randomClubUser.id
+      );
       if (userSeries.length > 0) {
         const series = getRandomItem(userSeries);
         reservationSeriesId = series.id;
-        
+
         // Find a monthly payment for this series
-        const seriesPayments = monthlyPayments.filter(mp => mp.reservationSeriesId === series.id);
+        const seriesPayments = monthlyPayments.filter(
+          (mp) => mp.reservationSeriesId === series.id
+        );
         if (seriesPayments.length > 0) {
           const payment = getRandomItem(seriesPayments);
           monthlyPaymentId = payment.id;
@@ -469,7 +527,9 @@ async function main() {
     // Random date in 2025
     const startDateTime = randomDate2025();
     const endDateTime = new Date(startDateTime);
-    endDateTime.setHours(startDateTime.getHours() + Math.floor(Math.random() * 3) + 1); // 1-3 hours later
+    endDateTime.setHours(
+      startDateTime.getHours() + Math.floor(Math.random() * 3) + 1
+    ); // 1-3 hours later
 
     // Random status with weights
     const statusWeights = [
@@ -479,11 +539,11 @@ async function main() {
       { status: "PAID", weight: 0.15 },
       { status: "UNPAID", weight: 0.05 },
     ];
-    
+
     const randomNum = Math.random();
     let cumulativeWeight = 0;
     let selectedStatus = "APPROVED";
-    
+
     for (const { status, weight } of statusWeights) {
       cumulativeWeight += weight;
       if (randomNum <= cumulativeWeight) {
@@ -492,7 +552,9 @@ async function main() {
       }
     }
 
-    const isPaid = selectedStatus === "PAID" || (Math.random() > 0.3 && selectedStatus === "APPROVED");
+    const isPaid =
+      selectedStatus === "PAID" ||
+      (Math.random() > 0.3 && selectedStatus === "APPROVED");
 
     // Create reservation
     const reservation = await prisma.reservation.create({
@@ -543,7 +605,7 @@ async function main() {
   for (let i = 0; i < extraCashPaymentsCount; i++) {
     const randomClubUser = getRandomItem(clubUsers);
     const randomStadium = getRandomItem(stadiums);
-    
+
     await prisma.cashPaymentRecord.create({
       data: {
         amount: randomPrice(50, 300),
@@ -589,8 +651,10 @@ async function main() {
         titleEn: "Account Approved",
         titleFr: "Compte Approuvé",
         titleAr: "تمت الموافقة على الحساب",
-        messageEn: "Your account has been approved. You can now make reservations.",
-        messageFr: "Votre compte a été approuvé. Vous pouvez maintenant effectuer des réservations.",
+        messageEn:
+          "Your account has been approved. You can now make reservations.",
+        messageFr:
+          "Votre compte a été approuvé. Vous pouvez maintenant effectuer des réservations.",
         messageAr: "تمت الموافقة على حسابك. يمكنك الآن إجراء الحجوزات.",
       },
       NEW_RESERVATION_REQUEST: {
@@ -637,9 +701,12 @@ async function main() {
         titleEn: "Monthly Subscription Payment",
         titleFr: "Paiement d'Abonnement Mensuel",
         titleAr: "دفعة الاشتراك الشهري",
-        messageEn: "Your monthly subscription payment is due for {{month}} {{year}}",
-        messageFr: "Votre paiement d'abonnement mensuel est dû pour {{month}} {{year}}",
-        messageAr: "دفعة الاشتراك الشهرية الخاصة بك مستحقة لـ {{month}} {{year}}",
+        messageEn:
+          "Your monthly subscription payment is due for {{month}} {{year}}",
+        messageFr:
+          "Votre paiement d'abonnement mensuel est dû pour {{month}} {{year}}",
+        messageAr:
+          "دفعة الاشتراك الشهرية الخاصة بك مستحقة لـ {{month}} {{year}}",
       },
       PAYMENT_OVERDUE: {
         titleEn: "Payment Overdue",
@@ -673,19 +740,30 @@ async function main() {
   // 1. Monthly payment due notifications
   for (const payment of monthlyPayments) {
     if (payment.status === "PENDING" || payment.status === "OVERDUE") {
-      const user = clubUsers.find(u => u.id === payment.userId);
+      const user = clubUsers.find((u) => u.id === payment.userId);
       if (!user) continue;
 
       const translations = getTranslations(
-        payment.status === "OVERDUE" ? "PAYMENT_OVERDUE" : "MONTHLY_SUBSCRIPTION_PAYMENT",
-        payment.status === "OVERDUE" ? "Payment Overdue" : "Monthly Payment Due",
-        payment.status === "OVERDUE" 
-          ? `Your payment for ${getMonthName(payment.month, 'en')} ${payment.year} is overdue`
-          : `Your monthly payment for ${getMonthName(payment.month, 'en')} ${payment.year} is due`
+        payment.status === "OVERDUE"
+          ? "PAYMENT_OVERDUE"
+          : "MONTHLY_SUBSCRIPTION_PAYMENT",
+        payment.status === "OVERDUE"
+          ? "Payment Overdue"
+          : "Monthly Payment Due",
+        payment.status === "OVERDUE"
+          ? `Your payment for ${getMonthName(payment.month, "en")} ${
+              payment.year
+            } is overdue`
+          : `Your monthly payment for ${getMonthName(payment.month, "en")} ${
+              payment.year
+            } is due`
       );
 
       notificationsToCreate.push({
-        type: payment.status === "OVERDUE" ? "PAYMENT_OVERDUE" : "MONTHLY_SUBSCRIPTION_PAYMENT",
+        type:
+          payment.status === "OVERDUE"
+            ? "PAYMENT_OVERDUE"
+            : "MONTHLY_SUBSCRIPTION_PAYMENT",
         titleEn: translations.titleEn,
         titleFr: translations.titleFr,
         titleAr: translations.titleAr,
@@ -708,16 +786,22 @@ async function main() {
 
   // 2. Reservation status notifications
   for (const reservation of reservations) {
-    const user = clubUsers.find(u => u.id === reservation.userId);
-    const stadium = stadiums.find(s => s.id === reservation.stadiumId);
-    
+    const user = clubUsers.find((u) => u.id === reservation.userId);
+    const stadium = stadiums.find((s) => s.id === reservation.stadiumId);
+
     if (!user || !stadium) continue;
 
-    if (reservation.status === "APPROVED" || reservation.status === "DECLINED" || reservation.status === "CANCELLED") {
+    if (
+      reservation.status === "APPROVED" ||
+      reservation.status === "DECLINED" ||
+      reservation.status === "CANCELLED"
+    ) {
       const translations = getTranslations(
         `RESERVATION_${reservation.status}`,
         `Reservation ${reservation.status}`,
-        `Your reservation for ${stadium.nameFr} has been ${reservation.status.toLowerCase()}`
+        `Your reservation for ${
+          stadium.nameFr
+        } has been ${reservation.status.toLowerCase()}`
       );
 
       notificationsToCreate.push({
@@ -725,9 +809,18 @@ async function main() {
         titleEn: translations.titleEn,
         titleFr: translations.titleFr,
         titleAr: translations.titleAr,
-        messageEn: translations.messageEn.replace("{{stadium}}", stadium.nameFr),
-        messageFr: translations.messageFr.replace("{{stadium}}", stadium.nameFr),
-        messageAr: translations.messageAr.replace("{{stadium}}", stadium.nameAr),
+        messageEn: translations.messageEn.replace(
+          "{{stadium}}",
+          stadium.nameFr
+        ),
+        messageFr: translations.messageFr.replace(
+          "{{stadium}}",
+          stadium.nameFr
+        ),
+        messageAr: translations.messageAr.replace(
+          "{{stadium}}",
+          stadium.nameAr
+        ),
         isRead: Math.random() > 0.5,
         userId: user.id,
         actorUserId: admin.id,
@@ -737,17 +830,23 @@ async function main() {
           stadiumName: stadium.nameFr,
           status: reservation.status,
         },
-        createdAt: randomDate2025(reservation.startDateTime, new Date('2025-12-31')),
+        createdAt: randomDate2025(
+          reservation.startDateTime,
+          new Date("2025-12-31")
+        ),
       });
     }
   }
 
   // 3. New reservation requests for admin
-  const pendingReservations = reservations.filter(r => r.status === "PENDING");
-  for (const reservation of pendingReservations.slice(0, 10)) { // Limit to 10
-    const user = clubUsers.find(u => u.id === reservation.userId);
-    const stadium = stadiums.find(s => s.id === reservation.stadiumId);
-    
+  const pendingReservations = reservations.filter(
+    (r) => r.status === "PENDING"
+  );
+  for (const reservation of pendingReservations.slice(0, 10)) {
+    // Limit to 10
+    const user = clubUsers.find((u) => u.id === reservation.userId);
+    const stadium = stadiums.find((s) => s.id === reservation.stadiumId);
+
     if (!user || !stadium) continue;
 
     const translations = getTranslations(
@@ -773,7 +872,7 @@ async function main() {
         stadiumName: stadium.nameFr,
         requestedBy: user.email,
       },
-      createdAt: randomDate2025(reservation.createdAt, new Date('2025-12-31')),
+      createdAt: randomDate2025(reservation.createdAt, new Date("2025-12-31")),
     });
   }
 
@@ -804,55 +903,97 @@ async function main() {
   console.log("📊 2025 DATA SEEDING SUMMARY:");
   console.log("=".repeat(50));
   console.log(`   ⚽ Sports: ${sportsData.length}`);
-  console.log(`   👥 Users: ${clubs.length + 1} (1 admin + ${clubs.length} clubs)`);
+  console.log(
+    `   👥 Users: ${clubs.length + 1} (1 admin + ${clubs.length} clubs)`
+  );
   console.log(`   🏆 Clubs: ${clubs.length}`);
   console.log(`   🏟️ Stadiums: ${stadiums.length}`);
   console.log(`   💳 Subscriptions: ${subscriptions.length}`);
   console.log(`   💰 Monthly Payments: ${monthlyPayments.length}`);
   console.log(`   📅 Reservations: ${reservations.length} (2025)`);
-  console.log(`   💵 Cash Payments: ${extraCashPaymentsCount + reservations.filter(r => r.isPaid).length}`);
+  console.log(
+    `   💵 Cash Payments: ${
+      extraCashPaymentsCount + reservations.filter((r) => r.isPaid).length
+    }`
+  );
   console.log(`   🔔 Notifications: ${notificationsToCreate.length}`);
-  
+
   // Payment statistics
-  const paidPayments = monthlyPayments.filter(p => p.status === "PAID").length;
-  const pendingPayments = monthlyPayments.filter(p => p.status === "PENDING").length;
-  const overduePayments = monthlyPayments.filter(p => p.status === "OVERDUE").length;
-  
+  const paidPayments = monthlyPayments.filter(
+    (p) => p.status === "PAID"
+  ).length;
+  const pendingPayments = monthlyPayments.filter(
+    (p) => p.status === "PENDING"
+  ).length;
+  const overduePayments = monthlyPayments.filter(
+    (p) => p.status === "OVERDUE"
+  ).length;
+
   console.log("\n💳 PAYMENT STATISTICS:");
   console.log("=".repeat(50));
   console.log(`   Paid: ${paidPayments}`);
   console.log(`   Pending: ${pendingPayments}`);
   console.log(`   Overdue: ${overduePayments}`);
-  console.log(`   Partially Paid: ${monthlyPayments.filter(p => p.status === "PARTIALLY_PAID").length}`);
-  
+  console.log(
+    `   Partially Paid: ${
+      monthlyPayments.filter((p) => p.status === "PARTIALLY_PAID").length
+    }`
+  );
+
   // Reservation statistics
-  const approvedReservations = reservations.filter(r => r.status === "APPROVED").length;
-  const pendingReservationsCount = reservations.filter(r => r.status === "PENDING").length;
-  const paidReservations = reservations.filter(r => r.status === "PAID").length;
-  
+  const approvedReservations = reservations.filter(
+    (r) => r.status === "APPROVED"
+  ).length;
+  const pendingReservationsCount = reservations.filter(
+    (r) => r.status === "PENDING"
+  ).length;
+  const paidReservations = reservations.filter(
+    (r) => r.status === "PAID"
+  ).length;
+
   console.log("\n📅 RESERVATION STATISTICS:");
   console.log("=".repeat(50));
   console.log(`   Approved: ${approvedReservations}`);
   console.log(`   Pending: ${pendingReservationsCount}`);
-  console.log(`   Declined: ${reservations.filter(r => r.status === "DECLINED").length}`);
+  console.log(
+    `   Declined: ${reservations.filter((r) => r.status === "DECLINED").length}`
+  );
   console.log(`   Paid: ${paidReservations}`);
-  console.log(`   Unpaid: ${reservations.filter(r => r.status === "UNPAID").length}`);
-  
+  console.log(
+    `   Unpaid: ${reservations.filter((r) => r.status === "UNPAID").length}`
+  );
+
   // Payment type statistics
-  const subscriptionReservations = reservations.filter(r => r.paymentType === "MONTHLY_SUBSCRIPTION").length;
-  const singleSessionReservations = reservations.filter(r => r.paymentType === "SINGLE_SESSION").length;
-  
+  const subscriptionReservations = reservations.filter(
+    (r) => r.paymentType === "MONTHLY_SUBSCRIPTION"
+  ).length;
+  const singleSessionReservations = reservations.filter(
+    (r) => r.paymentType === "SINGLE_SESSION"
+  ).length;
+
   console.log("\n💵 PAYMENT TYPE BREAKDOWN:");
   console.log("=".repeat(50));
-  console.log(`   Monthly Subscriptions: ${subscriptionReservations} (${((subscriptionReservations / reservations.length) * 100).toFixed(1)}%)`);
-  console.log(`   Single Sessions: ${singleSessionReservations} (${((singleSessionReservations / reservations.length) * 100).toFixed(1)}%)`);
-  
+  console.log(
+    `   Monthly Subscriptions: ${subscriptionReservations} (${(
+      (subscriptionReservations / reservations.length) *
+      100
+    ).toFixed(1)}%)`
+  );
+  console.log(
+    `   Single Sessions: ${singleSessionReservations} (${(
+      (singleSessionReservations / reservations.length) *
+      100
+    ).toFixed(1)}%)`
+  );
+
   console.log("\n" + "=".repeat(50));
   console.log("🔑 LOGIN CREDENTIALS:");
   console.log("=".repeat(50));
   console.log("   👑 Admin: admin@stadium.com / 123456789");
-  console.log("   🏆 Clubs: club1@stadium.com to club10@stadium.com / 123456789");
-  
+  console.log(
+    "   🏆 Clubs: club1@stadium.com to club10@stadium.com / 123456789"
+  );
+
   console.log("\n📱 TESTING TIPS FOR 2025 DATA:");
   console.log("=".repeat(50));
   console.log("   1. Filter reservations by year 2025");
