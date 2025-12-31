@@ -28,7 +28,6 @@ const ForgotPasswordForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Forget Password Data:", formData);
-    // Add your password reset logic here
   };
 
   return (

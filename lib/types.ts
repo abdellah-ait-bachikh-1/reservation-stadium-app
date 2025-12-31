@@ -37,6 +37,19 @@ export type ValidateLoginCredentialsResult =
     }
   | { data: LoginCredentials; validationErrors: null };
 
+//------------login
+export type ForgotPasswordCredentials = Pick<RegisterCredentials, "email">;
+export type ValidateForgotPasswordCredentialsErrorResult = Pick<
+  ValidateRegisterCredentialsErrorResult,
+  "email" 
+>;
+export type ValidateForgotPasswordCredentialsResult =
+  | {
+      data: null;
+      validationErrors: ValidateForgotPasswordCredentialsErrorResult;
+    }
+  | { data: ForgotPasswordCredentials; validationErrors: null };
+
 export type UserProfileCredentials = {
   fullNameAr: string;
   fullNameFr: string;
