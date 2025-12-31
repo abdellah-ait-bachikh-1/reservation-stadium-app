@@ -84,7 +84,11 @@ export const validationMessages: ValidationMessages = {
     fr: "Cet email existe déjà",
     ar: "البريد الإلكتروني موجود بالفعل",
   },
-
+"email.notExist": {
+  en: "Email is available",
+  fr: "Cet email est disponible",
+  ar: "البريد الإلكتروني متاح",
+},
   // Phone number errors
   "phoneNumber.string": {
     en: "Phone number must be text",

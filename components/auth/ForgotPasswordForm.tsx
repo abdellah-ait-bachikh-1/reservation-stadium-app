@@ -4,30 +4,82 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import {
+  TLocale,
+  ValidateForgotPasswordCredentialsErrorResult,
+} from "@/lib/types";
+import { validateForgotPasswordCredentials } from "@/lib/validation/forgot-password";
+import { isFieldHasError } from "@/lib/utils";
+import { resetPassword } from "@/app/actions/forgotPassword";
+import { addToast } from "@heroui/toast";
+import { getLocalizedSuccess } from "@/lib/api/locale";
 
 const ForgotPasswordForm = () => {
   const t = useTranslations("Pages.ForgotPassword");
-
+  const locale = useLocale();
   const [formData, setFormData] = useState({
     email: "",
   });
+  const [fieldsError, setFieldsError] =
+    useState<ValidateForgotPasswordCredentialsErrorResult | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: keyof typeof formData
   ) => {
     const { value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    const updatedFormData = { ...formData, [field]: value };
+    setFormData(updatedFormData);
+    const { validationErrors } = validateForgotPasswordCredentials(
+      locale as TLocale,
+      updatedFormData
+    );
+    setFieldsError((prev) => {
+      const merged = prev ? { ...prev } : {};
+
+      if (!validationErrors) return null;
+
+      if (validationErrors[field] && validationErrors[field].length > 0) {
+        merged[field] = validationErrors[field];
+      } else {
+        delete merged[field];
+      }
+
+      Object.keys(validationErrors).forEach((key) => {
+        if (key !== field) {
+          merged[key as keyof ValidateForgotPasswordCredentialsErrorResult] =
+            validationErrors[
+              key as keyof ValidateForgotPasswordCredentialsErrorResult
+            ] ?? [];
+        }
+      });
+
+      return Object.keys(merged).length > 0 ? merged : null;
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Forget Password Data:", formData);
+    const { statusCode, validationErrors, error ,message} = await resetPassword(
+      locale as TLocale,
+      formData
+    );
+    if (statusCode === 400) {
+      addToast({ title: t("heading"), description: error, color: "danger" });
+      setFieldsError(validationErrors);
+    } else if (statusCode === 500) {
+      addToast({ title: t("heading"), description: error, color: "danger" });
+      setFieldsError(null);
+    } else if (statusCode == 200) {
+      addToast({
+        title: t("heading"),
+        description: message,
+        color:"success"
+      });
+      setFieldsError(null);
+    }
   };
 
   return (
@@ -61,15 +113,22 @@ const ForgotPasswordForm = () => {
             variant="bordered"
             value={formData.email}
             onChange={(e) => handleChange(e, "email")}
-            required
-            placeholder="user@example.com"
+            isInvalid={isFieldHasError(fieldsError, "email")}
+            errorMessage={
+              fieldsError &&
+              (isFieldHasError(fieldsError, "email")
+                ? fieldsError["email"]?.map((item) => (
+                    <p key={item}>- {item}</p>
+                  ))
+                : null)
+            }
           />
         </div>
 
         <div>
           <Button
             type="submit"
-            color="warning"
+            color="success"
             className="font-semibold"
             fullWidth
             variant="flat"
