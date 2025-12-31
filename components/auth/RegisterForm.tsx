@@ -93,77 +93,81 @@ const RegisterForm = () => {
       {/* Form */}
       <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
-          <Input
-            id="fullNameAr"
-            dir="rtl"
-            name="fullNameAr"
-            label={t("arabicName")}
-            variant="bordered"
-            value={formData.fullNameAr}
-            onChange={(e) => handleChange(e, "fullNameAr")}
-            isInvalid={isFieldHasError(validationErrors, "fullNameAr")}
-            errorMessage={
-              validationErrors &&
-              (isFieldHasError(validationErrors, "fullNameAr")
-                ? validationErrors["fullNameAr"]?.map((item) => (
-                    <p key={item}>- {item}</p>
-                  ))
-                : null)
-            }
-          />
-          <Input
-            id="fullNameFr"
-            dir="ltr"
-            name="fullNameFr"
-            label={t("frenchName")}
-            variant="bordered"
-            value={formData.fullNameFr}
-            onChange={(e) => handleChange(e, "fullNameFr")}
-            isInvalid={isFieldHasError(validationErrors, "fullNameFr")}
-            errorMessage={
-              validationErrors &&
-              (isFieldHasError(validationErrors, "fullNameFr")
-                ? validationErrors["fullNameFr"]?.map((item) => (
-                    <p key={item}>- {item}</p>
-                  ))
-                : null)
-            }
-          />
-          <Input
-            id="email"
-            name="email"
-            label={t("email")}
-            variant="bordered"
-            value={formData.email}
-            onChange={(e) => handleChange(e, "email")}
-            fullWidth
-            isInvalid={isFieldHasError(validationErrors, "email")}
-            errorMessage={
-              validationErrors &&
-              (isFieldHasError(validationErrors, "email")
-                ? validationErrors["email"]?.map((item) => (
-                    <p key={item}>- {item}</p>
-                  ))
-                : null)
-            }
-          />
-          <Input
-            id="phoneNumber"
-            name="phoneNumber"
-            label={t("phone")}
-            variant="bordered"
-            value={formData.phoneNumber}
-            onChange={(e) => handleChange(e, "phoneNumber")}
-            isInvalid={isFieldHasError(validationErrors, "phoneNumber")}
-            errorMessage={
-              validationErrors &&
-              (isFieldHasError(validationErrors, "phoneNumber")
-                ? validationErrors["phoneNumber"]?.map((item) => (
-                    <p key={item}>- {item}</p>
-                  ))
-                : null)
-            }
-          />
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-3">
+            <Input
+              id="fullNameAr"
+              dir="rtl"
+              name="fullNameAr"
+              label={t("arabicName")}
+              variant="bordered"
+              value={formData.fullNameAr}
+              onChange={(e) => handleChange(e, "fullNameAr")}
+              isInvalid={isFieldHasError(validationErrors, "fullNameAr")}
+              errorMessage={
+                validationErrors &&
+                (isFieldHasError(validationErrors, "fullNameAr")
+                  ? validationErrors["fullNameAr"]?.map((item) => (
+                      <p key={item}>- {item}</p>
+                    ))
+                  : null)
+              }
+            />
+            <Input
+              id="fullNameFr"
+              dir="ltr"
+              name="fullNameFr"
+              label={t("frenchName")}
+              variant="bordered"
+              value={formData.fullNameFr}
+              onChange={(e) => handleChange(e, "fullNameFr")}
+              isInvalid={isFieldHasError(validationErrors, "fullNameFr")}
+              errorMessage={
+                validationErrors &&
+                (isFieldHasError(validationErrors, "fullNameFr")
+                  ? validationErrors["fullNameFr"]?.map((item) => (
+                      <p key={item}>- {item}</p>
+                    ))
+                  : null)
+              }
+            />
+          </div>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-3">
+            <Input
+              id="email"
+              name="email"
+              label={t("email")}
+              variant="bordered"
+              value={formData.email}
+              onChange={(e) => handleChange(e, "email")}
+              fullWidth
+              isInvalid={isFieldHasError(validationErrors, "email")}
+              errorMessage={
+                validationErrors &&
+                (isFieldHasError(validationErrors, "email")
+                  ? validationErrors["email"]?.map((item) => (
+                      <p key={item}>- {item}</p>
+                    ))
+                  : null)
+              }
+            />
+            <Input
+              id="phoneNumber"
+              name="phoneNumber"
+              label={t("phone")}
+              variant="bordered"
+              value={formData.phoneNumber}
+              onChange={(e) => handleChange(e, "phoneNumber")}
+              isInvalid={isFieldHasError(validationErrors, "phoneNumber")}
+              errorMessage={
+                validationErrors &&
+                (isFieldHasError(validationErrors, "phoneNumber")
+                  ? validationErrors["phoneNumber"]?.map((item) => (
+                      <p key={item}>- {item}</p>
+                    ))
+                  : null)
+              }
+            />
+          </div>
           <Input
             id="password"
             name="password"

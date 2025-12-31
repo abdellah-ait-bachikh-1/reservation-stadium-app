@@ -78,7 +78,7 @@ router.push(`/${locale}/stadiums/${stadium.id}`);
   const additionalSports = stadium.sports.slice(3).map(sport => sport.name).join(", ");
 
   return (
-    <Card className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+    <Card className="bg-white/70 dark:bg-gray-900 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
       <div className="relative h-48 overflow-hidden">
         <Image
           src={stadiumImage}

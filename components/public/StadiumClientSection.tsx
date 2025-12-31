@@ -461,6 +461,7 @@ const StadiumClientSection = ({
                 onSelectionChange={handleSportSelectionChange}
                 isLoading={isCardsLoading}
                 disallowEmptySelection={false}
+                classNames={{trigger:"dark:bg-slate-900",listboxWrapper:"dark:bg-slate-900",popoverContent:"dark:bg-slate-900"}}
               >
                 {sportOptions.map((sport) => (
                   <SelectItem key={sport.key}>{sport.label}</SelectItem>

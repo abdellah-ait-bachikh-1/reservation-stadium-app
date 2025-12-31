@@ -8,7 +8,10 @@ import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { FaPaperPlane, FaUser, FaUsers } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import { ContactFormData, validateContactFormData } from "@/lib/validation/contact";
+import {
+  ContactFormData,
+  validateContactFormData,
+} from "@/lib/validation/contact";
 import { TLocale } from "@/lib/types";
 
 interface ContactFormProps {
@@ -60,7 +63,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
   const handleChange = (field: string, value: string) => {
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
-    
+
     // Real-time validation
     const { validationErrors: newErrors } = validateContactFormData(
       locale as TLocale,
@@ -117,16 +120,18 @@ const ContactForm = ({ locale }: ContactFormProps) => {
           addToast({
             color: "danger",
             title: t("form.errorTitle") || "Validation Error",
-            description: t("form.checkFieldsMessage") || "Please check the form fields",
+            description:
+              t("form.checkFieldsMessage") || "Please check the form fields",
           });
           return;
         }
-        
+
         // Handle other errors
         addToast({
           color: "danger",
           title: tCommon("errorTitle") || "Error",
-          description: data.message || tCommon("errorMessage") || "Something went wrong",
+          description:
+            data.message || tCommon("errorMessage") || "Something went wrong",
         });
         return;
       }
@@ -135,7 +140,9 @@ const ContactForm = ({ locale }: ContactFormProps) => {
       addToast({
         color: "success",
         title: t("form.successMessage") || "Success",
-        description: t("form.successDescription") || "Your message has been sent successfully",
+        description:
+          t("form.successDescription") ||
+          "Your message has been sent successfully",
         timeout: 5000,
       });
 
@@ -149,7 +156,6 @@ const ContactForm = ({ locale }: ContactFormProps) => {
         locale: locale,
       });
       setErrors({});
-
     } catch (error) {
       console.error("Form submission error:", error);
       addToast({
@@ -165,7 +171,7 @@ const ContactForm = ({ locale }: ContactFormProps) => {
   // Helper to render error messages
   const renderErrorMessages = (field: string) => {
     if (!errors[field] || errors[field].length === 0) return null;
-    
+
     return errors[field].map((error, index) => (
       <p key={index} className="text-red-600 dark:text-red-400 text-sm mt-1">
         - {error}
@@ -237,6 +243,10 @@ const ContactForm = ({ locale }: ContactFormProps) => {
           variant="bordered"
           size="lg"
           isRequired
+          classNames={{
+            listboxWrapper: "dark:bg-slate-900",
+            popoverContent: "dark:bg-slate-900",
+          }}
         >
           {subjectOptions.map((option) => (
             <SelectItem key={option.key} textValue={option.label}>
@@ -277,7 +287,9 @@ const ContactForm = ({ locale }: ContactFormProps) => {
         color="primary"
         size="lg"
         className="w-full font-semibold"
-        startContent={isSubmitting ? null : <FaPaperPlane className="w-5 h-5" />}
+        startContent={
+          isSubmitting ? null : <FaPaperPlane className="w-5 h-5" />
+        }
         isLoading={isSubmitting}
         disabled={isSubmitting}
       >
