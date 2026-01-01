@@ -17,6 +17,8 @@ import { validateLoginCredentials } from "@/lib/validation/login";
 import { isFieldHasError } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { getLocalizedValidationMessage } from "@/lib/validation-messages";
+import { FaEye } from "react-icons/fa";
+import { FiEyeOff } from "react-icons/fi";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -30,6 +32,8 @@ const LoginForm = () => {
   const [validationErrors, setValidationErrors] =
     useState<ValidateLoginCredentialsErrorResult | null>(null);
   const [isPending, setIsPending] = useState(false);
+    const [isPassword,setIsPassword] = useState(true)
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: keyof typeof formData
@@ -93,6 +97,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   // 4️⃣ Success
   router.push("/");
 };
+  const toggleVisibility = () => setIsPassword(!isPassword);
 
   return (
     <div className="w-full md:w-160 lg:w-150 bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl flex flex-col gap-5">
@@ -141,7 +146,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           <Input
             id="password"
             name="password"
-            type="password"
             label={t("password")}
             variant="bordered"
             value={formData.password}
@@ -155,6 +159,27 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   ))
                 : null)
             }
+             type={isPassword ?  "password":"text" }
+                        endContent={
+                          <button
+                            aria-label="toggle password visibility"
+                            className="focus:outline-solid outline-transparent cursor-pointer"
+                            type="button"
+                            onClick={toggleVisibility}
+                          >
+                            {isPassword ? (
+                              <FaEye
+                                size={18}
+                                className="text-2xl text-default-400 pointer-events-none"
+                              />
+                            ) : (
+                              <FiEyeOff
+                                size={18}
+                                className="text-2xl text-default-400 pointer-events-none"
+                              />
+                            )}
+                          </button>
+                        }
           />
         </div>
 
