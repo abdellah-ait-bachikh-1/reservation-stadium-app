@@ -12,18 +12,19 @@ import {
 } from "@/lib/types";
 import { validateChangePasswordCredentials } from "@/lib/validation/change-password";
 import { isFieldHasError } from "@/lib/utils";
+import { FaEye } from "react-icons/fa";
+import { FiEyeOff } from "react-icons/fi";
 
 export default function ChangePassword() {
   const locale = useLocale() as TLocale;
-  const t = useTranslations("Pages.Dashboard.Profile.SettingsTabs.changePassword");
-  
+  const t = useTranslations(
+    "Pages.Dashboard.Profile.SettingsTabs.changePassword"
+  );
+
   const [isLoading, setIsLoading] = useState(false);
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
-  
+     const [isPassword,setIsPassword] = useState(true)
+
+
   // Form data state
   const [formData, setFormData] = useState<ChangePasswordCredentials>({
     currentPassword: "",
@@ -32,11 +33,14 @@ export default function ChangePassword() {
   });
 
   // Validation errors state
-  const [validationErrors, setValidationErrors] = 
+  const [validationErrors, setValidationErrors] =
     useState<ValidateChangePasswordCredentialsErrorResult | null>(null);
 
   // Handle input changes with real-time validation
-  const handleChange = (field: keyof ChangePasswordCredentials, value: string) => {
+  const handleChange = (
+    field: keyof ChangePasswordCredentials,
+    value: string
+  ) => {
     const updatedFormData = { ...formData, [field]: value };
     setFormData(updatedFormData);
 
@@ -64,7 +68,9 @@ export default function ChangePassword() {
       Object.keys(newErrors).forEach((key) => {
         if (key !== field) {
           merged[key as keyof ValidateChangePasswordCredentialsErrorResult] =
-            newErrors[key as keyof ValidateChangePasswordCredentialsErrorResult] ?? [];
+            newErrors[
+              key as keyof ValidateChangePasswordCredentialsErrorResult
+            ] ?? [];
         }
       });
 
@@ -97,10 +103,10 @@ export default function ChangePassword() {
       });
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       console.log("Password changed successfully");
-      
+
       // Reset form on success
       setFormData({
         currentPassword: "",
@@ -114,13 +120,14 @@ export default function ChangePassword() {
       setIsLoading(false);
     }
   };
+  const toggleVisibility = () => setIsPassword(!isPassword);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <Input
           label={t("currentPassword")}
-          type={showPasswords.current ? "text" : "password"}
+          type={isPassword? "password" : "text"}
           value={formData.currentPassword}
           onValueChange={(value) => handleChange("currentPassword", value)}
           variant="bordered"
@@ -137,19 +144,29 @@ export default function ChangePassword() {
           }
           endContent={
             <button
+              aria-label="toggle password visibility"
+              className="focus:outline-solid outline-transparent cursor-pointer"
               type="button"
-              onClick={() => setShowPasswords(prev => ({...prev, current: !prev.current}))}
-              className="focus:outline-none text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              aria-label={showPasswords.current ? t("hidePassword") : t("showPassword")}
+              onClick={toggleVisibility}
             >
-              {showPasswords.current ? "🙈" : "👁️"}
+              {isPassword ? (
+                <FaEye
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              ) : (
+                <FiEyeOff
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              )}
             </button>
           }
         />
 
         <Input
           label={t("newPassword")}
-          type={showPasswords.new ? "text" : "password"}
+          type={isPassword ? "password" : "text"}
           value={formData.newPassword}
           onValueChange={(value) => handleChange("newPassword", value)}
           variant="bordered"
@@ -164,21 +181,31 @@ export default function ChangePassword() {
                 ))
               : null)
           }
-          endContent={
+           endContent={
             <button
+              aria-label="toggle password visibility"
+              className="focus:outline-solid outline-transparent cursor-pointer"
               type="button"
-              onClick={() => setShowPasswords(prev => ({...prev, new: !prev.new}))}
-              className="focus:outline-none text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              aria-label={showPasswords.new ? t("hidePassword") : t("showPassword")}
+              onClick={toggleVisibility}
             >
-              {showPasswords.new ? "🙈" : "👁️"}
+              {isPassword ? (
+                <FaEye
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              ) : (
+                <FiEyeOff
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              )}
             </button>
           }
         />
 
         <Input
           label={t("confirmPassword")}
-          type={showPasswords.confirm ? "text" : "password"}
+          type={isPassword? "password" : "text"}
           value={formData.confirmPassword}
           onValueChange={(value) => handleChange("confirmPassword", value)}
           variant="bordered"
@@ -193,26 +220,31 @@ export default function ChangePassword() {
                 ))
               : null)
           }
-          endContent={
+            endContent={
             <button
+              aria-label="toggle password visibility"
+              className="focus:outline-solid outline-transparent cursor-pointer"
               type="button"
-              onClick={() => setShowPasswords(prev => ({...prev, confirm: !prev.confirm}))}
-              className="focus:outline-none text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              aria-label={showPasswords.confirm ? t("hidePassword") : t("showPassword")}
+              onClick={toggleVisibility}
             >
-              {showPasswords.confirm ? "🙈" : "👁️"}
+              {isPassword ? (
+                <FaEye
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              ) : (
+                <FiEyeOff
+                  size={18}
+                  className="text-2xl text-default-400 pointer-events-none"
+                />
+              )}
             </button>
           }
         />
       </div>
 
       <div className="pt-4">
-        <Button
-          color="primary"
-          type="submit"
-          isLoading={isLoading}
-          fullWidth
-        >
+        <Button color="primary" type="submit" isLoading={isLoading} fullWidth>
           {t("changePassword")}
         </Button>
       </div>
