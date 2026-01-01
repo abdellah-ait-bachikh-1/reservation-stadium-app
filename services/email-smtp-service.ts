@@ -226,3 +226,109 @@ The Tan-Tan Municipal Stadiums Team
 ⏰ Timestamp: ${timestamp}
 `;
 }
+
+
+
+function getLocalizedPasswordEmailContent(
+  locale: TLocale,
+  password: string
+) {
+  switch (locale) {
+    case "fr":
+      return {
+        subject: "Votre nouveau mot de passe",
+        text: `
+Bonjour,
+
+Votre mot de passe a été réinitialisé avec succès.
+
+🔐 Nouveau mot de passe :
+${password}
+
+⚠️ Pour votre sécurité :
+• Connectez-vous immédiatement
+• Changez ce mot de passe depuis votre profil
+
+Si vous n’êtes pas à l’origine de cette demande, veuillez contacter notre support immédiatement.
+
+Cordialement,
+L’équipe municipale de Tan-Tan
+`,
+      };
+
+    case "ar":
+      return {
+        subject: "كلمة المرور الجديدة الخاصة بك",
+        text: `
+مرحبًا،
+
+تمت إعادة تعيين كلمة المرور الخاصة بك بنجاح.
+
+🔐 كلمة المرور الجديدة:
+${password}
+
+⚠️ لأمان حسابك:
+• يرجى تسجيل الدخول فورًا
+• تغيير كلمة المرور من إعدادات الحساب
+
+إذا لم تطلب إعادة التعيين، يرجى التواصل معنا فورًا.
+
+مع فائق الاحترام،
+فريق بلدية طانطان
+`,
+      };
+
+    default:
+      return {
+        subject: "Your New Password",
+        text: `
+Hello,
+
+Your password has been successfully reset.
+
+🔐 New password:
+${password}
+
+⚠️ For your security:
+• Please log in immediately
+• Change your password from your profile settings
+
+If you did not request this reset, contact support immediately.
+
+Best regards,
+Tan-Tan Municipality Team
+`,
+      };
+  }
+}
+
+export async function sendNewPasswordToUserByEmail(
+  locale: TLocale,
+  userEmail: string,
+  newPassword: string
+) {
+  try {
+    const transporter = createTransporter();
+    await transporter.verify();
+
+    const { subject, text } = getLocalizedPasswordEmailContent(
+      locale,
+      newPassword
+    );
+
+    await transporter.sendMail({
+      from: `"Tan-Tan Municipality" <${process.env.EMAIL_FROM}>`,
+      to: userEmail,
+      subject,
+      text,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send new password email:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
