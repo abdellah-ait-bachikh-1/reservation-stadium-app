@@ -1,6 +1,6 @@
 // app/[locale]/dashboard/profile/page.tsx
 import { isExistsAuthenticatedUser } from "@/lib/data/auth";
-import { TLocale, TPreferredLocale } from "@/lib/types";
+import { TLocale } from "@/lib/types";
 import { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
@@ -11,11 +11,6 @@ import SportsInfo from "@/components/dashboard/SportsInfo";
 import QuickStats from "@/components/dashboard/QuickStats";
 import ReservationsSummary from "@/components/dashboard/ReservationsSummary";
 import SubscriptionsSummary from "@/components/dashboard/SubscriptionsSummary";
-import { Suspense } from "react";
-import { UserLocale, UserRole } from "@/lib/generated/prisma/enums";
-import db from "@/lib/db";
-import { isError } from "@/lib/utils";
-import { getLocalizedError } from "@/lib/api/locale";
 export const generateMetadata = async ({
   params,
 }: {

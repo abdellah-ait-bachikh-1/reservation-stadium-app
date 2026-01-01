@@ -59,7 +59,7 @@ const SettingsTabs = () => {
   }, []);
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-950 rounded-xl p-4 border border-slate-200 dark:border-slate-700 ">
+      <div className="bg-white dark:bg-gray-950  rounded-xl p-4 border border-slate-200 dark:border-slate-700 ">
         <Tabs
           aria-label={t("ariaLabel")}
           classNames={{
@@ -79,7 +79,7 @@ const SettingsTabs = () => {
             <Tab
               key={i}
               title={
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 ">
                   <Skeleton className="h-3 w-9" />
                 </div>
               }
@@ -120,10 +120,10 @@ const SettingsTabs = () => {
         aria-label={t("ariaLabel")}
         classNames={{
           tabList:
-            "gap-6 w-full relative rounded-none p-0 border-b border-divider ",
-          cursor: "w-full bg-[#22d3ee] ",
+            "gap-6 w-full relative rounded-none p-0 border-b border-divider overflow-x-hidden",
+          cursor: "w-full bg-primary ",
           tab: "max-w-fit px-0 h-12 ",
-          tabContent: "group-data-[selected=true]:text-[#06b6d4] ",
+          tabContent: "group-data-[selected=true]:text-primary ",
           base: "w-full flex justify-center",
         }}
         color="primary"
