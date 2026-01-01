@@ -15,8 +15,7 @@ interface ClubFormData {
   nameAr: string;
   addressFr: string;
   addressAr: string;
-  monthlyFee: string;
-  paymentDueDay: string;
+
 }
 
 export default function ClubInfo() {
@@ -27,8 +26,7 @@ export default function ClubInfo() {
     nameAr: "نادي كرة القدم طانطان",
     addressFr: "Rue Mohammed V, Tan-Tan",
     addressAr: "شارع محمد الخامس، طانطان",
-    monthlyFee: "1000",
-    paymentDueDay: "5",
+
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -39,8 +37,7 @@ export default function ClubInfo() {
         nameAr: "نادي كرة القدم طانطان",
         addressFr: "Rue Mohammed V, Tan-Tan",
         addressAr: "شارع محمد الخامس، طانطان",
-        monthlyFee: "1000",
-        paymentDueDay: "5",
+
       });
       setErrors({});
     }
@@ -91,15 +88,7 @@ export default function ClubInfo() {
       newErrors.addressAr = ["Arabic address must be at least 5 characters"];
     }
 
-    const monthlyFeeNum = parseFloat(formData.monthlyFee);
-    if (isNaN(monthlyFeeNum) || monthlyFeeNum <= 0) {
-      newErrors.monthlyFee = ["Monthly fee must be a positive number"];
-    }
-
-    const dueDayNum = parseInt(formData.paymentDueDay, 10);
-    if (isNaN(dueDayNum) || dueDayNum < 1 || dueDayNum > 31) {
-      newErrors.paymentDueDay = ["Payment due day must be between 1 and 31"];
-    }
+    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -116,9 +105,8 @@ export default function ClubInfo() {
     setIsLoading(true);
     try {
       console.log("Updating club info with data:", {
-        ...formData,
-        monthlyFee: parseFloat(formData.monthlyFee),
-        paymentDueDay: parseInt(formData.paymentDueDay, 10),
+        ...formData
+  
       });
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -179,32 +167,6 @@ export default function ClubInfo() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="Monthly Fee (MAD)"
-            type="number"
-            step="0.01"
-            value={formData.monthlyFee}
-            onValueChange={(value) => handleChange("monthlyFee", value)}
-            variant="bordered"
-            isDisabled={!isEditing}
-            isInvalid={isFieldHasError("monthlyFee")}
-            errorMessage={renderErrorMessages("monthlyFee")}
-          />
-          
-          <Input
-            label="Payment Due Day (1-31)"
-            type="number"
-            min="1"
-            max="31"
-            value={formData.paymentDueDay}
-            onValueChange={(value) => handleChange("paymentDueDay", value)}
-            variant="bordered"
-            isDisabled={!isEditing}
-            isInvalid={isFieldHasError("paymentDueDay")}
-            errorMessage={renderErrorMessages("paymentDueDay")}
-          />
-        </div>
 
         <div className="flex justify-end gap-3 pt-4">
           {isEditing ? (
