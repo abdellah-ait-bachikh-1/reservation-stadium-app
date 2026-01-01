@@ -12,25 +12,22 @@ export const createChangePasswordValidationSchema = (locale: TLocale = "en") => 
     .object({
       currentPassword: z
         .string(getLocalizedValidationMessage('password.string', locale))
-        .trim()
+        
         .min(1, getLocalizedValidationMessage('password.required', locale))
         .min(8, getLocalizedValidationMessage('password.min', locale))
         .max(100, getLocalizedValidationMessage('password.max', locale)),
 
       newPassword: z
         .string(getLocalizedValidationMessage('password.string', locale))
-        .trim()
+        
         .min(1, getLocalizedValidationMessage('password.required', locale))
         .min(8, getLocalizedValidationMessage('password.min', locale))
         .max(100, getLocalizedValidationMessage('password.max', locale))
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-          getLocalizedValidationMessage('password.regex', locale)
-        ),
+        ,
 
       confirmPassword: z
         .string(getLocalizedValidationMessage('confirmPassword.string', locale))
-        .trim()
+        
         .min(1, getLocalizedValidationMessage('confirmPassword.required', locale)),
     })
     .refine(
