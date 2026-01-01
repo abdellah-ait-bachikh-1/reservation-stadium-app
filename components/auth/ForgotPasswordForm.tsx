@@ -22,6 +22,7 @@ const ForgotPasswordForm = () => {
   const [formData, setFormData] = useState({
     email: "",
   });
+  const [isPending, setIsPending] = useState(false);
   const [fieldsError, setFieldsError] =
     useState<ValidateForgotPasswordCredentialsErrorResult | null>(null);
 
@@ -62,23 +63,25 @@ const ForgotPasswordForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { statusCode, validationErrors, error ,message} = await resetPassword(
-      locale as TLocale,
-      formData
-    );
+    setIsPending(true);
+    const { statusCode, validationErrors, error, message } =
+      await resetPassword(locale as TLocale, formData);
     if (statusCode === 400) {
       addToast({ title: t("heading"), description: error, color: "danger" });
       setFieldsError(validationErrors);
+      setIsPending(false);
     } else if (statusCode === 500) {
       addToast({ title: t("heading"), description: error, color: "danger" });
       setFieldsError(null);
+      setIsPending(false);
     } else if (statusCode == 200) {
       addToast({
         title: t("heading"),
         description: message,
-        color:"success"
+        color: "success",
       });
       setFieldsError(null);
+      setIsPending(false);
     }
   };
 
@@ -132,6 +135,7 @@ const ForgotPasswordForm = () => {
             className="font-semibold"
             fullWidth
             variant="flat"
+            isLoading={isPending}
           >
             {t("resetButton")}
           </Button>
