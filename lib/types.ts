@@ -55,7 +55,6 @@ export type UserProfileCredentials = {
   fullNameFr: string;
   email: string;
   phoneNumber: string;
-  preferredLocale: UserLocale;
 };
 
 export type ValidateUserProfileCredentialsErrorResult = Partial<

@@ -110,7 +110,7 @@ const SettingsTabs = () => {
       key: "club",
       title: t("tabs.club"),
       icon: MdPersonOutline,
-      component: <ClubInfo />,
+      component: <ClubInfo  />,
     },
   ];
 

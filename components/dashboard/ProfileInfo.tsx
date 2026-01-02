@@ -32,7 +32,6 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
     fullNameAr: user.fullNameAr,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    preferredLocale: user.preferredLocale,
   });
 
   // Validation errors state
@@ -146,7 +145,6 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
         fullNameAr: user.fullNameAr || "",
         email: user.email || "",
         phoneNumber: user.phoneNumber || "",
-        preferredLocale: user.preferredLocale || locale || "en",
       });
     }
   };
@@ -247,37 +245,7 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
           />
         </div>
 
-        <Select
-          label={t("preferredLocale")}
-          selectedKeys={[formData.preferredLocale]}
-          onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0] as TLocale;
-            handleChange("preferredLocale", selected);
-          }}
-          variant="bordered"
-          isDisabled={!isEditing}
-          isInvalid={isFieldHasError(validationErrors, "preferredLocale")}
-          errorMessage={
-            validationErrors &&
-            (isFieldHasError(validationErrors, "preferredLocale")
-              ? validationErrors["preferredLocale"]?.map((item, index) => (
-                  <p key={index} className="text-sm">
-                    - {item}
-                  </p>
-                ))
-              : null)
-          }
-        >
-          <SelectItem key="EN" textValue="English">
-            {t("language.en")}
-          </SelectItem>
-          <SelectItem key="FR" textValue="Français">
-            {t("language.fr")}
-          </SelectItem>
-          <SelectItem key="AR" textValue="العربية">
-            {t("language.ar")}
-          </SelectItem>
-        </Select>
+     
 
         <div className="flex justify-end gap-3 pt-4">
           {isEditing ? (
@@ -301,14 +269,12 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
                     fullNameFr: user.fullNameFr,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
-                    preferredLocale: user.preferredLocale,
                   },
                   [
                     "fullNameAr",
                     "fullNameFr",
                     "email",
                     "phoneNumber",
-                    "preferredLocale",
                   ]
                 )}
               >

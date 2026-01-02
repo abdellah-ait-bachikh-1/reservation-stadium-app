@@ -1,4 +1,3 @@
-// components/dashboard/ClubInfo.tsx
 "use client";
 
 import { useState, FormEvent, useEffect } from "react";
@@ -20,7 +19,7 @@ interface ClubFormData {
 
 export default function ClubInfo() {
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState<ClubFormData>({
     nameFr: "Club de Football Tan-Tan",
     nameAr: "نادي كرة القدم طانطان",
@@ -102,7 +101,7 @@ export default function ClubInfo() {
       return;
     }
 
-    setIsLoading(true);
+    setIsPending(true);
     try {
       console.log("Updating club info with data:", {
         ...formData
@@ -116,7 +115,7 @@ export default function ClubInfo() {
     } catch (error) {
       console.error("Error updating club info:", error);
     } finally {
-      setIsLoading(false);
+      setIsPending(false);
     }
   };
 
@@ -178,14 +177,14 @@ export default function ClubInfo() {
                   setIsEditing(false);
                   setErrors({});
                 }}
-                isDisabled={isLoading}
+                isDisabled={isPending}
               >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 type="submit"
-                isLoading={isLoading}
+                isLoading={isPending}
               >
                 Save Changes
               </Button>
