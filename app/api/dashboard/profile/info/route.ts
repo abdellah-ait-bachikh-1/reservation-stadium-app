@@ -82,7 +82,6 @@ export async function PUT(req: NextRequest) {
       fullNameAr,
       email,
       phoneNumber,
-      preferredLocale,
     });
     if (validationErrors) {
       return NextResponse.json(
