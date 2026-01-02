@@ -16,9 +16,24 @@ import { haveSameValues, isFieldHasError } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { UserProfile } from "./SettingsTabs";
 import { addToast } from "@heroui/toast";
+import { UserRole } from "@/lib/generated/prisma/enums";
 // import { UserProfile } from "@/app/[locale]/(admin)/dashboard/profile/[id]/page";
 
-export default function ProfileInfo({ user }: { user: UserProfile }) {
+export default function ProfileInfo({
+  user,
+}: {
+  user: {
+    fullNameFr: string;
+    fullNameAr: string;
+    email: string;
+    phoneNumber: string;
+    role: UserRole;
+    approved: boolean;
+    emailVerifiedAt: null | Date;
+    createdAt: Date;
+    club: { nameFr: string; nameAr: string } | null;
+  };
+}) {
   const locale = useLocale() as TLocale;
   const t = useTranslations("Pages.Dashboard.Profile.SettingsTabs.profileInfo");
 
@@ -245,8 +260,6 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
           />
         </div>
 
-     
-
         <div className="flex justify-end gap-3 pt-4">
           {isEditing ? (
             <>
@@ -270,12 +283,7 @@ export default function ProfileInfo({ user }: { user: UserProfile }) {
                     email: user.email,
                     phoneNumber: user.phoneNumber,
                   },
-                  [
-                    "fullNameAr",
-                    "fullNameFr",
-                    "email",
-                    "phoneNumber",
-                  ]
+                  ["fullNameAr", "fullNameFr", "email", "phoneNumber"]
                 )}
               >
                 {t("saveChanges")}

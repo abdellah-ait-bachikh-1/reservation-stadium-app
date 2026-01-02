@@ -98,7 +98,21 @@ const SettingsTabs = () => {
       key: "profile",
       title: t("tabs.profile"),
       icon: MdPersonOutline,
-      component: data ? <ProfileInfo user={data} /> : null,
+      component: data ? (
+        <ProfileInfo
+          user={{
+            fullNameAr: data.fullNameAr,
+            fullNameFr: data.fullNameFr,
+            approved: data.approved,
+            email: data.email,
+            createdAt: data.createdAt,
+            role: data.role,
+            emailVerifiedAt: data.emailVerifiedAt,
+            phoneNumber: data.phoneNumber,
+            club: data.club,
+          }}
+        />
+      ) : null,
     },
     {
       key: "password",
@@ -110,7 +124,7 @@ const SettingsTabs = () => {
       key: "club",
       title: t("tabs.club"),
       icon: MdPersonOutline,
-      component: <ClubInfo  />,
+      component: <ClubInfo />,
     },
   ];
 
