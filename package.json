@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-i18n-types": "tsx scripts/generate-i18n-types.ts"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",

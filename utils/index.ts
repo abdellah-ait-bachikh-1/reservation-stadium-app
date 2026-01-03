@@ -1,4 +1,6 @@
-import { LocaleType } from "@/types";
+import { APP_NAMES } from "@/const";
+import { LocaleEnumType, LocaleType } from "@/types";
+import { pages_home } from "@/types/i18n";
 import { getLocale } from "next-intl/server";
 
 export function isRtl(locale: LocaleType) {
@@ -11,3 +13,8 @@ export function getDirection(locale: LocaleType) {
 export async function getServerLocale() {
   return await getLocale();
 }
+
+export function getAppName(locale: LocaleEnumType) {
+  return APP_NAMES[locale];
+}
+

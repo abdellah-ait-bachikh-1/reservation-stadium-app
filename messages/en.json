@@ -2,6 +2,9 @@
   "pages": {
     "home": {
       "title": "Hello world!"
+    },"about":{
+            "title": "Hello world!"
+
     }
   }
 }
