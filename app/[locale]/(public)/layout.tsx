@@ -3,6 +3,8 @@ import { Cause } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { LocaleType } from "@/types";
 import { getDirection } from "@/utils";
+import { HeroUIProvider } from "@heroui/system";
+import { getMessages } from "next-intl/server";
 
 const cause = Cause({
   variable: "--font-cause",
@@ -11,6 +13,15 @@ const cause = Cause({
   display: "swap",
   preload: true,
 });
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Promise<{ locale: string }>;
+// }) {
+
+//   const {locale} = await params
+//   const messages = await getMessages({locale})
+// }
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -28,9 +39,9 @@ export default async function RootLayout({
   const messages = (await import(`../../../messages/${locale}.json`)).default;
   return (
     <html lang={locale} dir={getDirection(locale as LocaleType)}>
-      <body className={`${cause.variable}  antialiased font-medium`}>
+      <body className={`${cause.variable}  antialiased `}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <HeroUIProvider locale={locale}>{children}</HeroUIProvider>
         </NextIntlClientProvider>
       </body>
     </html>
