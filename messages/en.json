@@ -1,10 +1,39 @@
 {
   "pages": {
     "home": {
-      "title": "Hello world!"
-    },"about":{
-            "title": "Hello world!"
-
+      "hero": {
+        "title": "Stadium Reservations in Tantan",
+        "subtitle": "Reserve sports venues instantly. Football fields, basketball courts & more.",
+        "cta": "Start Your Reservation"
+      },
+      "metadata": {
+        "title": "Home",
+        "description": "Reserve and book stadiums and sports venues in Tantan, Morocco. Easy online reservations for football fields, basketball courts, and sports facilities in Tan-Tan region.",
+        "keywords": "Tantan stadium reservation, Tan-Tan sports venues, stadium reservation Tantan Morocco, reserve football field Tan-Tan, basketball court rental Tantan, sports facilities Tan-Tan, Tantan sports complex, Tan-Tan athletic fields, Tantan playground reservation, Tan-Tan recreation centers"
+      }
+    }
+  },
+  "common": {
+    "actions": {
+      "reserve": "Reserve Now",
+      "search": "Search",
+      "login": "Login",
+      "register": "Register",
+      "logout": "Logout",
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View Details",
+      "book": "Make Reservation",
+      "checkout": "Checkout",
+      "continue": "Continue",
+      "back": "Go Back",
+      "filter": "Filter",
+      "sort": "Sort",
+      "share": "Share",
+      "download": "Download"
     }
   }
 }

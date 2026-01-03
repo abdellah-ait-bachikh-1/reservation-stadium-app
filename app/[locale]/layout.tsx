@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
-import { LocaleEnumType } from "@/types";
-import { getAppName } from "@/utils";
+import { Cause, Figtree, Manrope } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { LocaleEnumType, LocaleType } from "@/types";
+import { getAppName, getDirection } from "@/utils";
+import { HeroUIProvider } from "@heroui/system";
 import { getTypedGlobalTranslations } from "@/utils/i18n";
+import Providers from "@/components/providers/Providers";
 
 const cause = Figtree({
   variable: "--font-cause",
@@ -30,11 +33,23 @@ export async function generateMetadata({
   };
 }
 
-export default async function PublicLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
-  return <>           <header>public header</header>
-{children} </>;
+  const { locale } = await params;
+  const messages = (await import(`../../messages/${locale}.json`)).default;
+  return (
+    <html lang={locale} dir={getDirection(locale as LocaleType)}>
+      <body className={`${cause.variable}  antialiased `}>
+        <Providers locale={locale} messages={messages}>
+          <header>root header</header>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
 }

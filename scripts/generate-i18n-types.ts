@@ -1,4 +1,4 @@
-// scripts/generate-i18n.ts
+// scripts/generate-i18n-enhanced.ts
 import fs from 'fs';
 import path from 'path';
 
@@ -15,7 +15,7 @@ function generateI18n() {
     const enContent = fs.readFileSync(enFile, 'utf-8');
     const messages = JSON.parse(enContent);
     
-    console.log('🔄 Generating i18n types and utilities...');
+    console.log('🔄 Generating complete i18n types and utilities...');
     
     // 1. Generate types file
     generateTypesFile(messages);
@@ -33,23 +33,20 @@ function generateI18n() {
   }
 }
 
-// ============================================
-// 1. TYPES GENERATION
-// ============================================
-
 function generateTypesFile(messages: any) {
   const typesDir = path.join(process.cwd(), 'types');
-  
-  // Create types directory if it doesn't exist
-  if (!fs.existsSync(typesDir)) {
-    fs.mkdirSync(typesDir, { recursive: true });
-  }
+  if (!fs.existsSync(typesDir)) fs.mkdirSync(typesDir, { recursive: true });
   
   const typeContent = generateTypesContent(messages);
-  const typesPath = path.join(typesDir, 'i18n.d.ts');
+  fs.writeFileSync(path.join(typesDir, 'i18n.d.ts'), typeContent);
+}
+
+function generateUtilitiesFile(messages: any) {
+  const utilsDir = path.join(process.cwd(), 'utils');
+  if (!fs.existsSync(utilsDir)) fs.mkdirSync(utilsDir, { recursive: true });
   
-  fs.writeFileSync(typesPath, typeContent);
-  console.log('   ✓ Generated types/i18n.d.ts');
+  const utilityContent = generateUtilitiesContent(messages);
+  fs.writeFileSync(path.join(utilsDir, 'i18n.ts'), utilityContent);
 }
 
 function generateTypesContent(messages: any): string {
@@ -90,25 +87,6 @@ export type NamespaceKeys<T, P extends string> =
       ? keyof T[P]
       : never;
 `;
-}
-
-// ============================================
-// 2. UTILITIES GENERATION
-// ============================================
-
-function generateUtilitiesFile(messages: any) {
-  const utilsDir = path.join(process.cwd(), 'utils');
-  
-  // Create utils directory if it doesn't exist
-  if (!fs.existsSync(utilsDir)) {
-    fs.mkdirSync(utilsDir, { recursive: true });
-  }
-  
-  const utilityContent = generateUtilitiesContent(messages);
-  const utilsPath = path.join(utilsDir, 'i18n.ts');
-  
-  fs.writeFileSync(utilsPath, utilityContent);
-  console.log('   ✓ Generated utils/i18n.ts');
 }
 
 function generateUtilitiesContent(messages: any): string {
@@ -201,13 +179,12 @@ export function useTypedGlobalTranslations() {
 }
 `;
 
-  // Combine everything
   return imports + '\n' + typeImports + '\n' + 
     serverFunctions + '\n\n' + clientHooks + '\n\n' + globalFunctions;
 }
 
 // ============================================
-// HELPER FUNCTIONS
+// KEY FIX: Get ALL namespaces, not just leaf nodes
 // ============================================
 
 function getAllNamespaces(obj: any, currentPath: string[] = []): Array<{
@@ -226,12 +203,13 @@ function getAllNamespaces(obj: any, currentPath: string[] = []): Array<{
   }> = [];
   
   const traverse = (currentObj: any, path: string[]): void => {
-    // Get direct string children
-    const directStringKeys = Object.entries(currentObj)
+    // Get string keys at this level
+    const stringKeys = Object.entries(currentObj)
       .filter(([_, v]) => typeof v === 'string')
       .map(([k, _]) => k);
     
-    if (directStringKeys.length > 0 && path.length > 0) {
+    // Only create namespace if we have STRING keys (not just objects)
+    if (stringKeys.length > 0 && path.length > 0) {
       const namespacePath = path.join('.');
       const typeName = namespacePath.replace(/\./g, '_');
       const functionName = `get${toPascalCase(typeName)}Translations`;
@@ -242,11 +220,11 @@ function getAllNamespaces(obj: any, currentPath: string[] = []): Array<{
         typeName,
         functionName,
         hookName,
-        keys: directStringKeys
+        keys: stringKeys
       });
     }
     
-    // Continue deeper
+    // Continue deeper for nested objects
     for (const [key, value] of Object.entries(currentObj)) {
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         traverse(value, [...path, key]);
@@ -286,14 +264,14 @@ function generateAllNamespaceTypes(obj: any, currentPath: string[] = []): string
   const types: string[] = [];
   
   const traverse = (currentObj: any, path: string[]): void => {
-    const directStringKeys = Object.entries(currentObj)
+    const stringKeys = Object.entries(currentObj)
       .filter(([_, v]) => typeof v === 'string')
       .map(([k, _]) => k);
     
-    if (directStringKeys.length > 0 && path.length > 0) {
+    if (stringKeys.length > 0 && path.length > 0) {
       const namespace = path.join('.');
       const typeName = namespace.replace(/\./g, '_');
-      types.push(`export type ${typeName} = ${directStringKeys.map(k => `"${k}"`).join(' | ')};`);
+      types.push(`export type ${typeName} = ${stringKeys.map(k => `"${k}"`).join(' | ')};`);
     }
     
     for (const [key, value] of Object.entries(currentObj)) {

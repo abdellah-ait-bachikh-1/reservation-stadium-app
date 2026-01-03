@@ -30,11 +30,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function PublicLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>           <header>public header</header>
-{children} </>;
+  return <>          <header>dashboard header</header>
+ {children} </>;
 }

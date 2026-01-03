@@ -1,7 +1,7 @@
-import db from "@/lib/db";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
+import { getUserByEmailForAuth } from "./lib/queries/user";
 export const authConfig: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -14,17 +14,8 @@ export const authConfig: AuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
-        const user = await db.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-        if (
-          !user ||
-          user?.deletedAt !== null ||
-          !user.approved ||
-          !user.emailVerifiedAt
-        ) {
+        const user = await getUserByEmailForAuth(credentials.email);
+        if (!user || user?.deletedAt !== null || !user.emailVerifiedAt) {
           return null;
         }
         const validPassword = await compare(
@@ -34,23 +25,12 @@ export const authConfig: AuthOptions = {
         if (!validPassword) {
           return null;
         }
-        const {
-          id,
-          email,
-          role,
-          fullNameAr,
-          fullNameFr,
-          phoneNumber,
-          deletedAt,
-        } = user;
+        const { id, name, email, role } = user;
         return {
           id,
+          name,
           email,
           role,
-          fullNameAr,
-          fullNameFr,
-          phoneNumber,
-          deletedAt,
         };
       },
     }),
@@ -67,22 +47,18 @@ export const authConfig: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
         token.email = user.email;
         token.role = user.role;
-        token.fullNameAr = user.fullNameAr;
-        token.fullNameFr = user.fullNameFr;
-        token.phoneNumber = user.phoneNumber;
       }
       return token;
     },
     async session({ session, token }) {
       session.user = {
         id: token.id as string,
+        name: token.name,
         email: token.email as string,
         role: token.role as string,
-        fullNameAr: token.fullNameAr as string,
-        fullNameFr: token.fullNameFr as string,
-        phoneNumber: token.phoneNumber as string,
       };
       return session;
     },

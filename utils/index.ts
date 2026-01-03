@@ -1,6 +1,5 @@
 import { APP_NAMES } from "@/const";
 import { LocaleEnumType, LocaleType } from "@/types";
-import { pages_home } from "@/types/i18n";
 import { getLocale } from "next-intl/server";
 
 export function isRtl(locale: LocaleType) {

@@ -5,51 +5,72 @@ import { getTranslations as getTranslationsBase } from 'next-intl/server';
 import { useTranslations as useTranslationsBase } from 'next-intl';
 
 import type { 
-  pages_home,
-  pages_about,
+  pages_home_hero,
+  pages_home_metadata,
+  common_actions,
   AllGlobalPaths,
 } from '@/types/i18n';
 
 
 /**
- * Get pages.home translations (server)
- * Usage: const t = await getPagesHomeTranslations();
- *        t("key") // ← autocomplete for title
+ * Get pages.home.hero translations (server)
+ * Usage: const t = await getPagesHomeHeroTranslations();
+ *        t("key") // ← autocomplete for title, subtitle, cta
  */
-export async function getPagesHomeTranslations() {
-  const t = await getTranslationsBase("pages.home");
-  return (key: pages_home) => t(key);
+export async function getPagesHomeHeroTranslations() {
+  const t = await getTranslationsBase("pages.home.hero");
+  return (key: pages_home_hero) => t(key);
 }
 
 /**
- * Get pages.about translations (server)
- * Usage: const t = await getPagesAboutTranslations();
- *        t("key") // ← autocomplete for title
+ * Get pages.home.metadata translations (server)
+ * Usage: const t = await getPagesHomeMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
  */
-export async function getPagesAboutTranslations() {
-  const t = await getTranslationsBase("pages.about");
-  return (key: pages_about) => t(key);
+export async function getPagesHomeMetadataTranslations() {
+  const t = await getTranslationsBase("pages.home.metadata");
+  return (key: pages_home_metadata) => t(key);
+}
+
+/**
+ * Get common.actions translations (server)
+ * Usage: const t = await getCommonActionsTranslations();
+ *        t("key") // ← autocomplete for reserve, search, login, register, logout, save, cancel, confirm, delete, edit, view, book, checkout, continue, back, filter, sort, share, download
+ */
+export async function getCommonActionsTranslations() {
+  const t = await getTranslationsBase("common.actions");
+  return (key: common_actions) => t(key);
 }
 
 
 /**
- * Use pages.home translations (client)
- * Usage: const t = usePagesHomeTranslations();
- *        t("key") // ← autocomplete for title
+ * Use pages.home.hero translations (client)
+ * Usage: const t = usePagesHomeHeroTranslations();
+ *        t("key") // ← autocomplete for title, subtitle, cta
  */
-export function usePagesHomeTranslations() {
-  const t = useTranslationsBase("pages.home");
-  return (key: pages_home) => t(key);
+export function usePagesHomeHeroTranslations() {
+  const t = useTranslationsBase("pages.home.hero");
+  return (key: pages_home_hero) => t(key);
 }
 
 /**
- * Use pages.about translations (client)
- * Usage: const t = usePagesAboutTranslations();
- *        t("key") // ← autocomplete for title
+ * Use pages.home.metadata translations (client)
+ * Usage: const t = usePagesHomeMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
  */
-export function usePagesAboutTranslations() {
-  const t = useTranslationsBase("pages.about");
-  return (key: pages_about) => t(key);
+export function usePagesHomeMetadataTranslations() {
+  const t = useTranslationsBase("pages.home.metadata");
+  return (key: pages_home_metadata) => t(key);
+}
+
+/**
+ * Use common.actions translations (client)
+ * Usage: const t = useCommonActionsTranslations();
+ *        t("key") // ← autocomplete for reserve, search, login, register, logout, save, cancel, confirm, delete, edit, view, book, checkout, continue, back, filter, sort, share, download
+ */
+export function useCommonActionsTranslations() {
+  const t = useTranslationsBase("common.actions");
+  return (key: common_actions) => t(key);
 }
 
 
