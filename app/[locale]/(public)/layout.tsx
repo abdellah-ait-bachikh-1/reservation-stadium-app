@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cause, Tajawal } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { LocaleType } from "@/types";
-import { getDirection } from "@/utils";
+import { getDirection, isRtl } from "@/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const cause = Cause({
+  variable: "--font-cause",
+  subsets: ["latin", "latin-ext"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // Specify weights you need
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -27,12 +25,10 @@ export default async function RootLayout({
   params: Promise<{ locale: LocaleType }>;
 }>) {
   const { locale } = await params;
-  const messages = (await import(`../../messages/${locale}.json`)).default;
+  const messages = (await import(`../../../messages/${locale}.json`)).default;
   return (
     <html lang={locale} dir={getDirection(locale)}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${cause.variable}  antialiased font-medium`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
