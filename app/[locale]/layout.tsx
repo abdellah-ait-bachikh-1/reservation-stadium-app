@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { LocaleType } from "@/types";
+import { getDirection } from "@/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = (await import(`../../messages/${locale}.json`)).default;
   return (
-    <html lang="en" dir={locale === "ar" ? "rtl" : "ltr"}>
+    <html lang={locale} dir={getDirection(locale)}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

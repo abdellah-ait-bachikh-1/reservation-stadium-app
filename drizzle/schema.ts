@@ -20,6 +20,7 @@ export const users = mysqlTable(
     password: varchar("password", { length: 255 }).notNull(),
     role: mysqlEnum(["ADMIN", "CLUBE"]).default("CLUBE").notNull(),
     phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
+    preferredLocale: mysqlEnum(["EN", "FR", "AR"]).default("FR").notNull(),
     emailVerifiedAt: timestamp("email_verified_at"),
     verificationToken: varchar("verification_token", { length: 128 }),
     verificationTokenExpiresAt: timestamp("verification_token_expires_at"),
@@ -30,10 +31,10 @@ export const users = mysqlTable(
   (table) => {
     return [
       index("role_index").on(table.role),
-      index("deleted_at_index").on(table.deletedAt)
+      index("deleted_at_index").on(table.deletedAt),
     ];
   }
 );
 
-export type UserType = typeof users.$inferSelect
-export type InsertUserType = typeof users.$inferInsert
+export type UserType = typeof users.$inferSelect;
+export type InsertUserType = typeof users.$inferInsert;
