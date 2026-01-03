@@ -5,6 +5,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  DropdownProps,
 } from "@heroui/dropdown";
 import { useState, useEffect } from "react";
 import { FiGlobe } from "react-icons/fi";
@@ -12,7 +13,13 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "@heroui/button";
 import ReactCountryFlag from "react-country-flag";
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({
+  placement="bottom-end",
+  showArrow=false
+}: {
+  placement?: DropdownProps["placement"];
+  showArrow?:boolean
+}) {
   const [mounted, setMounted] = useState(false);
   const params = useParams();
   const pathname = usePathname();
@@ -102,7 +109,7 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <Dropdown placement="bottom-end">
+    <Dropdown placement={placement} showArrow={showArrow}>
       <DropdownTrigger>
         <Button
           isIconOnly

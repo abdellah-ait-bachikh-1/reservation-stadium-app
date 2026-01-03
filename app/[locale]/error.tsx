@@ -23,7 +23,7 @@ export default function Error({
 
   return (
     <div className="flex min-h-screen flex-col gap-4 items-center justify-center px-4 text-center bg-gradient-to-br from-amber-100 via-white to-amber-100 dark:from-stone-950 dark:via-stone-700 dark:to-stone-950">
-      <ThemeSwitcher/>
+      <ThemeSwitcher placement="bottom" showArrow={true} />
       <div className="space-y-8 max-w-md mx-auto">
         <div className="space-y-3">
          
