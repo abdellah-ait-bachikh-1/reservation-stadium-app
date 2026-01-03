@@ -6,7 +6,7 @@ import { getAppName, getDirection } from "@/utils";
 import { HeroUIProvider } from "@heroui/system";
 import { getTypedGlobalTranslations } from "@/utils/i18n";
 import Providers from "@/components/providers/Providers";
-
+import { ToastProvider } from "@heroui/toast";
 const cause = Figtree({
   variable: "--font-cause",
   subsets: ["latin", "latin-ext"],
@@ -46,16 +46,21 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={getDirection(locale as LocaleType)}
-      className="h-full overflow-y-auto"
+      className="h-full overflow-y-auto z-99999"
       suppressHydrationWarning
     >
       <body
-        className={`${cause.variable}  antialiased bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-stone-950 dark:via-stone-700 dark:to-stone-950 h-screen w-full`}
+        className={`${cause.variable} z-99998  bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-stone-950 dark:via-stone-700 dark:to-stone-950 min-h-screen w-full bg-fixed`}
         suppressHydrationWarning
       >
         <Providers locale={locale} messages={messages}>
           {children}
         </Providers>
+
+        <ToastProvider
+          placement="top-center"
+          regionProps={{ className: "z-99999999" }}
+        />
       </body>
     </html>
   );

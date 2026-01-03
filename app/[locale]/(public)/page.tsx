@@ -1,3 +1,4 @@
+import TestToast from "@/components/TestToast";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { getTypedGlobalTranslations } from "@/utils/i18n";
 
@@ -7,6 +8,13 @@ const page = async () => {
   return (
     <div>
       <ThemeSwitcher />
+      <TestToast/>
+      {new Array(100)
+        .fill(null)
+        .map((_, i) => (
+          <div key={i}> {i} </div>
+        ))}
+      <div>sqdnqkjsdhjk</div>
     </div>
   );
 };

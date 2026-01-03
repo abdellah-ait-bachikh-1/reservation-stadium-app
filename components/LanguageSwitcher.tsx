@@ -14,11 +14,11 @@ import { Button } from "@heroui/button";
 import ReactCountryFlag from "react-country-flag";
 
 export default function LanguageSwitcher({
-  placement="bottom-end",
-  showArrow=false
+  placement = "bottom-end",
+  showArrow = false,
 }: {
   placement?: DropdownProps["placement"];
-  showArrow?:boolean
+  showArrow?: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
   const params = useParams();

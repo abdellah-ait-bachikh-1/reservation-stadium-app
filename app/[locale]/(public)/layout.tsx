@@ -3,6 +3,8 @@ import { Figtree } from "next/font/google";
 import { LocaleEnumType } from "@/types";
 import { getAppName } from "@/utils";
 import { getTypedGlobalTranslations } from "@/utils/i18n";
+import Header from "@/components/public/Header";
+import Footer from "@/components/public/Footer";
 
 const cause = Figtree({
   variable: "--font-cause",
@@ -37,9 +39,9 @@ export default async function PublicLayout({
 }>) {
   return (
     <>
-     
-      <header>public header</header>
-      {children}
+      <Header />
+      <main className="flex-1 pt-20 z-99994">{children}</main>
+      <Footer />
     </>
   );
 }

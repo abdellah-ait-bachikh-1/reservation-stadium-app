@@ -25,7 +25,7 @@ const Providers = ({
     >
       <SessionProvider>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <HeroUIProvider locale={locale} className="w-full h-full">
+          <HeroUIProvider locale={locale} className="w-full h-full z-99997">
             {children}
           </HeroUIProvider>
         </NextIntlClientProvider>
