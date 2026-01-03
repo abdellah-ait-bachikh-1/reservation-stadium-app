@@ -70,7 +70,6 @@ export default function ThemeSwitcher({
           isIconOnly
           variant="flat"
           size="sm"
-          className="min-w-10 min-h-10"
           radius="lg"
           color="default"
         >

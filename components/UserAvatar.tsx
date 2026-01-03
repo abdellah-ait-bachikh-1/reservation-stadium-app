@@ -87,7 +87,7 @@ export default function UserAvatar({
     <Dropdown placement={placement} showArrow={showArrow} className={className}>
       <DropdownTrigger>
         <button className="cursor-pointer" aria-label={t("common.user.menu")}>
-          <Avatar className="text-sm" />
+          <Avatar className="text-sm" isBordered />
         </button>
       </DropdownTrigger>
 

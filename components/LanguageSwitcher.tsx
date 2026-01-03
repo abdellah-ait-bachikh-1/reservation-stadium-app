@@ -109,10 +109,9 @@ export default function LanguageSwitcher({
     <Dropdown placement={placement} showArrow={showArrow}>
       <DropdownTrigger>
         <Button
-          isIconOnly
+           isIconOnly
           variant="flat"
           size="sm"
-          className="min-w-10 min-h-10"
           radius="lg"
           color="default"
         >

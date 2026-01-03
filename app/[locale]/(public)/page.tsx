@@ -8,13 +8,11 @@ const page = async () => {
   return (
     <div>
       <ThemeSwitcher />
-      <TestToast/>
-      {new Array(100)
-        .fill(null)
-        .map((_, i) => (
-          <div key={i}> {i} </div>
-        ))}
-      <div>sqdnqkjsdhjk</div>
+      <TestToast />
+      {new Array(100).fill(null).map((_, i) => (
+        <div key={i}> {i} </div>
+      ))}
+      <div>sqdnqkjsdhj kssssssssssss ssss ssssssssssss sssssssssssssssssssssssss sssssssssssss ssssssssss ssssssssssssssssssssss</div>
     </div>
   );
 };
