@@ -19,6 +19,7 @@ export const generateMetadata = async ({
   };
 };
 const HomePage = async () => {
+  await new Promise(re=>setTimeout(re,5000))
   const t = await getTypedGlobalTranslations();
 
   return (

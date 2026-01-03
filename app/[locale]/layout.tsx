@@ -46,7 +46,6 @@ export default async function RootLayout({
     <html lang={locale} dir={getDirection(locale as LocaleType)}>
       <body className={`${cause.variable}  antialiased `}>
         <Providers locale={locale} messages={messages}>
-          <header>root header</header>
           {children}
         </Providers>
       </body>
