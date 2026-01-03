@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Cause, Tajawal } from "next/font/google";
+import { Cause } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { LocaleType } from "@/types";
-import { getDirection, isRtl } from "@/utils";
+import { getDirection } from "@/utils";
 
 const cause = Cause({
   variable: "--font-cause",
@@ -22,12 +22,12 @@ export default async function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: LocaleType }>;
+  params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
   const messages = (await import(`../../../messages/${locale}.json`)).default;
   return (
-    <html lang={locale} dir={getDirection(locale)}>
+    <html lang={locale} dir={getDirection(locale as LocaleType)}>
       <body className={`${cause.variable}  antialiased font-medium`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
