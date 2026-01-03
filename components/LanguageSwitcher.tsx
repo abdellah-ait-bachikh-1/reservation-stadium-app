@@ -9,9 +9,11 @@ import {
 } from "@heroui/dropdown";
 import { useState, useEffect } from "react";
 import { FiGlobe } from "react-icons/fi";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@heroui/button";
 import ReactCountryFlag from "react-country-flag";
+import { useRouter } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 export default function LanguageSwitcher({
   placement = "bottom-end",
@@ -21,28 +23,14 @@ export default function LanguageSwitcher({
   showArrow?: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
-  const params = useParams();
-  const pathname = usePathname();
+  const locale = useLocale();
   const router = useRouter();
-  const [currentLocale, setCurrentLocale] = useState("en");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     setMounted(true);
-
-    // Detect current locale from URL
-    let detectedLocale = "en";
-
-    if (params?.locale && typeof params.locale === "string") {
-      detectedLocale = params.locale;
-    } else if (pathname) {
-      const firstSegment = pathname.split("/")[1];
-      if (firstSegment && ["en", "fr", "ar"].includes(firstSegment)) {
-        detectedLocale = firstSegment;
-      }
-    }
-
-    setCurrentLocale(detectedLocale);
-  }, [params, pathname]);
+  }, []);
 
   if (!mounted) {
     return (
@@ -78,34 +66,43 @@ export default function LanguageSwitcher({
   ];
 
   const currentLanguage =
-    languages.find((lang) => lang.key === currentLocale) || languages[0];
+    languages.find((lang) => lang.key === locale) || languages[0];
 
   const handleLanguageChange = (newLocale: string) => {
-    if (newLocale === currentLocale) return;
+    const pathSegments = pathname.split("/").filter(Boolean);
 
-    // Get current pathname
-    const currentPath = pathname || "/";
+    const firstSegment = pathSegments[0];
+    const isFirstSegmentLocale = languages.some(
+      (lang) => lang.key === firstSegment
+    );
 
-    // Remove current locale from path if present
-    let newPath = currentPath;
-    const segments = currentPath.split("/").filter(Boolean);
-
-    // Check if first segment is a locale and remove it
-    if (segments.length > 0 && ["en", "fr", "ar"].includes(segments[0])) {
-      segments.shift(); // Remove the locale segment
+    let cleanPathSegments = [...pathSegments];
+    if (isFirstSegmentLocale) {
+      cleanPathSegments = cleanPathSegments.slice(1);
     }
 
-    // Rebuild the path without locale
-    newPath = segments.length > 0 ? `/${segments.join("/")}` : "/";
+    const cleanPath =
+      cleanPathSegments.length > 0 ? `/${cleanPathSegments.join("/")}` : "/";
 
-    // Add new locale prefix if not English (adjust based on your routing strategy)
-    let finalPath = newPath;
-    if (newLocale !== "en") {
-      finalPath = `/${newLocale}${newPath}`;
-    }
+    const searchParamsString = searchParams.toString();
 
-    // Update the URL with the new locale
-    router.push(finalPath);
+    const targetPath = searchParamsString
+      ? `${cleanPath}?${searchParamsString}`
+      : cleanPath;
+
+    // console.log('DEBUG:', {
+    //   originalPathname: pathname,
+    //   pathSegments,
+    //   firstSegment,
+    //   isFirstSegmentLocale,
+    //   cleanPathSegments,
+    //   cleanPath,
+    //   searchParams: searchParamsString,
+    //   targetPath,
+    //   newLocale
+    // });
+
+    router.push(targetPath, { locale: newLocale });
   };
 
   return (
@@ -158,7 +155,7 @@ export default function LanguageSwitcher({
               )
             }
             description={language.description}
-            className={currentLocale === language.key ? "bg-default-100" : ""}
+            className={locale === language.key ? "bg-default-100" : ""}
           >
             {language.label}
           </DropdownItem>
