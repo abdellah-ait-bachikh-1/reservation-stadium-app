@@ -6,6 +6,15 @@ import 'next-intl';
 declare module 'next-intl' {
   interface IntlMessages {
     pages: {
+      error: {
+        title: string;
+        subtitle: string;
+        tryAgain: string;
+        goHome: string;
+        technicalDetails: string;
+        errorId: string;
+        noStackTrace: string;
+      };
       home: {
         hero: {
           title: string;
@@ -60,6 +69,7 @@ declare module 'next-intl' {
 // NAMESPACE TYPES FOR AUTOCOMPLETE
 // ============================================
 
+export type pages_error = "title" | "subtitle" | "tryAgain" | "goHome" | "technicalDetails" | "errorId" | "noStackTrace";
 export type pages_home_hero = "title" | "subtitle" | "cta";
 export type pages_home_metadata = "title" | "description" | "keywords";
 export type common_actions = "reserve" | "search" | "login" | "register" | "logout" | "save" | "cancel" | "confirm" | "delete" | "edit" | "view" | "book" | "checkout" | "continue" | "back" | "filter" | "sort" | "share" | "download";
@@ -70,6 +80,13 @@ export type common_theme_description = "light" | "dark" | "system";
 // FULL PATH TYPES FOR GLOBAL ACCESS
 // ============================================
 
+export type GlobalPath_pages_error_title = "pages.error.title";
+export type GlobalPath_pages_error_subtitle = "pages.error.subtitle";
+export type GlobalPath_pages_error_tryAgain = "pages.error.tryAgain";
+export type GlobalPath_pages_error_goHome = "pages.error.goHome";
+export type GlobalPath_pages_error_technicalDetails = "pages.error.technicalDetails";
+export type GlobalPath_pages_error_errorId = "pages.error.errorId";
+export type GlobalPath_pages_error_noStackTrace = "pages.error.noStackTrace";
 export type GlobalPath_pages_home_hero_title = "pages.home.hero.title";
 export type GlobalPath_pages_home_hero_subtitle = "pages.home.hero.subtitle";
 export type GlobalPath_pages_home_hero_cta = "pages.home.hero.cta";
@@ -103,7 +120,7 @@ export type GlobalPath_common_theme_description_light = "common.theme.descriptio
 export type GlobalPath_common_theme_description_dark = "common.theme.description.dark";
 export type GlobalPath_common_theme_description_system = "common.theme.description.system";
 
-export type AllGlobalPaths = GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download | GlobalPath_common_theme_light | GlobalPath_common_theme_dark | GlobalPath_common_theme_system | GlobalPath_common_theme_select | GlobalPath_common_theme_description_light | GlobalPath_common_theme_description_dark | GlobalPath_common_theme_description_system;
+export type AllGlobalPaths = GlobalPath_pages_error_title | GlobalPath_pages_error_subtitle | GlobalPath_pages_error_tryAgain | GlobalPath_pages_error_goHome | GlobalPath_pages_error_technicalDetails | GlobalPath_pages_error_errorId | GlobalPath_pages_error_noStackTrace | GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download | GlobalPath_common_theme_light | GlobalPath_common_theme_dark | GlobalPath_common_theme_system | GlobalPath_common_theme_select | GlobalPath_common_theme_description_light | GlobalPath_common_theme_description_dark | GlobalPath_common_theme_description_system;
 
 // Helper: Get keys for any namespace
 export type NamespaceKeys<T, P extends string> = 

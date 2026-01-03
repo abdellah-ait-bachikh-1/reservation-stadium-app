@@ -43,8 +43,16 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = (await import(`../../messages/${locale}.json`)).default;
   return (
-    <html lang={locale} dir={getDirection(locale as LocaleType)}>
-      <body className={`${cause.variable}  antialiased `}>
+    <html
+      lang={locale}
+      dir={getDirection(locale as LocaleType)}
+      className="h-full overflow-y-auto"
+      suppressHydrationWarning
+    >
+      <body
+        className={`${cause.variable}  antialiased bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-stone-950 dark:via-stone-700 dark:to-stone-950 h-screen w-full`}
+        suppressHydrationWarning
+      >
         <Providers locale={locale} messages={messages}>
           {children}
         </Providers>

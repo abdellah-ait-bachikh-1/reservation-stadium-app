@@ -35,6 +35,11 @@ export default async function PublicLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>           <header>public header</header>
-{children} </>;
+  return (
+    <>
+     
+      <header>public header</header>
+      {children}
+    </>
+  );
 }

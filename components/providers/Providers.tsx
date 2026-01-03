@@ -16,21 +16,21 @@ const Providers = ({
   messages: any;
 }) => {
   return (
-    <SessionProvider>
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        <HeroUIProvider locale={locale}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={true}
-            key={"theme"}
-            storageKey="theme"
-          >
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={true}
+      key={"theme"}
+      storageKey="theme"
+    >
+      <SessionProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <HeroUIProvider locale={locale} className="w-full h-full">
             {children}
-          </ThemeProvider>
-        </HeroUIProvider>
-      </NextIntlClientProvider>
-    </SessionProvider>
+          </HeroUIProvider>
+        </NextIntlClientProvider>
+      </SessionProvider>
+    </ThemeProvider>
   );
 };
 

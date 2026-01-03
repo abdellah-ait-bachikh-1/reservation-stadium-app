@@ -1,5 +1,14 @@
 {
   "pages": {
+    "error": {
+      "title": "Something went wrong!",
+      "subtitle": "An unexpected error occurred",
+      "tryAgain": "Try Again",
+      "goHome": "Go Home",
+      "technicalDetails": "Technical Details",
+      "errorId": "Error ID",
+      "noStackTrace": "No stack trace available"
+    },
     "home": {
       "hero": {
         "title": "Stadium Reservations in Tantan",

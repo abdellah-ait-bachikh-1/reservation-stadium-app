@@ -5,6 +5,7 @@ import { getTranslations as getTranslationsBase } from 'next-intl/server';
 import { useTranslations as useTranslationsBase } from 'next-intl';
 
 import type { 
+  pages_error,
   pages_home_hero,
   pages_home_metadata,
   common_actions,
@@ -13,6 +14,16 @@ import type {
   AllGlobalPaths,
 } from '@/types/i18n';
 
+
+/**
+ * Get pages.error translations (server)
+ * Usage: const t = await getPagesErrorTranslations();
+ *        t("key") // ← autocomplete for title, subtitle, tryAgain, goHome, technicalDetails, errorId, noStackTrace
+ */
+export async function getPagesErrorTranslations() {
+  const t = await getTranslationsBase("pages.error");
+  return (key: pages_error) => t(key);
+}
 
 /**
  * Get pages.home.hero translations (server)
@@ -64,6 +75,16 @@ export async function getCommonThemeDescriptionTranslations() {
   return (key: common_theme_description) => t(key);
 }
 
+
+/**
+ * Use pages.error translations (client)
+ * Usage: const t = usePagesErrorTranslations();
+ *        t("key") // ← autocomplete for title, subtitle, tryAgain, goHome, technicalDetails, errorId, noStackTrace
+ */
+export function usePagesErrorTranslations() {
+  const t = useTranslationsBase("pages.error");
+  return (key: pages_error) => t(key);
+}
 
 /**
  * Use pages.home.hero translations (client)

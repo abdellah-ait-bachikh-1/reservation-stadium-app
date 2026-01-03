@@ -1,5 +1,14 @@
 {
   "pages": {
+    "error": {
+      "title": "Quelque chose s'est mal passé !",
+      "subtitle": "Une erreur inattendue s'est produite",
+      "tryAgain": "Réessayer",
+      "goHome": "Retour à l'accueil",
+      "technicalDetails": "Détails techniques",
+      "errorId": "ID d'erreur",
+      "noStackTrace": "Aucune trace de pile disponible"
+    },
     "home": {
       "hero": {
         "title": "Réservations de Stades à Tantan",
@@ -34,16 +43,17 @@
       "sort": "Trier",
       "share": "Partager",
       "download": "Télécharger"
-    },"theme": {
-    "light": "Clair",
-    "dark": "Sombre", 
-    "system": "Système",
-    "select": "Sélectionner le thème",
-    "description": {
-      "light": "Thème clair",
-      "dark": "Thème sombre",
-      "system": "Utiliser le thème système"
+    },
+    "theme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système",
+      "select": "Sélectionner le thème",
+      "description": {
+        "light": "Thème clair",
+        "dark": "Thème sombre",
+        "system": "Utiliser le thème système"
+      }
     }
-  }
   }
 }
