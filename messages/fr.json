@@ -54,6 +54,23 @@
         "dark": "Thème sombre",
         "system": "Utiliser le thème système"
       }
+    },
+    "user": {
+      "dashboard": "Tableau de bord",
+      "profile": "Profil",
+      "logout": "Déconnexion",
+      "viewProfile": "Voir votre profil",
+      "goToDashboard": "Aller au tableau de bord",
+      "signOut": "Déconnecter votre compte",
+      "menu": "Menu utilisateur",
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "welcome": "Bienvenue",
+      "roles": {
+        "admin": "Administrateur",
+        "club": "Gestionnaire de Club"
+      }
     }
   }
 }

@@ -187,6 +187,10 @@ export function useTypedGlobalTranslations() {
 // KEY FIX: Get ALL namespaces, not just leaf nodes
 // ============================================
 
+// ============================================
+// KEY FIX: Get ALL namespaces, including nested objects
+// ============================================
+
 function getAllNamespaces(obj: any, currentPath: string[] = []): Array<{
   path: string;
   typeName: string;
@@ -203,25 +207,38 @@ function getAllNamespaces(obj: any, currentPath: string[] = []): Array<{
   }> = [];
   
   const traverse = (currentObj: any, path: string[]): void => {
-    // Get string keys at this level
-    const stringKeys = Object.entries(currentObj)
-      .filter(([_, v]) => typeof v === 'string')
-      .map(([k, _]) => k);
+    // Get ALL keys at this level (both string and object values)
+    const allKeys = Object.keys(currentObj);
     
-    // Only create namespace if we have STRING keys (not just objects)
-    if (stringKeys.length > 0 && path.length > 0) {
+    // Only create namespace if we have keys at this level AND path is not empty
+    if (allKeys.length > 0 && path.length > 0) {
       const namespacePath = path.join('.');
       const typeName = namespacePath.replace(/\./g, '_');
       const functionName = `get${toPascalCase(typeName)}Translations`;
       const hookName = `use${toPascalCase(typeName)}Translations`;
       
-      namespaces.push({
-        path: namespacePath,
-        typeName,
-        functionName,
-        hookName,
-        keys: stringKeys
-      });
+      // Get both string keys and object keys for autocomplete
+      const stringKeys = Object.entries(currentObj)
+        .filter(([_, v]) => typeof v === 'string')
+        .map(([k, _]) => k);
+      
+      // Also include object keys (like "roles") if they have string children
+      const objectKeys = Object.entries(currentObj)
+        .filter(([_, v]) => typeof v === 'object' && v !== null && !Array.isArray(v))
+        .map(([k, _]) => k);
+      
+      // Combine all keys for autocomplete
+      const allKeysForNamespace = [...stringKeys, ...objectKeys];
+      
+      if (allKeysForNamespace.length > 0) {
+        namespaces.push({
+          path: namespacePath,
+          typeName,
+          functionName,
+          hookName,
+          keys: allKeysForNamespace
+        });
+      }
     }
     
     // Continue deeper for nested objects
@@ -264,14 +281,21 @@ function generateAllNamespaceTypes(obj: any, currentPath: string[] = []): string
   const types: string[] = [];
   
   const traverse = (currentObj: any, path: string[]): void => {
+    // Get both string and object keys
     const stringKeys = Object.entries(currentObj)
       .filter(([_, v]) => typeof v === 'string')
       .map(([k, _]) => k);
     
-    if (stringKeys.length > 0 && path.length > 0) {
+    const objectKeys = Object.entries(currentObj)
+      .filter(([_, v]) => typeof v === 'object' && v !== null && !Array.isArray(v))
+      .map(([k, _]) => k);
+    
+    const allKeys = [...stringKeys, ...objectKeys];
+    
+    if (allKeys.length > 0 && path.length > 0) {
       const namespace = path.join('.');
       const typeName = namespace.replace(/\./g, '_');
-      types.push(`export type ${typeName} = ${stringKeys.map(k => `"${k}"`).join(' | ')};`);
+      types.push(`export type ${typeName} = ${allKeys.map(k => `"${k}"`).join(' | ')};`);
     }
     
     for (const [key, value] of Object.entries(currentObj)) {

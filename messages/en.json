@@ -54,6 +54,23 @@
         "dark": "Dark theme",
         "system": "Use system theme"
       }
+    },
+    "user": {
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "logout": "Logout",
+      "viewProfile": "View your profile",
+      "goToDashboard": "Go to dashboard",
+      "signOut": "Sign out of your account",
+      "menu": "User menu",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "welcome": "Welcome",
+      "roles": {
+        "admin": "Administrator",
+        "club": "Club Manager"
+      }
     }
   }
 }

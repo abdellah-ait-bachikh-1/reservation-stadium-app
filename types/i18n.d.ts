@@ -61,6 +61,23 @@ declare module 'next-intl' {
           system: string;
         };
       };
+      user: {
+        dashboard: string;
+        profile: string;
+        logout: string;
+        viewProfile: string;
+        goToDashboard: string;
+        signOut: string;
+        menu: string;
+        name: string;
+        email: string;
+        role: string;
+        welcome: string;
+        roles: {
+          admin: string;
+          club: string;
+        };
+      };
     };
   }
 }
@@ -69,12 +86,17 @@ declare module 'next-intl' {
 // NAMESPACE TYPES FOR AUTOCOMPLETE
 // ============================================
 
+export type pages = "error" | "home";
 export type pages_error = "title" | "subtitle" | "tryAgain" | "goHome" | "technicalDetails" | "errorId" | "noStackTrace";
+export type pages_home = "hero" | "metadata";
 export type pages_home_hero = "title" | "subtitle" | "cta";
 export type pages_home_metadata = "title" | "description" | "keywords";
+export type common = "actions" | "theme" | "user";
 export type common_actions = "reserve" | "search" | "login" | "register" | "logout" | "save" | "cancel" | "confirm" | "delete" | "edit" | "view" | "book" | "checkout" | "continue" | "back" | "filter" | "sort" | "share" | "download";
-export type common_theme = "light" | "dark" | "system" | "select";
+export type common_theme = "light" | "dark" | "system" | "select" | "description";
 export type common_theme_description = "light" | "dark" | "system";
+export type common_user = "dashboard" | "profile" | "logout" | "viewProfile" | "goToDashboard" | "signOut" | "menu" | "name" | "email" | "role" | "welcome" | "roles";
+export type common_user_roles = "admin" | "club";
 
 // ============================================
 // FULL PATH TYPES FOR GLOBAL ACCESS
@@ -119,8 +141,21 @@ export type GlobalPath_common_theme_select = "common.theme.select";
 export type GlobalPath_common_theme_description_light = "common.theme.description.light";
 export type GlobalPath_common_theme_description_dark = "common.theme.description.dark";
 export type GlobalPath_common_theme_description_system = "common.theme.description.system";
+export type GlobalPath_common_user_dashboard = "common.user.dashboard";
+export type GlobalPath_common_user_profile = "common.user.profile";
+export type GlobalPath_common_user_logout = "common.user.logout";
+export type GlobalPath_common_user_viewProfile = "common.user.viewProfile";
+export type GlobalPath_common_user_goToDashboard = "common.user.goToDashboard";
+export type GlobalPath_common_user_signOut = "common.user.signOut";
+export type GlobalPath_common_user_menu = "common.user.menu";
+export type GlobalPath_common_user_name = "common.user.name";
+export type GlobalPath_common_user_email = "common.user.email";
+export type GlobalPath_common_user_role = "common.user.role";
+export type GlobalPath_common_user_welcome = "common.user.welcome";
+export type GlobalPath_common_user_roles_admin = "common.user.roles.admin";
+export type GlobalPath_common_user_roles_club = "common.user.roles.club";
 
-export type AllGlobalPaths = GlobalPath_pages_error_title | GlobalPath_pages_error_subtitle | GlobalPath_pages_error_tryAgain | GlobalPath_pages_error_goHome | GlobalPath_pages_error_technicalDetails | GlobalPath_pages_error_errorId | GlobalPath_pages_error_noStackTrace | GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download | GlobalPath_common_theme_light | GlobalPath_common_theme_dark | GlobalPath_common_theme_system | GlobalPath_common_theme_select | GlobalPath_common_theme_description_light | GlobalPath_common_theme_description_dark | GlobalPath_common_theme_description_system;
+export type AllGlobalPaths = GlobalPath_pages_error_title | GlobalPath_pages_error_subtitle | GlobalPath_pages_error_tryAgain | GlobalPath_pages_error_goHome | GlobalPath_pages_error_technicalDetails | GlobalPath_pages_error_errorId | GlobalPath_pages_error_noStackTrace | GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download | GlobalPath_common_theme_light | GlobalPath_common_theme_dark | GlobalPath_common_theme_system | GlobalPath_common_theme_select | GlobalPath_common_theme_description_light | GlobalPath_common_theme_description_dark | GlobalPath_common_theme_description_system | GlobalPath_common_user_dashboard | GlobalPath_common_user_profile | GlobalPath_common_user_logout | GlobalPath_common_user_viewProfile | GlobalPath_common_user_goToDashboard | GlobalPath_common_user_signOut | GlobalPath_common_user_menu | GlobalPath_common_user_name | GlobalPath_common_user_email | GlobalPath_common_user_role | GlobalPath_common_user_welcome | GlobalPath_common_user_roles_admin | GlobalPath_common_user_roles_club;
 
 // Helper: Get keys for any namespace
 export type NamespaceKeys<T, P extends string> = 

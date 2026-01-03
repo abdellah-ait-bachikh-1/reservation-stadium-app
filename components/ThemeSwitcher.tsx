@@ -65,7 +65,7 @@ export default function ThemeSwitcher({
 
   return (
     <Dropdown placement={placement} showArrow={showArrow}>
-      <DropdownTrigger>
+      <DropdownTrigger >
         <Button
           isIconOnly
           variant="flat"
@@ -77,11 +77,11 @@ export default function ThemeSwitcher({
           {<currentTheme.icon className="h-4 w-4" />}
         </Button>
       </DropdownTrigger>
-      <DropdownMenu
+      <DropdownMenu 
         aria-label="Theme selection"
         variant="flat"
         onAction={(key) => setTheme(key as string)}
-        className="min-w-[180px]" // Wider dropdown for better spacing
+        className="min-w-45" // Wider dropdown for better spacing
       >
         {themes.map((themeOption) => (
           <DropdownItem

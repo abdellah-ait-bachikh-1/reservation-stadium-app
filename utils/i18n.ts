@@ -5,15 +5,30 @@ import { getTranslations as getTranslationsBase } from 'next-intl/server';
 import { useTranslations as useTranslationsBase } from 'next-intl';
 
 import type { 
+  pages,
   pages_error,
+  pages_home,
   pages_home_hero,
   pages_home_metadata,
+  common,
   common_actions,
   common_theme,
   common_theme_description,
+  common_user,
+  common_user_roles,
   AllGlobalPaths,
 } from '@/types/i18n';
 
+
+/**
+ * Get pages translations (server)
+ * Usage: const t = await getPagesTranslations();
+ *        t("key") // ← autocomplete for error, home
+ */
+export async function getPagesTranslations() {
+  const t = await getTranslationsBase("pages");
+  return (key: pages) => t(key);
+}
 
 /**
  * Get pages.error translations (server)
@@ -23,6 +38,16 @@ import type {
 export async function getPagesErrorTranslations() {
   const t = await getTranslationsBase("pages.error");
   return (key: pages_error) => t(key);
+}
+
+/**
+ * Get pages.home translations (server)
+ * Usage: const t = await getPagesHomeTranslations();
+ *        t("key") // ← autocomplete for hero, metadata
+ */
+export async function getPagesHomeTranslations() {
+  const t = await getTranslationsBase("pages.home");
+  return (key: pages_home) => t(key);
 }
 
 /**
@@ -46,6 +71,16 @@ export async function getPagesHomeMetadataTranslations() {
 }
 
 /**
+ * Get common translations (server)
+ * Usage: const t = await getCommonTranslations();
+ *        t("key") // ← autocomplete for actions, theme, user
+ */
+export async function getCommonTranslations() {
+  const t = await getTranslationsBase("common");
+  return (key: common) => t(key);
+}
+
+/**
  * Get common.actions translations (server)
  * Usage: const t = await getCommonActionsTranslations();
  *        t("key") // ← autocomplete for reserve, search, login, register, logout, save, cancel, confirm, delete, edit, view, book, checkout, continue, back, filter, sort, share, download
@@ -58,7 +93,7 @@ export async function getCommonActionsTranslations() {
 /**
  * Get common.theme translations (server)
  * Usage: const t = await getCommonThemeTranslations();
- *        t("key") // ← autocomplete for light, dark, system, select
+ *        t("key") // ← autocomplete for light, dark, system, select, description
  */
 export async function getCommonThemeTranslations() {
   const t = await getTranslationsBase("common.theme");
@@ -75,6 +110,36 @@ export async function getCommonThemeDescriptionTranslations() {
   return (key: common_theme_description) => t(key);
 }
 
+/**
+ * Get common.user translations (server)
+ * Usage: const t = await getCommonUserTranslations();
+ *        t("key") // ← autocomplete for dashboard, profile, logout, viewProfile, goToDashboard, signOut, menu, name, email, role, welcome, roles
+ */
+export async function getCommonUserTranslations() {
+  const t = await getTranslationsBase("common.user");
+  return (key: common_user) => t(key);
+}
+
+/**
+ * Get common.user.roles translations (server)
+ * Usage: const t = await getCommonUserRolesTranslations();
+ *        t("key") // ← autocomplete for admin, club
+ */
+export async function getCommonUserRolesTranslations() {
+  const t = await getTranslationsBase("common.user.roles");
+  return (key: common_user_roles) => t(key);
+}
+
+
+/**
+ * Use pages translations (client)
+ * Usage: const t = usePagesTranslations();
+ *        t("key") // ← autocomplete for error, home
+ */
+export function usePagesTranslations() {
+  const t = useTranslationsBase("pages");
+  return (key: pages) => t(key);
+}
 
 /**
  * Use pages.error translations (client)
@@ -84,6 +149,16 @@ export async function getCommonThemeDescriptionTranslations() {
 export function usePagesErrorTranslations() {
   const t = useTranslationsBase("pages.error");
   return (key: pages_error) => t(key);
+}
+
+/**
+ * Use pages.home translations (client)
+ * Usage: const t = usePagesHomeTranslations();
+ *        t("key") // ← autocomplete for hero, metadata
+ */
+export function usePagesHomeTranslations() {
+  const t = useTranslationsBase("pages.home");
+  return (key: pages_home) => t(key);
 }
 
 /**
@@ -107,6 +182,16 @@ export function usePagesHomeMetadataTranslations() {
 }
 
 /**
+ * Use common translations (client)
+ * Usage: const t = useCommonTranslations();
+ *        t("key") // ← autocomplete for actions, theme, user
+ */
+export function useCommonTranslations() {
+  const t = useTranslationsBase("common");
+  return (key: common) => t(key);
+}
+
+/**
  * Use common.actions translations (client)
  * Usage: const t = useCommonActionsTranslations();
  *        t("key") // ← autocomplete for reserve, search, login, register, logout, save, cancel, confirm, delete, edit, view, book, checkout, continue, back, filter, sort, share, download
@@ -119,7 +204,7 @@ export function useCommonActionsTranslations() {
 /**
  * Use common.theme translations (client)
  * Usage: const t = useCommonThemeTranslations();
- *        t("key") // ← autocomplete for light, dark, system, select
+ *        t("key") // ← autocomplete for light, dark, system, select, description
  */
 export function useCommonThemeTranslations() {
   const t = useTranslationsBase("common.theme");
@@ -134,6 +219,26 @@ export function useCommonThemeTranslations() {
 export function useCommonThemeDescriptionTranslations() {
   const t = useTranslationsBase("common.theme.description");
   return (key: common_theme_description) => t(key);
+}
+
+/**
+ * Use common.user translations (client)
+ * Usage: const t = useCommonUserTranslations();
+ *        t("key") // ← autocomplete for dashboard, profile, logout, viewProfile, goToDashboard, signOut, menu, name, email, role, welcome, roles
+ */
+export function useCommonUserTranslations() {
+  const t = useTranslationsBase("common.user");
+  return (key: common_user) => t(key);
+}
+
+/**
+ * Use common.user.roles translations (client)
+ * Usage: const t = useCommonUserRolesTranslations();
+ *        t("key") // ← autocomplete for admin, club
+ */
+export function useCommonUserRolesTranslations() {
+  const t = useTranslationsBase("common.user.roles");
+  return (key: common_user_roles) => t(key);
 }
 
 
