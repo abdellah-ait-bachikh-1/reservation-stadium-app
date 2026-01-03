@@ -5,6 +5,9 @@ import {
   getTypedGlobalTranslations,
 } from "@/utils/i18n";
 import { Metadata } from "next";
+import { error } from "console";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 export const generateMetadata = async ({
   params,
 }: {
@@ -19,13 +22,15 @@ export const generateMetadata = async ({
   };
 };
 const HomePage = async () => {
-  await new Promise(re=>setTimeout(re,5000))
+  await new Promise((re) => setTimeout(re, 5000));
   const t = await getTypedGlobalTranslations();
 
   return (
-<div className="text-4xl space-y-4">
-{t('pages.home.hero.title')}
-</div>
+    <div className="text-4xl space-y-4">
+      {t("pages.home.hero.title")}
+      <ThemeSwitcher />
+      <LanguageSwitcher />
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@
 import { HeroUIProvider } from "@heroui/system";
 import { NextIntlClientProvider } from "next-intl";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
 
 import React from "react";
 
@@ -17,7 +18,17 @@ const Providers = ({
   return (
     <SessionProvider>
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <HeroUIProvider locale={locale}>{children}</HeroUIProvider>
+        <HeroUIProvider locale={locale}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={true}
+            key={"theme"}
+            storageKey="theme"
+          >
+            {children}
+          </ThemeProvider>
+        </HeroUIProvider>
       </NextIntlClientProvider>
     </SessionProvider>
   );

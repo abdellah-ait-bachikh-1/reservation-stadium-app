@@ -41,6 +41,17 @@ declare module 'next-intl' {
         share: string;
         download: string;
       };
+      theme: {
+        light: string;
+        dark: string;
+        system: string;
+        select: string;
+        description: {
+          light: string;
+          dark: string;
+          system: string;
+        };
+      };
     };
   }
 }
@@ -52,6 +63,8 @@ declare module 'next-intl' {
 export type pages_home_hero = "title" | "subtitle" | "cta";
 export type pages_home_metadata = "title" | "description" | "keywords";
 export type common_actions = "reserve" | "search" | "login" | "register" | "logout" | "save" | "cancel" | "confirm" | "delete" | "edit" | "view" | "book" | "checkout" | "continue" | "back" | "filter" | "sort" | "share" | "download";
+export type common_theme = "light" | "dark" | "system" | "select";
+export type common_theme_description = "light" | "dark" | "system";
 
 // ============================================
 // FULL PATH TYPES FOR GLOBAL ACCESS
@@ -82,8 +95,15 @@ export type GlobalPath_common_actions_filter = "common.actions.filter";
 export type GlobalPath_common_actions_sort = "common.actions.sort";
 export type GlobalPath_common_actions_share = "common.actions.share";
 export type GlobalPath_common_actions_download = "common.actions.download";
+export type GlobalPath_common_theme_light = "common.theme.light";
+export type GlobalPath_common_theme_dark = "common.theme.dark";
+export type GlobalPath_common_theme_system = "common.theme.system";
+export type GlobalPath_common_theme_select = "common.theme.select";
+export type GlobalPath_common_theme_description_light = "common.theme.description.light";
+export type GlobalPath_common_theme_description_dark = "common.theme.description.dark";
+export type GlobalPath_common_theme_description_system = "common.theme.description.system";
 
-export type AllGlobalPaths = GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download;
+export type AllGlobalPaths = GlobalPath_pages_home_hero_title | GlobalPath_pages_home_hero_subtitle | GlobalPath_pages_home_hero_cta | GlobalPath_pages_home_metadata_title | GlobalPath_pages_home_metadata_description | GlobalPath_pages_home_metadata_keywords | GlobalPath_common_actions_reserve | GlobalPath_common_actions_search | GlobalPath_common_actions_login | GlobalPath_common_actions_register | GlobalPath_common_actions_logout | GlobalPath_common_actions_save | GlobalPath_common_actions_cancel | GlobalPath_common_actions_confirm | GlobalPath_common_actions_delete | GlobalPath_common_actions_edit | GlobalPath_common_actions_view | GlobalPath_common_actions_book | GlobalPath_common_actions_checkout | GlobalPath_common_actions_continue | GlobalPath_common_actions_back | GlobalPath_common_actions_filter | GlobalPath_common_actions_sort | GlobalPath_common_actions_share | GlobalPath_common_actions_download | GlobalPath_common_theme_light | GlobalPath_common_theme_dark | GlobalPath_common_theme_system | GlobalPath_common_theme_select | GlobalPath_common_theme_description_light | GlobalPath_common_theme_description_dark | GlobalPath_common_theme_description_system;
 
 // Helper: Get keys for any namespace
 export type NamespaceKeys<T, P extends string> = 

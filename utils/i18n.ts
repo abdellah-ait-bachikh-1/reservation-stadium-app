@@ -8,6 +8,8 @@ import type {
   pages_home_hero,
   pages_home_metadata,
   common_actions,
+  common_theme,
+  common_theme_description,
   AllGlobalPaths,
 } from '@/types/i18n';
 
@@ -42,6 +44,26 @@ export async function getCommonActionsTranslations() {
   return (key: common_actions) => t(key);
 }
 
+/**
+ * Get common.theme translations (server)
+ * Usage: const t = await getCommonThemeTranslations();
+ *        t("key") // ← autocomplete for light, dark, system, select
+ */
+export async function getCommonThemeTranslations() {
+  const t = await getTranslationsBase("common.theme");
+  return (key: common_theme) => t(key);
+}
+
+/**
+ * Get common.theme.description translations (server)
+ * Usage: const t = await getCommonThemeDescriptionTranslations();
+ *        t("key") // ← autocomplete for light, dark, system
+ */
+export async function getCommonThemeDescriptionTranslations() {
+  const t = await getTranslationsBase("common.theme.description");
+  return (key: common_theme_description) => t(key);
+}
+
 
 /**
  * Use pages.home.hero translations (client)
@@ -71,6 +93,26 @@ export function usePagesHomeMetadataTranslations() {
 export function useCommonActionsTranslations() {
   const t = useTranslationsBase("common.actions");
   return (key: common_actions) => t(key);
+}
+
+/**
+ * Use common.theme translations (client)
+ * Usage: const t = useCommonThemeTranslations();
+ *        t("key") // ← autocomplete for light, dark, system, select
+ */
+export function useCommonThemeTranslations() {
+  const t = useTranslationsBase("common.theme");
+  return (key: common_theme) => t(key);
+}
+
+/**
+ * Use common.theme.description translations (client)
+ * Usage: const t = useCommonThemeDescriptionTranslations();
+ *        t("key") // ← autocomplete for light, dark, system
+ */
+export function useCommonThemeDescriptionTranslations() {
+  const t = useTranslationsBase("common.theme.description");
+  return (key: common_theme_description) => t(key);
 }
 
 
