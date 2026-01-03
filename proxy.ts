@@ -1,14 +1,21 @@
-import createMiddleware from "next-intl/middleware";
-import { defineRouting } from "next-intl/routing";
-import { locales } from "./const";
+import { NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
 
-export const routing = defineRouting({
-  locales,
-  defaultLocale: "fr",
-});
+const intlMiddleware = createMiddleware(routing);
 
-export default createMiddleware(routing);
+export default function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  if (pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${routing.defaultLocale}`;
+    return NextResponse.redirect(url);
+  }
+  
+  return intlMiddleware(request);
+}
 
 export const config = {
-  matcher: ["/((?!api|_next|favicon.ico).*)"],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

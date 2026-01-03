@@ -1,15 +1,16 @@
-import { locales } from "@/const";
-import { LocaleType } from "@/types";
 import { getRequestConfig } from "next-intl/server";
-import { cookies } from "next/headers";
+import { routing } from "./routing";
+import { hasLocale } from "next-intl";
 
-export default getRequestConfig(async ({}) => {
-  const store = await cookies();
-  const cookieLocale = store.get("NEXT_LOCALE")?.value as LocaleType;
-  const locale = locales.includes(cookieLocale || "") ? cookieLocale : "fr";
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  
+  const locale = requested && hasLocale(routing.locales, requested)
+    ? requested
+    : routing.defaultLocale;
 
   return {
-    locale,
+    locale, 
     messages: (await import(`../messages/${locale}.json`)).default,
   };
 });

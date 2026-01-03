@@ -1,1 +1,3 @@
-export type LocaleType = "en" | "fr" | "ar"
+import { routing } from "@/i18n/routing";
+
+export type LocaleType = (typeof routing.locales)[number];

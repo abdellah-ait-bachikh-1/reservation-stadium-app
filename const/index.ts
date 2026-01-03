@@ -1,3 +1,2 @@
-import { LocaleType } from "@/types";
 
-export const locales: LocaleType[] = ["en", "fr", "ar"];
+export const locales = ["en", "fr", "ar"];
