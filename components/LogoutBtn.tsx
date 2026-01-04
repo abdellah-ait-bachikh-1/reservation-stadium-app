@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 import { useLocale } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "@heroui/theme"; // Assuming you have cn utility
+import { button, cn } from "@heroui/theme"; // Assuming you have cn utility
 import { motion } from "framer-motion"; // Import motion
 import { FaSignOutAlt } from "react-icons/fa"; // Import icon
 import { isRtl } from "@/utils";
@@ -31,7 +31,6 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
     setShowLogoutModal(false);
     if (onCloseMenu) onCloseMenu();
   };
-
 
   const modalContent = showLogoutModal ? (
     <div className="fixed inset-0 z-[99999]">
@@ -83,7 +82,8 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
               <button
                 onClick={() => setShowLogoutModal(false)}
                 className={cn(
-                  "flex-1 font-medium px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  button({ variant: "flat", fullWidth: true })
+                  //   "flex-1 font-medium px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 )}
               >
                 {t("common.modals.logout.cancel")}
@@ -91,7 +91,8 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
               <button
                 onClick={handleLogout}
                 className={cn(
-                  "flex-1 font-medium px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                  button({ color: "danger", variant: "flat", fullWidth: true })
+                  //   "flex-1 font-medium px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                 )}
               >
                 {t("common.modals.logout.confirm")}
