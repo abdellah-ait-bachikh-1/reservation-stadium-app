@@ -1,23 +1,24 @@
-import { locales } from "@/const";
-import { getTypedGlobalTranslations } from "@/utils/i18n";
+
 import { Metadata } from "next";
-export function generateStaticParams() {
-  return locales.map((locale) => ({
-    locale,
-  }));
-}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTypedGlobalTranslations();
+
+  const messages = (await import(`../../../../messages/${locale}.json`))
+    .default;
 
   return {
-    title: `${t("pages.about.metadata.title")}`,
-    description: t("pages.about.metadata.description"),
-    keywords: t("pages.about.metadata.keywords"),
+    title: `${messages.pages?.contact?.metadata?.title || "À propos"}`,
+    description:
+      messages.pages?.contact?.metadata?.description ||
+     "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
+    keywords:
+      messages.pages?.contact?.metadata?.keywords ||
+      "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan",
   };
 }
 const AboutPage = () => {

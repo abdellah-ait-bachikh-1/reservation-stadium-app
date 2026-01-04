@@ -67,54 +67,25 @@ export default function LanguageSwitcher({
 
   const currentLanguage =
     languages.find((lang) => lang.key === locale) || languages[0];
-
   const handleLanguageChange = (newLocale: string) => {
-    const pathSegments = pathname.split("/").filter(Boolean);
+    // Get current path without the locale prefix
+    const pathnameWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
 
-    const firstSegment = pathSegments[0];
-    const isFirstSegmentLocale = languages.some(
-      (lang) => lang.key === firstSegment
-    );
-
-    let cleanPathSegments = [...pathSegments];
-    if (isFirstSegmentLocale) {
-      cleanPathSegments = cleanPathSegments.slice(1);
-    }
-
-    const cleanPath =
-      cleanPathSegments.length > 0 ? `/${cleanPathSegments.join("/")}` : "/";
-
+    // Get query parameters
     const searchParamsString = searchParams.toString();
 
+    // Build the target path
     const targetPath = searchParamsString
-      ? `${cleanPath}?${searchParamsString}`
-      : cleanPath;
+      ? `${pathnameWithoutLocale}?${searchParamsString}`
+      : pathnameWithoutLocale;
 
-    // console.log('DEBUG:', {
-    //   originalPathname: pathname,
-    //   pathSegments,
-    //   firstSegment,
-    //   isFirstSegmentLocale,
-    //   cleanPathSegments,
-    //   cleanPath,
-    //   searchParams: searchParamsString,
-    //   targetPath,
-    //   newLocale
-    // });
-
-    router.push(targetPath, { locale: newLocale });
+    // Navigate to the new locale
+    router.replace(targetPath, { locale: newLocale });
   };
-
   return (
     <Dropdown placement={placement} showArrow={showArrow}>
       <DropdownTrigger>
-        <Button
-           isIconOnly
-          variant="flat"
-          size="sm"
-          radius="lg"
-          color="default"
-        >
+        <Button isIconOnly variant="flat" size="sm" radius="lg" color="default">
           {currentLanguage.countryCode ? (
             <ReactCountryFlag
               countryCode={currentLanguage.countryCode}

@@ -6,16 +6,13 @@ import { Figtree } from "next/font/google";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { FiSearch, FiHome, FiArrowLeft, FiAlertTriangle } from "react-icons/fi";
+import {FiHome, FiArrowLeft, FiAlertTriangle } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, EffectFlip } from "swiper/modules";
-
-// Import Swiper styles
+import { Pagination, EffectFlip } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-flip";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { ThemeProvider } from "next-themes";
 
 const cause = Figtree({
@@ -34,8 +31,7 @@ export default function NotFound() {
   const swiperRef = useRef<any>(null);
 
   useEffect(() => {
-    // Simple locale detection from URL
-    let detectedLocale = "fr"; // default
+    let detectedLocale = "fr"; 
 
     if (params?.locale && typeof params.locale === "string") {
       detectedLocale = params.locale;
@@ -47,8 +43,6 @@ export default function NotFound() {
     }
 
     setLocale(detectedLocale as LocaleEnumType);
-
-    // Set initial swiper index based on locale
     const localeIndex = { en: 0, fr: 1, ar: 2 }[detectedLocale] || 1;
     setSwiperIndex(localeIndex);
   }, [params, pathname]);
@@ -92,7 +86,6 @@ export default function NotFound() {
     return (
       <html>
         <body className="bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-stone-900 dark:via-stone-700 dark:to-stone-900">
-          {" "}
         </body>
       </html>
     );
@@ -118,7 +111,7 @@ export default function NotFound() {
               <div className="w-full max-w-4xl mx-auto px-4">
                 {/* Header with 404 only */}
                 <div className="text-center">
-                  <h1 className="text-7xl md:text-9xl font-bold tracking-tighter bg-gradient-to-r from-red-600 via-rose-500 to-red-400 bg-clip-text text-transparent mb-2">
+                  <h1 className="text-7xl md:text-9xl font-bold tracking-tighter bg-linear-to-r from-red-600 via-rose-500 to-red-400 bg-clip-text text-transparent mb-2">
                     404
                   </h1>
                 </div>
@@ -129,7 +122,7 @@ export default function NotFound() {
                     effect={"flip"}
                     grabCursor={true}
                     modules={[EffectFlip, Pagination]}
-                    className="w-full h-[300px]"
+                    className="w-full h-75"
                     initialSlide={swiperIndex}
                     onSlideChange={handleSwiperChange}
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -147,7 +140,7 @@ export default function NotFound() {
                           {/* Icon */}
                           <div className="flex justify-center mb-6">
                             <div
-                              className={`h-24 w-24 rounded-full bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center shadow-lg`}
+                              className={`h-24 w-24 rounded-full bg-linear-to-br from-red-500 to-rose-500 flex items-center justify-center shadow-lg`}
                             >
                               <div className="relative">
                                 <FiAlertTriangle className="h-12 w-12 text-white relative z-10" />

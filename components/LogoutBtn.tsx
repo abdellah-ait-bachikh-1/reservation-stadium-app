@@ -1,24 +1,25 @@
 "use client";
 import { Button, ButtonProps } from "@heroui/button";
 import { signOut } from "next-auth/react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { button, cn } from "@heroui/theme"; // Assuming you have cn utility
 import { motion } from "framer-motion"; // Import motion
 import { FaSignOutAlt } from "react-icons/fa"; // Import icon
 import { isRtl } from "@/utils";
-import { useTypedGlobalTranslations } from "@/utils/i18n";
+import { useTypedTranslations } from "@/utils/i18n";
+import { LocaleEnumType } from "@/types";
 
 interface LogoutBtnProps extends ButtonProps {
   onCloseMenu?: () => void;
 }
 
 const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
-  const locale = useLocale();
+  const locale = useLocale() as LocaleEnumType;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const t = useTypedGlobalTranslations();
+  const t = useTypedTranslations("common");
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -65,10 +66,10 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                 }`}
               >
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {t("common.modals.logout.title")}
+                  {t("modals.logout.title")}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {t("common.modals.logout.message")}
+                  {t("modals.logout.message")}
                 </p>
               </div>
             </div>
@@ -86,7 +87,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                   //   "flex-1 font-medium px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 )}
               >
-                {t("common.modals.logout.cancel")}
+                {t("modals.logout.cancel")}
               </button>
               <button
                 onClick={handleLogout}
@@ -95,7 +96,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                   //   "flex-1 font-medium px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                 )}
               >
-                {t("common.modals.logout.confirm")}
+                {t("modals.logout.confirm")}
               </button>
             </div>
           </div>

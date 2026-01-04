@@ -8,16 +8,12 @@ import {
   DropdownProps,
 } from "@heroui/dropdown";
 import { Avatar, AvatarProps } from "@heroui/avatar";
-import { Button } from "@heroui/button";
-import { FiUser, FiLogOut, FiHome } from "react-icons/fi";
-import {
-  useCommonUserTranslations,
-  useTypedGlobalTranslations,
-} from "@/utils/i18n";
-import React, { Fragment } from "react";
+import { FiUser, FiLogOut } from "react-icons/fi";
 import { Chip } from "@heroui/chip";
 import { convertCase } from "@/utils";
 import { LuLayoutDashboard } from "react-icons/lu";
+import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/utils/i18n";
 
 interface UserAvatarProps {
   placement?: DropdownProps["placement"];
@@ -47,28 +43,28 @@ export default function UserAvatar({
   className = "",
   size = "md",
 }: UserAvatarProps) {
-  const t = useTypedGlobalTranslations();
+  const t = useTypedTranslations("common"); // or useTranslations('global')
 
   const { email, name, role } = user;
 
   const menuItems: MenuItemType[] = [
     {
       key: "dashboard",
-      label: t("common.user.dashboard"),
+      label: t("user.dashboard"),
       icon: LuLayoutDashboard,
-      description: t("common.user.goToDashboard"),
+      description: t("user.goToDashboard"),
     },
     {
       key: "profile",
-      label: t("common.user.profile"),
+      label: t("user.profile"),
       icon: FiUser,
-      description: t("common.user.viewProfile"),
+      description: t("user.viewProfile"),
     },
     {
       key: "logout",
-      label: t("common.user.logout"),
+      label: t("user.logout"),
       icon: FiLogOut,
-      description: t("common.user.signOut"),
+      description: t("user.signOut"),
       className: "text-danger hidden md:flex",
     },
   ];
@@ -91,13 +87,13 @@ export default function UserAvatar({
   return (
     <Dropdown placement={placement} showArrow={showArrow} className={className}>
       <DropdownTrigger>
-        <button className="cursor-pointer" aria-label={t("common.user.menu")}>
+        <button className="cursor-pointer" aria-label={t("user.menu")}>
           <Avatar className="text-sm" isBordered size={size} />
         </button>
       </DropdownTrigger>
 
       <DropdownMenu
-        aria-label={t("common.user.menu")}
+        aria-label={t("user.menu")}
         variant="flat"
         onAction={(key) => handleAction(key as string)}
         className="min-w-64"

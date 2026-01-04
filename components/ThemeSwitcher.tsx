@@ -11,7 +11,8 @@ import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiMonitor, FiCheck } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import { Button } from "@heroui/button";
-import { useTypedGlobalTranslations } from "@/utils/i18n";
+import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/utils/i18n";
 
 export default function ThemeSwitcher({
   placement = "bottom-end",
@@ -22,7 +23,7 @@ export default function ThemeSwitcher({
 }) {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  const t = useTypedGlobalTranslations();
+  const t = useTypedTranslations("common");
 
   useEffect(() => {
     setMounted(true);
@@ -43,21 +44,21 @@ export default function ThemeSwitcher({
   const themes = [
     {
       key: "light",
-      label: t("common.theme.light"),
+      label: t("theme.light"),
       icon: FiSun , 
-      description: t("common.theme.description.light"),
+      description: t("theme.description.light"),
     },
     {
       key: "dark",
-      label: t("common.theme.dark"),
+      label: t("theme.dark"),
       icon: FiMoon , 
-      description: t("common.theme.description.dark"),
+      description: t("theme.description.dark"),
     },
     {
       key: "system",
-      label: t("common.theme.system"),
+      label: t("theme.system"),
       icon: FiMonitor , 
-      description: t("common.theme.description.system"),
+      description: t("theme.description.system"),
     },
   ];
 

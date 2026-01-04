@@ -5,9 +5,10 @@ import { Button } from "@heroui/button";
 import { button } from "@heroui/theme";
 import { useEffect } from "react";
 import { FiAlertCircle, FiRefreshCw, FiHome } from "react-icons/fi";
-import { usePagesErrorTranslations } from "@/utils/i18n";
 import { Alert } from "@heroui/alert";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/utils/i18n";
 export default function Error({
   error,
   reset,
@@ -15,7 +16,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const t = usePagesErrorTranslations();
+  const t = useTypedTranslations("pages");
 
   useEffect(() => {
     console.error(error);
@@ -37,7 +38,7 @@ export default function Error({
           {/* Error Message */}
           <div className="space-y-3">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-rose-500 to-red-400 bg-clip-text text-transparent">
-              {t("title")}
+              {t("error.title")}
             </h2>
             {/* <div className="bg-red-50/80 dark:bg-red-900/10 backdrop-blur-sm p-4 rounded-2xl border border-red-200 dark:border-red-800">
               <p className="text-lg text-[hsl(var(--foreground))] font-medium">
@@ -47,7 +48,7 @@ export default function Error({
             {error.digest && (
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-stone-800 rounded-full">
                 <span className="text-sm text-[hsl(var(--default-600))] dark:text-[hsl(var(--default-400))] font-medium">
-                  {t("errorId")}:
+                  {t("error.errorId")}:
                 </span>
 
                 <span className="text-sm font-mono text-red-600 dark:text-red-400 font-bold">
@@ -57,7 +58,7 @@ export default function Error({
             )}
             <Alert
               color={"default"}
-              description={error.message || t("subtitle")}
+              description={error.message || t("error.subtitle")}
               variant="flat"
             />
           </div>
@@ -71,7 +72,7 @@ export default function Error({
             startContent={<FiRefreshCw className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" />}
             className="font-semibold bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           >
-            {t("tryAgain")}
+            {t("error.tryAgain")}
           </Button>
           <Link
             href={"/"}
@@ -84,7 +85,7 @@ export default function Error({
             })}
           >
             <FiHome className="mr-2 h-5 w-5 inline-block group-hover:rotate-12 transition-transform duration-300" />
-            {t("goHome")}
+            {t("error.goHome")}
           </Link>
         </div>
       </div>

@@ -1,15 +1,7 @@
 import TestToast from "@/components/TestToast";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
-import { locales } from "@/const";
-import { getAppName } from "@/utils";
-import { getTypedGlobalTranslations } from "@/utils/i18n";
-import { Metadata } from "next";
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({
-    locale,
-  }));
-}
+import { Metadata } from "next";
 
 export async function generateMetadata({
   params,
@@ -17,18 +9,20 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTypedGlobalTranslations();
+
+  const messages = (await import(`../../../messages/${locale}.json`)).default;
 
   return {
-    title:`${t("pages.home.metadata.title")}`,
-    description: t("pages.home.metadata.description"),
-    keywords: t("pages.home.metadata.keywords"),
+    title: `${messages.pages?.home?.metadata?.title || "Accueil"}`,
+    description:
+      messages.pages?.home?.metadata?.description ||
+      "Réservez et louez des stades et installations sportives à Tantan, Maroc. Réservations en ligne faciles pour terrains de football, courts de basket et équipements sportifs dans la région de Tan-Tan.",
+    keywords:
+      messages.pages?.home?.metadata?.keywords ||
+      "réservation stade Tantan, installations sportives Tan-Tan, réservation terrain sport Tantan Maroc, réserver terrain football Tan-Tan, location court basket Tantan, équipements sportifs Tan-Tan, complexe sportif Tantan, terrains athlétiques Tan-Tan, réservation terrain jeu Tantan, centres de loisirs Tan-Tan",
   };
 }
-
 const page = async () => {
-  // throw new Error(" this is error from home page")
-  const t = await getTypedGlobalTranslations();
   return (
     <div>
       <ThemeSwitcher />
@@ -36,7 +30,10 @@ const page = async () => {
       {new Array(100).fill(null).map((_, i) => (
         <div key={i}> {i} </div>
       ))}
-      <div>sqdnqkjsdhj kssssssssssss ssss ssssssssssss sssssssssssssssssssssssss sssssssssssss ssssssssss ssssssssssssssssssssss</div>
+      <div>
+        sqdnqkjsdhj kssssssssssss ssss ssssssssssss sssssssssssssssssssssssss
+        sssssssssssss ssssssssss ssssssssssssssssssssss
+      </div>
     </div>
   );
 };

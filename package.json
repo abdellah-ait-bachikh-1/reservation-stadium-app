@@ -2,12 +2,13 @@
   "name": "mreservation-stadium",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-i18n-types": "tsx scripts/generate-i18n-types.ts"
+    "generate-i18n": "tsx scripts/generate-i18n.ts"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",

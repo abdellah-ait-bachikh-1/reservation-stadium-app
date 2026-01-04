@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Cause, Figtree, Manrope } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
+import { Figtree } from "next/font/google";
+
 import { LocaleEnumType, LocaleType } from "@/types";
 import { getAppName, getDirection } from "@/utils";
-import { HeroUIProvider } from "@heroui/system";
-import { getTypedGlobalTranslations } from "@/utils/i18n";
+
 import Providers from "@/components/providers/Providers";
 import { ToastProvider } from "@heroui/toast";
+import { setRequestLocale } from "next-intl/server";
 const cause = Figtree({
   variable: "--font-cause",
   subsets: ["latin", "latin-ext"],
@@ -21,19 +21,19 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTypedGlobalTranslations();
+  const messages = (await import(`../../messages/${locale}.json`)).default;
 
   return {
     title: {
       template: `%s | ${getAppName(locale as LocaleEnumType)}`,
       default: getAppName(locale as LocaleEnumType) || "Réservation des Stade",
     },
-    description: t("pages.home.metadata.description"),
-    keywords: t("pages.home.metadata.keywords"),
+    description: messages?.pages?.home?.metadata?.description || "",
+    keywords: messages?.pages?.home?.metadata?.keywords || "",
   };
 }
 
-export default async function RootLayout({
+export default async function LocaleRootLayout({
   children,
   params,
 }: Readonly<{
@@ -41,6 +41,8 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
+  setRequestLocale(locale);
+
   const messages = (await import(`../../messages/${locale}.json`)).default;
   return (
     <html

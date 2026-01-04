@@ -2,7 +2,7 @@
 import LanguageSwitcher from "../LanguageSwitcher";
 import ThemeSwitcher from "../ThemeSwitcher";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { LocaleEnumType } from "@/types";
 import { getAppName, isRtl } from "@/utils";
 import { Activity, useState } from "react";
@@ -14,16 +14,16 @@ import { IoClose } from "react-icons/io5";
 import { Skeleton } from "@heroui/skeleton";
 import { Link, usePathname } from "@/i18n/navigation";
 import { button, cn } from "@heroui/theme";
-import { useTypedGlobalTranslations } from "@/utils/i18n";
 import LogoutBtn from "../LogoutBtn";
 import {
   HiBuildingOffice2,
   HiInformationCircle,
   HiChatBubbleBottomCenterText,
 } from "react-icons/hi2";
+import { useTypedTranslations } from "@/utils/i18n";
 const Header = () => {
-  const locale = useLocale();
-  const t = useTypedGlobalTranslations();
+  const locale = useLocale() as LocaleEnumType;
+  const t = useTypedTranslations("common");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const appName = getAppName(locale as LocaleEnumType);
@@ -58,7 +58,6 @@ const Header = () => {
   ] as const;
   const isActive = (href: string) => {
     const pathname = usePathname();
-    console.log(pathname);
     return pathname === href;
   };
   return (
@@ -94,7 +93,7 @@ const Header = () => {
                     : "text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white"
                 )}
               >
-                {t(`common.navigation.public.links.${item.label}`)}
+                {t(`navigation.public.links.${item.label}`)}
 
                 {/* Active underline */}
                 {active && (
@@ -174,7 +173,7 @@ const Header = () => {
                     color: "warning",
                   })}
                 >
-                  {t("common.actions.register")}
+                  {t("actions.register")}
                 </Link>
                 <Link
                   href={"/auth/login"}
@@ -184,7 +183,7 @@ const Header = () => {
                     color: "success",
                   })}
                 >
-                  {t("common.actions.login")}
+                  {t("actions.login")}
                 </Link>
               </div>
               <div className="flex  items-center gap-2 justify-end">
@@ -200,7 +199,7 @@ const Header = () => {
             {/* Main Navigation Section */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-2 mb-4">
-                {t("common.navigation.public.title")}
+                {t("navigation.public.title")}
               </h4>
               {navigationMenu.map((item) => (
                 <Link
@@ -232,7 +231,7 @@ const Header = () => {
                         : "text-zinc-700 dark:text-zinc-300  "
                     )}
                   >
-                    {t(`common.navigation.public.links.${item.label}`)}
+                    {t(`navigation.public.links.${item.label}`)}
                   </span>
                   {isActive(item.href) && (
                     <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
@@ -254,7 +253,7 @@ const Header = () => {
           ) : (
             user && (
               <LogoutBtn fullWidth color="danger" variant="flat">
-                {t("common.actions.logout")}
+                {t("actions.logout")}
               </LogoutBtn>
             )
           )}
