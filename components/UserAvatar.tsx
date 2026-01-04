@@ -7,7 +7,7 @@ import {
   DropdownItem,
   DropdownProps,
 } from "@heroui/dropdown";
-import { Avatar } from "@heroui/avatar";
+import { Avatar, AvatarProps } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { FiUser, FiLogOut, FiHome } from "react-icons/fi";
 import {
@@ -21,11 +21,13 @@ interface UserAvatarProps {
   placement?: DropdownProps["placement"];
   showArrow?: boolean;
   user: {
+    id:string
     name: string;
     email: string;
     role: "ADMIN" | "CLUB";
   };
   className?: string;
+  size?:AvatarProps["size"]
 }
 
 type MenuItemType = {
@@ -41,6 +43,7 @@ export default function UserAvatar({
   showArrow = false,
   user,
   className = "",
+  size="md"
 }: UserAvatarProps) {
   const t = useTypedGlobalTranslations();
 
@@ -87,7 +90,7 @@ export default function UserAvatar({
     <Dropdown placement={placement} showArrow={showArrow} className={className}>
       <DropdownTrigger>
         <button className="cursor-pointer" aria-label={t("common.user.menu")}>
-          <Avatar className="text-sm" isBordered />
+          <Avatar className="text-sm" isBordered size={size} />
         </button>
       </DropdownTrigger>
 
