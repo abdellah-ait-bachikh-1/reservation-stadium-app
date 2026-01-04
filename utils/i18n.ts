@@ -10,6 +10,12 @@ import type {
   pages_home,
   pages_home_hero,
   pages_home_metadata,
+  pages_stadiums,
+  pages_stadiums_metadata,
+  pages_about,
+  pages_about_metadata,
+  pages_contact,
+  pages_contact_metadata,
   common,
   common_actions,
   common_theme,
@@ -28,7 +34,7 @@ import type {
 /**
  * Get pages translations (server)
  * Usage: const t = await getPagesTranslations();
- *        t("key") // ← autocomplete for error, home
+ *        t("key") // ← autocomplete for error, home, stadiums, about, contact
  */
 export async function getPagesTranslations() {
   const t = await getTranslationsBase("pages");
@@ -73,6 +79,66 @@ export async function getPagesHomeHeroTranslations() {
 export async function getPagesHomeMetadataTranslations() {
   const t = await getTranslationsBase("pages.home.metadata");
   return (key: pages_home_metadata) => t(key);
+}
+
+/**
+ * Get pages.stadiums translations (server)
+ * Usage: const t = await getPagesStadiumsTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export async function getPagesStadiumsTranslations() {
+  const t = await getTranslationsBase("pages.stadiums");
+  return (key: pages_stadiums) => t(key);
+}
+
+/**
+ * Get pages.stadiums.metadata translations (server)
+ * Usage: const t = await getPagesStadiumsMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export async function getPagesStadiumsMetadataTranslations() {
+  const t = await getTranslationsBase("pages.stadiums.metadata");
+  return (key: pages_stadiums_metadata) => t(key);
+}
+
+/**
+ * Get pages.about translations (server)
+ * Usage: const t = await getPagesAboutTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export async function getPagesAboutTranslations() {
+  const t = await getTranslationsBase("pages.about");
+  return (key: pages_about) => t(key);
+}
+
+/**
+ * Get pages.about.metadata translations (server)
+ * Usage: const t = await getPagesAboutMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export async function getPagesAboutMetadataTranslations() {
+  const t = await getTranslationsBase("pages.about.metadata");
+  return (key: pages_about_metadata) => t(key);
+}
+
+/**
+ * Get pages.contact translations (server)
+ * Usage: const t = await getPagesContactTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export async function getPagesContactTranslations() {
+  const t = await getTranslationsBase("pages.contact");
+  return (key: pages_contact) => t(key);
+}
+
+/**
+ * Get pages.contact.metadata translations (server)
+ * Usage: const t = await getPagesContactMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export async function getPagesContactMetadataTranslations() {
+  const t = await getTranslationsBase("pages.contact.metadata");
+  return (key: pages_contact_metadata) => t(key);
 }
 
 /**
@@ -189,7 +255,7 @@ export async function getCommonNavigationPublicLinksTranslations() {
 /**
  * Use pages translations (client)
  * Usage: const t = usePagesTranslations();
- *        t("key") // ← autocomplete for error, home
+ *        t("key") // ← autocomplete for error, home, stadiums, about, contact
  */
 export function usePagesTranslations() {
   const t = useTranslationsBase("pages");
@@ -234,6 +300,66 @@ export function usePagesHomeHeroTranslations() {
 export function usePagesHomeMetadataTranslations() {
   const t = useTranslationsBase("pages.home.metadata");
   return (key: pages_home_metadata) => t(key);
+}
+
+/**
+ * Use pages.stadiums translations (client)
+ * Usage: const t = usePagesStadiumsTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export function usePagesStadiumsTranslations() {
+  const t = useTranslationsBase("pages.stadiums");
+  return (key: pages_stadiums) => t(key);
+}
+
+/**
+ * Use pages.stadiums.metadata translations (client)
+ * Usage: const t = usePagesStadiumsMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export function usePagesStadiumsMetadataTranslations() {
+  const t = useTranslationsBase("pages.stadiums.metadata");
+  return (key: pages_stadiums_metadata) => t(key);
+}
+
+/**
+ * Use pages.about translations (client)
+ * Usage: const t = usePagesAboutTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export function usePagesAboutTranslations() {
+  const t = useTranslationsBase("pages.about");
+  return (key: pages_about) => t(key);
+}
+
+/**
+ * Use pages.about.metadata translations (client)
+ * Usage: const t = usePagesAboutMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export function usePagesAboutMetadataTranslations() {
+  const t = useTranslationsBase("pages.about.metadata");
+  return (key: pages_about_metadata) => t(key);
+}
+
+/**
+ * Use pages.contact translations (client)
+ * Usage: const t = usePagesContactTranslations();
+ *        t("key") // ← autocomplete for metadata
+ */
+export function usePagesContactTranslations() {
+  const t = useTranslationsBase("pages.contact");
+  return (key: pages_contact) => t(key);
+}
+
+/**
+ * Use pages.contact.metadata translations (client)
+ * Usage: const t = usePagesContactMetadataTranslations();
+ *        t("key") // ← autocomplete for title, description, keywords
+ */
+export function usePagesContactMetadataTranslations() {
+  const t = useTranslationsBase("pages.contact.metadata");
+  return (key: pages_contact_metadata) => t(key);
 }
 
 /**

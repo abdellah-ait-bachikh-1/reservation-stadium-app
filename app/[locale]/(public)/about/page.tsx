@@ -1,9 +1,27 @@
-import React from 'react'
-
-const AboutPage = () => {
-  return (
-    <div>AboutPage</div>
-  )
+import { locales } from "@/const";
+import { getTypedGlobalTranslations } from "@/utils/i18n";
+import { Metadata } from "next";
+export function generateStaticParams() {
+  return locales.map((locale) => ({
+    locale,
+  }));
 }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTypedGlobalTranslations();
 
-export default AboutPage
+  return {
+    title: `${t("pages.about.metadata.title")}`,
+    description: t("pages.about.metadata.description"),
+    keywords: t("pages.about.metadata.keywords"),
+  };
+}
+const AboutPage = () => {
+  return <div>AboutPage</div>;
+};
+
+export default AboutPage;

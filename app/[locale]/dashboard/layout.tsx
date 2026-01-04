@@ -35,6 +35,11 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>          <header>dashboard header</header>
- {children} </>;
+  return (
+    <>
+      {" "}
+      <header>dashboard header</header>
+      {children}{" "}
+    </>
+  );
 }

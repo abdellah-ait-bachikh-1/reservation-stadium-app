@@ -6,6 +6,12 @@ import { getTypedGlobalTranslations } from "@/utils/i18n";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 
+import { routing } from "@/i18n/routing";
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 const cause = Figtree({
   variable: "--font-cause",
   subsets: ["latin", "latin-ext"],

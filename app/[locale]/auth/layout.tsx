@@ -3,7 +3,12 @@ import { Figtree } from "next/font/google";
 import { LocaleEnumType } from "@/types";
 import { getAppName } from "@/utils";
 import { getTypedGlobalTranslations } from "@/utils/i18n";
+import { routing } from "@/i18n/routing";
+export const dynamic = "force-static";
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 const cause = Figtree({
   variable: "--font-cause",
   subsets: ["latin", "latin-ext"],
