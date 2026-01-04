@@ -24,7 +24,7 @@ import {
 const Header = () => {
   const locale = useLocale();
   const t = useTypedGlobalTranslations();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const appName = getAppName(locale as LocaleEnumType);
   const user = {
@@ -80,7 +80,44 @@ const Header = () => {
         </Link>
 
         {/* desktop links */}
-        <nav className="hidden md:flex">dektop Links</nav>
+        <nav className="hidden md:flex items-center gap-8">
+          {navigationMenu.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative font-semibold text-sm px-1 py-2 transition-colors duration-300 group",
+                  active
+                    ? "text-black dark:text-white"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+                )}
+              >
+                {t(`common.navigation.public.links.${item.label}`)}
+
+                {/* Active underline */}
+                {active && (
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-black dark:bg-white"
+                    layoutId="desktop-nav-underline"
+                    initial={false}
+                    transition={{
+                      type: "spring",
+                      stiffness: 380,
+                      damping: 30,
+                    }}
+                  />
+                )}
+
+                {/* Hover underline - grows from center to both sides */}
+                {!active && (
+                  <div className="absolute bottom-0 left-1/2 right-1/2 h-0.5 bg-black dark:bg-white opacity-0 group-hover:opacity-100 group-hover:left-0 group-hover:right-0 transition-all duration-300" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
         {/* desktop right side */}
         <div className=" items-center justify-center gap-3 hidden md:flex">
           <ThemeSwitcher /> <LanguageSwitcher />
@@ -134,7 +171,7 @@ const Header = () => {
                   className={button({
                     fullWidth: true,
                     variant: "flat",
-                    color: "primary",
+                    color: "warning",
                   })}
                 >
                   {t("common.actions.register")}
