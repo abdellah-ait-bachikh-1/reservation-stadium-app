@@ -1,5 +1,4 @@
 "use client";
-import { Avatar } from "@heroui/avatar";
 import LanguageSwitcher from "../LanguageSwitcher";
 import ThemeSwitcher from "../ThemeSwitcher";
 import Image from "next/image";
@@ -9,14 +8,19 @@ import { getAppName, isRtl } from "@/utils";
 import { useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { Button } from "@heroui/button";
-import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { HiHome, HiOutlineMenuAlt3 } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 import { Skeleton } from "@heroui/skeleton";
-import { Link } from "@/i18n/navigation";
-import { button } from "@heroui/theme";
+import { Link, usePathname } from "@/i18n/navigation";
+import { button, cn } from "@heroui/theme";
 import { useTypedGlobalTranslations } from "@/utils/i18n";
 import LogoutBtn from "../LogoutBtn";
+import {
+  HiBuildingOffice2,
+  HiInformationCircle,
+  HiChatBubbleBottomCenterText,
+} from "react-icons/hi2";
 const Header = () => {
   const locale = useLocale();
   const t = useTypedGlobalTranslations();
@@ -24,12 +28,39 @@ const Header = () => {
   const [loading, setIsLoading] = useState(false);
   const appName = getAppName(locale as LocaleEnumType);
   const user = {
-    id:"123",
-    name:"abdellah ait bachikh",
-    email:"abdellahaitbachikh@gmail.com",
-    role: "ADMIN" as const
+    id: "123",
+    name: "abdellah ait bachikh",
+    email: "abdellahaitbachikh@gmail.com",
+    role: "ADMIN" as const,
   };
-  const navigationMenu = [];
+  // const user = null;
+  const navigationMenu = [
+    {
+      label: "home",
+      href: "/",
+      icon: HiHome,
+    },
+    {
+      label: "stadiums",
+      href: "/stadiums",
+      icon: HiBuildingOffice2,
+    },
+    {
+      label: "about",
+      href: "/about",
+      icon: HiInformationCircle,
+    },
+    {
+      label: "contact",
+      href: "/contact",
+      icon: HiChatBubbleBottomCenterText,
+    },
+  ] as const;
+  const isActive = (href: string) => {
+    const pathname = usePathname();
+    console.log(pathname);
+    return pathname === href;
+  };
   return (
     <>
       <header className="w-screen fixed top-0 lef-0 right-0 h-20 bg-transparent backdrop-blur-sm flex justify-between items-center z-99995 px-4 lg:px-30 ">
@@ -85,37 +116,85 @@ const Header = () => {
           ) : user ? (
             <User user={user} />
           ) : (
-            <div className="w-full flex items-center justify-between gap-3">
-              <Link
-                href={"/auth/register"}
-                className={button({
-                  fullWidth: true,
-                  variant: "flat",
-                  color: "primary",
-                })}
-              >
-                {t("common.actions.register")}
-              </Link>
-              <Link
-                href={"/auth/login"}
-                className={button({
-                  fullWidth: true,
-                  variant: "flat",
-                  color: "success",
-                })}
-              >
-                {t("common.actions.login")}
-              </Link>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-full flex items-center justify-between gap-3">
+                <Link
+                  href={"/auth/register"}
+                  className={button({
+                    fullWidth: true,
+                    variant: "flat",
+                    color: "primary",
+                  })}
+                >
+                  {t("common.actions.register")}
+                </Link>
+                <Link
+                  href={"/auth/login"}
+                  className={button({
+                    fullWidth: true,
+                    variant: "flat",
+                    color: "success",
+                  })}
+                >
+                  {t("common.actions.login")}
+                </Link>
+              </div>
+              <div className="flex  items-center gap-2 justify-end">
+                <ThemeSwitcher />
+                <LanguageSwitcher />
+              </div>
             </div>
           )}
           <div className="border mt-4 border-zinc-200 dark:border-zinc-600"></div>
         </div>
-        <div className="flex-1 flex-col overflow-y-auto overscroll-none">
-          <nav>
-            <div className="h-[200vh]">items</div>
-          </nav>
-          <div>actions</div>
-        </div>
+        <nav className="flex-1 overflow-y-auto overscroll-none">
+          <div className="flex-1 overflow-y-auto overscroll-none px-5 py-4">
+            {/* Main Navigation Section */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-2 mb-4">
+                {"Navigation"}
+              </h4>
+              {navigationMenu.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all group border",
+                    isActive(item.href)
+                      ? "bg-gradient-to-r from-zinc-100/30 to-zinc-50/30 dark:from-zinc-800 dark:to-zinc-900 border-zinc-200 dark:border-zinc-700 shadow-sm"
+                      : "bg-transparent  border-transparent "
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "p-2.5 rounded-lg transition-colors",
+                      isActive(item.href)
+                        ? "bg-gradient-to-br from-amber-100 to-amber-50 dark:from-zinc-700 dark:to-zinc-800 text-amber-600 dark:text-amber-300 shadow-sm"
+                        : "bg-gradient-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900   text-zinc-600 dark:text-zinc-400 "
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <span
+                    className={cn(
+                      "font-medium flex-1",
+                      isActive(item.href)
+                        ? "text-zinc-900 dark:text-zinc-100"
+                        : "text-zinc-700 dark:text-zinc-300  "
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                  {isActive(item.href) && (
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </nav>
+
         <div className="p-4 flex flex-col items-center gap-2">
           {loading ? (
             <Skeleton
@@ -125,9 +204,11 @@ const Header = () => {
               })}
             />
           ) : (
-            <LogoutBtn fullWidth color="danger" variant="flat">
-              {t("common.actions.logout")}
-            </LogoutBtn>
+            user && (
+              <LogoutBtn fullWidth color="danger" variant="flat">
+                {t("common.actions.logout")}
+              </LogoutBtn>
+            )
           )}
           <span className="text-sm text-gray-400">
             @ {new Date().getFullYear()}
@@ -149,12 +230,14 @@ const Header = () => {
 
 const UserSkeleton = () => {
   return (
-    <div className="flex items-center justify-end gap-3">
-      <div className="flex flex-col items-end flex-1 gap-2">
-        <Skeleton className="h-[15px] w-full" />
-        <Skeleton className="h-[10px] w-full" />
+    <div className="flex items-center justify-between gap-3 justify-between">
+      <div className="flex items-center gap-2">
+        <ThemeSwitcher />
+        <LanguageSwitcher />
       </div>
-      <Skeleton className="w-[40px] h-[40px] rounded-full" />
+      <div className="flex items-center justify-end gap-3">
+        <Skeleton className="w-[40px] h-[40px] rounded-full" />
+      </div>
     </div>
   );
 };
