@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useLocale } from "next-intl";
 import { LocaleEnumType } from "@/types";
 import { getAppName, isRtl } from "@/utils";
-import { useState } from "react";
+import { Activity, useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { Button } from "@heroui/button";
 import { HiHome, HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -64,10 +64,29 @@ const Header = () => {
   return (
     <>
       <header className="w-screen fixed top-0 lef-0 right-0 h-20 bg-transparent backdrop-blur-sm flex justify-between items-center z-99995 px-4 lg:px-30 ">
-        <Link href={"/"} hrefLang={locale} className="flex gap-2 items-center">
-          <Image width={40} height={40} alt={appName} src="/logo.png" />
+        <Link
+          href={"/"}
+          hrefLang={locale}
+          className="flex gap-2 items-center w-[200px]"
+        >
+          <Image
+            width={40}
+            height={40}
+            alt={appName}
+            src="/logo.png"
+            className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] "
+          />
           <span className="font-semibold md:text-xl">{appName}</span>
         </Link>
+
+        {/* desktop links */}
+        <nav className="hidden md:flex">dektop Links</nav>
+        {/* desktop right side */}
+        <div className=" items-center justify-center gap-3 hidden md:flex">
+          <ThemeSwitcher /> <LanguageSwitcher />
+          {user && <UserAvatar user={user} />}
+        </div>
+
         {/* mobile menu btn */}
         <Button
           variant="flat"
@@ -89,14 +108,6 @@ const Header = () => {
             />
           )}
         </Button>
-
-        {/* desktop links */}
-        <nav className="hidden md:flex">dektop Links</nav>
-        {/* desktop right side */}
-        <div className=" items-center justify-center gap-3 hidden md:flex">
-          <ThemeSwitcher /> <LanguageSwitcher />
-          {user && <UserAvatar user={user} />}
-        </div>
       </header>
       {/* mobile menu */}
       <motion.div
