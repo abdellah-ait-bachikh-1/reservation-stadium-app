@@ -71,6 +71,13 @@
         "admin": "Administrateur",
         "club": "Gestionnaire de Club"
       }
+    },"modals": {
+      "logout": {
+        "title": "Déconnexion",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte.",
+        "cancel": "Annuler",
+        "confirm": "Déconnexion"
+      }
     }
   }
 }

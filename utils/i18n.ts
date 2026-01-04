@@ -16,6 +16,8 @@ import type {
   common_theme_description,
   common_user,
   common_user_roles,
+  common_modals,
+  common_modals_logout,
   AllGlobalPaths,
 } from '@/types/i18n';
 
@@ -73,7 +75,7 @@ export async function getPagesHomeMetadataTranslations() {
 /**
  * Get common translations (server)
  * Usage: const t = await getCommonTranslations();
- *        t("key") // ← autocomplete for actions, theme, user
+ *        t("key") // ← autocomplete for actions, theme, user, modals
  */
 export async function getCommonTranslations() {
   const t = await getTranslationsBase("common");
@@ -130,6 +132,26 @@ export async function getCommonUserRolesTranslations() {
   return (key: common_user_roles) => t(key);
 }
 
+/**
+ * Get common.modals translations (server)
+ * Usage: const t = await getCommonModalsTranslations();
+ *        t("key") // ← autocomplete for logout
+ */
+export async function getCommonModalsTranslations() {
+  const t = await getTranslationsBase("common.modals");
+  return (key: common_modals) => t(key);
+}
+
+/**
+ * Get common.modals.logout translations (server)
+ * Usage: const t = await getCommonModalsLogoutTranslations();
+ *        t("key") // ← autocomplete for title, message, cancel, confirm
+ */
+export async function getCommonModalsLogoutTranslations() {
+  const t = await getTranslationsBase("common.modals.logout");
+  return (key: common_modals_logout) => t(key);
+}
+
 
 /**
  * Use pages translations (client)
@@ -184,7 +206,7 @@ export function usePagesHomeMetadataTranslations() {
 /**
  * Use common translations (client)
  * Usage: const t = useCommonTranslations();
- *        t("key") // ← autocomplete for actions, theme, user
+ *        t("key") // ← autocomplete for actions, theme, user, modals
  */
 export function useCommonTranslations() {
   const t = useTranslationsBase("common");
@@ -239,6 +261,26 @@ export function useCommonUserTranslations() {
 export function useCommonUserRolesTranslations() {
   const t = useTranslationsBase("common.user.roles");
   return (key: common_user_roles) => t(key);
+}
+
+/**
+ * Use common.modals translations (client)
+ * Usage: const t = useCommonModalsTranslations();
+ *        t("key") // ← autocomplete for logout
+ */
+export function useCommonModalsTranslations() {
+  const t = useTranslationsBase("common.modals");
+  return (key: common_modals) => t(key);
+}
+
+/**
+ * Use common.modals.logout translations (client)
+ * Usage: const t = useCommonModalsLogoutTranslations();
+ *        t("key") // ← autocomplete for title, message, cancel, confirm
+ */
+export function useCommonModalsLogoutTranslations() {
+  const t = useTranslationsBase("common.modals.logout");
+  return (key: common_modals_logout) => t(key);
 }
 
 
