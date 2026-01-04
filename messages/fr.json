@@ -71,12 +71,25 @@
         "admin": "Administrateur",
         "club": "Gestionnaire de Club"
       }
-    },"modals": {
+    },
+    "modals": {
       "logout": {
         "title": "Déconnexion",
         "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte.",
         "cancel": "Annuler",
         "confirm": "Déconnexion"
+      }
+    },
+    "navigation": {
+      "public": {
+        "title": "Navigation",
+        "links": {
+          "home": "Accueil",
+          "stadiums": "Stades",
+          "about": "À propos",
+          "contact": "Contact",
+          "sectionTitle": "Navigation"
+        }
       }
     }
   }

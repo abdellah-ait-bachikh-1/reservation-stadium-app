@@ -17,17 +17,19 @@ import {
 import React, { Fragment } from "react";
 import { Chip } from "@heroui/chip";
 import { convertCase } from "@/utils";
+import { LuLayoutDashboard } from "react-icons/lu";
+
 interface UserAvatarProps {
   placement?: DropdownProps["placement"];
   showArrow?: boolean;
   user: {
-    id:string
+    id: string;
     name: string;
     email: string;
     role: "ADMIN" | "CLUB";
   };
   className?: string;
-  size?:AvatarProps["size"]
+  size?: AvatarProps["size"];
 }
 
 type MenuItemType = {
@@ -43,7 +45,7 @@ export default function UserAvatar({
   showArrow = false,
   user,
   className = "",
-  size="md"
+  size = "md",
 }: UserAvatarProps) {
   const t = useTypedGlobalTranslations();
 
@@ -53,7 +55,7 @@ export default function UserAvatar({
     {
       key: "dashboard",
       label: t("common.user.dashboard"),
-      icon: FiHome,
+      icon: LuLayoutDashboard,
       description: t("common.user.goToDashboard"),
     },
     {
@@ -67,7 +69,7 @@ export default function UserAvatar({
       label: t("common.user.logout"),
       icon: FiLogOut,
       description: t("common.user.signOut"),
-      className: "text-danger",
+      className: "text-danger hidden md:flex",
     },
   ];
 
@@ -105,22 +107,21 @@ export default function UserAvatar({
             isReadOnly: true,
             startContent: <Avatar className="text-base" showFallback />,
             children: (
-            <div className="flex flex-col items-start gap-1">
-  <div className="flex items-center gap-2">
-    <span className="font-semibold text-foreground">{name}</span>
-    <Chip
-      size="sm"
-      color={role === "ADMIN" ? "success" : "warning"}
-      className="text-[10px] font-bold uppercase tracking-wide"
-      variant="flat"
-      radius="full"
-    >
-      {convertCase(role, "lower")}
-    </Chip>
-  </div>
-  <span className="text-sm text-default-500">{email}</span>
-
-</div>
+              <div className="flex flex-col items-start gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-foreground">{name}</span>
+                  <Chip
+                    size="sm"
+                    color={role === "ADMIN" ? "success" : "warning"}
+                    className="text-[10px] font-bold uppercase tracking-wide"
+                    variant="flat"
+                    radius="full"
+                  >
+                    {convertCase(role, "lower")}
+                  </Chip>
+                </div>
+                <span className="text-sm text-default-500">{email}</span>
+              </div>
             ),
           },
           // Divider as a special item

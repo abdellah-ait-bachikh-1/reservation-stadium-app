@@ -104,7 +104,7 @@ const Header = () => {
         layoutId="mobile-menu"
         initial={{ x: isRtl(locale) ? -240 : 240 }}
         animate={{ x: isMobileMenuOpen ? 0 : isRtl(locale) ? -240 : 240 }}
-        className={`fixed md:hidden top-20  w-60 bg-transparent backdrop-blur-sm backdrop-saturate-150 isolate z-50 flex flex-col h-[calc(100vh-80px)] border-zinc-200 dark:border-zinc-600 ${
+        className={`fixed md:hidden top-20 overscroll-none  w-60 bg-transparent backdrop-blur-sm backdrop-saturate-150 isolate z-50 flex flex-col h-[calc(100vh-80px)] border-zinc-200 dark:border-zinc-600 ${
           isRtl(locale) ? "left-0 border-r " : "right-0 border-l "
         }`}
         transition={{ ease: "easeInOut" }}
@@ -152,7 +152,7 @@ const Header = () => {
             {/* Main Navigation Section */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-2 mb-4">
-                {"Navigation"}
+                {t("common.navigation.public.title")}
               </h4>
               {navigationMenu.map((item) => (
                 <Link
@@ -184,7 +184,7 @@ const Header = () => {
                         : "text-zinc-700 dark:text-zinc-300  "
                     )}
                   >
-                    {item.label}
+                    {t(`common.navigation.public.links.${item.label}`)}
                   </span>
                   {isActive(item.href) && (
                     <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
@@ -210,7 +210,7 @@ const Header = () => {
               </LogoutBtn>
             )
           )}
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-400" dir="ltr">
             @ {new Date().getFullYear()}
           </span>
         </div>
@@ -220,7 +220,7 @@ const Header = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/10 backdrop-blur-[1px] z-40 md:hidden"
+          className="fixed inset-0 bg-black/10 backdrop-blur-[1px] z-40 md:hidden overscroll-none"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

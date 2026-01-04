@@ -71,12 +71,25 @@
         "admin": "Administrator",
         "club": "Club Manager"
       }
-    },"modals": {
+    },
+    "modals": {
       "logout": {
         "title": "Logout",
         "message": "Are you sure you want to log out? You'll need to sign in again to access your account.",
         "cancel": "Cancel",
         "confirm": "Logout"
+      }
+    },
+    "navigation": {
+      "public": {
+        "title": "Navigation",
+        "links": {
+          "home": "Home",
+          "stadiums": "Stadiums",
+          "about": "About Us",
+          "contact": "Contact",
+          "sectionTitle": "Navigation"
+        }
       }
     }
   }

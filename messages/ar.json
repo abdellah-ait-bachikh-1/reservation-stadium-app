@@ -79,6 +79,18 @@
         "cancel": "إلغاء",
         "confirm": "تسجيل الخروج"
       }
+    },
+    "navigation": {
+      "public": {
+        "title": "التنقل",
+        "links": {
+          "home": "الرئيسية",
+          "stadiums": "الملاعب",
+          "about": "من نحن",
+          "contact": "اتصل بنا",
+          "sectionTitle": "التنقل"
+        }
+      }
     }
   }
 }

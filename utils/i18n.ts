@@ -18,6 +18,9 @@ import type {
   common_user_roles,
   common_modals,
   common_modals_logout,
+  common_navigation,
+  common_navigation_public,
+  common_navigation_public_links,
   AllGlobalPaths,
 } from '@/types/i18n';
 
@@ -75,7 +78,7 @@ export async function getPagesHomeMetadataTranslations() {
 /**
  * Get common translations (server)
  * Usage: const t = await getCommonTranslations();
- *        t("key") // ← autocomplete for actions, theme, user, modals
+ *        t("key") // ← autocomplete for actions, theme, user, modals, navigation
  */
 export async function getCommonTranslations() {
   const t = await getTranslationsBase("common");
@@ -152,6 +155,36 @@ export async function getCommonModalsLogoutTranslations() {
   return (key: common_modals_logout) => t(key);
 }
 
+/**
+ * Get common.navigation translations (server)
+ * Usage: const t = await getCommonNavigationTranslations();
+ *        t("key") // ← autocomplete for public
+ */
+export async function getCommonNavigationTranslations() {
+  const t = await getTranslationsBase("common.navigation");
+  return (key: common_navigation) => t(key);
+}
+
+/**
+ * Get common.navigation.public translations (server)
+ * Usage: const t = await getCommonNavigationPublicTranslations();
+ *        t("key") // ← autocomplete for title, links
+ */
+export async function getCommonNavigationPublicTranslations() {
+  const t = await getTranslationsBase("common.navigation.public");
+  return (key: common_navigation_public) => t(key);
+}
+
+/**
+ * Get common.navigation.public.links translations (server)
+ * Usage: const t = await getCommonNavigationPublicLinksTranslations();
+ *        t("key") // ← autocomplete for home, stadiums, about, contact, sectionTitle
+ */
+export async function getCommonNavigationPublicLinksTranslations() {
+  const t = await getTranslationsBase("common.navigation.public.links");
+  return (key: common_navigation_public_links) => t(key);
+}
+
 
 /**
  * Use pages translations (client)
@@ -206,7 +239,7 @@ export function usePagesHomeMetadataTranslations() {
 /**
  * Use common translations (client)
  * Usage: const t = useCommonTranslations();
- *        t("key") // ← autocomplete for actions, theme, user, modals
+ *        t("key") // ← autocomplete for actions, theme, user, modals, navigation
  */
 export function useCommonTranslations() {
   const t = useTranslationsBase("common");
@@ -281,6 +314,36 @@ export function useCommonModalsTranslations() {
 export function useCommonModalsLogoutTranslations() {
   const t = useTranslationsBase("common.modals.logout");
   return (key: common_modals_logout) => t(key);
+}
+
+/**
+ * Use common.navigation translations (client)
+ * Usage: const t = useCommonNavigationTranslations();
+ *        t("key") // ← autocomplete for public
+ */
+export function useCommonNavigationTranslations() {
+  const t = useTranslationsBase("common.navigation");
+  return (key: common_navigation) => t(key);
+}
+
+/**
+ * Use common.navigation.public translations (client)
+ * Usage: const t = useCommonNavigationPublicTranslations();
+ *        t("key") // ← autocomplete for title, links
+ */
+export function useCommonNavigationPublicTranslations() {
+  const t = useTranslationsBase("common.navigation.public");
+  return (key: common_navigation_public) => t(key);
+}
+
+/**
+ * Use common.navigation.public.links translations (client)
+ * Usage: const t = useCommonNavigationPublicLinksTranslations();
+ *        t("key") // ← autocomplete for home, stadiums, about, contact, sectionTitle
+ */
+export function useCommonNavigationPublicLinksTranslations() {
+  const t = useTranslationsBase("common.navigation.public.links");
+  return (key: common_navigation_public_links) => t(key);
 }
 
 
