@@ -1,4 +1,8 @@
+import { UserPreferredLocaleType } from "@/drizzle/schema";
+
 export const locales = ["en", "fr", "ar"];
+export const LOCALES: UserPreferredLocaleType[] = ["FR", "EN", "AR"] as const;
+
 export const APP_NAMES = {
   en: process.env.EN_APP_NAME || "Reservation Stadiums",
   fr: process.env.FR_APP_NAME || "Réservation des Stade",

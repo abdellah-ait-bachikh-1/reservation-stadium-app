@@ -41,6 +41,18 @@
         "description": "Contactez notre équipe pour les réservations de stades, le support ou les demandes concernant les installations sportives à Tantan, Maroc. Contactez-nous pour assistance à la réservation et opportunités de partenariat.",
         "keywords": "contact stades Tantan, support réservation stade, demandes d'installations sportives Tan-Tan, service client réservation stade, opportunités de partenariat Tantan, assistance réservation Maroc"
       }
+    },
+    "auth": {
+      "register": {
+        "metadata": {
+          "title": "Créer un compte",
+          "description": "Créez votre compte pour réserver des stades et des installations sportives à Tantan, au Maroc.",
+          "keywords": "création de compte, inscription, réservation de stades Tantan, terrains de sport Maroc, plateforme sportive Tan-Tan"
+        },
+        "title": "Créer votre compte",
+        "already_have_account": "Vous avez déjà un compte ?",
+        "forgot_password": "Mot de passe oublié ?"
+      }
     }
   },
   "common": {
@@ -89,7 +101,6 @@
       "logout": {
         "title": "Déconnexion",
         "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte."
-
       }
     },
     "navigation": {
@@ -102,6 +113,53 @@
           "contact": "Contact",
           "sectionTitle": "Navigation"
         }
+      }
+    },
+    "inputs": {
+      "labels": {
+        "full_name": "Nom Complet",
+        "email": "Adresse Email",
+        "password": "Mot de Passe",
+        "phoneNumber": "Numéro de Téléphone",
+        "confirm_password": "Confirmer le Mot de Passe",
+        "role": "Rôle",
+        "preferred_locale": "Langue Préférée",
+        "search": "Rechercher",
+        "name": "Nom",
+        "description": "Description",
+        "address": "Adresse",
+        "capacity": "Capacité",
+        "price": "Prix",
+        "date": "Date",
+        "time": "Heure",
+        "duration": "Durée",
+        "status": "Statut"
+      },
+      "placeholders": {
+        "full_name": "Entrez votre nom complet",
+        "email": "Entrez votre adresse email",
+        "password": "Entrez votre mot de passe",
+        "phoneNumber": "Entrez votre numéro de téléphone",
+        "confirm_password": "Confirmez votre mot de passe",
+        "search": "Rechercher...",
+        "name": "Entrez le nom",
+        "description": "Entrez la description",
+        "address": "Entrez l'adresse",
+        "capacity": "Entrez la capacité",
+        "price": "Entrez le prix",
+        "date": "Sélectionnez la date",
+        "time": "Sélectionnez l'heure",
+        "duration": "Entrez la durée en heures"
+      },
+      "errors": {
+        "required": "Ce champ est obligatoire",
+        "email": "Veuillez entrer une adresse email valide",
+        "password_length": "Le mot de passe doit contenir au moins 8 caractères",
+        "password_match": "Les mots de passe ne correspondent pas",
+        "phone": "Veuillez entrer un numéro de téléphone valide",
+        "min": "La valeur doit être supérieure à {min}",
+        "max": "La valeur doit être inférieure à {max}",
+        "invalid": "Valeur invalide"
       }
     }
   }

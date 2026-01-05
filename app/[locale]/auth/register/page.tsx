@@ -1,0 +1,47 @@
+import RegisterForm from "@/components/auth/RegisterForm";
+import { getTypedTranslations } from "@/utils/i18n";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  const messages = (await import(`../../../../messages/${locale}.json`))
+    .default;
+
+  return {
+    title: `${
+      messages.pages?.auth?.register?.metadata?.title || "Créer un compte"
+    }`,
+    description:
+      messages.pages?.auth?.register?.metadata?.description ||
+      "Créez votre compte pour réserver des stades et des installations sportives à Tantan, au Maroc.",
+    keywords:
+      messages.pages?.auth?.register?.metadata?.keywords ||
+      "réservation stade Tantan, installations sportives Tan-Tan, réservation terrain sport Tantan Maroc, réserver terrain football Tan-Tan, location court basket Tantan, équipements sportifs Tan-Tan, complexe sportif Tantan, terrains athlétiques Tan-Tan, réservation terrain jeu Tantan, centres de loisirs Tan-Tan",
+  };
+}
+const RegisterPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) => {
+  await params;
+  const t = await getTypedTranslations("pages.auth.register");
+
+  return (
+    <section
+      className="flex flex-col items-center justify-center gap-4
+      p-5 bg-transparent backdrop-blur-3xl w-full md:w-lg border-2
+       border-zinc-100 dark:border-zinc-600 rounded-xl "
+    >
+      <h1 className="text-4xl font-bold"> {t("title")} </h1>
+      <RegisterForm/>
+    </section>
+  );
+};
+
+export default RegisterPage;

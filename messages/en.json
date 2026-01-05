@@ -41,6 +41,18 @@
         "description": "Get in touch with our team for stadium reservations, support, or inquiries about sports venues in Tantan, Morocco. Contact us for booking assistance and partnership opportunities.",
         "keywords": "contact Tantan stadiums, stadium booking support, sports venue inquiries Tan-Tan, customer service stadium reservation, partnership opportunities Tantan, booking assistance Morocco"
       }
+    },
+    "auth": {
+      "register": {
+        "metadata": {
+          "title": "Create Account",
+          "description": "Create your account to reserve stadiums and sports venues in Tantan, Morocco.",
+          "keywords": "create account, sign up, stadium reservation Tantan, sports venues Morocco, Tan-Tan sports platform"
+        },
+        "title": "Create Your Account",
+        "already_have_account": "Already have an account?",
+        "forgot_password": "Forgot your password?"
+      }
     }
   },
   "common": {
@@ -101,6 +113,53 @@
           "contact": "Contact",
           "sectionTitle": "Navigation"
         }
+      }
+    },
+    "inputs": {
+      "labels": {
+        "full_name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "phoneNumber": "Phone Number",
+        "confirm_password": "Confirm Password",
+        "role": "Role",
+        "preferred_locale": "Preferred Language",
+        "search": "Search",
+        "name": "Name",
+        "description": "Description",
+        "address": "Address",
+        "capacity": "Capacity",
+        "price": "Price",
+        "date": "Date",
+        "time": "Time",
+        "duration": "Duration",
+        "status": "Status"
+      },
+      "placeholders": {
+        "full_name": "Enter your full name",
+        "email": "Enter your email address",
+        "password": "Enter your password",
+        "phoneNumber": "Enter your phone number",
+        "confirm_password": "Confirm your password",
+        "search": "Search...",
+        "name": "Enter name",
+        "description": "Enter description",
+        "address": "Enter address",
+        "capacity": "Enter capacity",
+        "price": "Enter price",
+        "date": "Select date",
+        "time": "Select time",
+        "duration": "Enter duration in hours"
+      },
+      "errors": {
+        "required": "This field is required",
+        "email": "Please enter a valid email address",
+        "password_length": "Password must be at least 8 characters",
+        "password_match": "Passwords do not match",
+        "phone": "Please enter a valid phone number",
+        "min": "Value must be greater than {min}",
+        "max": "Value must be less than {max}",
+        "invalid": "Invalid value"
       }
     }
   }

@@ -21,6 +21,45 @@ declare global {
     | 'common.actions.search'
     | 'common.actions.sort'
     | 'common.actions.view'
+    | 'common.inputs.errors.email'
+    | 'common.inputs.errors.invalid'
+    | 'common.inputs.errors.max'
+    | 'common.inputs.errors.min'
+    | 'common.inputs.errors.password_length'
+    | 'common.inputs.errors.password_match'
+    | 'common.inputs.errors.phone'
+    | 'common.inputs.errors.required'
+    | 'common.inputs.labels.address'
+    | 'common.inputs.labels.capacity'
+    | 'common.inputs.labels.confirm_password'
+    | 'common.inputs.labels.date'
+    | 'common.inputs.labels.description'
+    | 'common.inputs.labels.duration'
+    | 'common.inputs.labels.email'
+    | 'common.inputs.labels.full_name'
+    | 'common.inputs.labels.name'
+    | 'common.inputs.labels.password'
+    | 'common.inputs.labels.phoneNumber'
+    | 'common.inputs.labels.preferred_locale'
+    | 'common.inputs.labels.price'
+    | 'common.inputs.labels.role'
+    | 'common.inputs.labels.search'
+    | 'common.inputs.labels.status'
+    | 'common.inputs.labels.time'
+    | 'common.inputs.placeholders.address'
+    | 'common.inputs.placeholders.capacity'
+    | 'common.inputs.placeholders.confirm_password'
+    | 'common.inputs.placeholders.date'
+    | 'common.inputs.placeholders.description'
+    | 'common.inputs.placeholders.duration'
+    | 'common.inputs.placeholders.email'
+    | 'common.inputs.placeholders.full_name'
+    | 'common.inputs.placeholders.name'
+    | 'common.inputs.placeholders.password'
+    | 'common.inputs.placeholders.phoneNumber'
+    | 'common.inputs.placeholders.price'
+    | 'common.inputs.placeholders.search'
+    | 'common.inputs.placeholders.time'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
     | 'common.navigation.public.links.about'
@@ -42,10 +81,15 @@ declare global {
     | 'common.user.role'
     | 'common.user.roles.admin'
     | 'common.user.roles.club'
-    | 'common.user.welcome'
     | 'pages.about.metadata.description'
     | 'pages.about.metadata.keywords'
     | 'pages.about.metadata.title'
+    | 'pages.auth.register.already_have_account'
+    | 'pages.auth.register.forgot_password'
+    | 'pages.auth.register.metadata.description'
+    | 'pages.auth.register.metadata.keywords'
+    | 'pages.auth.register.metadata.title'
+    | 'pages.auth.register.title'
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
     | 'pages.contact.metadata.title'
@@ -92,7 +136,13 @@ export const _TranslationNamespaces = {
     "about.metadata.keywords",
     "contact.metadata.title",
     "contact.metadata.description",
-    "contact.metadata.keywords"
+    "contact.metadata.keywords",
+    "auth.register.metadata.title",
+    "auth.register.metadata.description",
+    "auth.register.metadata.keywords",
+    "auth.register.title",
+    "auth.register.already_have_account",
+    "auth.register.forgot_password"
   ],
   "pages.error": [
     "title",
@@ -151,6 +201,27 @@ export const _TranslationNamespaces = {
     "description",
     "keywords"
   ],
+  "pages.auth": [
+    "register.metadata.title",
+    "register.metadata.description",
+    "register.metadata.keywords",
+    "register.title",
+    "register.already_have_account",
+    "register.forgot_password"
+  ],
+  "pages.auth.register": [
+    "metadata.title",
+    "metadata.description",
+    "metadata.keywords",
+    "title",
+    "already_have_account",
+    "forgot_password"
+  ],
+  "pages.auth.register.metadata": [
+    "title",
+    "description",
+    "keywords"
+  ],
   "common": [
     "actions.reserve",
     "actions.search",
@@ -181,7 +252,6 @@ export const _TranslationNamespaces = {
     "user.profile",
     "user.logout",
     "user.role",
-    "user.welcome",
     "user.roles.admin",
     "user.roles.club",
     "modals.logout.title",
@@ -191,7 +261,46 @@ export const _TranslationNamespaces = {
     "navigation.public.links.stadiums",
     "navigation.public.links.about",
     "navigation.public.links.contact",
-    "navigation.public.links.sectionTitle"
+    "navigation.public.links.sectionTitle",
+    "inputs.labels.full_name",
+    "inputs.labels.email",
+    "inputs.labels.password",
+    "inputs.labels.phoneNumber",
+    "inputs.labels.confirm_password",
+    "inputs.labels.role",
+    "inputs.labels.preferred_locale",
+    "inputs.labels.search",
+    "inputs.labels.name",
+    "inputs.labels.description",
+    "inputs.labels.address",
+    "inputs.labels.capacity",
+    "inputs.labels.price",
+    "inputs.labels.date",
+    "inputs.labels.time",
+    "inputs.labels.duration",
+    "inputs.labels.status",
+    "inputs.placeholders.full_name",
+    "inputs.placeholders.email",
+    "inputs.placeholders.password",
+    "inputs.placeholders.phoneNumber",
+    "inputs.placeholders.confirm_password",
+    "inputs.placeholders.search",
+    "inputs.placeholders.name",
+    "inputs.placeholders.description",
+    "inputs.placeholders.address",
+    "inputs.placeholders.capacity",
+    "inputs.placeholders.price",
+    "inputs.placeholders.date",
+    "inputs.placeholders.time",
+    "inputs.placeholders.duration",
+    "inputs.errors.required",
+    "inputs.errors.email",
+    "inputs.errors.password_length",
+    "inputs.errors.password_match",
+    "inputs.errors.phone",
+    "inputs.errors.min",
+    "inputs.errors.max",
+    "inputs.errors.invalid"
   ],
   "common.actions": [
     "reserve",
@@ -232,7 +341,6 @@ export const _TranslationNamespaces = {
     "profile",
     "logout",
     "role",
-    "welcome",
     "roles.admin",
     "roles.club"
   ],
@@ -270,6 +378,92 @@ export const _TranslationNamespaces = {
     "about",
     "contact",
     "sectionTitle"
+  ],
+  "common.inputs": [
+    "labels.full_name",
+    "labels.email",
+    "labels.password",
+    "labels.phoneNumber",
+    "labels.confirm_password",
+    "labels.role",
+    "labels.preferred_locale",
+    "labels.search",
+    "labels.name",
+    "labels.description",
+    "labels.address",
+    "labels.capacity",
+    "labels.price",
+    "labels.date",
+    "labels.time",
+    "labels.duration",
+    "labels.status",
+    "placeholders.full_name",
+    "placeholders.email",
+    "placeholders.password",
+    "placeholders.phoneNumber",
+    "placeholders.confirm_password",
+    "placeholders.search",
+    "placeholders.name",
+    "placeholders.description",
+    "placeholders.address",
+    "placeholders.capacity",
+    "placeholders.price",
+    "placeholders.date",
+    "placeholders.time",
+    "placeholders.duration",
+    "errors.required",
+    "errors.email",
+    "errors.password_length",
+    "errors.password_match",
+    "errors.phone",
+    "errors.min",
+    "errors.max",
+    "errors.invalid"
+  ],
+  "common.inputs.labels": [
+    "full_name",
+    "email",
+    "password",
+    "phoneNumber",
+    "confirm_password",
+    "role",
+    "preferred_locale",
+    "search",
+    "name",
+    "description",
+    "address",
+    "capacity",
+    "price",
+    "date",
+    "time",
+    "duration",
+    "status"
+  ],
+  "common.inputs.placeholders": [
+    "full_name",
+    "email",
+    "password",
+    "phoneNumber",
+    "confirm_password",
+    "search",
+    "name",
+    "description",
+    "address",
+    "capacity",
+    "price",
+    "date",
+    "time",
+    "duration"
+  ],
+  "common.inputs.errors": [
+    "required",
+    "email",
+    "password_length",
+    "password_match",
+    "phone",
+    "min",
+    "max",
+    "invalid"
   ]
 } as const;
 
