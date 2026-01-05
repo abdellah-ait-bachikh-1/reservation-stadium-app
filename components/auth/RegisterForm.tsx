@@ -1,6 +1,7 @@
 "use client";
 import { InsertUserType } from "@/drizzle/schema";
 import { Link } from "@/i18n/navigation";
+import { RegisterFormData } from "@/types/register";
 import { wait } from "@/utils";
 import { useTypedTranslations } from "@/utils/i18n";
 import { Button } from "@heroui/button";
@@ -12,9 +13,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 const RegisterForm = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
-  const [formData, setFormData] = useState<
-    InsertUserType & { confirmPassword: string }
-  >({
+  const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
     phoneNumber: "",
@@ -45,8 +44,16 @@ const RegisterForm = () => {
       }
     }, 10);
   };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof RegisterFormData
+  ) => {
+    const updatedFormData = { ...formData, [field]: e.target.value };
+    setFormData(updatedFormData);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData);
     setIsPending(true);
     await wait();
     setIsPending(false);
@@ -60,6 +67,8 @@ const RegisterForm = () => {
           label={t("common.inputs.labels.full_name")}
           size="sm"
           fullWidth
+          value={formData.name}
+          onChange={(e) => handleChange(e, "name")}
         />
         <Input
           variant="flat"
@@ -67,6 +76,8 @@ const RegisterForm = () => {
           label={t("common.inputs.labels.email")}
           size="sm"
           fullWidth
+          value={formData.email}
+          onChange={(e) => handleChange(e, "email")}
         />
       </div>
 
@@ -77,6 +88,8 @@ const RegisterForm = () => {
         size="sm"
         type="tel"
         fullWidth
+        value={formData.phoneNumber}
+        onChange={(e) => handleChange(e, "phoneNumber")}
       />
 
       {/* Password Input */}
@@ -107,6 +120,8 @@ const RegisterForm = () => {
             )}
           </button>
         }
+        value={formData.password}
+        onChange={(e) => handleChange(e, "password")}
       />
 
       {/* Confirm Password Input */}
@@ -137,6 +152,8 @@ const RegisterForm = () => {
             )}
           </button>
         }
+        value={formData.confirmPassword}
+        onChange={(e) => handleChange(e, "confirmPassword")}
       />
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
