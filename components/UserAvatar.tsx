@@ -52,19 +52,19 @@ export default function UserAvatar({
       key: "dashboard",
       label: t("user.dashboard"),
       icon: LuLayoutDashboard,
-      description: t("user.goToDashboard"),
+      description: t("user.dashboard"),
     },
     {
       key: "profile",
       label: t("user.profile"),
       icon: FiUser,
-      description: t("user.viewProfile"),
+      description: t("user.profile"),
     },
     {
       key: "logout",
       label: t("user.logout"),
       icon: FiLogOut,
-      description: t("user.signOut"),
+      description: t("user.logout"),
       className: "text-danger hidden md:flex",
     },
   ];
@@ -87,13 +87,12 @@ export default function UserAvatar({
   return (
     <Dropdown placement={placement} showArrow={showArrow} className={className}>
       <DropdownTrigger>
-        <button className="cursor-pointer" aria-label={t("user.menu")}>
+        <button className="cursor-pointer">
           <Avatar className="text-sm" isBordered size={size} />
         </button>
       </DropdownTrigger>
 
       <DropdownMenu
-        aria-label={t("user.menu")}
         variant="flat"
         onAction={(key) => handleAction(key as string)}
         className="min-w-64"

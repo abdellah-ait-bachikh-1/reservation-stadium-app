@@ -66,14 +66,14 @@ const Header = () => {
         <Link
           href={"/"}
           hrefLang={locale}
-          className="flex gap-2 items-center w-[200px]"
+          className="flex gap-2 items-center w-50"
         >
           <Image
             width={40}
             height={40}
             alt={appName}
             src="/logo.png"
-            className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] "
+            className="w-10 h-10 md:w-15 md:h-15 "
           />
           <span className="font-semibold md:text-xl">{appName}</span>
         </Link>
@@ -209,7 +209,7 @@ const Header = () => {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all group border",
                     isActive(item.href)
-                      ? "bg-gradient-to-r from-zinc-100/30 to-zinc-50/30 dark:from-zinc-800 dark:to-zinc-900 border-zinc-200 dark:border-zinc-700 shadow-sm"
+                      ? "bg-linear-to-r from-zinc-100/30 to-zinc-50/30 dark:from-zinc-800 dark:to-zinc-900 border-zinc-200 dark:border-zinc-700 shadow-sm"
                       : "bg-transparent  border-transparent "
                   )}
                 >
@@ -217,8 +217,8 @@ const Header = () => {
                     className={cn(
                       "p-2.5 rounded-lg transition-colors",
                       isActive(item.href)
-                        ? "bg-gradient-to-br from-amber-100 to-amber-50 dark:from-zinc-700 dark:to-zinc-800 text-amber-600 dark:text-amber-300 shadow-sm"
-                        : "bg-gradient-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900   text-zinc-600 dark:text-zinc-400 "
+                        ? "bg-linear-to-br from-amber-100 to-amber-50 dark:from-zinc-700 dark:to-zinc-800 text-amber-600 dark:text-amber-300 shadow-sm"
+                        : "bg-linear-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900   text-zinc-600 dark:text-zinc-400 "
                     )}
                   >
                     <item.icon className="w-5 h-5" />
@@ -234,7 +234,7 @@ const Header = () => {
                     {t(`navigation.public.links.${item.label}`)}
                   </span>
                   {isActive(item.href) && (
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
+                    <div className="w-2 h-2 rounded-full bg-linear-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
                   )}
                 </Link>
               ))}
@@ -277,13 +277,13 @@ const Header = () => {
 
 const UserSkeleton = () => {
   return (
-    <div className="flex items-center justify-between gap-3 justify-between">
+    <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2">
         <ThemeSwitcher />
         <LanguageSwitcher />
       </div>
       <div className="flex items-center justify-end gap-3">
-        <Skeleton className="w-[40px] h-[40px] rounded-full" />
+        <Skeleton className="w-10 h-10 rounded-full" />
       </div>
     </div>
   );

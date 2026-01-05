@@ -19,11 +19,8 @@ declare global {
     | 'common.actions.reserve'
     | 'common.actions.save'
     | 'common.actions.search'
-    | 'common.actions.share'
     | 'common.actions.sort'
     | 'common.actions.view'
-    | 'common.modals.logout.cancel'
-    | 'common.modals.logout.confirm'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
     | 'common.navigation.public.links.about'
@@ -40,17 +37,11 @@ declare global {
     | 'common.theme.select'
     | 'common.theme.system'
     | 'common.user.dashboard'
-    | 'common.user.email'
-    | 'common.user.goToDashboard'
     | 'common.user.logout'
-    | 'common.user.menu'
-    | 'common.user.name'
     | 'common.user.profile'
     | 'common.user.role'
     | 'common.user.roles.admin'
     | 'common.user.roles.club'
-    | 'common.user.signOut'
-    | 'common.user.viewProfile'
     | 'common.user.welcome'
     | 'pages.about.metadata.description'
     | 'pages.about.metadata.keywords'
@@ -178,7 +169,6 @@ export const _TranslationNamespaces = {
     "actions.back",
     "actions.filter",
     "actions.sort",
-    "actions.share",
     "actions.download",
     "theme.light",
     "theme.dark",
@@ -190,20 +180,12 @@ export const _TranslationNamespaces = {
     "user.dashboard",
     "user.profile",
     "user.logout",
-    "user.viewProfile",
-    "user.goToDashboard",
-    "user.signOut",
-    "user.menu",
-    "user.name",
-    "user.email",
     "user.role",
     "user.welcome",
     "user.roles.admin",
     "user.roles.club",
     "modals.logout.title",
     "modals.logout.message",
-    "modals.logout.cancel",
-    "modals.logout.confirm",
     "navigation.public.title",
     "navigation.public.links.home",
     "navigation.public.links.stadiums",
@@ -229,7 +211,6 @@ export const _TranslationNamespaces = {
     "back",
     "filter",
     "sort",
-    "share",
     "download"
   ],
   "common.theme": [
@@ -250,12 +231,6 @@ export const _TranslationNamespaces = {
     "dashboard",
     "profile",
     "logout",
-    "viewProfile",
-    "goToDashboard",
-    "signOut",
-    "menu",
-    "name",
-    "email",
     "role",
     "welcome",
     "roles.admin",
@@ -267,15 +242,11 @@ export const _TranslationNamespaces = {
   ],
   "common.modals": [
     "logout.title",
-    "logout.message",
-    "logout.cancel",
-    "logout.confirm"
+    "logout.message"
   ],
   "common.modals.logout": [
     "title",
-    "message",
-    "cancel",
-    "confirm"
+    "message"
   ],
   "common.navigation": [
     "public.title",

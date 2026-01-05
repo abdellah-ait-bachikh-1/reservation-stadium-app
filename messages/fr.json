@@ -62,7 +62,6 @@
       "back": "Retour",
       "filter": "Filtrer",
       "sort": "Trier",
-      "share": "Partager",
       "download": "Télécharger"
     },
     "theme": {
@@ -80,14 +79,7 @@
       "dashboard": "Tableau de bord",
       "profile": "Profil",
       "logout": "Déconnexion",
-      "viewProfile": "Voir votre profil",
-      "goToDashboard": "Aller au tableau de bord",
-      "signOut": "Déconnecter votre compte",
-      "menu": "Menu utilisateur",
-      "name": "Nom",
-      "email": "Email",
       "role": "Rôle",
-      "welcome": "Bienvenue",
       "roles": {
         "admin": "Administrateur",
         "club": "Gestionnaire de Club"
@@ -96,9 +88,8 @@
     "modals": {
       "logout": {
         "title": "Déconnexion",
-        "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte.",
-        "cancel": "Annuler",
-        "confirm": "Déconnexion"
+        "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte."
+
       }
     },
     "navigation": {

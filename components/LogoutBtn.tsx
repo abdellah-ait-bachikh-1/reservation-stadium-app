@@ -1,8 +1,8 @@
 "use client";
 import { Button, ButtonProps } from "@heroui/button";
 import { signOut } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { button, cn } from "@heroui/theme"; // Assuming you have cn utility
 import { motion } from "framer-motion"; // Import motion
@@ -34,7 +34,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
   };
 
   const modalContent = showLogoutModal ? (
-    <div className="fixed inset-0 z-[99999]">
+    <div className="fixed inset-0 z-99999">
       {/* Full screen blurred backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -48,7 +48,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.7, y: -10 }}
           className="bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-md"
-          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+          onClick={(e) => e.stopPropagation()} 
         >
           <div className="p-6">
             {/* Modal Header */}
@@ -84,19 +84,18 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                 onClick={() => setShowLogoutModal(false)}
                 className={cn(
                   button({ variant: "flat", fullWidth: true })
-                  //   "flex-1 font-medium px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 )}
               >
-                {t("modals.logout.cancel")}
+                {t("actions.cancel")}
               </button>
               <button
                 onClick={handleLogout}
                 className={cn(
                   button({ color: "danger", variant: "flat", fullWidth: true })
-                  //   "flex-1 font-medium px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                
                 )}
               >
-                {t("modals.logout.confirm")}
+                {t("actions.confirm")}
               </button>
             </div>
           </div>
