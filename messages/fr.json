@@ -51,7 +51,13 @@
         },
         "title": "Créer votre compte",
         "already_have_account": "Vous avez déjà un compte ?",
-        "forgot_password": "Mot de passe oublié ?"
+        "forgot_password": "Mot de passe oublié ?",
+         "instructions": {
+    "name_requirement": "Le nom complet doit être en français",
+    "phone_requirement": "Le numéro de téléphone doit commencer par +212 ou 06",
+    "email_requirement": "L'adresse email doit être valide et active",
+    "verification_process": "Vous recevrez un email de vérification après l'inscription"
+  }
       }
     }
   },

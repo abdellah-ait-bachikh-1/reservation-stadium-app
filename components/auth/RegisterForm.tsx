@@ -4,12 +4,14 @@ import { Link } from "@/i18n/navigation";
 import { RegisterFormData } from "@/types/register";
 import { wait } from "@/utils";
 import { useTypedTranslations } from "@/utils/i18n";
+import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { useLocale } from "next-intl";
 import { useRef, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
+import { cn } from "@heroui/theme";
 const RegisterForm = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
@@ -156,6 +158,37 @@ const RegisterForm = () => {
         onChange={(e) => handleChange(e, "confirmPassword")}
       />
       <div className="flex flex-col gap-3">
+        <Alert
+          color="warning"
+          variant="faded"
+          classNames={{
+            base: cn([
+              "bg-transparent",
+              "border-1 border-default-200 dark:border-default-100",
+              "relative ltr:before:content-[''] ltr:before:absolute ltr:before:z-10 rtl:before:content-[''] rtl:before:absolute rtl:before:z-10 rtl:after:content-[''] rtl:after:absolute rtl:after:z-10",
+              "ltr:before:left-0 ltr:before:top-[-1px] ltr:before:bottom-[-1px] ltr:before:w-1 rtl:after:right-0 rtl:after:top-[-1px] rtl:after:bottom-[-1px] rtl:after:w-1",
+              "ltr:rounded-l-none ltr:border-l-0 rtl:rounded-r-none rtl:border-r-0",
+              "ltr:before:bg-warning rtl:after:bg-warning",
+            ]),
+          }}
+          hideIcon
+          description={
+            <div className="flex flex-col gap-1 text-xs">
+              <p className="text-tiny">
+                - {t("pages.auth.register.instructions.name_requirement")}
+              </p>
+              <p className="text-tiny">
+                - {t("pages.auth.register.instructions.phone_requirement")}
+              </p>
+              <p className="text-tiny">
+                - {t("pages.auth.register.instructions.email_requirement")}
+              </p>
+              <p className="text-tiny">
+                - {t("pages.auth.register.instructions.verification_process")}
+              </p>
+            </div>
+          }
+        />
         <div className="flex items-center justify-between">
           <div className="text-xs text-default-600 ">
             <span>{t("pages.auth.register.already_have_account")}</span>

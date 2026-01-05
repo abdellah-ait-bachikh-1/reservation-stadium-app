@@ -51,7 +51,13 @@
         },
         "title": "Create Your Account",
         "already_have_account": "Already have an account?",
-        "forgot_password": "Forgot your password?"
+        "forgot_password": "Forgot your password?",
+        "instructions": {
+          "name_requirement": "Full name must be in French",
+          "phone_requirement": "Phone number must start with +212 or 06",
+          "email_requirement": "Email must be valid and active",
+          "verification_process": "You will receive a verification email after registration"
+        }
       }
     }
   },
