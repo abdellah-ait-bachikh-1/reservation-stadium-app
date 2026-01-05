@@ -17,6 +17,10 @@ export function getAppName(locale: LocaleEnumType) {
   return APP_NAMES[locale] || "Réservation des Stade";
 }
 
-export function convertCase(value: string, params: "lower" | "upper"){
+export function convertCase(value: string, params: "lower" | "upper") {
   return params === "lower" ? value.toLowerCase() : value.toUpperCase();
 }
+
+export const wait = async (s: number = 2000) => {
+  return await new Promise((res) => setTimeout(res, s));
+};

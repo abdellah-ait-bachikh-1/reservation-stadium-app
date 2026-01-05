@@ -35,11 +35,10 @@ const RegisterPage = async ({
   return (
     <section
       className="flex flex-col items-center justify-center gap-4
-      p-5 bg-transparent backdrop-blur-3xl w-full md:w-lg border-2
-       border-zinc-100 dark:border-zinc-600 rounded-xl "
+      p-5 bg-transparent dark:bg-zinc-600/10 shadow  w-full md:w-lg  rounded-xl "
     >
-      <h1 className="text-4xl font-bold"> {t("title")} </h1>
-      <RegisterForm/>
+      <h1 className="text-2xl md:text-3xl font-bold"> {t("title")} </h1>
+      <RegisterForm />
     </section>
   );
 };

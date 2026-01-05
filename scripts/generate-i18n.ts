@@ -1,133 +1,181 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const ROOT = process.cwd();
-const MESSAGES_DIR = path.join(ROOT, 'messages');
-const TYPES_FILE = path.join(ROOT, 'types', 'i18n.d.ts');
-const UTILS_FILE = path.join(ROOT, 'utils', 'i18n.ts');
+const MESSAGES_DIR = path.join(ROOT, "messages");
+const TYPES_FILE = path.join(ROOT, "types", "i18n.d.ts");
+const UTILS_FILE = path.join(ROOT, "utils", "i18n.ts");
 
-interface NamespaceMap {
-  [ns: string]: string[];
-}
-
-// Recursively flatten all keys
-function extractKeys(obj: Record<string, any>, prefix = ''): string[] {
-  return Object.entries(obj).flatMap(([key, value]) => {
-    const fullKey = prefix ? `${prefix}.${key}` : key;
-    if (typeof value === 'string') return [fullKey];
-    if (value && typeof value === 'object') return extractKeys(value, fullKey);
-    return [];
-  });
-}
-
-// Build namespace map for all possible namespaces
-function extractNamespaces(obj: Record<string, any>, prefix = ''): NamespaceMap {
-  const map: NamespaceMap = {};
-
+/* ---------------- Flatten keys recursively ---------------- */
+function flattenKeys(obj: any, prefix = ""): string[] {
   const keys: string[] = [];
 
-  for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === 'string') {
-      keys.push(key);
-    } else if (value && typeof value === 'object') {
-      keys.push(key);
+  function recurse(o: any, path: string) {
+    if (typeof o === "string") {
+      keys.push(path);
+      return;
+    }
+    if (typeof o === "object" && o !== null) {
+      for (const [k, v] of Object.entries(o)) {
+        const newPath = path ? `${path}.${k}` : k;
+        recurse(v, newPath);
+      }
     }
   }
 
-  if (keys.length > 0 && prefix) {
-    // Store relative keys under this namespace
-    map[prefix] = extractKeys(obj, ''); 
-  }
+  recurse(obj, prefix);
+  return keys;
+}
 
-  // Recurse into children namespaces
-  for (const [key, value] of Object.entries(obj)) {
-    if (value && typeof value === 'object') {
-      const ns = prefix ? `${prefix}.${key}` : key;
-      map[ns] = extractKeys(value, ''); // flatten all keys inside child namespace
-      Object.assign(map, extractNamespaces(value, ns));
+/* ---------------- Build namespace map with string keys only ---------------- */
+function buildStringNamespaceMap(obj: any, prefix = ""): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
+
+  function recurse(o: any, path: string) {
+    if (typeof o !== "object" || o === null) return;
+
+    // Filter to only include direct children that are strings
+    const stringKeys = Object.keys(o).filter(k => k && typeof o[k] === "string");
+    if (stringKeys.length) {
+      map[path || "root"] = stringKeys;
+    }
+
+    // Recurse into each child
+    for (const [k, v] of Object.entries(o)) {
+      const newPath = path ? `${path}.${k}` : k;
+      recurse(v, newPath);
     }
   }
 
+  recurse(obj, prefix);
   return map;
 }
 
+/* ---------------- Build full namespace map (all keys) ---------------- */
+function buildFullNamespaceMap(obj: any, prefix = ""): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
 
-// Load all keys and namespaces from all JSON files
+  function recurse(o: any, path: string) {
+    if (typeof o !== "object" || o === null) return;
+
+    // Include all direct children
+    const directKeys = Object.keys(o).filter(k => k);
+    if (directKeys.length) {
+      map[path || "root"] = directKeys;
+    }
+
+    // Recurse into each child
+    for (const [k, v] of Object.entries(o)) {
+      const newPath = path ? `${path}.${k}` : k;
+      recurse(v, newPath);
+    }
+  }
+
+  recurse(obj, prefix);
+  return map;
+}
+
+/* ---------------- Load all JSON files ---------------- */
 function loadKeys() {
-  const files = fs.readdirSync(MESSAGES_DIR).filter(f => f.endsWith('.json'));
+  const files = fs.readdirSync(MESSAGES_DIR).filter(f => f.endsWith(".json"));
   const allKeys = new Set<string>();
-  const namespaceMap: NamespaceMap = {};
+  const stringNamespaceMap: Record<string, string[]> = {};
+  const fullNamespaceMap: Record<string, string[]> = {};
 
   for (const file of files) {
-    const json = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, file), 'utf-8'));
-    extractKeys(json).forEach(k => allKeys.add(k));
-    Object.assign(namespaceMap, extractNamespaces(json));
+    const json = JSON.parse(fs.readFileSync(path.join(MESSAGES_DIR, file), "utf-8"));
+    flattenKeys(json).forEach(k => allKeys.add(k));
+    Object.assign(stringNamespaceMap, buildStringNamespaceMap(json));
+    Object.assign(fullNamespaceMap, buildFullNamespaceMap(json));
   }
 
   return {
     keys: Array.from(allKeys).sort(),
-    namespaces: namespaceMap,
+    stringNamespaces: stringNamespaceMap,
+    fullNamespaces: fullNamespaceMap,
   };
 }
 
-const { keys, namespaces } = loadKeys();
+const { keys, stringNamespaces, fullNamespaces } = loadKeys();
 
-/* ---------------- TYPES ---------------- */
-
+/* ---------------- Generate TypeScript types ---------------- */
 const typesContent = `
 // ⚠️ AUTO-GENERATED — DO NOT EDIT
 // Generated by scripts/generate-i18n.ts
 
 declare global {
   export type TranslationKey =
-${keys.map(k => `    | '${k}'`).join('\n')};
+${keys.map(k => `    | '${k}'`).join("\n")};
 
   export type TranslationNamespace = keyof typeof _TranslationNamespaces;
 }
 
-export const _TranslationNamespaces = ${JSON.stringify(namespaces, null, 2)} as const;
+export const _TranslationNamespaces = ${JSON.stringify(fullNamespaces, null, 2)} as const;
+
+export const _StringTranslationNamespaces = ${JSON.stringify(stringNamespaces, null, 2)} as const;
+
+export type StringNamespaceKeys<T extends keyof typeof _StringTranslationNamespaces> =
+  (typeof _StringTranslationNamespaces)[T][number];
+
+export type NamespaceKeys<T extends keyof typeof _TranslationNamespaces> =
+  (typeof _TranslationNamespaces)[T][number];
+
+export type AllTranslationKeys = TranslationKey;
 
 export {};
 `;
 
-/* ---------------- UTILS ---------------- */
-
+/* ---------------- Generate client & server utils ---------------- */
 const utilsContent = `
 // ⚠️ AUTO-GENERATED — DO NOT EDIT
 // Generated by scripts/generate-i18n.ts
 
-import { useTranslations } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
-import { _TranslationNamespaces } from '@/types/i18n';
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import { 
+  _StringTranslationNamespaces, 
+  StringNamespaceKeys, 
+  AllTranslationKeys 
+} from "@/types/i18n";
 
-type NamespaceKeys<T extends keyof typeof _TranslationNamespaces> = 
-  (typeof _TranslationNamespaces)[T][number];
+/* ---------------- CLIENT ---------------- */
+export function useTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
+  namespace: T
+): (key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string;
 
-/**
- * Client-side typed translations
- */
-export function useTypedTranslations<T extends keyof typeof _TranslationNamespaces = keyof typeof _TranslationNamespaces>(namespace?: T) {
+export function useTypedTranslations(): (key: AllTranslationKeys, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string;
+
+export function useTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
+  namespace?: T
+) {
   const t = useTranslations(namespace as string | undefined);
-  return (key: NamespaceKeys<T>, values?: Parameters<typeof t>[1]) =>
-    t(key as any, values);
+  return ((key: any, values?: Parameters<typeof t>[1]) => t(key, values)) as
+    | ((key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string)
+    | ((key: AllTranslationKeys, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string);
 }
 
-/**
- * Server-side typed translations (uses current request locale)
- */
-export async function getTypedTranslations<T extends keyof typeof _TranslationNamespaces = keyof typeof _TranslationNamespaces>(namespace?: T) {
+/* ---------------- SERVER ---------------- */
+export async function getTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
+  namespace: T
+): Promise<(key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string>;
+
+export async function getTypedTranslations(): Promise<(key: AllTranslationKeys, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string>;
+
+export async function getTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
+  namespace?: T
+) {
   const t = await getTranslations(namespace as string | undefined);
-  return (key: NamespaceKeys<T>, values?: Parameters<typeof t>[1]) =>
-    t(key as any, values);
+  return ((key: any, values?: Parameters<typeof t>[1]) => t(key, values)) as
+    | ((key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string)
+    | ((key: AllTranslationKeys, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string);
 }
 `;
 
-/* ---------------- WRITE FILES ---------------- */
-
+/* ---------------- Write files ---------------- */
 fs.mkdirSync(path.dirname(TYPES_FILE), { recursive: true });
 fs.mkdirSync(path.dirname(UTILS_FILE), { recursive: true });
 
-fs.writeFileSync(TYPES_FILE, typesContent.trim() + '\n');
-fs.writeFileSync(UTILS_FILE, utilsContent.trim() + '\n');
+fs.writeFileSync(TYPES_FILE, typesContent.trim() + "\n");
+fs.writeFileSync(UTILS_FILE, utilsContent.trim() + "\n");
 
-console.log('✅ i18n types & utils (fully nested, namespace-aware, TS-safe) generated');
+console.log("✅ i18n types & utils generated with string-only namespace keys");
