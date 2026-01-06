@@ -52,7 +52,7 @@ export default async function LocaleRootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${cause.variable} relative z-99998  bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-zinc-950 dark:via-zinc-800 dark:to-zinc-950 min-h-screen w-full bg-fixed`}
+        className={`${cause.variable} relative z-99998  bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-zinc-950 dark:via-zinc-700 dark:to-zinc-950 min-h-screen w-full bg-fixed`}
         suppressHydrationWarning
       >
         <Providers locale={locale} messages={messages}>
