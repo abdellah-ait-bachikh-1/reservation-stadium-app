@@ -117,6 +117,28 @@ declare global {
     | 'common.theme.light'
     | 'common.theme.select'
     | 'common.theme.system'
+    | 'common.toast.error.creationFailed'
+    | 'common.toast.error.deleteFailed'
+    | 'common.toast.error.generic'
+    | 'common.toast.error.loginFailed'
+    | 'common.toast.error.network'
+    | 'common.toast.error.registrationFailed'
+    | 'common.toast.error.saveFailed'
+    | 'common.toast.error.updateFailed'
+    | 'common.toast.error.validation'
+    | 'common.toast.info.loading'
+    | 'common.toast.info.processing'
+    | 'common.toast.info.updating'
+    | 'common.toast.success.created'
+    | 'common.toast.success.deleted'
+    | 'common.toast.success.loggedIn'
+    | 'common.toast.success.loggedOut'
+    | 'common.toast.success.registered'
+    | 'common.toast.success.saved'
+    | 'common.toast.success.sent'
+    | 'common.toast.success.updated'
+    | 'common.toast.warning.confirmationRequired'
+    | 'common.toast.warning.unsavedChanges'
     | 'common.user.dashboard'
     | 'common.user.logout'
     | 'common.user.profile'
@@ -247,7 +269,8 @@ export const _TranslationNamespaces = {
     "modals",
     "navigation",
     "inputs",
-    "notifications"
+    "notifications",
+    "toast"
   ],
   "common.actions": [
     "reserve",
@@ -406,6 +429,42 @@ export const _TranslationNamespaces = {
     "total",
     "viewAll",
     "close"
+  ],
+  "common.toast": [
+    "success",
+    "error",
+    "info",
+    "warning"
+  ],
+  "common.toast.success": [
+    "created",
+    "updated",
+    "deleted",
+    "saved",
+    "registered",
+    "loggedIn",
+    "loggedOut",
+    "sent"
+  ],
+  "common.toast.error": [
+    "creationFailed",
+    "updateFailed",
+    "deleteFailed",
+    "saveFailed",
+    "registrationFailed",
+    "loginFailed",
+    "generic",
+    "network",
+    "validation"
+  ],
+  "common.toast.info": [
+    "loading",
+    "processing",
+    "updating"
+  ],
+  "common.toast.warning": [
+    "unsavedChanges",
+    "confirmationRequired"
   ]
 } as const;
 
@@ -603,6 +662,36 @@ export const _StringTranslationNamespaces = {
     "total",
     "viewAll",
     "close"
+  ],
+  "common.toast.success": [
+    "created",
+    "updated",
+    "deleted",
+    "saved",
+    "registered",
+    "loggedIn",
+    "loggedOut",
+    "sent"
+  ],
+  "common.toast.error": [
+    "creationFailed",
+    "updateFailed",
+    "deleteFailed",
+    "saveFailed",
+    "registrationFailed",
+    "loginFailed",
+    "generic",
+    "network",
+    "validation"
+  ],
+  "common.toast.info": [
+    "loading",
+    "processing",
+    "updating"
+  ],
+  "common.toast.warning": [
+    "unsavedChanges",
+    "confirmationRequired"
   ]
 } as const;
 

@@ -8,3 +8,5 @@ export const APP_NAMES = {
   fr: process.env.FR_APP_NAME || "Réservation des Stade",
   ar: process.env.AR_APP_NAME || "حجز الملاعب",
 } as const;
+
+export const SALT = parseInt(process.env.SALT as string);

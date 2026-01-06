@@ -1,5 +1,5 @@
 "use client";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { RegisterFormData } from "@/types/register";
 import { wait } from "@/utils";
 import { useTypedTranslations } from "@/utils/i18n";
@@ -14,6 +14,7 @@ import { validateRegisterFormData } from "@/lib/validations/register";
 import { LocaleEnumType } from "@/types";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { registerUser } from "@/app/actions/auth/register";
+import { addToast } from "@heroui/toast";
 
 const RegisterForm = () => {
   const locale = useLocale();
@@ -28,7 +29,7 @@ const RegisterForm = () => {
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -90,11 +91,30 @@ const RegisterForm = () => {
 
     console.log(formData);
     setIsPending(true);
-    const { data, validationErrors, status } = await registerUser(formData);
+    const { validationErrors, status } = await registerUser(formData);
     if (status === 400 && validationErrors) {
       setErrorsState(validationErrors);
+      addToast({
+        color: "danger",
+        title: t("pages.auth.register.metadata.title"),
+        description: t("common.toast.error.registrationFailed"),
+      });
+    } else if (status === 201) {
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setErrorsState({});
+      addToast({
+        color: "success",
+        title: t("pages.auth.register.metadata.title"),
+        description: t("common.toast.success.registered"),
+      });
+      router.push("/auth/login");
     }
- 
     setIsPending(false);
   };
 

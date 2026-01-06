@@ -13,6 +13,8 @@ export const validationMessages = {
       string: "Email must be a string",
       invalid: "Please enter a valid email address",
       max: "Email cannot exceed 255 characters",
+      exists: "Email already exists. Please choose another one",
+      notExists: "Email not found. Please create an account first",
     },
     phoneNumber: {
       string: "Phone number must be a string",
@@ -44,6 +46,8 @@ export const validationMessages = {
       string: "L'email doit être une chaîne de caractères",
       invalid: "Veuillez entrer une adresse email valide",
       max: "L'email ne peut pas dépasser 255 caractères",
+      exists: "Cet email existe déjà. Veuillez en choisir un autre",
+      notExists: "Email non trouvé. Veuillez d'abord créer un compte",
     },
     phoneNumber: {
       string: "Le numéro de téléphone doit être une chaîne de caractères",
@@ -76,6 +80,8 @@ export const validationMessages = {
       string: "البريد الإلكتروني يجب أن يكون نصًا",
       invalid: "الرجاء إدخال عنوان بريد إلكتروني صالح",
       max: "البريد الإلكتروني لا يمكن أن يتجاوز 255 حرفًا",
+      exists: "البريد الإلكتروني موجود مسبقًا. الرجاء اختيار بريد آخر",
+      notExists: "البريد الإلكتروني غير موجود. الرجاء إنشاء حساب أولاً",
     },
     phoneNumber: {
       string: "رقم الهاتف يجب أن يكون نصًا",
@@ -99,23 +105,24 @@ export const validationMessages = {
 // Extract types from the validationMessages
 export type ValidationMessages = typeof validationMessages;
 export type LocaleMessages = ValidationMessages[keyof ValidationMessages];
-export type ValidationField = keyof ValidationMessages['en'];
-export type FieldMessageKeys<T extends ValidationField> = keyof ValidationMessages['en'][T];
+export type ValidationField = keyof ValidationMessages["en"];
+export type FieldMessageKeys<T extends ValidationField> =
+  keyof ValidationMessages["en"][T];
 
 // Helper type to get message key
 export type ValidationMessageKey = `${ValidationField}.${string}`;
 
 export const getLocalizedValidationMessage = (
-  key: ValidationMessageKey, 
+  key: ValidationMessageKey,
   locale: LocaleEnumType = "en"
 ): string => {
   const [field, messageType] = key.split(".") as [ValidationField, string];
 
   const messages = validationMessages[locale];
-  
+
   // Type-safe access with proper casting
   const fieldMessages = messages[field] as Record<string, string>;
-  
+
   if (!fieldMessages || !fieldMessages[messageType]) {
     // Fallback to English if translation not found
     const enMessages = validationMessages.en;
