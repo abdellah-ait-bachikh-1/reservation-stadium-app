@@ -55,10 +55,10 @@ export const authConfig: AuthOptions = {
     },
     async session({ session, token }) {
       session.user = {
-        id: token.id as string,
+        id: token.id ,
         name: token.name,
-        email: token.email as string,
-        role: token.role as string,
+        email: token.email ,
+        role: token.role ,
       };
       return session;
     },

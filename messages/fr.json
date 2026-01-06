@@ -197,6 +197,19 @@
         "max": "La valeur doit être inférieure à {max}",
         "invalid": "Valeur invalide"
       }
-    }
+    },"notifications": {
+        "title": "Notifications",
+        "unread": "non lus",
+        "markAllRead": "Tout marquer comme lu",
+        "loading": "Chargement des notifications...",
+        "retry": "Réessayer",
+        "noNotifications": "Aucune notification",
+        "live": "En direct",
+        "connecting": "Connexion...",
+        "offline": "Hors ligne",
+        "total": "total",
+        "viewAll": "Voir tout",
+        "close": "Fermer"
+      }
   }
 }

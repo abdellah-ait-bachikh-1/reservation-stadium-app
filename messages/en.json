@@ -197,6 +197,19 @@
         "max": "Value must be less than {max}",
         "invalid": "Invalid value"
       }
-    }
+    },"notifications": {
+        "title": "Notifications",
+        "unread": "unread",
+        "markAllRead": "Mark all as read",
+        "loading": "Loading notifications...",
+        "retry": "Try again",
+        "noNotifications": "No notifications",
+        "live": "Live",
+        "connecting": "Connecting...",
+        "offline": "Offline",
+        "total": "total",
+        "viewAll": "View all",
+        "close": "Close"
+      }
   }
 }

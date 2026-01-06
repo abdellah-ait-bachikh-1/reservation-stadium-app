@@ -5,9 +5,11 @@ export const useSafePositionScreen = () => {
   const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
   const [isMobile, setIsMobile] = useState(false);
   const [isCalculated, setIsCalculated] = useState(false);
+  
   const bellRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+ 
   const calculatePosition = useCallback(() => {
     if (!bellRef.current) return;
 

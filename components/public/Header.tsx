@@ -21,12 +21,14 @@ import {
   HiChatBubbleBottomCenterText,
 } from "react-icons/hi2";
 import { useTypedTranslations } from "@/utils/i18n";
+import { useSession } from "next-auth/react";
 const Header = () => {
   const locale = useLocale() as LocaleEnumType;
-  const t = useTypedTranslations("common");
+  const t = useTypedTranslations();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const appName = getAppName(locale as LocaleEnumType);
+  const { data, status } = useSession();
   const user = {
     id: "123",
     name: "abdellah ait bachikh",
@@ -62,24 +64,24 @@ const Header = () => {
   };
   return (
     <>
-      <header className="w-screen fixed top-0 lef-0 right-0 h-20 bg-transparent backdrop-blur-sm flex justify-between items-center z-99995 px-4 lg:px-30 ">
+      <header className="w-screen fixed top-0 lef-0 right-0 h-20 bg-transparent backdrop-blur-sm flex justify-between items-center z-99995 px-4 xl:px-30 ">
         <Link
           href={"/"}
           hrefLang={locale}
           className="flex gap-2 items-center w-50"
         >
           <Image
-            width={40}
-            height={40}
+            width={52}
+            height={52}
             alt={appName}
             src="/logo.png"
-            className="w-10 h-10 md:w-15 md:h-15 "
+            className="w-10 h-10 md:w-13 md:h-13 "
           />
           <span className="font-semibold md:text-xl">{appName}</span>
         </Link>
 
         {/* desktop links */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-4">
           {navigationMenu.map((item) => {
             const active = isActive(item.href);
             return (
@@ -93,7 +95,7 @@ const Header = () => {
                     : "text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white"
                 )}
               >
-                {t(`navigation.public.links.${item.label}`)}
+                {t(`common.navigation.public.links.${item.label}`)}
 
                 {/* Active underline */}
                 {active && (
@@ -118,9 +120,39 @@ const Header = () => {
           })}
         </nav>
         {/* desktop right side */}
-        <div className=" items-center justify-center gap-3 hidden md:flex">
+        <div className=" items-center justify-center gap-2 hidden md:flex">
           <ThemeSwitcher /> <LanguageSwitcher />
-          {user && <UserAvatar user={user} />}
+          {status === "loading" ? (
+            <Skeleton className="w-10 h-10 rounded-full" />
+          ) : status === "authenticated" ? (
+            <UserAvatar user={data.user} />
+          ) : (
+            <div className="flex items-center gap-2">
+             
+              <Link
+                href={"/auth/register"}
+                className={button({
+                  fullWidth: true,
+                  variant: "flat",
+                  color: "warning",
+                  size: "sm",
+                })}
+              >
+                {t("common.actions.register")}
+              </Link>
+              <Link
+                href={"/auth/login"}
+                className={button({
+                  fullWidth: true,
+                  variant: "flat",
+                  color: "success",
+                  size: "sm",
+                })}
+              >
+                {t("common.actions.login")}
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* mobile menu btn */}
@@ -158,10 +190,10 @@ const Header = () => {
       >
         {/* header */}
         <div className="p-4">
-          {loading ? (
+          {status === "loading" ? (
             <UserSkeleton />
-          ) : user ? (
-            <User user={user} />
+          ) : status === "authenticated" ? (
+            <User user={data.user} />
           ) : (
             <div className="flex flex-col items-center gap-3">
               <div className="w-full flex items-center justify-between gap-3">
@@ -173,7 +205,7 @@ const Header = () => {
                     color: "warning",
                   })}
                 >
-                  {t("actions.register")}
+                  {t("common.actions.register")}
                 </Link>
                 <Link
                   href={"/auth/login"}
@@ -183,7 +215,7 @@ const Header = () => {
                     color: "success",
                   })}
                 >
-                  {t("actions.login")}
+                  {t("common.actions.login")}
                 </Link>
               </div>
               <div className="flex  items-center gap-2 justify-end">
@@ -199,7 +231,7 @@ const Header = () => {
             {/* Main Navigation Section */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-2 mb-4">
-                {t("navigation.public.title")}
+                {t("common.navigation.public.title")}
               </h4>
               {navigationMenu.map((item) => (
                 <Link
@@ -231,7 +263,7 @@ const Header = () => {
                         : "text-zinc-700 dark:text-zinc-300  "
                     )}
                   >
-                    {t(`navigation.public.links.${item.label}`)}
+                    {t(`common.navigation.public.links.${item.label}`)}
                   </span>
                   {isActive(item.href) && (
                     <div className="w-2 h-2 rounded-full bg-linear-to-r from-amber-500 to-amber-600 dark:from-amber-400 dark:to-amber-500" />
@@ -253,7 +285,7 @@ const Header = () => {
           ) : (
             user && (
               <LogoutBtn fullWidth color="danger" variant="flat">
-                {t("actions.logout")}
+                {t("common.actions.logout")}
               </LogoutBtn>
             )
           )}

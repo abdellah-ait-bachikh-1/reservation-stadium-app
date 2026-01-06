@@ -1,5 +1,4 @@
 "use client";
-import { InsertUserType } from "@/drizzle/schema";
 import { Link } from "@/i18n/navigation";
 import { RegisterFormData } from "@/types/register";
 import { wait } from "@/utils";
@@ -32,16 +31,14 @@ const RegisterForm = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  // Use the validation hook
   const {
     hasError,
-    getErrorMessages, // Now returns array of messages
+    getErrorMessages,
     validateField,
     markAsTouched,
     validateForm,
     touched,
-    getErrorCount,
-  } = useFormValidation(validateRegisterFormData,locale as LocaleEnumType);
+  } = useFormValidation(validateRegisterFormData, locale as LocaleEnumType);
 
   const handleTogglePassword = (
     setter: React.Dispatch<React.SetStateAction<boolean>>,
@@ -69,17 +66,14 @@ const RegisterForm = () => {
 
     setFormData(updatedFormData);
 
-    // Validate the field in real-time
     validateField(field, value, updatedFormData);
 
-    // Mark as touched when user starts typing
     if (!touched[field]) {
       markAsTouched(field);
     }
   };
 
   const handleBlur = (field: keyof RegisterFormData) => {
-    // Mark field as touched when user leaves the field
     markAsTouched(field);
   };
 

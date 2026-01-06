@@ -7,6 +7,8 @@
 //   const { locale } = await params;
 //   const t = await getTypedTranslations();
 
+import NotificationBell from "@/components/dashboard/NotificationBell";
+
 //   return {
 //     title: {
 //       template: `%s | ${getAppName(locale as LocaleEnumType)}`,
@@ -25,7 +27,7 @@ export default async function DashboardLayout({
   return (
     <>
       {" "}
-      <header>dashboard header</header>
+      <header><NotificationBell /></header>
       {children}{" "}
     </>
   );

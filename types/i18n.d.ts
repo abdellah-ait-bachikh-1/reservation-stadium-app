@@ -98,6 +98,18 @@ declare global {
     | 'common.navigation.public.links.sectionTitle'
     | 'common.navigation.public.links.stadiums'
     | 'common.navigation.public.title'
+    | 'common.notifications.close'
+    | 'common.notifications.connecting'
+    | 'common.notifications.live'
+    | 'common.notifications.loading'
+    | 'common.notifications.markAllRead'
+    | 'common.notifications.noNotifications'
+    | 'common.notifications.offline'
+    | 'common.notifications.retry'
+    | 'common.notifications.title'
+    | 'common.notifications.total'
+    | 'common.notifications.unread'
+    | 'common.notifications.viewAll'
     | 'common.theme.dark'
     | 'common.theme.description.dark'
     | 'common.theme.description.light'
@@ -234,7 +246,8 @@ export const _TranslationNamespaces = {
     "user",
     "modals",
     "navigation",
-    "inputs"
+    "inputs",
+    "notifications"
   ],
   "common.actions": [
     "reserve",
@@ -379,6 +392,20 @@ export const _TranslationNamespaces = {
     "min",
     "max",
     "invalid"
+  ],
+  "common.notifications": [
+    "title",
+    "unread",
+    "markAllRead",
+    "loading",
+    "retry",
+    "noNotifications",
+    "live",
+    "connecting",
+    "offline",
+    "total",
+    "viewAll",
+    "close"
   ]
 } as const;
 
@@ -562,6 +589,20 @@ export const _StringTranslationNamespaces = {
     "min",
     "max",
     "invalid"
+  ],
+  "common.notifications": [
+    "title",
+    "unread",
+    "markAllRead",
+    "loading",
+    "retry",
+    "noNotifications",
+    "live",
+    "connecting",
+    "offline",
+    "total",
+    "viewAll",
+    "close"
   ]
 } as const;
 
