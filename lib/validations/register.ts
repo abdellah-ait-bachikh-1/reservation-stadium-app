@@ -1,5 +1,5 @@
 import { LocaleEnumType } from "@/types";
-import { RegisterFormData } from "@/types/register";
+import { RegisterFormData } from "@/types/auth";
 import { getLocalizedValidationMessage } from "@/utils/validation";
 import z from "zod";
 

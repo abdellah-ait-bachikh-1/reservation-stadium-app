@@ -1,7 +1,6 @@
 "use client";
 import { Link, useRouter } from "@/i18n/navigation";
-import { RegisterFormData } from "@/types/register";
-import { wait } from "@/utils";
+import { RegisterFormData } from "@/types/auth";
 import { useTypedTranslations } from "@/utils/i18n";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -118,7 +117,6 @@ const RegisterForm = () => {
     setIsPending(false);
   };
 
-  // Helper component to render multiple error messages
   const ErrorMessages = ({ field }: { field: keyof RegisterFormData }) => {
     const errorMessages = getErrorMessages(field);
 
@@ -184,8 +182,6 @@ const RegisterForm = () => {
           errorMessage={<ErrorMessages field="phoneNumber" />}
         />
       </div>
-
-      {/* Password Input */}
       <div>
         <Input
           ref={passwordRef}
@@ -221,8 +217,6 @@ const RegisterForm = () => {
           errorMessage={<ErrorMessages field="password" />}
         />
       </div>
-
-      {/* Confirm Password Input */}
       <div>
         <Input
           ref={confirmPasswordRef}

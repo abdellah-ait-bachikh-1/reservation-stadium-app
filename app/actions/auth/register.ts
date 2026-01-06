@@ -5,7 +5,7 @@ import { db } from "@/drizzle/db";
 import { users } from "@/drizzle/schema";
 import { validateRegisterFormData } from "@/lib/validations/register";
 import { LocaleEnumType } from "@/types";
-import { RegisterFormData } from "@/types/register";
+import { RegisterFormData } from "@/types/auth";
 import { isErrorHasMessage, wait } from "@/utils";
 import { getLocalizedValidationMessage } from "@/utils/validation";
 import { hash } from "bcryptjs";
@@ -49,7 +49,6 @@ export async function registerUser({
             ),
           ],
         },
-       
       };
     }
 
