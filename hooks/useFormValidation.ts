@@ -21,6 +21,14 @@ export const useFormValidation = <T extends Record<string, any>>(
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  const setErrorsState = useCallback((newErrors: ValidationErrors) => {
+    setErrors(newErrors);
+    Object.entries(newErrors).forEach(([field, errors]) => {
+      if (errors && errors.length > 0) {
+        markAsTouched(field);
+      }
+    });
+  }, []);
   // Get ALL error messages for a field
   const getErrorMessages = useCallback(
     (field: string): string[] | null => {
@@ -106,6 +114,7 @@ export const useFormValidation = <T extends Record<string, any>>(
 
   return {
     errors,
+    setErrorsState,
     touched,
     hasError,
     getErrorMessages,

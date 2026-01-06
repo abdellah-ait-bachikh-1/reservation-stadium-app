@@ -13,6 +13,7 @@ import { cn } from "@heroui/theme";
 import { validateRegisterFormData } from "@/lib/validations/register";
 import { LocaleEnumType } from "@/types";
 import { useFormValidation } from "@/hooks/useFormValidation";
+import { registerUser } from "@/app/actions/auth/register";
 
 const RegisterForm = () => {
   const locale = useLocale();
@@ -37,6 +38,7 @@ const RegisterForm = () => {
     validateField,
     markAsTouched,
     validateForm,
+    setErrorsState,
     touched,
   } = useFormValidation(validateRegisterFormData, locale as LocaleEnumType);
 
@@ -79,19 +81,20 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate entire form before submission
     const isValid = validateForm(formData);
 
     if (!isValid) {
-      // Mark all fields as touched to show all errors
       Object.keys(formData).forEach((field) => markAsTouched(field));
       return;
     }
 
     console.log(formData);
     setIsPending(true);
-    await wait();
+    const { data, validationErrors, status } = await registerUser(formData);
+    if (status === 400 && validationErrors) {
+      setErrorsState(validationErrors);
+    }
+ 
     setIsPending(false);
   };
 

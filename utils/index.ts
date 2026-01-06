@@ -24,3 +24,13 @@ export function convertCase(value: string, params: "lower" | "upper") {
 export const wait = async (s: number = 2000) => {
   return await new Promise((res) => setTimeout(res, s));
 };
+
+export const isErrorHasMessage = (error: unknown): error is Error => {
+  return (
+    error instanceof Error ||
+    (!!error &&
+      typeof error === "object" &&
+      "message" in error &&
+      typeof (error as any).message === "string")
+  );
+};
