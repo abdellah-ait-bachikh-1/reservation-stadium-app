@@ -62,6 +62,7 @@ export default async function LocaleRootLayout({
         <ToastProvider
           placement="top-center"
           regionProps={{ className: "z-99999999" }}
+          toastProps={{timeout:Infinity}} toastOffset={10}
         />
       </body>
     </html>
