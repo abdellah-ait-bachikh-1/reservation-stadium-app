@@ -15,13 +15,16 @@ export const authConfig: AuthOptions = {
           return null;
         }
         const user = await getUserByEmailForAuth(credentials.email);
-        if (!user || user?.deletedAt !== null) {
+        if (!user || !user.isApproved || user?.deletedAt !== null) {
           return null;
         }
+        console.log({ user });
         const validPassword = await compare(
           credentials.password,
           user.password
         );
+        console.log({ validPassword });
+
         if (!validPassword) {
           return null;
         }
@@ -55,10 +58,10 @@ export const authConfig: AuthOptions = {
     },
     async session({ session, token }) {
       session.user = {
-        id: token.id ,
+        id: token.id,
         name: token.name,
-        email: token.email ,
-        role: token.role ,
+        email: token.email,
+        role: token.role,
       };
       return session;
     },

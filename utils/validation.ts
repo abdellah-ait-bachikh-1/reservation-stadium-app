@@ -32,6 +32,8 @@ export const validationMessages = {
       required: "Please confirm your password",
       match: "Passwords do not match",
     },
+    auth: {
+invalidCredentials: "Email or password is incorrect, or your email is not verified, or your account is not approved by admin, or has been deleted",    },
   },
   fr: {
     name: {
@@ -67,6 +69,8 @@ export const validationMessages = {
       required: "Veuillez confirmer votre mot de passe",
       match: "Les mots de passe ne correspondent pas",
     },
+    auth: {
+invalidCredentials: "Email ou mot de passe incorrect, ou votre email n'est pas vérifié, ou votre compte n'est pas approuvé par l'administrateur, ou a été supprimé",    },
   },
   ar: {
     name: {
@@ -99,6 +103,8 @@ export const validationMessages = {
       required: "الرجاء تأكيد كلمة المرور",
       match: "كلمات المرور غير متطابقة",
     },
+    auth: {
+invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة، أو بريدك الإلكتروني غير مفعل، أو حسابك غير معتمد من قبل المسؤول، أو تم حذفه",    },
   },
 } as const;
 

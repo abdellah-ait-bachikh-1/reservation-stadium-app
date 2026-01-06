@@ -12,6 +12,7 @@ export async function getUserByEmailForAuth(email: string) {
       password: users.password,
       role: users.role,
       deletedAt: users.deletedAt,
+      isApproved:users.isApproved
     })
     .from(users)
     .where(eq(users.email, email));

@@ -58,6 +58,16 @@
           "email_requirement": "L'adresse email doit être valide et active",
           "verification_process": "Vous recevrez un email de vérification après l'inscription"
         }
+      },
+      "login": {
+        "metadata": {
+          "title": "Connexion",
+          "description": "Connectez-vous à votre compte pour gérer vos réservations de stades et d’espaces sportifs à Tantan, Maroc.",
+          "keywords": "connexion, se connecter, réservation de stades Tantan, espaces sportifs Maroc, plateforme sportive Tan-Tan"
+        },
+        "title": "Connectez-vous à votre compte",
+        "dont_have_account": "Vous n’avez pas de compte ?",
+        "forgot_password": "Mot de passe oublié ?"
       }
     }
   },

@@ -60,6 +60,8 @@ export async function registerUser({
       password: hashedPassword,
     });
 
+    // importent send notification to all admins and create the notification -> notification type & title "REGISTER" content "nex user registred"
+
     return { status: 201, validationErrors: null };
   } catch (error) {
     if (isErrorHasMessage(error)) {

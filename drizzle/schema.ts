@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 //--------------------- Enums -----------------------
 
 //--------------------- User Enums -----------------------
-export const USER_ROLES = mysqlEnum("role", ["ADMIN", "CLUBE"]);
+export const USER_ROLES = mysqlEnum("role", ["ADMIN", "CLUB"]);
 export const USER_PREFERRED_LOCALE = mysqlEnum("preferred_locale", [
   "EN",
   "FR",
@@ -37,8 +37,9 @@ export const users = mysqlTable(
     name: varchar("name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull().unique(),
     password: varchar("password", { length: 255 }).notNull(),
-    role: USER_ROLES.default("CLUBE").notNull(),
+    role: USER_ROLES.default("CLUB").notNull(),
     phoneNumber: varchar("phone_number", { length: 50 }).notNull(),
+    isApproved: boolean("is_approved").default(false) ,
     preferredLocale: USER_PREFERRED_LOCALE.default("FR").notNull(),
     emailVerifiedAt: timestamp("email_verified_at", { mode: "string" }),
     verificationToken: varchar("verification_token", { length: 255 }),
@@ -163,7 +164,7 @@ export const notifications = mysqlTable(
 
 export type UserType = typeof users.$inferSelect;
 export type InsertUserType = typeof users.$inferInsert;
-export type UserRoleType = "ADMIN" | "CLUBE";
+export type UserRoleType = "ADMIN" | "CLUB";
 export type UserPreferredLocaleType = "FR" | "EN" | "AR";
 
 export type NotificationType = typeof notifications.$inferSelect;

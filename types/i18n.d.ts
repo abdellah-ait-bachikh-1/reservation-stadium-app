@@ -148,6 +148,12 @@ declare global {
     | 'pages.about.metadata.description'
     | 'pages.about.metadata.keywords'
     | 'pages.about.metadata.title'
+    | 'pages.auth.login.dont_have_account'
+    | 'pages.auth.login.forgot_password'
+    | 'pages.auth.login.metadata.description'
+    | 'pages.auth.login.metadata.keywords'
+    | 'pages.auth.login.metadata.title'
+    | 'pages.auth.login.title'
     | 'pages.auth.register.already_have_account'
     | 'pages.auth.register.forgot_password'
     | 'pages.auth.register.instructions.email_requirement'
@@ -242,7 +248,8 @@ export const _TranslationNamespaces = {
     "keywords"
   ],
   "pages.auth": [
-    "register"
+    "register",
+    "login"
   ],
   "pages.auth.register": [
     "metadata",
@@ -261,6 +268,17 @@ export const _TranslationNamespaces = {
     "phone_requirement",
     "email_requirement",
     "verification_process"
+  ],
+  "pages.auth.login": [
+    "metadata",
+    "title",
+    "dont_have_account",
+    "forgot_password"
+  ],
+  "pages.auth.login.metadata": [
+    "title",
+    "description",
+    "keywords"
   ],
   "common": [
     "actions",
@@ -518,6 +536,16 @@ export const _StringTranslationNamespaces = {
     "phone_requirement",
     "email_requirement",
     "verification_process"
+  ],
+  "pages.auth.login": [
+    "title",
+    "dont_have_account",
+    "forgot_password"
+  ],
+  "pages.auth.login.metadata": [
+    "title",
+    "description",
+    "keywords"
   ],
   "common.actions": [
     "reserve",

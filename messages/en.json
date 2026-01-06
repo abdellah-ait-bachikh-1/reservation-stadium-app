@@ -58,6 +58,16 @@
           "email_requirement": "Email must be valid and active",
           "verification_process": "You will receive a verification email after registration"
         }
+      },
+      "login": {
+        "metadata": {
+          "title": "Login",
+          "description": "Login to your account to manage stadium and sports venue reservations in Tantan, Morocco.",
+          "keywords": "login, Login, stadium reservation Tantan, sports venues Morocco, Tan-Tan sports platform"
+        },
+        "title": "Login to Your Account",
+        "dont_have_account": "Don’t have an account?",
+        "forgot_password": "Forgot your password?"
       }
     }
   },
@@ -136,7 +146,7 @@
     "modals": {
       "logout": {
         "title": "Logout",
-        "message": "Are you sure you want to log out? You'll need to sign in again to access your account."
+        "message": "Are you sure you want to log out? You'll need to login again to access your account."
       }
     },
     "navigation": {
@@ -218,7 +228,7 @@
         "updated": "Updated successfully",
         "deleted": "Deleted successfully",
         "saved": "Saved successfully",
-       "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
+        "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
         "loggedIn": "Logged in successfully",
         "loggedOut": "Logged out successfully",
         "sent": "Sent successfully"
