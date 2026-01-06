@@ -17,8 +17,23 @@ export function getAppName(locale: LocaleEnumType) {
   return APP_NAMES[locale] || "Réservation des Stade";
 }
 
-export function convertCase(value: string, params: "lower" | "upper") {
-  return params === "lower" ? value.toLowerCase() : value.toUpperCase();
+export function convertCase<T extends string>(
+  value: T,
+  params: "lower" | "upper"
+): T extends Uppercase<T>
+  ? Lowercase<T>
+  : T extends Lowercase<T>
+  ? Uppercase<T>
+  : T extends string
+  ? typeof params extends "lower"
+    ? Lowercase<T>
+    : Uppercase<T>
+  : never {
+  if (params === "lower") {
+    return value.toLowerCase() as any;
+  } else {
+    return value.toUpperCase() as any;
+  }
 }
 
 export const wait = async (s: number = 2000) => {
