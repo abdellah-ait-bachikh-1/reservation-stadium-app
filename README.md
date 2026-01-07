@@ -54,5 +54,5 @@ Built with Next.js, React, and a modern Node.js stack.
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/mreservation-stadium.git
-cd mreservation-stadium
+git https://github.com/abdellah-ait-bachikh-1/reservation-stadium-app.git
+cd reservation-stadium-app
