@@ -7,7 +7,6 @@ import {
   DropdownItem,
   DropdownProps,
 } from "@heroui/dropdown";
-import { useState, useEffect } from "react";
 import { FiGlobe } from "react-icons/fi";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@heroui/button";
@@ -22,17 +21,13 @@ export default function LanguageSwitcher({
   placement?: DropdownProps["placement"];
   showArrow?: boolean;
 }) {
-  const [mounted, setMounted] = useState(false);
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
-  if (!mounted) {
+  if (typeof window ==="undefined") {
     return (
       <Button
         isIconOnly

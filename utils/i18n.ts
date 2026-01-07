@@ -3,40 +3,18 @@
 
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { 
-  _StringTranslationNamespaces, 
-  StringNamespaceKeys, 
-  AllTranslationKeys 
-} from "@/types/i18n";
+import { AllTranslationKeys } from "@/types/i18n";
 
 /* ---------------- CLIENT ---------------- */
-export function useTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
-  namespace: T
-): (key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string;
-
-export function useTypedTranslations(): (key: AllTranslationKeys, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string;
-
-export function useTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
-  namespace?: T
-) {
-  const t = useTranslations(namespace as string | undefined);
-  return ((key: any, values?: Parameters<typeof t>[1]) => t(key, values)) as
-    | ((key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string)
-    | ((key: AllTranslationKeys, values?: Parameters<ReturnType<typeof useTranslations>>[1]) => string);
+export function useTypedTranslations(): (key: AllTranslationKeys, values?: Record<string, any>) => string {
+  const t = useTranslations();
+  return ((key: AllTranslationKeys, values?: Parameters<typeof t>[1]) => t(key, values)) as
+    (key: AllTranslationKeys, values?: Parameters<typeof t>[1]) => string;
 }
 
 /* ---------------- SERVER ---------------- */
-export async function getTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
-  namespace: T
-): Promise<(key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string>;
-
-export async function getTypedTranslations(): Promise<(key: AllTranslationKeys, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string>;
-
-export async function getTypedTranslations<T extends keyof typeof _StringTranslationNamespaces>(
-  namespace?: T
-) {
-  const t = await getTranslations(namespace as string | undefined);
-  return ((key: any, values?: Parameters<typeof t>[1]) => t(key, values)) as
-    | ((key: StringNamespaceKeys<T>, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string)
-    | ((key: AllTranslationKeys, values?: Parameters<ReturnType<typeof getTranslations>>[1]) => string);
+export async function getTypedTranslations(): Promise<(key: AllTranslationKeys, values?: Record<string, any>) => string> {
+  const t = await getTranslations();
+  return ((key: AllTranslationKeys, values?: Parameters<typeof t>[1]) => t(key, values)) as
+    (key: AllTranslationKeys, values?: Parameters<typeof t>[1]) => string;
 }

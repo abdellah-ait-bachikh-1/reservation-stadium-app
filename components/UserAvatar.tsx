@@ -12,9 +12,15 @@ import { FiUser, FiLogOut } from "react-icons/fi";
 import { Chip } from "@heroui/chip";
 import { convertCase } from "@/utils";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { useTranslations } from "next-intl";
 import { useTypedTranslations } from "@/utils/i18n";
-
+type DropdownRenderItem = {
+  key: string;
+  isReadOnly?: boolean;
+  startContent?: React.ReactNode;
+  description?: string;
+  className?: string;
+  children?: React.ReactNode;
+};
 interface UserAvatarProps {
   placement?: DropdownProps["placement"];
   showArrow?: boolean;
@@ -43,7 +49,7 @@ export default function UserAvatar({
   className = "",
   size = "md",
 }: UserAvatarProps) {
-  const t = useTypedTranslations(); // or useTranslations('global')
+  const t = useTypedTranslations();
 
   const { email, name, role } = user;
 
@@ -142,7 +148,7 @@ export default function UserAvatar({
           })),
         ]}
       >
-        {(item: any) => {
+        {(item: DropdownRenderItem) => {
           if (item.key === "divider") {
             return <DropdownItem key={item.key} className={item.className} />;
           }

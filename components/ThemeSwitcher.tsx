@@ -20,15 +20,10 @@ export default function ThemeSwitcher({
   placement?: DropdownProps["placement"];
   showArrow?: boolean;
 }) {
-  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const t = useTypedTranslations();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
+  if (typeof window === "undefined") {
     return (
       <Button
         isIconOnly

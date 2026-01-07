@@ -15,7 +15,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const t = useTypedTranslations("pages");
+  const t = useTypedTranslations();
 
   useEffect(() => {
     console.error(error);
@@ -36,13 +36,13 @@ export default function Error({
           {/* Error Message */}
           <div className="space-y-3">
             <h2 className="text-3xl font-bold bg-linear-to-r from-red-600 via-rose-500 to-red-400 bg-clip-text text-transparent">
-              {t("error.title")}
+              {t("pages.error.title")}
             </h2>
 
             {error.digest && (
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-stone-800 rounded-full">
                 <span className="text-sm text-[hsl(var(--default-600))] dark:text-[hsl(var(--default-400))] font-medium">
-                  {t("error.errorId")}:
+                  {t("pages.error.errorId")}:
                 </span>
 
                 <span className="text-sm font-mono text-red-600 dark:text-red-400 font-bold">
@@ -52,7 +52,7 @@ export default function Error({
             )}
             <Alert
               color={"default"}
-              description={error.message || t("error.subtitle")}
+              description={error.message || t("pages.error.subtitle")}
               variant="flat"
             />
           </div>
@@ -68,7 +68,7 @@ export default function Error({
             }
             className="font-semibold bg-linear-to-r from-red-500 to-rose-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           >
-            {t("error.tryAgain")}
+            {t("pages.error.tryAgain")}
           </Button>
           <Link
             href={"/"}
@@ -81,7 +81,7 @@ export default function Error({
             })}
           >
             <FiHome className="mr-2 h-5 w-5 inline-block group-hover:rotate-12 transition-transform duration-300" />
-            {t("error.goHome")}
+            {t("pages.error.goHome")}
           </Link>
         </div>
       </div>

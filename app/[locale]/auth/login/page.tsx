@@ -30,14 +30,14 @@ const LoginPage = async ({
   params: Promise<{ locale: string }>;
 }) => {
   await params;
-  const t = await getTypedTranslations("pages.auth.login");
+  const t = await getTypedTranslations();
 
   return (
     <section
       className="flex flex-col items-center justify-center gap-4
       p-5 bg-white dark:bg-zinc-600/10 shadow  w-full md:w-lg  rounded-xl "
     >
-      <h1 className="text-2xl md:text-3xl font-bold"> {t("title")} </h1>
+      <h1 className="text-2xl md:text-3xl font-bold"> {t("pages.auth.login.title")} </h1>
       <LoginForm />
     </section>
   );
