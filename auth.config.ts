@@ -15,7 +15,7 @@ export const authConfig: AuthOptions = {
           return null;
         }
         const user = await getUserByEmailForAuth(credentials.email);
-        if (!user || !user.isApproved || user?.deletedAt !== null) {
+        if (!user || !user.isApproved || user.emailVerifiedAt === null || user?.deletedAt !== null) {
           return null;
         }
         console.log({ user });

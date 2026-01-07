@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import {
-  NotificationService,
+ 
   LocaleType,
 } from "@/services/notification.service";
 
@@ -14,13 +14,13 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    const notifications = await NotificationService.getUserNotifications(
-      session.user.id,
-      locale,
-      limit,
-      offset
-    );
-
+    // const notifications = await NotificationService.getUserNotifications(
+    //   session.user.id,
+    //   locale,
+    //   limit,
+    //   offset
+    // );
+     const notifications: any[] = [];
     return NextResponse.json({
       success: true,
       notifications,

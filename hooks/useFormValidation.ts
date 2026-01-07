@@ -19,6 +19,7 @@ export const useFormValidation = <T extends Record<string, any>>(
 ) => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isBackendValidationError,setIsBackendValidationError] = useState(false)
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const setErrorsState = useCallback((newErrors: ValidationErrors) => {
@@ -114,8 +115,9 @@ export const useFormValidation = <T extends Record<string, any>>(
 
   return {
     errors,
-    setErrorsState,
+    isBackendValidationError,
     touched,
+    setErrorsState,
     hasError,
     getErrorMessages,
     validateField,
@@ -125,5 +127,6 @@ export const useFormValidation = <T extends Record<string, any>>(
     hasFormErrors,
     getErrorCount,
     resetValidation,
+    setIsBackendValidationError
   };
 };

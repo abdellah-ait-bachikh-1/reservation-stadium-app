@@ -4,7 +4,7 @@ import {  HashLoader } from "react-spinners";
 export default function Loading() {
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <HashLoader size={100} color={colors.yellow[400]} />
+      <HashLoader size={150} color={colors.yellow[400]} />
     </div>
   );
 }

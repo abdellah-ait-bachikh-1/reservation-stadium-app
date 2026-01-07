@@ -107,12 +107,13 @@ const RegisterForm = () => {
         confirmPassword: "",
       });
       setErrorsState({});
+      router.push("/auth/login");
       addToast({
         color: "success",
         title: t("pages.auth.register.metadata.title"),
         description: t("common.toast.success.registered"),
+        timeout: Infinity,
       });
-      router.push("/auth/login");
     }
     setIsPending(false);
   };

@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1767399299100,
-      "tag": "0000_same_celestials",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1767433082560,
-      "tag": "0001_steady_hydra",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1767607341239,
-      "tag": "0002_cynical_nicolaos",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1767630024874,
-      "tag": "0003_supreme_zzzax",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1767724644082,
-      "tag": "0004_minor_karma",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1767776933031,
-      "tag": "0005_powerful_stranger",
+      "when": 1767777582937,
+      "tag": "0000_lonely_famine",
       "breakpoints": true
     }
   ]

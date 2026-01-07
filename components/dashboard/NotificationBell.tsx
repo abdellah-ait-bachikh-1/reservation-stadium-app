@@ -7,7 +7,6 @@ import { Badge } from "@heroui/badge";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import {
-  NotificationService,
   LocaleType,
 } from "@/services/notification.service";
 import {  disconnectPusher, pusherClient } from "@/lib/pusher/client";

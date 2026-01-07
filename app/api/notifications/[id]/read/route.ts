@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { NotificationService } from '@/services/notification.service';
 
 export async function POST(
   request: NextRequest,
@@ -18,7 +17,7 @@ export async function POST(
 
     const notificationId = params.id;
     
-    await NotificationService.markAsRead(notificationId, session.user.id);
+    // await NotificationService.markAsRead(notificationId, session.user.id);
 
     return NextResponse.json({
       success: true,

@@ -37,6 +37,9 @@ const LoginForm = () => {
     validateForm,
     setErrorsState,
     touched,
+    errors,
+    isBackendValidationError,
+    setIsBackendValidationError,
   } = useFormValidation(validateLoginFormData, locale as LocaleEnumType);
 
   const handleTogglePassword = (
@@ -64,6 +67,11 @@ const LoginForm = () => {
     const updatedFormData = { ...formData, [field]: value };
 
     setFormData(updatedFormData);
+
+    if (isBackendValidationError) {
+      setErrorsState({});
+      setIsBackendValidationError(false);
+    }
 
     validateField(field, value, updatedFormData);
 
@@ -107,6 +115,8 @@ const LoginForm = () => {
           ),
         ],
       });
+      setIsBackendValidationError(true);
+
       addToast({
         color: "danger",
         title: t("pages.auth.login.metadata.title"),

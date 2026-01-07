@@ -43,28 +43,28 @@ export default function UserAvatar({
   className = "",
   size = "md",
 }: UserAvatarProps) {
-  const t = useTypedTranslations("common"); // or useTranslations('global')
+  const t = useTypedTranslations(); // or useTranslations('global')
 
   const { email, name, role } = user;
 
   const menuItems: MenuItemType[] = [
     {
       key: "dashboard",
-      label: t("user.dashboard"),
+      label: t("common.user.dashboard"),
       icon: LuLayoutDashboard,
-      description: t("user.dashboard"),
+      description: t("common.user.dashboard"),
     },
     {
       key: "profile",
-      label: t("user.profile"),
+      label: t("common.user.profile"),
       icon: FiUser,
-      description: t("user.profile"),
+      description: t("common.user.profile"),
     },
     {
       key: "logout",
-      label: t("user.logout"),
+      label: t("common.user.logout"),
       icon: FiLogOut,
-      description: t("user.logout"),
+      description: t("common.user.logout"),
       className: "text-danger hidden md:flex",
     },
   ];

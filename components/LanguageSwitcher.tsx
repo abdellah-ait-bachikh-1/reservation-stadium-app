@@ -38,8 +38,10 @@ export default function LanguageSwitcher({
         isIconOnly
         variant="flat"
         size="sm"
+        radius="lg"
+        color="default"
         isLoading
-        className="min-w-10 min-h-10"
+   
       />
     );
   }

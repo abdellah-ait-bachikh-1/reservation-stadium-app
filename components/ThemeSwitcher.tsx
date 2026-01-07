@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 import { FiSun, FiMoon, FiMonitor, FiCheck } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import { Button } from "@heroui/button";
-import { useTranslations } from "next-intl";
 import { useTypedTranslations } from "@/utils/i18n";
 
 export default function ThemeSwitcher({
@@ -23,7 +22,7 @@ export default function ThemeSwitcher({
 }) {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  const t = useTypedTranslations("common");
+  const t = useTypedTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -35,8 +34,9 @@ export default function ThemeSwitcher({
         isIconOnly
         variant="flat"
         size="sm"
+        radius="lg"
+        color="default"
         isLoading
-        className="min-w-10 min-h-10"
       />
     );
   }
@@ -44,21 +44,21 @@ export default function ThemeSwitcher({
   const themes = [
     {
       key: "light",
-      label: t("theme.light"),
-      icon: FiSun , 
-      description: t("theme.description.light"),
+      label: t("common.theme.light"),
+      icon: FiSun,
+      description: t("common.theme.description.light"),
     },
     {
       key: "dark",
-      label: t("theme.dark"),
-      icon: FiMoon , 
-      description: t("theme.description.dark"),
+      label: t("common.theme.dark"),
+      icon: FiMoon,
+      description: t("common.theme.description.dark"),
     },
     {
       key: "system",
-      label: t("theme.system"),
-      icon: FiMonitor , 
-      description: t("theme.description.system"),
+      label: t("common.theme.system"),
+      icon: FiMonitor,
+      description: t("common.theme.description.system"),
     },
   ];
 
@@ -66,18 +66,12 @@ export default function ThemeSwitcher({
 
   return (
     <Dropdown placement={placement} showArrow={showArrow}>
-      <DropdownTrigger >
-        <Button
-          isIconOnly
-          variant="flat"
-          size="sm"
-          radius="lg"
-          color="default"
-        >
+      <DropdownTrigger>
+        <Button isIconOnly variant="flat" size="sm" radius="lg" color="default">
           {<currentTheme.icon className="h-4 w-4" />}
         </Button>
       </DropdownTrigger>
-      <DropdownMenu 
+      <DropdownMenu
         aria-label="Theme selection"
         variant="flat"
         onAction={(key) => setTheme(key as string)}

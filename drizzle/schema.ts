@@ -39,7 +39,7 @@ export const users = mysqlTable(
     password: varchar("password", { length: 255 }).notNull(),
     role: USER_ROLES.default("CLUB").notNull(),
     phoneNumber: varchar("phone_number", { length: 50 }).notNull(),
-    isApproved: boolean("is_approved").default(false) ,
+    isApproved: boolean("is_approved").default(false),
     preferredLocale: USER_PREFERRED_LOCALE.default("FR").notNull(),
     emailVerifiedAt: timestamp("email_verified_at", { mode: "string" }),
     verificationToken: varchar("verification_token", { length: 255 }),
@@ -142,10 +142,7 @@ export const notifications = mysqlTable(
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+
   },
   (table) => {
     return [

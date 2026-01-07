@@ -19,7 +19,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
   const locale = useLocale() as LocaleEnumType;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const t = useTypedTranslations("common");
+  const t = useTypedTranslations();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -66,10 +66,10 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                 }`}
               >
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {t("modals.logout.title")}
+                  {t("common.modals.logout.title")}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {t("modals.logout.message")}
+                  {t("common.modals.logout.message")}
                 </p>
               </div>
             </div>
@@ -86,7 +86,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                   button({ variant: "flat", fullWidth: true })
                 )}
               >
-                {t("actions.cancel")}
+                {t("common.actions.cancel")}
               </button>
               <button
                 onClick={handleLogout}
@@ -95,7 +95,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                 
                 )}
               >
-                {t("actions.confirm")}
+                {t("common.actions.confirm")}
               </button>
             </div>
           </div>
