@@ -59,6 +59,22 @@ export const notificationTypes = [
   "ADMIN_NEW_RESERVATION",
   "ADMIN_PAYMENT_ALERT",
 ] as const;
+export const RESERVATION_STATUS = mysqlEnum("status", [
+  "PENDING",
+  "APPROVED",
+  "DECLINED",
+  "CANCELLED",
+  "PAID",
+  "UNPAID",
+]);
+export const PAYMENT_TYPE = mysqlEnum("payment_type", [
+  "SINGLE_SESSION",
+  "MONTHLY_SUBSCRIPTION",
+]);
+export const BILLING_TYPE = mysqlEnum("billing_type", [
+  "PER_SESSION",
+  "MONTHLY_SUBSCRIPTION",
+]);
 
 //--------------------- Tables -----------------------
 
@@ -263,6 +279,65 @@ export const stadiumImages = mysqlTable(
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
   (table) => [index("stadim_id_index").on(table.stadiumId)]
+);
+
+export const reservations = mysqlTable(
+  "reservations",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    startDateTime: timestamp("start_date_time", { mode: "string" }).notNull(),
+    endDateTime: timestamp("end_date_time", { mode: "string" }).notNull(),
+    status: RESERVATION_STATUS.default("PENDING").notNull(),
+    sessionPrice: decimal("session_price", {
+      precision: 10,
+      scale: 2,
+    }).notNull(),
+    isPaid: boolean("is_paid").default(false).notNull(),
+    paymentType: PAYMENT_TYPE.notNull(),
+
+    // Relations
+    stadiumId: char("stadium_id", { length: 36 })
+      .notNull()
+      .references(() => stadiums.id, { onDelete: "cascade" }),
+    userId: char("user_id", { length: 36 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    monthlyPaymentId: char("monthly_payment_id", { length: 36 }),
+    reservationSeriesId: char("reservation_series_id", { length: 36 }),
+
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  },
+  (table) => {
+    return [
+      index("start_date_time_index").on(table.startDateTime),
+      index("end_date_time_index").on(table.endDateTime),
+      index("status_index").on(table.status),
+      index("user_id_index").on(table.userId),
+      index("stadium_id_index").on(table.stadiumId),
+      index("monthly_payment_id_index").on(table.monthlyPaymentId),
+      index("reservation_series_id_index").on(table.reservationSeriesId),
+      index("created_at_index").on(table.createdAt),
+      index("is_paid_index").on(table.isPaid),
+      index("start_date_time_stadium_id_index").on(
+        table.startDateTime,
+        table.stadiumId
+      ),
+      index("status_start_date_time_index").on(
+        table.status,
+        table.startDateTime
+      ),
+    ];
+  }
 );
 
 //--------------------- Relations -----------------------
