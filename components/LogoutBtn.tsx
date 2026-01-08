@@ -17,6 +17,7 @@ interface LogoutBtnProps extends ButtonProps {
 
 const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
   const locale = useLocale() as LocaleEnumType;
+  
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
   const t = useTypedTranslations();
@@ -26,10 +27,12 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
 
   const handleLogout = () => {
     signOut({
-      redirect: true,
-      callbackUrl: "/auth/login",
+    redirect: false,
+      // callbackUrl: "/auth/login",
     });
     setShowLogoutModal(false);
+        window.location.reload();
+
     if (onCloseMenu) onCloseMenu();
   };
 
