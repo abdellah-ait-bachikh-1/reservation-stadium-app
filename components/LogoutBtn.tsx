@@ -17,7 +17,7 @@ interface LogoutBtnProps extends ButtonProps {
 
 const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
   const locale = useLocale() as LocaleEnumType;
-  
+
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
   const t = useTypedTranslations();
@@ -27,11 +27,11 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
 
   const handleLogout = () => {
     signOut({
-    redirect: false,
+      redirect: false,
       // callbackUrl: "/auth/login",
     });
     setShowLogoutModal(false);
-        window.location.reload();
+    window.location.reload();
 
     if (onCloseMenu) onCloseMenu();
   };
@@ -51,7 +51,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.7, y: -10 }}
           className="bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-md"
-          onClick={(e) => e.stopPropagation()} 
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="p-6">
             {/* Modal Header */}
@@ -85,9 +85,7 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
             >
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className={cn(
-                  button({ variant: "flat", fullWidth: true })
-                )}
+                className={cn(button({ variant: "flat", fullWidth: true }))}
               >
                 {t("common.actions.cancel")}
               </button>
@@ -95,7 +93,6 @@ const LogoutBtn = ({ children, onCloseMenu, ...props }: LogoutBtnProps) => {
                 onClick={handleLogout}
                 className={cn(
                   button({ color: "danger", variant: "flat", fullWidth: true })
-                
                 )}
               >
                 {t("common.actions.confirm")}

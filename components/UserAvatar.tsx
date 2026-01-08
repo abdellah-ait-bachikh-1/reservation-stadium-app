@@ -21,7 +21,8 @@ import { motion } from "framer-motion";
 import { FaSignOutAlt } from "react-icons/fa";
 import { isRtl } from "@/utils";
 import { LocaleEnumType } from "@/types";
-import { button, cn } from "@heroui/theme"; // Adjust import as needed
+import { button, cn } from "@heroui/theme";
+import { Link } from "@/i18n/navigation";
 
 type DropdownRenderItem = {
   key: string;
@@ -30,6 +31,7 @@ type DropdownRenderItem = {
   description?: string;
   className?: string;
   children?: React.ReactNode;
+  href?: string;
 };
 
 interface UserAvatarProps {
@@ -51,6 +53,7 @@ type MenuItemType = {
   icon: React.ComponentType<{ className?: string }>;
   description: string;
   className?: string;
+  href?: string;
 };
 
 export default function UserAvatar({
@@ -61,7 +64,6 @@ export default function UserAvatar({
   size = "md",
 }: UserAvatarProps) {
   const t = useTypedTranslations();
-  
   const locale = useLocale() as LocaleEnumType;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -77,7 +79,6 @@ export default function UserAvatar({
     setIsLoggingOut(true);
     signOut({
       redirect: false,
-      // callbackUrl: "/auth/login",
     });
     
     setShowLogoutModal(false);
@@ -89,10 +90,7 @@ export default function UserAvatar({
 
     switch (key) {
       case "dashboard":
-        // Handle dashboard navigation
-        break;
-      case "profile":
-        // Handle profile navigation
+        // Navigation is handled by as={Link} prop
         break;
       case "logout":
         setShowLogoutModal(true);
@@ -108,12 +106,7 @@ export default function UserAvatar({
       label: t("common.user.dashboard"),
       icon: LuLayoutDashboard,
       description: t("common.user.dashboard"),
-    },
-    {
-      key: "profile",
-      label: t("common.user.profile"),
-      icon: FiUser,
-      description: t("common.user.profile"),
+      href: "/dashboard"
     },
     {
       key: "logout",
@@ -129,7 +122,7 @@ export default function UserAvatar({
       {/* Full screen blurred backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={() => setShowLogoutModal(false)}
+        onClick={() => !isLoggingOut && setShowLogoutModal(false)}
       />
 
       {/* Center container for the modal */}
@@ -172,7 +165,7 @@ export default function UserAvatar({
               }`}
             >
               <button
-                onClick={() => setShowLogoutModal(false)}
+                onClick={() => !isLoggingOut && setShowLogoutModal(false)}
                 disabled={isLoggingOut}
                 className={cn(
                   button({ variant: "flat", fullWidth: true }),
@@ -189,7 +182,7 @@ export default function UserAvatar({
                   "disabled:opacity-50 disabled:cursor-not-allowed"
                 )}
               >
-                {isLoggingOut ? t("common.actions.cancel") : t("common.actions.confirm")}
+                {isLoggingOut ? t("common.actions.logout") : t("common.actions.confirm")}
               </button>
             </div>
           </div>
@@ -213,8 +206,9 @@ export default function UserAvatar({
           className="min-w-64"
           items={[
             {
-              key: "user-info",
-              isReadOnly: true,
+              key: "user-profile",
+              href: "/dashboard/profile", // Added href for user profile
+              isReadOnly: false,
               startContent: <Avatar className="text-base" showFallback />,
               children: (
                 <div className="flex flex-col items-start gap-1">
@@ -227,7 +221,7 @@ export default function UserAvatar({
                       variant="flat"
                       radius="full"
                     >
-                      {convertCase(role, "lower")}
+                      {t(`common.user.roles.${convertCase(role, "lower")}`)}
                     </Chip>
                   </div>
                   <span className="text-sm text-default-500">{email}</span>
@@ -244,6 +238,7 @@ export default function UserAvatar({
             // Menu items
             ...menuItems.map((item) => ({
               key: item.key,
+              href: item.href, // Pass href to items
               startContent: (
                 <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800">
                   <div className="text-gray-600 dark:text-gray-400">
@@ -262,6 +257,25 @@ export default function UserAvatar({
               return <DropdownItem key={item.key} className={item.className} />;
             }
 
+            // For items with href, render as Link
+            if (item.href) {
+              return (
+                <DropdownItem
+                  key={item.key}
+                  as={Link}
+                  href={item.href}
+                  hrefLang={locale}
+                  isReadOnly={item.isReadOnly}
+                  startContent={item.startContent}
+                  description={item.description}
+                  className={item.className}
+                >
+                  {item.children}
+                </DropdownItem>
+              );
+            }
+
+            // For regular items (logout)
             return (
               <DropdownItem
                 key={item.key}
