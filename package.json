@@ -39,6 +39,7 @@
     "@heroui/toast": "^2.0.19",
     "@heroui/tooltip": "^2.2.26",
     "bcryptjs": "^3.0.3",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "framer-motion": "^12.23.26",

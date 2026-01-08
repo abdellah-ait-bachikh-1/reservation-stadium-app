@@ -79,18 +79,20 @@ const RegisterForm = () => {
     markAsTouched(field);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const isValid = validateForm(formData);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!isValid) {
-      Object.keys(formData).forEach((field) => markAsTouched(field));
-      return;
-    }
+  const isValid = validateForm(formData);
+  if (!isValid) {
+    Object.keys(formData).forEach((field) => markAsTouched(field));
+    return;
+  }
 
-    console.log(formData);
-    setIsPending(true);
+  setIsPending(true);
+
+  try {
     const { validationErrors, status } = await registerUser(formData);
+
     if (status === 400 && validationErrors) {
       setErrorsState(validationErrors);
       addToast({
@@ -107,17 +109,25 @@ const RegisterForm = () => {
         confirmPassword: "",
       });
       setErrorsState({});
-      // router.push("/auth/login");
       addToast({
         color: "success",
         title: t("pages.auth.register.metadata.title"),
         description: t("common.toast.success.registered"),
         timeout: Infinity,
       });
+      // router.push("/auth/login"); // optional redirect
     }
+  } catch (error: any) {
+    console.error("Form submission error:", error);
+    addToast({
+      color: "danger",
+      title: t("pages.auth.register.metadata.title"),
+      description: error?.message || t("common.toast.error.registrationFailed"),
+    });
+  } finally {
     setIsPending(false);
-  };
-
+  }
+};
   const ErrorMessages = ({ field }: { field: keyof RegisterFormData }) => {
     const errorMessages = getErrorMessages(field);
 

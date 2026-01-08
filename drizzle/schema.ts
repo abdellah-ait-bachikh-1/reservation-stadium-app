@@ -33,7 +33,7 @@ export const users = mysqlTable(
   {
     id: char("id", { length: 36 })
       .primaryKey()
-      .$default(() => uuidv4()),
+      .default(sql`(UUID())`), 
     name: varchar("name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull().unique(),
     password: varchar("password", { length: 255 }).notNull(),
@@ -103,7 +103,7 @@ export const notifications = mysqlTable(
   {
     id: char("id", { length: 36 })
       .primaryKey()
-      .$default(() => uuidv4()),
+      .default(sql`(UUID())`), // ✅ MySQL UUID() function
 
     type: varchar("type", { length: 50 })
       .$type<(typeof notificationTypes)[number]>()

@@ -148,6 +148,46 @@ export type TranslationKey =
     | 'pages.about.metadata.description'
     | 'pages.about.metadata.keywords'
     | 'pages.about.metadata.title'
+    | 'pages.auth.emailVerification.error.alreadyVerified'
+    | 'pages.auth.emailVerification.error.alreadyVerifiedDetails'
+    | 'pages.auth.emailVerification.error.contactSupport'
+    | 'pages.auth.emailVerification.error.expiredToken'
+    | 'pages.auth.emailVerification.error.expiredTokenDetails'
+    | 'pages.auth.emailVerification.error.genericError'
+    | 'pages.auth.emailVerification.error.genericErrorDetails'
+    | 'pages.auth.emailVerification.error.goHome'
+    | 'pages.auth.emailVerification.error.goLogin'
+    | 'pages.auth.emailVerification.error.invalidToken'
+    | 'pages.auth.emailVerification.error.invalidTokenDetails'
+    | 'pages.auth.emailVerification.error.needHelp'
+    | 'pages.auth.emailVerification.error.title'
+    | 'pages.auth.emailVerification.error.tryAgain'
+    | 'pages.auth.emailVerification.loading.message'
+    | 'pages.auth.emailVerification.loading.steps.checkingToken'
+    | 'pages.auth.emailVerification.loading.steps.preparingDashboard'
+    | 'pages.auth.emailVerification.loading.steps.updatingAccount'
+    | 'pages.auth.emailVerification.loading.title'
+    | 'pages.auth.emailVerification.success.adminReviewTitle'
+    | 'pages.auth.emailVerification.success.adminWillCall'
+    | 'pages.auth.emailVerification.success.callVerificationInfo'
+    | 'pages.auth.emailVerification.success.contactSupport'
+    | 'pages.auth.emailVerification.success.emailConfirmed'
+    | 'pages.auth.emailVerification.success.goToHomepage'
+    | 'pages.auth.emailVerification.success.keepPhoneReady'
+    | 'pages.auth.emailVerification.success.manualVerificationInfo'
+    | 'pages.auth.emailVerification.success.message'
+    | 'pages.auth.emailVerification.success.nextStepsTitle'
+    | 'pages.auth.emailVerification.success.reviewTimeInfo'
+    | 'pages.auth.emailVerification.success.securityCheck'
+    | 'pages.auth.emailVerification.success.steps.adminCall'
+    | 'pages.auth.emailVerification.success.steps.adminReview'
+    | 'pages.auth.emailVerification.success.steps.approvalEmail'
+    | 'pages.auth.emailVerification.success.steps.fullAccess'
+    | 'pages.auth.emailVerification.success.thankYouMessage'
+    | 'pages.auth.emailVerification.success.title'
+    | 'pages.auth.emailVerification.success.waitForReview'
+    | 'pages.auth.emailVerification.success.weWillContactYou'
+    | 'pages.auth.emailVerification.title'
     | 'pages.auth.login.dont_have_account'
     | 'pages.auth.login.forgot_password'
     | 'pages.auth.login.metadata.description'
@@ -248,7 +288,8 @@ export const _TranslationNamespaces = {
   ],
   "pages.auth": [
     "register",
-    "login"
+    "login",
+    "emailVerification"
   ],
   "pages.auth.register": [
     "metadata",
@@ -278,6 +319,63 @@ export const _TranslationNamespaces = {
     "title",
     "description",
     "keywords"
+  ],
+  "pages.auth.emailVerification": [
+    "title",
+    "loading",
+    "success",
+    "error"
+  ],
+  "pages.auth.emailVerification.loading": [
+    "title",
+    "message",
+    "steps"
+  ],
+  "pages.auth.emailVerification.loading.steps": [
+    "checkingToken",
+    "updatingAccount",
+    "preparingDashboard"
+  ],
+  "pages.auth.emailVerification.success": [
+    "title",
+    "message",
+    "emailConfirmed",
+    "adminReviewTitle",
+    "waitForReview",
+    "reviewTimeInfo",
+    "adminWillCall",
+    "callVerificationInfo",
+    "securityCheck",
+    "manualVerificationInfo",
+    "nextStepsTitle",
+    "steps",
+    "keepPhoneReady",
+    "goToHomepage",
+    "contactSupport",
+    "thankYouMessage",
+    "weWillContactYou"
+  ],
+  "pages.auth.emailVerification.success.steps": [
+    "adminReview",
+    "adminCall",
+    "approvalEmail",
+    "fullAccess"
+  ],
+  "pages.auth.emailVerification.error": [
+    "title",
+    "tryAgain",
+    "invalidToken",
+    "invalidTokenDetails",
+    "alreadyVerified",
+    "alreadyVerifiedDetails",
+    "expiredToken",
+    "expiredTokenDetails",
+    "genericError",
+    "genericErrorDetails",
+    "goLogin",
+    "goHome",
+    "contactSupport",
+    "needHelp"
   ],
   "common": [
     "actions",

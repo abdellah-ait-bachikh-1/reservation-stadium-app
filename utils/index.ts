@@ -49,3 +49,5 @@ export const isErrorHasMessage = (error: unknown): error is Error => {
       typeof (error as any).message === "string")
   );
 };
+
+

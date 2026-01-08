@@ -73,13 +73,15 @@ export default async function middleware(request: NextRequest) {
   const isPusherApi = pathname.startsWith("/api/pusher");
   const isDashboardApi = pathname.startsWith("/api/dashboard");
   
+  const isVerifyEmailPage = pathname.startsWith(`/${locale}/auth/verify-email`);
+
   // ------------------ Pages ------------------
   // Authenticated users → block /auth/*
-  if (!isApiRoute && isAuthPage && isAuthenticated) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}`;
-    return NextResponse.redirect(url);
-  }
+  if (!isApiRoute && isAuthPage && isAuthenticated && !isVerifyEmailPage) {
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}`;
+  return NextResponse.redirect(url);
+}
 
   // Unauthenticated users → block /dashboard/*
   if (!isApiRoute && isDashboardPage && !isAuthenticated) {
