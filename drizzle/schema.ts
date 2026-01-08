@@ -213,6 +213,35 @@ export const notifications = mysqlTable(
   }
 );
 
+export const stadiums = mysqlTable(
+  "stadiums",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    name: varchar("name_ar", { length: 255 }).notNull().unique(),
+    adress: varchar("adress", { length: 255 }).notNull(),
+    googleMapsUrl: varchar("googleMapUrl", { length: 500 }),
+    monthlyPrice: decimal("monthly_price", { precision: 10, scale: 2 }),
+    pricePerSession: decimal("price_per_session", { precision: 10, scale: 2 }),
+
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  },
+  (table) => {
+    return [
+      index("monthly_price_index").on(table.monthlyPrice),
+      index("price_per_session").on(table.pricePerSession),
+    ];
+  }
+);
+
 //--------------------- Relations -----------------------
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -237,7 +266,12 @@ export const clubRelations = relations(clubs, ({ one }) => ({
 }));
 
 export const sportRelations = relations(sports, ({ many }) => ({
-  clubs: many(clubs, { relationName: "sportClub" }),
+  clubs: many(clubs, { relationName: "sport_club" }),
+  stadiums: many(stadiums, { relationName: "stadium_sports" }),
+}));
+
+export const stadiumRelations = relations(sports, ({ many }) => ({
+  sports: many(sports, { relationName: "stadium_sports" }),
 }));
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
