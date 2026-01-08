@@ -242,6 +242,29 @@ export const stadiums = mysqlTable(
   }
 );
 
+export const stadiumImages = mysqlTable(
+  "stadium_images",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    index: smallint("index").default(sql`0`),
+    imageUri: varchar("image_uri").notNull(),
+    stadiumId: char("stadium_id")
+      .notNull()
+      .references(() => stadiums.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  },
+  (table) => [index("stadim_id_index").on(table.stadiumId)]
+);
+
 //--------------------- Relations -----------------------
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -272,6 +295,15 @@ export const sportRelations = relations(sports, ({ many }) => ({
 
 export const stadiumRelations = relations(sports, ({ many }) => ({
   sports: many(sports, { relationName: "stadium_sports" }),
+  images: many(stadiumImages, { relationName: "stadium_images" }),
+}));
+
+export const stadiumImagesRelations = relations(stadiumImages, ({ one }) => ({
+  stadium: one(stadiums, {
+    fields: [stadiumImages.stadiumId],
+    references: [stadiums.id],
+    relationName: "stadium_images",
+  }),
 }));
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
