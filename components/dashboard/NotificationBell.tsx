@@ -4,14 +4,13 @@ import { Button } from "@heroui/button";
 import { HiBell, HiCheck, HiOutlineBell } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@heroui/badge";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
-import {
-  LocaleType,
-} from "@/services/notification.service";
-import {  disconnectPusher, pusherClient } from "@/lib/pusher/client";
+import { LocaleType } from "@/services/notification.service";
+import { disconnectPusher, pusherClient } from "@/lib/pusher/client";
 import { NotificationTypes } from "@/drizzle/schema";
 import { useSafePositionScreen } from "@/hooks/useSafePositionScreen";
+import { useTypedTranslations } from "@/utils/i18n";
 
 interface NotificationItem {
   id: string;
@@ -30,6 +29,9 @@ interface NotificationItem {
 }
 
 const NotificationBell = () => {
+  const locale = useLocale();
+  const t = useTypedTranslations();
+
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,67 +51,11 @@ const NotificationBell = () => {
   } = useSafePositionScreen();
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession();
-
-  // Get translations
-  const t = useTranslations("common.notifications");
-
-  // Calculate unread count
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  // Fetch notifications from API
-  const fetchNotifications = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const locale = (document.documentElement.lang || "FR") as LocaleType;
-
-      const response = await fetch(`/api/notifications?locale=${locale}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch notifications");
-      }
-
-      const data = await response.json();
-
-      // Transform the API response to our component format
-      const transformedNotifications: NotificationItem[] = (
-        data.notifications || []
-      ).map((notif: any) => ({
-        id: notif.id,
-        type: notif.type,
-        title: notif.title,
-        message: notif.message,
-        time: formatRelativeTime(new Date(notif.createdAt)),
-        read: notif.isRead,
-        model: notif.model,
-        referenceId: notif.referenceId,
-        link: notif.link,
-        metadata: notif.metadata,
-        createdAt: new Date(notif.createdAt),
-        localizedTitle: notif.localizedTitle || notif.title,
-        localizedMessage: notif.localizedMessage || notif.message,
-      }));
-
-      setNotifications(transformedNotifications);
-      setInitialLoad(true);
-    } catch (err) {
-      console.error("Error fetching notifications:", err);
-      setError("Failed to load notifications");
-      setNotifications([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Handle new notification from Pusher
   const handleNewNotification = useCallback((notificationData: any) => {
     console.log("📩 New notification received:", notificationData);
 
-    const locale = (document.documentElement.lang || "FR") as LocaleType;
-
-    // In handleNewNotification function, replace line 98 with:
     const getLocalizedContent = (
       content: {
         titleEn: string;
@@ -140,7 +86,7 @@ const NotificationBell = () => {
         messageFr: notificationData.messageFr,
         messageAr: notificationData.messageAr,
       },
-      locale
+      locale as LocaleType
     );
 
     const newNotification: NotificationItem = {
@@ -190,69 +136,70 @@ const NotificationBell = () => {
     }
   }, []);
 
+    const fetchNotifications = async () => {};
   // Setup Pusher connection
- // Replace your entire Pusher useEffect with this:
-useEffect(() => {
-  const userId = "123";
-  
-  console.log("🔌 Setting up Pusher for user:", userId);
-  setConnectionStatus("connecting");
+  // Replace your entire Pusher useEffect with this:
+  useEffect(() => {
+    const userId = session?.user.id;
 
-  // Request notification permission
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-  }
+    console.log("🔌 Setting up Pusher for user:", userId);
+    setConnectionStatus("connecting");
 
-  // Load initial notifications
-  if (!initialLoad) {
-    fetchNotifications();
-  }
+    // Request notification permission
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
 
-  // Subscribe to channel using your working pattern
-  const channel = pusherClient.subscribe(`private-user-${userId}`);
+    // Load initial notifications
+    if (!initialLoad) {
+      fetchNotifications();
+    }
 
-  // Bind events
-  channel.bind('pusher:subscription_succeeded', () => {
-    console.log(`✅ Connected to Pusher channel for user ${userId}`);
-    setConnectionStatus("connected");
-  });
+    // Subscribe to channel using your working pattern
+    const channel = pusherClient.subscribe(`private-user-${userId}`);
 
-  channel.bind('notification', (data: any) => {
-    console.log('📩 New notification received:', data);
-    handleNewNotification(data);
-  });
+    // Bind events
+    channel.bind("pusher:subscription_succeeded", () => {
+      console.log(`✅ Connected to Pusher channel for user ${userId}`);
+      setConnectionStatus("connected");
+    });
 
-  channel.bind('pusher:subscription_error', (error: any) => {
-    console.error('❌ Pusher subscription error:', error);
-    setConnectionStatus("disconnected");
-  });
+    channel.bind("notification", (data: any) => {
+      console.log("📩 New notification received:", data);
+      handleNewNotification(data);
+    });
 
-  // Connection listeners
-  pusherClient.connection.bind('connected', () => {
-    console.log('✅ Pusher client connected');
-  });
+    channel.bind("pusher:subscription_error", (error: any) => {
+      console.error("❌ Pusher subscription error:", error);
+      setConnectionStatus("disconnected");
+    });
 
-  pusherClient.connection.bind('connecting', () => {
-    console.log('🔄 Connecting to Pusher...');
-  });
+    // Connection listeners
+    pusherClient.connection.bind("connected", () => {
+      console.log("✅ Pusher client connected");
+    });
 
-  pusherClient.connection.bind('disconnected', () => {
-    console.log('🔌 Pusher disconnected');
-    setConnectionStatus("disconnected");
-  });
+    pusherClient.connection.bind("connecting", () => {
+      console.log("🔄 Connecting to Pusher...");
+    });
 
-  pusherClient.connection.bind('error', (error: any) => {
-    console.error('❌ Pusher connection error:', error);
-    setConnectionStatus("disconnected");
-  });
+    pusherClient.connection.bind("disconnected", () => {
+      console.log("🔌 Pusher disconnected");
+      setConnectionStatus("disconnected");
+    });
 
-  // Cleanup
-  return () => {
-    console.log('🧹 Cleaning up Pusher connection for user:', userId);
-    channel.unbind_all();
-    channel.unsubscribe();
-  };
-}, []);
+    pusherClient.connection.bind("error", (error: any) => {
+      console.error("❌ Pusher connection error:", error);
+      setConnectionStatus("disconnected");
+    });
+
+    // Cleanup
+    return () => {
+      console.log("🧹 Cleaning up Pusher connection for user:", userId);
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, []);
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && !initialLoad) {
@@ -267,6 +214,29 @@ useEffect(() => {
       setTimeout(() => refinePosition(), 100);
     }
   }, [isOpen, calculatePosition, refinePosition]);
+  const { data: session, status } = useSession();
+  if (status === "loading") {
+    return (
+      <Button
+        isIconOnly
+        variant="light"
+        className="relative"
+        aria-label="Notifications"
+        isLoading
+      />
+    );
+  }
+  if (!session?.user) {
+    return null;
+  }
+  // Get translations
+
+  // Calculate unread count
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  // Fetch notifications from API
+
+
   // Format relative time
   const formatRelativeTime = (date: Date): string => {
     const now = new Date();
@@ -282,22 +252,22 @@ useEffect(() => {
     return "just now";
   };
 
-//   // Handle click outside
-//   useEffect(() => {
-//     const handleClickOutside = (event: MouseEvent) => {
-//       if (
-//         bellRef.current &&
-//         !bellRef.current.contains(event.target as Node) &&
-//         dropdownRef.current &&
-//         !dropdownRef.current.contains(event.target as Node)
-//       ) {
-//         setIsOpen(false);
-//       }
-//     };
+  //   // Handle click outside
+  //   useEffect(() => {
+  //     const handleClickOutside = (event: MouseEvent) => {
+  //       if (
+  //         bellRef.current &&
+  //         !bellRef.current.contains(event.target as Node) &&
+  //         dropdownRef.current &&
+  //         !dropdownRef.current.contains(event.target as Node)
+  //       ) {
+  //         setIsOpen(false);
+  //       }
+  //     };
 
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => document.removeEventListener("mousedown", handleClickOutside);
-//   }, []);
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //     return () => document.removeEventListener("mousedown", handleClickOutside);
+  //   }, []);
 
   // Get icon for notification type
   const getIconForType = (type: string) => {
@@ -482,7 +452,7 @@ useEffect(() => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
-                      {t("title")}
+                      {t("common.notifications.title")}
                     </h3>
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
@@ -494,14 +464,14 @@ useEffect(() => {
                       }`}
                     >
                       {connectionStatus === "connected"
-                        ? t("live")
+                        ? t("common.notifications.live")
                         : connectionStatus === "connecting"
-                        ? t("connecting")
-                        : t("offline")}
+                        ? t("common.notifications.connecting")
+                        : t("common.notifications.offline")}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {unreadCount} {t("unread")}
+                    {unreadCount} {t("common.notifications.unread")}
                   </p>
                 </div>
                 {unreadCount > 0 && (
@@ -512,7 +482,7 @@ useEffect(() => {
                     onPress={markAllAsRead}
                   >
                     <HiCheck className="w-3 h-3 mr-1" />
-                    {t("markAllRead")}
+                    {t("common.notifications.markAllRead")}
                   </Button>
                 )}
               </div>
@@ -523,7 +493,7 @@ useEffect(() => {
                   <div className="p-8 text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
                     <p className="text-gray-500 dark:text-gray-400">
-                      {t("loading")}
+                      {t("common.notifications.loading")}
                     </p>
                   </div>
                 ) : error ? (
@@ -536,14 +506,14 @@ useEffect(() => {
                       variant="flat"
                       onPress={fetchNotifications}
                     >
-                      {t("retry")}
+                      {t("common.notifications.retry")}
                     </Button>
                   </div>
                 ) : notifications.length === 0 ? (
                   <div className="p-8 text-center">
                     <HiOutlineBell className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
                     <p className="text-gray-500 dark:text-gray-400">
-                      {t("noNotifications")}
+                      {t("common.notifications.noNotifications")}
                     </p>
                   </div>
                 ) : (
@@ -604,14 +574,14 @@ useEffect(() => {
               <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-2 px-2">
                   <span>
-                    {notifications.length} {t("total")}
+                    {notifications.length} {t("common.notifications.total")}
                   </span>
                   <Button
                     variant="light"
                     size="sm"
                     onPress={() => (window.location.href = "/notifications")}
                   >
-                    {t("viewAll")}
+                    {t("common.notifications.viewAll")}
                   </Button>
                 </div>
               </div>

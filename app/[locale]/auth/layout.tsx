@@ -30,13 +30,16 @@ export async function generateMetadata({
 
 export default async function AuthLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+   await params;
   return (
     <div className="w-full min-h-screen flex items-center justify-center flex-col gap-6 p-5">
       <header className="flex items-center justif-center gap-4">
-        <ThemeSwitcher placement="bottom" showArrow />{" "}
+        <ThemeSwitcher placement="bottom" showArrow />
         <LanguageSwitcher placement="bottom" showArrow />
       </header>
       {children}

@@ -18,12 +18,10 @@ export const authConfig: AuthOptions = {
         if (!user || !user.isApproved || user.emailVerifiedAt === null || user?.deletedAt !== null) {
           return null;
         }
-        console.log({ user });
         const validPassword = await compare(
           credentials.password,
           user.password
         );
-        console.log({ validPassword });
 
         if (!validPassword) {
           return null;
@@ -44,8 +42,18 @@ export const authConfig: AuthOptions = {
   },
   jwt: {
     maxAge: 60 * 60 * 24 * 7,
+  }, cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/', 
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
-  pages: { signIn: "auth/login" },
+  pages: { signIn: "/auth/login" },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

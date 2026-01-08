@@ -3,10 +3,10 @@ import { pusherServer } from "@/lib/pusher/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // For testing - use static user ID "123"
-    const staticUser = {
+    
+    const authenticatedUser = {
       id: "123",
-      fullNameFr: "Test User",
+      name: "Test User",
       email: "test@example.com"
     };
     
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     console.log("🔐 Pusher auth request:", {
       socket_id: socket_id?.substring(0, 10) + '...',
       channel_name,
-      userId: staticUser.id
+      userId: authenticatedUser.id
     });
 
     // Validate required fields
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate channel name (user can only subscribe to their own channel)
-    const userId = staticUser.id;
+    const userId = authenticatedUser.id;
     const expectedChannelName = `private-user-${userId}`;
 
     if (channel_name !== expectedChannelName) {
@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
       {
         user_id: userId,
         user_info: {
-          name: staticUser.fullNameFr,
-          email: staticUser.email,
+          name: authenticatedUser.name,
+          email: authenticatedUser.email,
         },
       }
     );

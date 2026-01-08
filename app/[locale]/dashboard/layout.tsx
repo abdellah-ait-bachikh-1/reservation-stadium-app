@@ -1,4 +1,3 @@
-
 // export async function generateMetadata({
 //   params,
 // }: {
@@ -8,6 +7,7 @@
 //   const t = await getTypedTranslations();
 
 import NotificationBell from "@/components/dashboard/NotificationBell";
+
 
 //   return {
 //     title: {
@@ -21,14 +21,19 @@ import NotificationBell from "@/components/dashboard/NotificationBell";
 
 export default async function DashboardLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  await params;
+ 
   return (
     <>
-      {" "}
-      <header><NotificationBell /></header>
-      {children}{" "}
+      <header>
+        <NotificationBell />
+      </header>
+      {children}
     </>
   );
 }

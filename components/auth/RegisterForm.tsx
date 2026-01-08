@@ -107,7 +107,7 @@ const RegisterForm = () => {
         confirmPassword: "",
       });
       setErrorsState({});
-      router.push("/auth/login");
+      // router.push("/auth/login");
       addToast({
         color: "success",
         title: t("pages.auth.register.metadata.title"),

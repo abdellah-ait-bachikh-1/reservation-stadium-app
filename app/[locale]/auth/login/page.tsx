@@ -13,9 +13,7 @@ export async function generateMetadata({
     .default;
 
   return {
-    title: `${
-      messages.pages?.auth?.login?.metadata?.title || "Connexion"
-    }`,
+    title: `${messages.pages?.auth?.login?.metadata?.title || "Connexion"}`,
     description:
       messages.pages?.auth?.login?.metadata?.description ||
       "Connectez-vous à votre compte pour gérer vos réservations de stades et d’espaces sportifs à Tantan, Maroc.",
@@ -29,7 +27,7 @@ const LoginPage = async ({
 }: {
   params: Promise<{ locale: string }>;
 }) => {
-  await params;
+   await params;
   const t = await getTypedTranslations();
 
   return (
@@ -37,7 +35,10 @@ const LoginPage = async ({
       className="flex flex-col items-center justify-center gap-4
       p-5 bg-white dark:bg-zinc-600/10 shadow  w-full md:w-lg  rounded-xl "
     >
-      <h1 className="text-2xl md:text-3xl font-bold"> {t("pages.auth.login.title")} </h1>
+      <h1 className="text-2xl md:text-3xl font-bold">
+        {" "}
+        {t("pages.auth.login.title")}{" "}
+      </h1>
       <LoginForm />
     </section>
   );
