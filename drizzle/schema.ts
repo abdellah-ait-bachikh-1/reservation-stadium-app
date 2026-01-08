@@ -339,7 +339,50 @@ export const reservations = mysqlTable(
     ];
   }
 );
+export const reservationSeries = mysqlTable(
+  "reservation_series",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    startTime: timestamp("start_time", { mode: "string" }).notNull(),
+    endTime: timestamp("end_time", { mode: "string" }).notNull(),
+    dayOfWeek: smallint("day_of_week", { unsigned: true }).notNull(),
+    recurrenceEndDate: timestamp("recurrence_end_date", { mode: "string" }),
+    isFixed: boolean("is_fixed").default(true).notNull(),
+    billingType: BILLING_TYPE.notNull(),
+    monthlyPrice: decimal("monthly_price", { precision: 10, scale: 2 }),
+    pricePerSession: decimal("price_per_session", { precision: 10, scale: 2 }),
 
+    // Relations
+    stadiumId: char("stadium_id", { length: 36 })
+      .notNull()
+      .references(() => stadiums.id),
+    userId: char("user_id", { length: 36 })
+      .notNull()
+      .references(() => users.id),
+
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+  },
+  (table) => {
+    return [
+      index("user_id_index").on(table.userId),
+      index("stadium_id_index").on(table.stadiumId),
+      index("day_of_week_index").on(table.dayOfWeek),
+      index("billing_type_index").on(table.billingType),
+      index("created_at_index").on(table.createdAt),
+      index("recurrence_end_date_index").on(table.recurrenceEndDate),
+      index("start_time_end_time_index").on(table.startTime, table.endTime),
+    ];
+  }
+);
 //--------------------- Relations -----------------------
 
 export const usersRelations = relations(users, ({ many }) => ({
