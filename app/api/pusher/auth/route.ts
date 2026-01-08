@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pusherServer } from "@/lib/pusher/server";
+import { getSession } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    
-    const authenticatedUser = {
-      id: "123",
-      name: "Test User",
-      email: "test@example.com"
-    };
-    
-    // Read form data (Pusher sends form-encoded data)
+    // Get the session
+    const session = await getSession();
+    console.log({session})
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized - No session found' },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
+    const userName = session.user.name || "User";
+    const userEmail = session.user.email || "";
+
+    // Read form data
     const formData = await request.formData();
     const socket_id = formData.get('socket_id') as string;
     const channel_name = formData.get('channel_name') as string;
@@ -18,7 +26,7 @@ export async function POST(request: NextRequest) {
     console.log("🔐 Pusher auth request:", {
       socket_id: socket_id?.substring(0, 10) + '...',
       channel_name,
-      userId: authenticatedUser.id
+      userId
     });
 
     // Validate required fields
@@ -29,8 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate channel name (user can only subscribe to their own channel)
-    const userId = authenticatedUser.id;
+    // Validate channel name
     const expectedChannelName = `private-user-${userId}`;
 
     if (channel_name !== expectedChannelName) {
@@ -46,15 +53,15 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Authorizing channel for user:", userId);
 
-    // Create auth response (no session check for testing)
+    // Create auth response
     const authResponse = pusherServer.authorizeChannel(
       socket_id,
       channel_name,
       {
         user_id: userId,
         user_info: {
-          name: authenticatedUser.name,
-          email: authenticatedUser.email,
+          name: userName,
+          email: userEmail,
         },
       }
     );
@@ -63,7 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(authResponse);
 
   } catch (error: any) {
-    console.error("❌ Pusher auth error:", error.message);
+    console.error("❌ Pusher auth error:", error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

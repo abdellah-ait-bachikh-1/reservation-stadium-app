@@ -31,6 +31,7 @@ interface NotificationItem {
 const NotificationBell = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
+  const { data: session, status } = useSession();
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -137,10 +138,15 @@ const NotificationBell = () => {
   }, []);
 
     const fetchNotifications = async () => {};
+  
   // Setup Pusher connection
-  // Replace your entire Pusher useEffect with this:
   useEffect(() => {
-    const userId = session?.user.id;
+    // Wait for session to be available
+    if (status === "loading" || !session?.user?.id) {
+      return;
+    }
+
+    const userId = session.user.id;
 
     console.log("🔌 Setting up Pusher for user:", userId);
     setConnectionStatus("connecting");
@@ -199,7 +205,8 @@ const NotificationBell = () => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, []);
+  }, [session, status]);
+
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && !initialLoad) {
@@ -214,7 +221,7 @@ const NotificationBell = () => {
       setTimeout(() => refinePosition(), 100);
     }
   }, [isOpen, calculatePosition, refinePosition]);
-  const { data: session, status } = useSession();
+
   if (status === "loading") {
     return (
       <Button
@@ -229,13 +236,10 @@ const NotificationBell = () => {
   if (!session?.user) {
     return null;
   }
-  // Get translations
 
+  // Get translations
   // Calculate unread count
   const unreadCount = notifications.filter((n) => !n.read).length;
-
-  // Fetch notifications from API
-
 
   // Format relative time
   const formatRelativeTime = (date: Date): string => {
@@ -251,23 +255,6 @@ const NotificationBell = () => {
     if (diffMinutes > 0) return `${diffMinutes}m ago`;
     return "just now";
   };
-
-  //   // Handle click outside
-  //   useEffect(() => {
-  //     const handleClickOutside = (event: MouseEvent) => {
-  //       if (
-  //         bellRef.current &&
-  //         !bellRef.current.contains(event.target as Node) &&
-  //         dropdownRef.current &&
-  //         !dropdownRef.current.contains(event.target as Node)
-  //       ) {
-  //         setIsOpen(false);
-  //       }
-  //     };
-
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //     return () => document.removeEventListener("mousedown", handleClickOutside);
-  //   }, []);
 
   // Get icon for notification type
   const getIconForType = (type: string) => {
@@ -327,21 +314,7 @@ const NotificationBell = () => {
 
   // Mark notification as read
   const markAsRead = async (id: string) => {
-    try {
-      const response = await fetch(`/api/notifications/${id}/read`, {
-        method: "POST",
-      });
-
-      if (response.ok) {
-        setNotifications((prev) =>
-          prev.map((notif) =>
-            notif.id === id ? { ...notif, read: true } : notif
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-    }
+   
   };
 
   // Mark all as read
@@ -428,15 +401,6 @@ const NotificationBell = () => {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Mobile overlay */}
-            {/* <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
-              onClick={() => setIsOpen(false)}
-            /> */}
-
             {/* Dropdown */}
             <motion.div
               key="notification-dropdown"
@@ -444,7 +408,7 @@ const NotificationBell = () => {
               initial={{ opacity: 0, scale: 0.7, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: -10 }}
-              style={positionStyle} // ← ADD THIS LINE
+              style={positionStyle}
               className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden w-96 max-w-[calc(100vw-2rem)] z-50"
             >
               {/* Header */}

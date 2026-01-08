@@ -6,10 +6,13 @@ import { getLocale } from "next-intl/server";
 const DashboardHomePage = async () => {
   const locale = await getLocale();
   const user = await isAuthenticatedUserExistsInDB();
-  console.log({ user });
+  // console.log({ user });
   if (!user) {
-    redirect({ href: "/auth/login", locale: locale, forcePrefix: true });
-  }
+redirect({
+      href: "/api/auth/signout?callbackUrl=/auth/login",
+      locale,
+      forcePrefix: true,
+    });  }
   return <TestNotificationsPage />;
 };
 
