@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
-import { updateUserPreferredLocaleLocale } from "./lib/queries/user";
-import { getSession } from "./lib/auth";
+import {
+  getUserPreferredLocaleLocale,
+  updateUserPreferredLocaleLocale,
+} from "./lib/queries/user";
 import { getToken } from "next-auth/jwt";
 import { convertCase } from "./utils";
 import { LocaleEnumType } from "./types";
@@ -10,34 +12,67 @@ import { LocaleEnumType } from "./types";
 const intlMiddleware = createMiddleware(routing);
 const secret = process.env.NEXTAUTH_SECRET;
 
+// Define valid locales from your routing configuration
+const validLocales = routing.locales; // This should contain ['en', 'fr', 'ar'] or similar
+
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = await getToken({
     req: request,
     secret: secret,
   });
-  console.log({ token });
-  // Redirect "/" to default locale
+  
+  let userPrefferedLocale = "FR";
+  if (token) {
+    userPrefferedLocale = await getUserPreferredLocaleLocale(token.id);
+  }
+
+  // Handle root path redirect
   if (pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = `/${routing.defaultLocale}`;
+    url.pathname = `/${convertCase(userPrefferedLocale, "lower")}`;
     return NextResponse.redirect(url);
   }
 
-  const locale = pathname.split("/")[1] || routing.defaultLocale;
-  const isAuthPage = pathname.startsWith(`/${locale}/auth`);
-  const isDashboardPage = pathname.startsWith(`/${locale}/dashboard`);
-  const isApiRoute = pathname.startsWith("/api");
-  const isPusherApi = pathname.startsWith("/api/pusher");
-  const isDashboardApi = pathname.startsWith("/api/dashboard");
+  // Extract locale from pathname (first segment after /)
+  const pathSegments = pathname.split("/");
+  const pathLocale = pathSegments[1]; // First segment after /
+  
+  // Check if the path starts with a valid locale
+  const hasValidLocalePrefix = validLocales.includes(pathLocale as LocaleEnumType);
+  
+  // If locale is not valid and it's not an API route
+  if (!hasValidLocalePrefix && !pathname.startsWith("/api")) {
+    // Redirect to user's preferred locale
+    const url = request.nextUrl.clone();
+    
+    // Preserve the rest of the path after the invalid locale
+    const restOfPath = pathSegments.slice(2).join("/");
+    const redirectPath = restOfPath ? 
+      `/${convertCase(userPrefferedLocale, "lower")}/${restOfPath}` :
+      `/${convertCase(userPrefferedLocale, "lower")}`;
+    
+    url.pathname = redirectPath;
+    return NextResponse.redirect(url);
+  }
+
+  const locale = hasValidLocalePrefix ? pathLocale : convertCase(userPrefferedLocale, "lower");
+  
+  // Only update locale in DB if it's valid and user is authenticated
   const isAuthenticated = !!token;
-  if (isAuthenticated) {
+  if (isAuthenticated && hasValidLocalePrefix) {
     await updateUserPreferredLocaleLocale(
       token.id,
       convertCase(locale as LocaleEnumType, "upper")
     );
   }
 
+  const isAuthPage = pathname.startsWith(`/${locale}/auth`);
+  const isDashboardPage = pathname.startsWith(`/${locale}/dashboard`);
+  const isApiRoute = pathname.startsWith("/api");
+  const isPusherApi = pathname.startsWith("/api/pusher");
+  const isDashboardApi = pathname.startsWith("/api/dashboard");
+  
   // ------------------ Pages ------------------
   // Authenticated users → block /auth/*
   if (!isApiRoute && isAuthPage && isAuthenticated) {

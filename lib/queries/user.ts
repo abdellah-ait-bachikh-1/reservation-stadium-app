@@ -40,7 +40,6 @@ export async function getUserByIdForAuth(id: string) {
   return user;
 }
 
-
 export async function updateUserPreferredLocaleLocale(
   userId: string,
   locale: "EN" | "FR" | "AR"
@@ -50,7 +49,7 @@ export async function updateUserPreferredLocaleLocale(
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
     });
-    if (user && user.preferredLocale!== locale) {
+    if (user && user.preferredLocale !== locale) {
       await db
         .update(users)
         .set({ preferredLocale: locale })
@@ -59,5 +58,12 @@ export async function updateUserPreferredLocaleLocale(
   }
 }
 
-
-// export const ge
+export async function getUserPreferredLocaleLocale(userId: string) {
+  if (!userId) return "FR";
+  return (
+    await db.query.users.findFirst({
+      where: eq(users.id, userId),
+      columns: { preferredLocale: true },
+    })
+  )?.preferredLocale || "FR";
+}
