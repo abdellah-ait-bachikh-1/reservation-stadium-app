@@ -1,7 +1,9 @@
+import { PaymentDueDay } from "@/types/db";
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   char,
+  decimal,
   index,
   json,
   mysqlEnum,
@@ -9,12 +11,11 @@ import {
   text,
   timestamp,
   varchar,
+  smallint,
 } from "drizzle-orm/mysql-core";
-import { v4 as uuidv4 } from "uuid";
 
 //--------------------- Enums -----------------------
 
-//--------------------- User Enums -----------------------
 export const USER_ROLES = mysqlEnum("role", ["ADMIN", "CLUB"]);
 export const USER_PREFERRED_LOCALE = mysqlEnum("preferred_locale", [
   "EN",
@@ -22,47 +23,8 @@ export const USER_PREFERRED_LOCALE = mysqlEnum("preferred_locale", [
   "AR",
 ]);
 
-//--------------------- Notification Enums -----------------------
 export const notificationModelValues = ["USER"] as const;
 export const NOTIFICATION_MODELS = mysqlEnum("model", notificationModelValues);
-
-//--------------------- Tables -----------------------
-
-export const users = mysqlTable(
-  "users",
-  {
-    id: char("id", { length: 36 })
-      .primaryKey()
-      .default(sql`(UUID())`), 
-    name: varchar("name", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    password: varchar("password", { length: 255 }).notNull(),
-    role: USER_ROLES.default("CLUB").notNull(),
-    phoneNumber: varchar("phone_number", { length: 50 }).notNull(),
-    isApproved: boolean("is_approved").default(false),
-    preferredLocale: USER_PREFERRED_LOCALE.default("FR").notNull(),
-    emailVerifiedAt: timestamp("email_verified_at", { mode: "string" }),
-    verificationToken: varchar("verification_token", { length: 255 }),
-    verificationTokenExpiresAt: timestamp("verification_token_expires_at", {
-      mode: "string",
-    }),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow()
-      .notNull(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
-  },
-  (table) => {
-    return [
-      index("role_index").on(table.role),
-      index("deleted_at_index").on(table.deletedAt),
-    ];
-  }
-);
-
 export const notificationTypes = [
   // User model notifications
   "USER_CREATED",
@@ -98,12 +60,105 @@ export const notificationTypes = [
   "ADMIN_PAYMENT_ALERT",
 ] as const;
 
+//--------------------- Tables -----------------------
+
+export const users = mysqlTable(
+  "users",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    password: varchar("password", { length: 255 }).notNull(),
+    role: USER_ROLES.default("CLUB").notNull(),
+    phoneNumber: varchar("phone_number", { length: 50 }).notNull(),
+    isApproved: boolean("is_approved").default(false),
+    preferredLocale: USER_PREFERRED_LOCALE.default("FR").notNull(),
+    emailVerifiedAt: timestamp("email_verified_at", { mode: "string" }),
+    verificationToken: varchar("verification_token", { length: 255 }),
+    verificationTokenExpiresAt: timestamp("verification_token_expires_at", {
+      mode: "string",
+    }),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  },
+  (table) => {
+    return [
+      index("role_index").on(table.role),
+      index("deleted_at_index").on(table.deletedAt),
+    ];
+  }
+);
+
+export const clubs = mysqlTable(
+  "clubs",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    adress: varchar("adress", { length: 255 }),
+    monthlyFee: decimal("monthly_fee", { precision: 10, scale: 2 }),
+    paymentDueDay: smallint("payment_due_day", {
+      unsigned: true,
+    }).$type<PaymentDueDay>(),
+    userId: char("user_id", { length: 36 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    sportId: char("sport_id", { length: 36 }).references(() => sports.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  },
+  (table) => {
+    return [
+      index("user_id_index").on(table.userId),
+      index("sport_id_index").on(table.sportId),
+      index("name_index").on(table.name),
+      index("user_id_sport_id_index").on(table.userId, table.sportId),
+    ];
+  }
+);
+
+export const sports = mysqlTable("sports", {
+  id: char("id", { length: 36 })
+    .primaryKey()
+    .default(sql`(UUID())`)
+    .notNull(),
+  nameAr: varchar("name_ar", { length: 255 }).notNull().unique(),
+  nameFr: varchar("name_fr", { length: 255 }).notNull().unique(),
+  icon: varchar("icon", { length: 255 }),
+  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" })
+    .defaultNow()
+    .onUpdateNow()
+    .notNull(),
+  deletedAt: timestamp("deleted_at", { mode: "string" }),
+});
+
 export const notifications = mysqlTable(
   "notifications",
   {
     id: char("id", { length: 36 })
       .primaryKey()
-      .default(sql`(UUID())`), // ✅ MySQL UUID() function
+      .default(sql`(UUID())`)
+      .notNull(),
 
     type: varchar("type", { length: 50 })
       .$type<(typeof notificationTypes)[number]>()
@@ -126,23 +181,24 @@ export const notifications = mysqlTable(
     messageAr: text("message_ar").notNull(),
 
     // Navigation
-    link: varchar("link", { length: 500 }), // URL to navigate when clicked
+    link: varchar("link", { length: 255 }), // URL to navigate when clicked
 
     // Status
     isRead: boolean("is_read").default(false).notNull(),
 
     // User relations
-    userId: char("user_id", { length: 36 }).notNull(), // Receiver ID
-    actorUserId: char("actor_user_id", { length: 36 }), // Who performed the action
+    userId: char("user_id", { length: 36 }) // Receiver ID
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    actorUserId: char("actor_user_id", { length: 36 }) // Who performed the action
+      .references(() => users.id, { onDelete: "cascade" }),
 
     // Metadata
     metadata: json("metadata"), // For additional dynamic data
 
-    // Timestamps
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
-
   },
   (table) => {
     return [
@@ -157,36 +213,42 @@ export const notifications = mysqlTable(
   }
 );
 
-//--------------------- Types -----------------------
-
-export type UserType = typeof users.$inferSelect;
-export type InsertUserType = typeof users.$inferInsert;
-export type UserRoleType = "ADMIN" | "CLUB";
-export type UserPreferredLocaleType = "FR" | "EN" | "AR";
-
-export type NotificationType = typeof notifications.$inferSelect;
-export type InsertNotificationType = typeof notifications.$inferInsert;
-export type NotificationTypes = (typeof notificationTypes)[number];
-export type NotificationModels = (typeof notificationModelValues)[number];
-
-
-
+//--------------------- Relations -----------------------
 
 export const usersRelations = relations(users, ({ many }) => ({
   notifications: many(notifications, { relationName: "userNotifications" }),
-  actorNotifications: many(notifications, { relationName: "actorNotifications" }),
+  actorNotifications: many(notifications, {
+    relationName: "actorNotifications",
+  }),
+  clubs: many(clubs, { relationName: "userClubs" }),
 }));
 
-// Notifications relation
+export const clubRelations = relations(clubs, ({ one }) => ({
+  user: one(users, {
+    fields: [clubs.userId],
+    references: [users.id],
+    relationName: "userClubs",
+  }),
+  sports: one(sports, {
+    fields: [clubs.sportId],
+    references: [sports.id],
+    relationName: "sportClub",
+  }),
+}));
+
+export const sportRelations = relations(sports, ({ many }) => ({
+  clubs: many(clubs, { relationName: "sportClub" }),
+}));
+
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
     references: [users.id],
-    relationName: "userNotifications"
+    relationName: "userNotifications",
   }),
   actorUser: one(users, {
     fields: [notifications.actorUserId],
     references: [users.id],
-    relationName: "actorNotifications"
+    relationName: "actorNotifications",
   }),
 }));

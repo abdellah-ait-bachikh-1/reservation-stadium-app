@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 
 //-------------- GET ---------------
 export async function getUserByEmailForAuth(email: string) {
+  
   const [user] = await db
     .select({
       id: users.id,

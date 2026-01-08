@@ -1,0 +1,1 @@
+ALTER TABLE `notifications` MODIFY COLUMN `actor_user_id` char(36) NOT NULL;

@@ -24,10 +24,8 @@ export async function registerUser({
   confirmPassword,
 }: RegisterFormData) {
   try {
-    // 1️⃣ Get locale
     const locale = await getLocale();
 
-    // 2️⃣ Validate form data
     const { data, validationErrors } = validateRegisterFormData(locale as LocaleEnumType, {
       name,
       email,
@@ -37,7 +35,6 @@ export async function registerUser({
     });
     if (validationErrors) return { status: 400, validationErrors };
 
-    // 3️⃣ Check if user already exists
     const [existingUser] = await db
       .select({ id: users.id, email: users.email })
       .from(users)
