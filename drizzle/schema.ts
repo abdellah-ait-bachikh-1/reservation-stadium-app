@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   char,
@@ -168,3 +168,25 @@ export type NotificationType = typeof notifications.$inferSelect;
 export type InsertNotificationType = typeof notifications.$inferInsert;
 export type NotificationTypes = (typeof notificationTypes)[number];
 export type NotificationModels = (typeof notificationModelValues)[number];
+
+
+
+
+export const usersRelations = relations(users, ({ many }) => ({
+  notifications: many(notifications, { relationName: "userNotifications" }),
+  actorNotifications: many(notifications, { relationName: "actorNotifications" }),
+}));
+
+// Notifications relation
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+    relationName: "userNotifications"
+  }),
+  actorUser: one(users, {
+    fields: [notifications.actorUserId],
+    references: [users.id],
+    relationName: "actorNotifications"
+  }),
+}));

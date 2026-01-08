@@ -53,48 +53,80 @@ const NotificationBell = () => {
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Format relative time
+  const formatRelativeTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) return `${diffDays}d ago`;
+    if (diffHours > 0) return `${diffHours}h ago`;
+    if (diffMinutes > 0) return `${diffMinutes}m ago`;
+    return "just now";
+  };
+
+  // Get localized content based on user's locale
+  const getLocalizedContent = (
+    notification: any,
+    userLocale: string
+  ): { title: string; message: string } => {
+    const localeKey = userLocale.toUpperCase() as LocaleType;
+
+    switch (localeKey) {
+      case "FR":
+        return {
+          title: notification.titleFr,
+          message: notification.messageFr,
+        };
+      case "AR":
+        return {
+          title: notification.titleAr,
+          message: notification.messageAr,
+        };
+      default:
+        return {
+          title: notification.titleEn,
+          message: notification.messageEn,
+        };
+    }
+  };
+
+  // Transform API response to NotificationItem
+  // In your NotificationBell component
+  // Transform API response to NotificationItem (SIMPLIFIED)
+  const transformNotification = (notification: any): NotificationItem => {
+    return {
+      id: notification.id,
+      type: notification.type,
+      title: notification.title, // Already localized from API
+      message: notification.message, // Already localized from API
+      time: formatRelativeTime(notification.createdAt),
+      read: notification.isRead,
+      model: notification.model || "USER",
+      referenceId: notification.referenceId,
+      link: notification.link || undefined,
+      metadata: notification.metadata || undefined,
+      createdAt: new Date(notification.createdAt),
+      localizedTitle: notification.title, // Same as title
+      localizedMessage: notification.message, // Same as message
+    };
+  };
+
   // Handle new notification from Pusher
+  // Remove the getLocalizedContent function or keep it only for Pusher
+  // Handle new notification from Pusher (UPDATED)
   const handleNewNotification = useCallback((notificationData: any) => {
     console.log("📩 New notification received:", notificationData);
-
-    const getLocalizedContent = (
-      content: {
-        titleEn: string;
-        titleFr: string;
-        titleAr: string;
-        messageEn: string;
-        messageFr: string;
-        messageAr: string;
-      },
-      locale: "EN" | "FR" | "AR"
-    ) => {
-      switch (locale) {
-        case "FR":
-          return { title: content.titleFr, message: content.messageFr };
-        case "AR":
-          return { title: content.titleAr, message: content.messageAr };
-        default:
-          return { title: content.titleEn, message: content.messageEn };
-      }
-    };
-
-    const localized = getLocalizedContent(
-      {
-        titleEn: notificationData.titleEn,
-        titleFr: notificationData.titleFr,
-        titleAr: notificationData.titleAr,
-        messageEn: notificationData.messageEn,
-        messageFr: notificationData.messageFr,
-        messageAr: notificationData.messageAr,
-      },
-      locale as LocaleType
-    );
 
     const newNotification: NotificationItem = {
       id: notificationData.id,
       type: notificationData.type,
-      title: notificationData.titleEn,
-      message: notificationData.messageEn,
+      title: notificationData.localizedTitle || notificationData.titleEn, // Use localized if available
+      message: notificationData.localizedMessage || notificationData.messageEn, // Use localized if available
       time: "just now",
       read: false,
       model: notificationData.model,
@@ -102,8 +134,10 @@ const NotificationBell = () => {
       link: notificationData.link,
       metadata: notificationData.metadata,
       createdAt: new Date(notificationData.createdAt),
-      localizedTitle: localized.title,
-      localizedMessage: localized.message,
+      localizedTitle:
+        notificationData.localizedTitle || notificationData.titleEn,
+      localizedMessage:
+        notificationData.localizedMessage || notificationData.messageEn,
     };
 
     console.log("📥 Adding to UI:", newNotification);
@@ -111,15 +145,15 @@ const NotificationBell = () => {
     // Add new notification at the top
     setNotifications((prev) => {
       const newNotifications = [newNotification, ...prev];
-      // Keep only last 50 notifications
-      return newNotifications.slice(0, 50);
+      // Keep only last 20 notifications in the bell
+      return newNotifications.slice(0, 20);
     });
 
     // Show browser notification if permission granted
     if ("Notification" in window && Notification.permission === "granted") {
       try {
-        const notification = new Notification(localized.title, {
-          body: localized.message,
+        const notification = new Notification(newNotification.title, {
+          body: newNotification.message,
           icon: "/favicon.ico",
           tag: "notification",
           silent: false,
@@ -135,10 +169,81 @@ const NotificationBell = () => {
         console.error("Error showing desktop notification:", error);
       }
     }
-  }, []);
+  }, []); // Remove locale dependency
 
-    const fetchNotifications = async () => {};
-  
+  // Fetch notifications from API
+  // Fetch notifications from API
+  const fetchNotifications = async () => {
+    if (!session?.user?.id) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/notifications?limit=20`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch notifications: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        // API already returns localized data, no need to transform with locale
+        const transformedNotifications = data.data.map(
+          (notification: any) => transformNotification(notification) // No locale parameter needed
+        );
+
+        setNotifications(transformedNotifications);
+        setInitialLoad(true);
+      } else {
+        throw new Error(data.error || "Failed to fetch notifications");
+      }
+    } catch (error: any) {
+      console.error("Error fetching notifications:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Mark notification as read
+  const markAsRead = async (id: string) => {
+    try {
+      const response = await fetch(`/api/notifications/${id}/read`, {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        // Update local state
+        setNotifications((prev) =>
+          prev.map((notif) =>
+            notif.id === id ? { ...notif, read: true } : notif
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  // Mark all as read
+  const markAllAsRead = async () => {
+    try {
+      const response = await fetch("/api/notifications/read-all", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        setNotifications((prev) =>
+          prev.map((notif) => ({ ...notif, read: true }))
+        );
+      }
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+    }
+  };
+
   // Setup Pusher connection
   useEffect(() => {
     // Wait for session to be available
@@ -205,7 +310,7 @@ const NotificationBell = () => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [session, status]);
+  }, [session, status, locale, handleNewNotification, initialLoad]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -237,24 +342,8 @@ const NotificationBell = () => {
     return null;
   }
 
-  // Get translations
   // Calculate unread count
   const unreadCount = notifications.filter((n) => !n.read).length;
-
-  // Format relative time
-  const formatRelativeTime = (date: Date): string => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffDays > 0) return `${diffDays}d ago`;
-    if (diffHours > 0) return `${diffHours}h ago`;
-    if (diffMinutes > 0) return `${diffMinutes}m ago`;
-    return "just now";
-  };
 
   // Get icon for notification type
   const getIconForType = (type: string) => {
@@ -310,28 +399,6 @@ const NotificationBell = () => {
         <span className={`${config.text} text-sm`}>{config.icon}</span>
       </div>
     );
-  };
-
-  // Mark notification as read
-  const markAsRead = async (id: string) => {
-   
-  };
-
-  // Mark all as read
-  const markAllAsRead = async () => {
-    try {
-      const response = await fetch("/api/notifications/read-all", {
-        method: "POST",
-      });
-
-      if (response.ok) {
-        setNotifications((prev) =>
-          prev.map((notif) => ({ ...notif, read: true }))
-        );
-      }
-    } catch (error) {
-      console.error("Error marking all as read:", error);
-    }
   };
 
   // Get type color for badge
@@ -538,12 +605,15 @@ const NotificationBell = () => {
               <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-gray-50 dark:bg-gray-800/50">
                 <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-2 px-2">
                   <span>
-                    {notifications.length} {t("common.notifications.total")}
+                    {notifications.length} {t("common.notifications.total")}{" "}
+                    (last 20)
                   </span>
                   <Button
                     variant="light"
                     size="sm"
-                    onPress={() => (window.location.href = "/notifications")}
+                    onPress={() =>
+                      (window.location.href = "/dashboard/notifications")
+                    }
                   >
                     {t("common.notifications.viewAll")}
                   </Button>

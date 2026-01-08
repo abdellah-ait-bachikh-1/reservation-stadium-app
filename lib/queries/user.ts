@@ -40,28 +40,24 @@ export async function getUserByIdForAuth(id: string) {
   return user;
 }
 
-//-------------- PUT ---------------
-export async function updateUserPreferedLocale(
-  id: string,
-  locale: UserPreferredLocaleType
-) {
-  await db
-    .update(users)
-    .set({
-      preferredLocale: locale,
-      updatedAt: new Date().toISOString(),
-    })
-    .where(eq(users.id, id));
 
-  const [user] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      preferredLocale: users.preferredLocale,
-      updatedAt: users.updatedAt,
-    })
-    .from(users)
-    .where(eq(users.id, id));
-  return user;
+export async function updateUserPreferredLocaleLocale(
+  userId: string,
+  locale: "EN" | "FR" | "AR"
+) {
+  if (!userId) return;
+  else {
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
+    if (user && user.preferredLocale!== locale) {
+      await db
+        .update(users)
+        .set({ preferredLocale: locale })
+        .where(eq(users.id, userId));
+    }
+  }
 }
+
+
+// export const ge
