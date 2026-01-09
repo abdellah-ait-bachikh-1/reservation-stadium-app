@@ -1,221 +1,320 @@
 @startuml
-hide circle
-skinparam linetype ortho
-skinparam entity {
-  BackgroundColor #F9F9F9
-  BorderColor #333
+!define table(x) class x << (T,#FFAAAA) >>
+!define enum(x) class x << (E,#AAFFAA) >>
+
+' Enums
+enum(UserRoles) {
+  ADMIN
+  CLUB
 }
 
-' =========================
-' ====== ENTITIES =========
-' =========================
-
-entity users {
-  +id : char(36)
-  --
-  name
-  email
-  password
-  role
-  phoneNumber
-  isApproved
-  preferredLocale
-  emailVerifiedAt
-  createdAt
-  updatedAt
+enum(UserPreferredLocale) {
+  EN
+  FR
+  AR
 }
 
-entity clubs {
-  +id : char(36)
-  --
-  name
-  address
-  monthlyFee
-  paymentDueDay
-  userId
-  sportId
+enum(NotificationModels) {
+  USER
+  RESERVATION
+  PAYMENT
+  SUBSCRIPTION
+  SYSTEM
 }
 
-entity sports {
-  +id : char(36)
-  --
-  nameAr
-  nameFr
-  icon
+enum(ReservationStatus) {
+  PENDING
+  APPROVED
+  DECLINED
+  CANCELLED
+  PAID
+  UNPAID
 }
 
-entity stadiums {
-  +id : char(36)
-  --
-  name
-  address
-  monthlyPrice
-  pricePerSession
+enum(PaymentStatus) {
+  PENDING
+  PAID
+  OVERDUE
+  PARTIALLY_PAID
 }
 
-entity stadium_images {
-  +id : char(36)
-  --
-  imageUri
-  index
-  stadiumId
+enum(PaymentType) {
+  SINGLE_SESSION
+  MONTHLY_SUBSCRIPTION
 }
 
-entity stadium_sports {
-  *stadiumId
-  *sportId
+enum(BillingType) {
+  PER_SESSION
+  MONTHLY_SUBSCRIPTION
 }
 
-entity reservation_series {
-  +id : char(36)
-  --
-  startTime
-  endTime
-  dayOfWeek
-  billingType
-  monthlyPrice
-  pricePerSession
-  stadiumId
-  userId
+enum(SubscriptionStatus) {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  SUSPENDED
 }
 
-entity reservations {
-  +id : char(36)
-  --
-  startDateTime
-  endDateTime
-  status
-  sessionPrice
-  isPaid
-  paymentType
-  stadiumId
-  userId
-  monthlyPaymentId
-  reservationSeriesId
+' Tables - Correct field order and types
+table(users) {
+  +id : char(36) <<PK>> = UUID()
+  +name : varchar(255)
+  +email : varchar(255) <<unique>>
+  +password : varchar(255)
+  +role : USER_ROLES = "CLUB"
+  +phoneNumber : varchar(50)
+  +isApproved : boolean = false
+  +preferredLocale : USER_PREFERRED_LOCALE = "FR"
+  +emailVerifiedAt : timestamp
+  +verificationToken : varchar(255)
+  +verificationTokenExpiresAt : timestamp
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
 }
 
-entity monthly_subscriptions {
-  +id : char(36)
-  --
-  monthlyAmount
-  status
-  autoRenew
-  userId
-  reservationSeriesId
+table(sports) {
+  +id : char(36) <<PK>> = UUID()
+  +nameAr : varchar(255) <<unique>>
+  +nameFr : varchar(255) <<unique>>
+  +icon : varchar(255)
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
 }
 
-entity monthly_payments {
-  +id : char(36)
-  --
-  month
-  year
-  amount
-  status
-  paymentDate
-  userId
-  reservationSeriesId
+table(clubs) {
+  +id : char(36) <<PK>> = UUID()
+  +name : varchar(255)
+  +address : varchar(255)
+  +monthlyFee : decimal(10,2)
+  +paymentDueDay : smallint
+  +userId : char(36) <<FK>> <<not null>>
+  +sportId : char(36) <<FK>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
 }
 
-entity cash_payment_records {
-  +id : char(36)
-  --
-  amount
-  receiptNumber
-  paymentDate
-  reservationId
-  monthlyPaymentId
-  userId
+table(stadiums) {
+  +id : char(36) <<PK>> = UUID()
+  +name : varchar(255) <<unique>>
+  +address : varchar(255)
+  +googleMapsUrl : varchar(500)
+  +monthlyPrice : decimal(10,2)
+  +pricePerSession : decimal(10,2)
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
 }
 
-entity notifications {
-  +id : char(36)
-  --
-  type
-  model
-  referenceId
-  isRead
-  userId
-  actorUserId
+table(stadium_images) {
+  +id : char(36) <<PK>> = UUID()
+  +index : smallint = 0
+  +imageUri : varchar(500)
+  +stadiumId : char(36) <<FK>> <<not null>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
 }
 
-' =========================
-' ===== RELATIONSHIPS =====
-' =========================
+table(stadium_sports) {
+  +stadiumId : char(36) <<PK,FK>> <<not null>>
+  +sportId : char(36) <<PK,FK>> <<not null>>
+}
 
-users ||--o{ clubs : owns
-sports ||--o{ clubs : categorizes
+table(reservation_series) {
+  +id : char(36) <<PK>> = UUID()
+  +startTime : timestamp
+  +endTime : timestamp
+  +dayOfWeek : smallint
+  +recurrenceEndDate : timestamp
+  +isFixed : boolean = true
+  +billingType : BILLING_TYPE
+  +monthlyPrice : decimal(10,2)
+  +pricePerSession : decimal(10,2)
+  +stadiumId : char(36) <<FK>> <<not null>>
+  +userId : char(36) <<FK>> <<not null>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+}
 
-stadiums ||--o{ stadium_images : has
-stadiums ||--o{ stadium_sports : supports
-sports ||--o{ stadium_sports : played_in
+table(monthly_subscriptions) {
+  +id : char(36) <<PK>> = UUID()
+  +userId : char(36) <<FK>> <<not null>>
+  +reservationSeriesId : char(36) <<FK,unique>> <<not null>>
+  +startDate : timestamp = now()
+  +endDate : timestamp
+  +monthlyAmount : decimal(10,2)
+  +status : SUBSCRIPTION_STATUS = "ACTIVE"
+  +autoRenew : boolean = true
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+}
 
-users ||--o{ reservation_series : creates
-stadiums ||--o{ reservation_series : scheduled_at
+table(monthly_payments) {
+  +id : char(36) <<PK>> = UUID()
+  +month : smallint
+  +year : smallint
+  +amount : decimal(10,2)
+  +status : PAYMENT_STATUS = "PENDING"
+  +paymentDate : timestamp
+  +receiptNumber : varchar(255)
+  +userId : char(36) <<FK>> <<not null>>
+  +reservationSeriesId : char(36) <<FK>> <<not null>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+}
 
-reservation_series ||--o{ reservations : generates
-users ||--o{ reservations : books
-stadiums ||--o{ reservations : held_at
+table(reservations) {
+  +id : char(36) <<PK>> = UUID()
+  +startDateTime : timestamp
+  +endDateTime : timestamp
+  +status : RESERVATION_STATUS = "PENDING"
+  +sessionPrice : decimal(10,2)
+  +isPaid : boolean = false
+  +paymentType : PAYMENT_TYPE
+  +stadiumId : char(36) <<FK>> <<not null>>
+  +userId : char(36) <<FK>> <<not null>>
+  +monthlyPaymentId : char(36) <<FK>>
+  +reservationSeriesId : char(36) <<FK>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+  +deletedAt : timestamp
+}
 
-reservation_series ||--|| monthly_subscriptions : subscription
-users ||--o{ monthly_subscriptions : owns
+table(cash_payment_records) {
+  +id : char(36) <<PK>> = UUID()
+  +amount : decimal(10,2)
+  +paymentDate : timestamp = now()
+  +receiptNumber : varchar(255)
+  +notes : text
+  +reservationId : char(36) <<FK>>
+  +monthlyPaymentId : char(36) <<FK>>
+  +userId : char(36) <<FK>> <<not null>>
+  +createdAt : timestamp = now()
+  +updatedAt : timestamp = now()
+}
 
-reservation_series ||--o{ monthly_payments : billed
-users ||--o{ monthly_payments : pays
+table(notifications) {
+  +id : char(36) <<PK>> = UUID()
+  +type : varchar(50) <<not null>>
+  +model : NOTIFICATION_MODELS <<not null>>
+  +referenceId : char(36) <<not null>>
+  +titleEn : varchar(255) <<not null>>
+  +titleFr : varchar(255) <<not null>>
+  +titleAr : varchar(255) <<not null>>
+  +messageEn : text <<not null>>
+  +messageFr : text <<not null>>
+  +messageAr : text <<not null>>
+  +link : varchar(255)
+  +isRead : boolean = false
+  +userId : char(36) <<FK>> <<not null>>
+  +actorUserId : char(36) <<FK>>
+  +metadata : json
+  +createdAt : timestamp = now()
+}
 
-monthly_payments ||--o{ reservations : covers
+' Relationships with correct multiplicities and directions
+users ||--o{ clubs : "owns >"
+sports ||--o{ clubs : "categorizes >"
+users ||--o{ reservation_series : "creates >"
+users ||--o{ reservations : "makes >"
+users ||--o{ monthly_subscriptions : "subscribes to >"
+users ||--o{ monthly_payments : "owes >"
+users ||--o{ cash_payment_records : "makes >"
+users ||--o{ notifications : "receives >"
+users }o--o{ notifications : "triggers <(actor)"
 
-reservations ||--o{ cash_payment_records : paid_by
-monthly_payments ||--o{ cash_payment_records : paid_by
-users ||--o{ cash_payment_records : records
+stadiums ||--o{ stadium_images : "has >"
+stadiums ||--o{ reservations : "hosts >"
+stadiums ||--o{ reservation_series : "scheduled at >"
 
-users ||--o{ notifications : receives
-users ||--o{ notifications : acts_as_actor
+reservation_series ||--o{ reservations : "generates >"
+reservation_series ||--o{ monthly_payments : "has >"
+reservation_series ||--|| monthly_subscriptions : "subscribed as"
 
-' =========================
-' ========= ENUMS =========
-' =========================
+monthly_payments }o--|| reservations : "covers >"
+monthly_payments }o--|| cash_payment_records : "paid via >"
 
-note right of users
-USER_ROLES:
-- ADMIN
-- CLUB
+cash_payment_records }o--|| reservations : "for reservation >"
 
-PREFERRED_LOCALE:
-- EN
-- FR
-- AR
-end note
+' Many-to-many relationship through junction table
+stadiums "*" -- "*" sports : "supports >"
+stadiums "1" *-- "*" stadium_sports
+sports "1" *-- "*" stadium_sports
+stadium_sports --|> stadiums
+stadium_sports --|> sports
 
-note right of reservations
-RESERVATION_STATUS:
-- PENDING
-- APPROVED
-- DECLINED
-- CANCELLED
-- PAID
-- UNPAID
+' Enum dependencies
+users ..> UserRoles
+users ..> UserPreferredLocale
+notifications ..> NotificationModels
+reservations ..> ReservationStatus
+reservations ..> PaymentType
+monthly_payments ..> PaymentStatus
+reservation_series ..> BillingType
+monthly_subscriptions ..> SubscriptionStatus
+
+' Notes with correct information
+note top of notifications
+  Notification Types:
+  USER_CREATED, USER_APPROVED,
+  USER_PROFILE_UPDATED, USER_EMAIL_VERIFIED,
+  RESERVATION_REQUESTED, RESERVATION_APPROVED,
+  RESERVATION_DECLINED, RESERVATION_CANCELLED,
+  RESERVATION_REMINDER, PAYMENT_RECEIVED,
+  PAYMENT_OVERDUE, PAYMENT_REFUNDED,
+  SUBSCRIPTION_PAYMENT, SYSTEM_MAINTENANCE,
+  SYSTEM_UPDATE, SYSTEM_NEW_FEATURE,
+  SYSTEM_ANNOUNCEMENT
 end note
 
 note right of monthly_payments
-PAYMENT_STATUS:
-- PENDING
-- PAID
-- OVERDUE
-- PARTIALLY_PAID
+  Unique Constraint:
+  (month, year, reservationSeriesId)
+  
+  One payment per month per series
 end note
 
 note right of reservation_series
-BILLING_TYPE:
-- PER_SESSION
-- MONTHLY_SUBSCRIPTION
+  Recurring reservations:
+  - Fixed time slot
+  - Weekly recurrence
+  - Billing: PER_SESSION or MONTHLY_SUBSCRIPTION
 end note
 
-note right of monthly_subscriptions
-SUBSCRIPTION_STATUS:
-- ACTIVE
-- CANCELLED
-- EXPIRED
-- SUSPENDED
+note right of stadium_sports
+  Junction table for
+  many-to-many relationship
+  Composite Primary Key:
+  (stadiumId, sportId)
 end note
+
+note right of clubs
+  Foreign Keys:
+  - userId → users.id (CASCADE)
+  - sportId → sports.id (SET NULL)
+end note
+
+' Styling
+skinparam class {
+  BackgroundColor<<T>> #FFF8DC
+  BackgroundColor<<E>> #E6F3FF
+  BorderColor #333333
+  ArrowColor #333333
+  FontSize 10
+}
+
+skinparam classArrow {
+  Color #333333
+  Thickness 1
+}
+
+skinparam shadowing false
+
+' Layout hints to reduce overlap
+hide empty members
+left to right direction
 
 @enduml
