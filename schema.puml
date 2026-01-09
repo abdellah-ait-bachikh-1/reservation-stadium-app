@@ -1,0 +1,221 @@
+@startuml
+hide circle
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor #F9F9F9
+  BorderColor #333
+}
+
+' =========================
+' ====== ENTITIES =========
+' =========================
+
+entity users {
+  +id : char(36)
+  --
+  name
+  email
+  password
+  role
+  phoneNumber
+  isApproved
+  preferredLocale
+  emailVerifiedAt
+  createdAt
+  updatedAt
+}
+
+entity clubs {
+  +id : char(36)
+  --
+  name
+  address
+  monthlyFee
+  paymentDueDay
+  userId
+  sportId
+}
+
+entity sports {
+  +id : char(36)
+  --
+  nameAr
+  nameFr
+  icon
+}
+
+entity stadiums {
+  +id : char(36)
+  --
+  name
+  address
+  monthlyPrice
+  pricePerSession
+}
+
+entity stadium_images {
+  +id : char(36)
+  --
+  imageUri
+  index
+  stadiumId
+}
+
+entity stadium_sports {
+  *stadiumId
+  *sportId
+}
+
+entity reservation_series {
+  +id : char(36)
+  --
+  startTime
+  endTime
+  dayOfWeek
+  billingType
+  monthlyPrice
+  pricePerSession
+  stadiumId
+  userId
+}
+
+entity reservations {
+  +id : char(36)
+  --
+  startDateTime
+  endDateTime
+  status
+  sessionPrice
+  isPaid
+  paymentType
+  stadiumId
+  userId
+  monthlyPaymentId
+  reservationSeriesId
+}
+
+entity monthly_subscriptions {
+  +id : char(36)
+  --
+  monthlyAmount
+  status
+  autoRenew
+  userId
+  reservationSeriesId
+}
+
+entity monthly_payments {
+  +id : char(36)
+  --
+  month
+  year
+  amount
+  status
+  paymentDate
+  userId
+  reservationSeriesId
+}
+
+entity cash_payment_records {
+  +id : char(36)
+  --
+  amount
+  receiptNumber
+  paymentDate
+  reservationId
+  monthlyPaymentId
+  userId
+}
+
+entity notifications {
+  +id : char(36)
+  --
+  type
+  model
+  referenceId
+  isRead
+  userId
+  actorUserId
+}
+
+' =========================
+' ===== RELATIONSHIPS =====
+' =========================
+
+users ||--o{ clubs : owns
+sports ||--o{ clubs : categorizes
+
+stadiums ||--o{ stadium_images : has
+stadiums ||--o{ stadium_sports : supports
+sports ||--o{ stadium_sports : played_in
+
+users ||--o{ reservation_series : creates
+stadiums ||--o{ reservation_series : scheduled_at
+
+reservation_series ||--o{ reservations : generates
+users ||--o{ reservations : books
+stadiums ||--o{ reservations : held_at
+
+reservation_series ||--|| monthly_subscriptions : subscription
+users ||--o{ monthly_subscriptions : owns
+
+reservation_series ||--o{ monthly_payments : billed
+users ||--o{ monthly_payments : pays
+
+monthly_payments ||--o{ reservations : covers
+
+reservations ||--o{ cash_payment_records : paid_by
+monthly_payments ||--o{ cash_payment_records : paid_by
+users ||--o{ cash_payment_records : records
+
+users ||--o{ notifications : receives
+users ||--o{ notifications : acts_as_actor
+
+' =========================
+' ========= ENUMS =========
+' =========================
+
+note right of users
+USER_ROLES:
+- ADMIN
+- CLUB
+
+PREFERRED_LOCALE:
+- EN
+- FR
+- AR
+end note
+
+note right of reservations
+RESERVATION_STATUS:
+- PENDING
+- APPROVED
+- DECLINED
+- CANCELLED
+- PAID
+- UNPAID
+end note
+
+note right of monthly_payments
+PAYMENT_STATUS:
+- PENDING
+- PAID
+- OVERDUE
+- PARTIALLY_PAID
+end note
+
+note right of reservation_series
+BILLING_TYPE:
+- PER_SESSION
+- MONTHLY_SUBSCRIPTION
+end note
+
+note right of monthly_subscriptions
+SUBSCRIPTION_STATUS:
+- ACTIVE
+- CANCELLED
+- EXPIRED
+- SUSPENDED
+end note
+
+@enduml
