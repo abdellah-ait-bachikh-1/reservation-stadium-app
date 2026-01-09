@@ -11,9 +11,12 @@ import {
   cashPaymentRecords,
   monthlySubscriptions,
   stadiumSports,
+  users,
 } from "@/drizzle/schema";
 
 // Base types from Drizzle schema
+export type UserType = typeof users.$inferSelect;
+export type InsertUserType = typeof users.$inferInsert;
 export type ClubType = typeof clubs.$inferSelect;
 export type InsertClubType = typeof clubs.$inferInsert;
 
