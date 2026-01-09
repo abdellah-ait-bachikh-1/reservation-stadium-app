@@ -1,16 +1,80 @@
-import { notificationModelValues, notifications, notificationTypes, users } from "@/drizzle/schema";
+// Import Drizzle types
+import {
+  clubs,
+  sports,
+  notifications,
+  stadiums,
+  stadiumImages,
+  reservations,
+  reservationSeries,
+  monthlyPayments,
+  cashPaymentRecords,
+  monthlySubscriptions,
+  stadiumSports,
+} from "@/drizzle/schema";
 
-export type UserType = typeof users.$inferSelect;
-export type InsertUserType = typeof users.$inferInsert;
-export type UserRoleType = "ADMIN" | "CLUB";
-export type UserPreferredLocaleType = "FR" | "EN" | "AR";
+// Base types from Drizzle schema
+export type ClubType = typeof clubs.$inferSelect;
+export type InsertClubType = typeof clubs.$inferInsert;
+
+export type SportType = typeof sports.$inferSelect;
+export type InsertSportType = typeof sports.$inferInsert;
 
 export type NotificationType = typeof notifications.$inferSelect;
 export type InsertNotificationType = typeof notifications.$inferInsert;
-export type NotificationTypes = (typeof notificationTypes)[number];
-export type NotificationModels = (typeof notificationModelValues)[number];
 
+export type StadiumType = typeof stadiums.$inferSelect;
+export type InsertStadiumType = typeof stadiums.$inferInsert;
 
+export type StadiumImageType = typeof stadiumImages.$inferSelect;
+export type InsertStadiumImageType = typeof stadiumImages.$inferInsert;
+
+export type ReservationType = typeof reservations.$inferSelect;
+export type InsertReservationType = typeof reservations.$inferInsert;
+
+export type ReservationSeriesType = typeof reservationSeries.$inferSelect;
+export type InsertReservationSeriesType = typeof reservationSeries.$inferInsert;
+
+export type MonthlyPaymentType = typeof monthlyPayments.$inferSelect;
+export type InsertMonthlyPaymentType = typeof monthlyPayments.$inferInsert;
+
+export type CashPaymentRecordType = typeof cashPaymentRecords.$inferSelect;
+export type InsertCashPaymentRecordType =
+  typeof cashPaymentRecords.$inferInsert;
+
+export type MonthlySubscriptionType = typeof monthlySubscriptions.$inferSelect;
+export type InsertMonthlySubscriptionType =
+  typeof monthlySubscriptions.$inferInsert;
+
+export type StadiumSportType = typeof stadiumSports.$inferSelect;
+export type InsertStadiumSportType = typeof stadiumSports.$inferInsert;
+
+// Enum types
+export type ReservationStatusType =
+  | "PENDING"
+  | "APPROVED"
+  | "DECLINED"
+  | "CANCELLED"
+  | "PAID"
+  | "UNPAID";
+
+export type PaymentStatusType =
+  | "PENDING"
+  | "PAID"
+  | "OVERDUE"
+  | "PARTIALLY_PAID";
+
+export type PaymentType = "SINGLE_SESSION" | "MONTHLY_SUBSCRIPTION";
+
+export type BillingType = "PER_SESSION" | "MONTHLY_SUBSCRIPTION";
+
+export type SubscriptionStatusType =
+  | "ACTIVE"
+  | "CANCELLED"
+  | "EXPIRED"
+  | "SUSPENDED";
+
+// Special types
 export type PaymentDueDay =
   | 1
   | 2
@@ -43,3 +107,92 @@ export type PaymentDueDay =
   | 29
   | 30
   | 31;
+
+// Helper types for form inputs or API requests
+export interface CreateReservationInput {
+  startDateTime: string;
+  endDateTime: string;
+  stadiumId: string;
+  userId: string;
+  paymentType: PaymentType;
+  sessionPrice: string;
+  monthlyPaymentId?: string;
+  reservationSeriesId?: string;
+}
+
+export interface CreateReservationSeriesInput {
+  startTime: string;
+  endTime: string;
+  dayOfWeek: number;
+  stadiumId: string;
+  userId: string;
+  billingType: BillingType;
+  monthlyPrice?: string;
+  pricePerSession?: string;
+  recurrenceEndDate?: string;
+  isFixed?: boolean;
+}
+
+export interface CreateMonthlyPaymentInput {
+  month: number;
+  year: number;
+  amount: string;
+  userId: string;
+  reservationSeriesId: string;
+  status?: PaymentStatusType;
+}
+
+export interface CreateCashPaymentInput {
+  amount: string;
+  receiptNumber: string;
+  userId: string;
+  reservationId?: string;
+  monthlyPaymentId?: string;
+  notes?: string;
+}
+
+export interface CreateSubscriptionInput {
+  monthlyAmount: string;
+  userId: string;
+  reservationSeriesId: string;
+  startDate: string;
+  endDate?: string;
+  autoRenew?: boolean;
+}
+
+// Filter types for queries
+export interface ReservationFilter {
+  userId?: string;
+  stadiumId?: string;
+  status?: ReservationStatusType;
+  startDateFrom?: string;
+  startDateTo?: string;
+  isPaid?: boolean;
+}
+
+export interface PaymentFilter {
+  userId?: string;
+  status?: PaymentStatusType;
+  month?: number;
+  year?: number;
+  fromDate?: string;
+  toDate?: string;
+}
+
+// Update types
+export interface UpdateReservationStatus {
+  status: ReservationStatusType;
+  isPaid?: boolean;
+}
+
+export interface UpdatePaymentStatus {
+  status: PaymentStatusType;
+  paymentDate?: string;
+  receiptNumber?: string;
+}
+
+export interface UpdateSubscriptionStatus {
+  status: SubscriptionStatusType;
+  endDate?: string;
+  autoRenew?: boolean;
+}

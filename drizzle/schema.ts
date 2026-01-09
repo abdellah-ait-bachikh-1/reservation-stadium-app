@@ -12,6 +12,8 @@ import {
   timestamp,
   varchar,
   smallint,
+  unique,
+  foreignKey,
 } from "drizzle-orm/mysql-core";
 
 //--------------------- Enums -----------------------
@@ -26,39 +28,31 @@ export const USER_PREFERRED_LOCALE = mysqlEnum("preferred_locale", [
 export const notificationModelValues = ["USER"] as const;
 export const NOTIFICATION_MODELS = mysqlEnum("model", notificationModelValues);
 export const notificationTypes = [
-  // User model notifications
   "USER_CREATED",
   "USER_APPROVED",
   "USER_PROFILE_UPDATED",
   "USER_PASSWORD_CHANGED",
   "USER_EMAIL_VERIFIED",
   "USER_DELETED",
-
-  // Reservation related (will use USER model for now)
   "RESERVATION_REQUESTED",
   "RESERVATION_APPROVED",
   "RESERVATION_DECLINED",
   "RESERVATION_CANCELLED",
   "RESERVATION_REMINDER",
-
-  // Payment related (will use USER model for now)
   "PAYMENT_RECEIVED",
   "PAYMENT_OVERDUE",
   "PAYMENT_FAILED",
   "PAYMENT_REFUNDED",
   "SUBSCRIPTION_PAYMENT",
-
-  // System notifications
   "SYSTEM_MAINTENANCE",
   "SYSTEM_UPDATE",
   "SYSTEM_NEW_FEATURE",
   "SYSTEM_ANNOUNCEMENT",
-
-  // Admin notifications
   "ADMIN_NEW_USER",
   "ADMIN_NEW_RESERVATION",
   "ADMIN_PAYMENT_ALERT",
 ] as const;
+
 export const RESERVATION_STATUS = mysqlEnum("status", [
   "PENDING",
   "APPROVED",
@@ -67,13 +61,29 @@ export const RESERVATION_STATUS = mysqlEnum("status", [
   "PAID",
   "UNPAID",
 ]);
+
+export const PAYMENT_STATUS = mysqlEnum("status", [
+  "PENDING",
+  "PAID",
+  "OVERDUE",
+  "PARTIALLY_PAID",
+]);
+
 export const PAYMENT_TYPE = mysqlEnum("payment_type", [
   "SINGLE_SESSION",
   "MONTHLY_SUBSCRIPTION",
 ]);
+
 export const BILLING_TYPE = mysqlEnum("billing_type", [
   "PER_SESSION",
   "MONTHLY_SUBSCRIPTION",
+]);
+
+export const SUBSCRIPTION_STATUS = mysqlEnum("status", [
+  "ACTIVE",
+  "CANCELLED",
+  "EXPIRED",
+  "SUSPENDED",
 ]);
 
 //--------------------- Tables -----------------------
@@ -106,12 +116,10 @@ export const users = mysqlTable(
       .notNull(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
-  (table) => {
-    return [
-      index("role_index").on(table.role),
-      index("deleted_at_index").on(table.deletedAt),
-    ];
-  }
+  (table) => [
+    index("role_index").on(table.role),
+    index("deleted_at_index").on(table.deletedAt),
+  ]
 );
 
 export const clubs = mysqlTable(
@@ -127,12 +135,8 @@ export const clubs = mysqlTable(
     paymentDueDay: smallint("payment_due_day", {
       unsigned: true,
     }).$type<PaymentDueDay>(),
-    userId: char("user_id", { length: 36 })
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    sportId: char("sport_id", { length: 36 }).references(() => sports.id, {
-      onDelete: "set null",
-    }),
+    userId: char("user_id", { length: 36 }).notNull(),
+    sportId: char("sport_id", { length: 36 }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -142,31 +146,45 @@ export const clubs = mysqlTable(
       .notNull(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
-  (table) => {
-    return [
-      index("user_id_index").on(table.userId),
-      index("sport_id_index").on(table.sportId),
-      index("name_index").on(table.name),
-      index("user_id_sport_id_index").on(table.userId, table.sportId),
-    ];
-  }
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_clubs_user",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.sportId],
+      foreignColumns: [sports.id],
+      name: "fk_clubs_sport",
+    }).onDelete("set null"),
+    
+    index("user_id_index").on(table.userId),
+    index("sport_id_index").on(table.sportId),
+    index("name_index").on(table.name),
+    index("user_id_sport_id_index").on(table.userId, table.sportId),
+  ]
 );
 
-export const sports = mysqlTable("sports", {
-  id: char("id", { length: 36 })
-    .primaryKey()
-    .default(sql`(UUID())`)
-    .notNull(),
-  nameAr: varchar("name_ar", { length: 255 }).notNull().unique(),
-  nameFr: varchar("name_fr", { length: 255 }).notNull().unique(),
-  icon: varchar("icon", { length: 255 }),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" })
-    .defaultNow()
-    .onUpdateNow()
-    .notNull(),
-  deletedAt: timestamp("deleted_at", { mode: "string" }),
-});
+export const sports = mysqlTable(
+  "sports",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    nameAr: varchar("name_ar", { length: 255 }).notNull().unique(),
+    nameFr: varchar("name_fr", { length: 255 }).notNull().unique(),
+    icon: varchar("icon", { length: 255 }),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    deletedAt: timestamp("deleted_at", { mode: "string" }),
+  }
+);
 
 export const notifications = mysqlTable(
   "notifications",
@@ -175,58 +193,48 @@ export const notifications = mysqlTable(
       .primaryKey()
       .default(sql`(UUID())`)
       .notNull(),
-
     type: varchar("type", { length: 50 })
       .$type<(typeof notificationTypes)[number]>()
       .notNull(),
-
-    model: NOTIFICATION_MODELS.notNull(), // Which model this notification belongs to
-
-    // For now, all notifications will reference USER model
-    // In the future, this could be reservationId, paymentId, etc.
-    referenceId: char("reference_id", { length: 36 }).notNull(), // ID of the related record
-
-    // Multi-language titles
+    model: NOTIFICATION_MODELS.notNull(),
+    referenceId: char("reference_id", { length: 36 }).notNull(),
     titleEn: varchar("title_en", { length: 255 }).notNull(),
     titleFr: varchar("title_fr", { length: 255 }).notNull(),
     titleAr: varchar("title_ar", { length: 255 }).notNull(),
-
-    // Multi-language messages
     messageEn: text("message_en").notNull(),
     messageFr: text("message_fr").notNull(),
     messageAr: text("message_ar").notNull(),
-
-    // Navigation
-    link: varchar("link", { length: 255 }), // URL to navigate when clicked
-
-    // Status
+    link: varchar("link", { length: 255 }),
     isRead: boolean("is_read").default(false).notNull(),
-
-    // User relations
-    userId: char("user_id", { length: 36 }) // Receiver ID
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    actorUserId: char("actor_user_id", { length: 36 }) // Who performed the action
-      .references(() => users.id, { onDelete: "cascade" }),
-
-    // Metadata
-    metadata: json("metadata"), // For additional dynamic data
-
+    userId: char("user_id", { length: 36 }).notNull(),
+    actorUserId: char("actor_user_id", { length: 36 }),
+    metadata: json("metadata"),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
   },
-  (table) => {
-    return [
-      index("user_id_idx").on(table.userId),
-      index("model_idx").on(table.model),
-      index("reference_id_idx").on(table.referenceId),
-      index("is_read_idx").on(table.isRead),
-      index("created_at_idx").on(table.createdAt),
-      index("type_idx").on(table.type),
-      index("actor_user_id_idx").on(table.actorUserId),
-    ];
-  }
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_notifications_user",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.actorUserId],
+      foreignColumns: [users.id],
+      name: "fk_notifications_actor",
+    }).onDelete("cascade"),
+    
+    index("user_id_idx").on(table.userId),
+    index("model_idx").on(table.model),
+    index("reference_id_idx").on(table.referenceId),
+    index("is_read_idx").on(table.isRead),
+    index("created_at_idx").on(table.createdAt),
+    index("type_idx").on(table.type),
+    index("actor_user_id_idx").on(table.actorUserId),
+  ]
 );
 
 export const stadiums = mysqlTable(
@@ -241,7 +249,6 @@ export const stadiums = mysqlTable(
     googleMapsUrl: varchar("googleMapUrl", { length: 500 }),
     monthlyPrice: decimal("monthly_price", { precision: 10, scale: 2 }),
     pricePerSession: decimal("price_per_session", { precision: 10, scale: 2 }),
-
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -250,12 +257,10 @@ export const stadiums = mysqlTable(
       .onUpdateNow(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
-  (table) => {
-    return [
-      index("monthly_price_index").on(table.monthlyPrice),
-      index("price_per_session").on(table.pricePerSession),
-    ];
-  }
+  (table) => [
+    index("monthly_price_index").on(table.monthlyPrice),
+    index("price_per_session").on(table.pricePerSession),
+  ]
 );
 
 export const stadiumImages = mysqlTable(
@@ -266,10 +271,8 @@ export const stadiumImages = mysqlTable(
       .default(sql`(UUID())`)
       .notNull(),
     index: smallint("index").default(sql`0`),
-    imageUri: varchar("image_uri").notNull(),
-    stadiumId: char("stadium_id")
-      .notNull()
-      .references(() => stadiums.id, { onDelete: "cascade" }),
+    imageUri: varchar("image_uri", { length: 500 }).notNull(),
+    stadiumId: char("stadium_id", { length: 36 }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -278,7 +281,16 @@ export const stadiumImages = mysqlTable(
       .onUpdateNow(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
-  (table) => [index("stadim_id_index").on(table.stadiumId)]
+  (table) => [
+    // Named foreign key
+    foreignKey({
+      columns: [table.stadiumId],
+      foreignColumns: [stadiums.id],
+      name: "fk_stadium_images_stadium",
+    }).onDelete("cascade"),
+    
+    index("stadium_id_index").on(table.stadiumId),
+  ]
 );
 
 export const reservations = mysqlTable(
@@ -297,17 +309,10 @@ export const reservations = mysqlTable(
     }).notNull(),
     isPaid: boolean("is_paid").default(false).notNull(),
     paymentType: PAYMENT_TYPE.notNull(),
-
-    // Relations
-    stadiumId: char("stadium_id", { length: 36 })
-      .notNull()
-      .references(() => stadiums.id, { onDelete: "cascade" }),
-    userId: char("user_id", { length: 36 })
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+    stadiumId: char("stadium_id", { length: 36 }).notNull(),
+    userId: char("user_id", { length: 36 }).notNull(),
     monthlyPaymentId: char("monthly_payment_id", { length: 36 }),
     reservationSeriesId: char("reservation_series_id", { length: 36 }),
-
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -317,28 +322,40 @@ export const reservations = mysqlTable(
       .notNull(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
   },
-  (table) => {
-    return [
-      index("start_date_time_index").on(table.startDateTime),
-      index("end_date_time_index").on(table.endDateTime),
-      index("status_index").on(table.status),
-      index("user_id_index").on(table.userId),
-      index("stadium_id_index").on(table.stadiumId),
-      index("monthly_payment_id_index").on(table.monthlyPaymentId),
-      index("reservation_series_id_index").on(table.reservationSeriesId),
-      index("created_at_index").on(table.createdAt),
-      index("is_paid_index").on(table.isPaid),
-      index("start_date_time_stadium_id_index").on(
-        table.startDateTime,
-        table.stadiumId
-      ),
-      index("status_start_date_time_index").on(
-        table.status,
-        table.startDateTime
-      ),
-    ];
-  }
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.stadiumId],
+      foreignColumns: [stadiums.id],
+      name: "fk_reservations_stadium",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_reservations_user",
+    }).onDelete("cascade"),
+    
+    index("start_date_time_index").on(table.startDateTime),
+    index("end_date_time_index").on(table.endDateTime),
+    index("status_index").on(table.status),
+    index("user_id_index").on(table.userId),
+    index("stadium_id_index").on(table.stadiumId),
+    index("monthly_payment_id_index").on(table.monthlyPaymentId),
+    index("reservation_series_id_index").on(table.reservationSeriesId),
+    index("created_at_index").on(table.createdAt),
+    index("is_paid_index").on(table.isPaid),
+    index("start_date_time_stadium_id_index").on(
+      table.startDateTime,
+      table.stadiumId
+    ),
+    index("status_start_date_time_index").on(
+      table.status,
+      table.startDateTime
+    ),
+  ]
 );
+
 export const reservationSeries = mysqlTable(
   "reservation_series",
   {
@@ -354,15 +371,8 @@ export const reservationSeries = mysqlTable(
     billingType: BILLING_TYPE.notNull(),
     monthlyPrice: decimal("monthly_price", { precision: 10, scale: 2 }),
     pricePerSession: decimal("price_per_session", { precision: 10, scale: 2 }),
-
-    // Relations
-    stadiumId: char("stadium_id", { length: 36 })
-      .notNull()
-      .references(() => stadiums.id),
-    userId: char("user_id", { length: 36 })
-      .notNull()
-      .references(() => users.id),
-
+    stadiumId: char("stadium_id", { length: 36 }).notNull(),
+    userId: char("user_id", { length: 36 }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -371,27 +381,208 @@ export const reservationSeries = mysqlTable(
       .onUpdateNow()
       .notNull(),
   },
-  (table) => {
-    return [
-      index("user_id_index").on(table.userId),
-      index("stadium_id_index").on(table.stadiumId),
-      index("day_of_week_index").on(table.dayOfWeek),
-      index("billing_type_index").on(table.billingType),
-      index("created_at_index").on(table.createdAt),
-      index("recurrence_end_date_index").on(table.recurrenceEndDate),
-      index("start_time_end_time_index").on(table.startTime, table.endTime),
-    ];
-  }
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.stadiumId],
+      foreignColumns: [stadiums.id],
+      name: "fk_reservation_series_stadium",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_reservation_series_user",
+    }).onDelete("cascade"),
+    
+    index("user_id_index").on(table.userId),
+    index("stadium_id_index").on(table.stadiumId),
+    index("day_of_week_index").on(table.dayOfWeek),
+    index("billing_type_index").on(table.billingType),
+    index("created_at_index").on(table.createdAt),
+    index("recurrence_end_date_index").on(table.recurrenceEndDate),
+    index("start_time_end_time_index").on(table.startTime, table.endTime),
+  ]
 );
-//--------------------- Relations -----------------------
 
-export const usersRelations = relations(users, ({ many }) => ({
-  notifications: many(notifications, { relationName: "userNotifications" }),
-  actorNotifications: many(notifications, {
-    relationName: "actorNotifications",
-  }),
-  clubs: many(clubs, { relationName: "userClubs" }),
-}));
+export const monthlyPayments = mysqlTable(
+  "monthly_payments",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    month: smallint("month", { unsigned: true }).notNull(),
+    year: smallint("year", { unsigned: true }).notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    status: PAYMENT_STATUS.default("PENDING").notNull(),
+    paymentDate: timestamp("payment_date", { mode: "string" }),
+    receiptNumber: varchar("receipt_number", { length: 255 }),
+    userId: char("user_id", { length: 36 }).notNull(),
+    reservationSeriesId: char("reservation_series_id", { length: 36 }).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+  },
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_monthly_payments_user",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.reservationSeriesId],
+      foreignColumns: [reservationSeries.id],
+      name: "fk_monthly_payments_series",
+    }).onDelete("cascade"),
+    
+    index("user_id_index").on(table.userId),
+    index("status_index").on(table.status),
+    index("month_year_index").on(table.month, table.year),
+    index("payment_date_index").on(table.paymentDate),
+    index("created_at_index").on(table.createdAt),
+    unique("month_year_series_unique").on(
+      table.month,
+      table.year,
+      table.reservationSeriesId
+    ),
+  ]
+);
+
+export const cashPaymentRecords = mysqlTable(
+  "cash_payment_records",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    paymentDate: timestamp("payment_date", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    receiptNumber: varchar("receipt_number", { length: 255 }).notNull(),
+    notes: text("notes"),
+    reservationId: char("reservation_id", { length: 36 }),
+    monthlyPaymentId: char("monthly_payment_id", { length: 36 }),
+    userId: char("user_id", { length: 36 }).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+  },
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_cash_payments_user",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.reservationId],
+      foreignColumns: [reservations.id],
+      name: "fk_cash_payments_reservation",
+    }).onDelete("set null"),
+    
+    foreignKey({
+      columns: [table.monthlyPaymentId],
+      foreignColumns: [monthlyPayments.id],
+      name: "fk_cash_payments_monthly",
+    }).onDelete("set null"),
+    
+    index("user_id_index").on(table.userId),
+    index("reservation_id_index").on(table.reservationId),
+    index("monthly_payment_id_index").on(table.monthlyPaymentId),
+    index("payment_date_index").on(table.paymentDate),
+    index("created_at_index").on(table.createdAt),
+  ]
+);
+
+export const monthlySubscriptions = mysqlTable(
+  "monthly_subscriptions",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    userId: char("user_id", { length: 36 }).notNull(),
+    reservationSeriesId: char("reservation_series_id", { length: 36 })
+      .notNull()
+      .unique(),
+    startDate: timestamp("start_date", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    endDate: timestamp("end_date", { mode: "string" }),
+    monthlyAmount: decimal("monthly_amount", {
+      precision: 10,
+      scale: 2,
+    }).notNull(),
+    status: SUBSCRIPTION_STATUS.default("ACTIVE").notNull(),
+    autoRenew: boolean("auto_renew").default(true).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+  },
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_subscriptions_user",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.reservationSeriesId],
+      foreignColumns: [reservationSeries.id],
+      name: "fk_subscriptions_series",
+    }).onDelete("cascade"),
+    
+    index("user_id_index").on(table.userId),
+    index("status_index").on(table.status),
+    index("start_date_index").on(table.startDate),
+    index("end_date_index").on(table.endDate),
+    index("created_at_index").on(table.createdAt),
+  ]
+);
+
+export const stadiumSports = mysqlTable(
+  "stadium_sports",
+  {
+    stadiumId: char("stadium_id", { length: 36 }).notNull(),
+    sportId: char("sport_id", { length: 36 }).notNull(),
+  },
+  (table) => [
+    // Named foreign keys
+    foreignKey({
+      columns: [table.stadiumId],
+      foreignColumns: [stadiums.id],
+      name: "fk_stadium_sports_stadium",
+    }).onDelete("cascade"),
+    
+    foreignKey({
+      columns: [table.sportId],
+      foreignColumns: [sports.id],
+      name: "fk_stadium_sports_sport",
+    }).onDelete("cascade"),
+    
+    sql`PRIMARY KEY (\`stadium_id\`, \`sport_id\`)`,
+  ]
+);
+
+//--------------------- Relations -----------------------
 
 export const clubRelations = relations(clubs, ({ one }) => ({
   user: one(users, {
@@ -399,7 +590,7 @@ export const clubRelations = relations(clubs, ({ one }) => ({
     references: [users.id],
     relationName: "userClubs",
   }),
-  sports: one(sports, {
+  sport: one(sports, {
     fields: [clubs.sportId],
     references: [sports.id],
     relationName: "sportClub",
@@ -407,13 +598,18 @@ export const clubRelations = relations(clubs, ({ one }) => ({
 }));
 
 export const sportRelations = relations(sports, ({ many }) => ({
-  clubs: many(clubs, { relationName: "sport_club" }),
+  clubs: many(clubs, { relationName: "sportClub" }),
   stadiums: many(stadiums, { relationName: "stadium_sports" }),
 }));
 
-export const stadiumRelations = relations(sports, ({ many }) => ({
+// FIXED: This was incorrectly using 'sports' instead of 'stadiums'
+export const stadiumRelations = relations(stadiums, ({ many }) => ({
   sports: many(sports, { relationName: "stadium_sports" }),
   images: many(stadiumImages, { relationName: "stadium_images" }),
+  reservations: many(reservations, { relationName: "stadium_reservations" }),
+  reservationSeries: many(reservationSeries, { 
+    relationName: "stadium_reservation_series" 
+  }),
 }));
 
 export const stadiumImagesRelations = relations(stadiumImages, ({ one }) => ({
@@ -434,5 +630,155 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
     fields: [notifications.actorUserId],
     references: [users.id],
     relationName: "actorNotifications",
+  }),
+}));
+
+export const stadiumSportsRelations = relations(stadiumSports, ({ one }) => ({
+  stadium: one(stadiums, {
+    fields: [stadiumSports.stadiumId],
+    references: [stadiums.id],
+    relationName: "stadium_sports",
+  }),
+  sport: one(sports, {
+    fields: [stadiumSports.sportId],
+    references: [sports.id],
+    relationName: "sport_stadiums",
+  }),
+}));
+
+export const reservationsRelations = relations(reservations, ({ one }) => ({
+  stadium: one(stadiums, {
+    fields: [reservations.stadiumId],
+    references: [stadiums.id],
+    relationName: "stadium_reservations",
+  }),
+  user: one(users, {
+    fields: [reservations.userId],
+    references: [users.id],
+    relationName: "user_reservations",
+  }),
+  monthlyPayment: one(monthlyPayments, {
+    fields: [reservations.monthlyPaymentId],
+    references: [monthlyPayments.id],
+    relationName: "monthly_payment_reservations",
+  }),
+  reservationSeries: one(reservationSeries, {
+    fields: [reservations.reservationSeriesId],
+    references: [reservationSeries.id],
+    relationName: "reservation_series_reservations",
+  }),
+  cashPayment: one(cashPaymentRecords, {
+    fields: [reservations.id],
+    references: [cashPaymentRecords.reservationId],
+    relationName: "reservation_cash_payment",
+  }),
+}));
+
+export const reservationSeriesRelations = relations(
+  reservationSeries,
+  ({ one, many }) => ({
+    stadium: one(stadiums, {
+      fields: [reservationSeries.stadiumId],
+      references: [stadiums.id],
+      relationName: "stadium_reservation_series",
+    }),
+    user: one(users, {
+      fields: [reservationSeries.userId],
+      references: [users.id],
+      relationName: "user_reservation_series",
+    }),
+    reservations: many(reservations, {
+      relationName: "reservation_series_reservations",
+    }),
+    monthlyPayments: many(monthlyPayments, {
+      relationName: "reservation_series_monthly_payments",
+    }),
+    subscription: one(monthlySubscriptions, {
+      fields: [reservationSeries.id],
+      references: [monthlySubscriptions.reservationSeriesId],
+      relationName: "reservation_series_subscription",
+    }),
+  })
+);
+
+export const monthlyPaymentsRelations = relations(
+  monthlyPayments,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [monthlyPayments.userId],
+      references: [users.id],
+      relationName: "user_monthly_payments",
+    }),
+    reservationSeries: one(reservationSeries, {
+      fields: [monthlyPayments.reservationSeriesId],
+      references: [reservationSeries.id],
+      relationName: "reservation_series_monthly_payments",
+    }),
+    cashPayment: one(cashPaymentRecords, {
+      fields: [monthlyPayments.id],
+      references: [cashPaymentRecords.monthlyPaymentId],
+      relationName: "monthly_payment_cash_payment",
+    }),
+    reservations: many(reservations, {
+      relationName: "monthly_payment_reservations",
+    }),
+  })
+);
+
+export const cashPaymentRecordsRelations = relations(
+  cashPaymentRecords,
+  ({ one }) => ({
+    reservation: one(reservations, {
+      fields: [cashPaymentRecords.reservationId],
+      references: [reservations.id],
+      relationName: "reservation_cash_payment",
+    }),
+    monthlyPayment: one(monthlyPayments, {
+      fields: [cashPaymentRecords.monthlyPaymentId],
+      references: [monthlyPayments.id],
+      relationName: "monthly_payment_cash_payment",
+    }),
+    user: one(users, {
+      fields: [cashPaymentRecords.userId],
+      references: [users.id],
+      relationName: "user_cash_payments",
+    }),
+  })
+);
+
+export const monthlySubscriptionsRelations = relations(
+  monthlySubscriptions,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [monthlySubscriptions.userId],
+      references: [users.id],
+      relationName: "user_subscriptions",
+    }),
+    reservationSeries: one(reservationSeries, {
+      fields: [monthlySubscriptions.reservationSeriesId],
+      references: [reservationSeries.id],
+      relationName: "reservation_series_subscription",
+    }),
+  })
+);
+
+export const usersRelations = relations(users, ({ many }) => ({
+  notifications: many(notifications, { relationName: "userNotifications" }),
+  actorNotifications: many(notifications, {
+    relationName: "actorNotifications",
+  }),
+  clubs: many(clubs, { relationName: "userClubs" }),
+  reservations: many(reservations, { relationName: "user_reservations" }),
+  reservationSeries: many(reservationSeries, {
+    relationName: "user_reservation_series",
+  }),
+  cashPayments: many(cashPaymentRecords, {
+    relationName: "user_cash_payments",
+  }),
+  monthlyPayments: many(monthlyPayments, {
+    relationName: "user_monthly_payments",
+  }),
+  subscriptions: many(monthlySubscriptions, {
+    relationName: "user_subscriptions",
   }),
 }));

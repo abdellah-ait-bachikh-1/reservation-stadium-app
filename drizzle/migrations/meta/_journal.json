@@ -5,57 +5,15 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1767777582937,
-      "tag": "0000_lonely_famine",
+      "when": 1767958627015,
+      "tag": "0000_acoustic_fat_cobra",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1767870234355,
-      "tag": "0001_lyrical_kang",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1767900508720,
-      "tag": "0002_striped_sphinx",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1767900763282,
-      "tag": "0003_whole_sauron",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1767900939298,
-      "tag": "0004_blushing_azazel",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1767901506346,
-      "tag": "0005_spooky_sinister_six",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1767904083191,
-      "tag": "0006_panoramic_white_queen",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1767904120768,
-      "tag": "0007_dapper_starbolt",
+      "when": 1767959458174,
+      "tag": "0001_icy_deathbird",
       "breakpoints": true
     }
   ]

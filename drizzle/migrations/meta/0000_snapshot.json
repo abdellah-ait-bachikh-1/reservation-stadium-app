@@ -1,9 +1,648 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "b4c64b32-0d0b-40e9-8560-f9e573ef5cd7",
+  "id": "df77e944-38a6-4795-bb3a-bc0dd25911c0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "cash_payment_records": {
+      "name": "cash_payment_records",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "receipt_number": {
+          "name": "receipt_number",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reservation_id": {
+          "name": "reservation_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monthly_payment_id": {
+          "name": "monthly_payment_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "reservation_id_index": {
+          "name": "reservation_id_index",
+          "columns": [
+            "reservation_id"
+          ],
+          "isUnique": false
+        },
+        "monthly_payment_id_index": {
+          "name": "monthly_payment_id_index",
+          "columns": [
+            "monthly_payment_id"
+          ],
+          "isUnique": false
+        },
+        "payment_date_index": {
+          "name": "payment_date_index",
+          "columns": [
+            "payment_date"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "cash_payment_records_user_id_users_id_fk": {
+          "name": "cash_payment_records_user_id_users_id_fk",
+          "tableFrom": "cash_payment_records",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "cash_payment_records_id": {
+          "name": "cash_payment_records_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "cash_payment_records_reservation_id_unique": {
+          "name": "cash_payment_records_reservation_id_unique",
+          "columns": [
+            "reservation_id"
+          ]
+        },
+        "cash_payment_records_monthly_payment_id_unique": {
+          "name": "cash_payment_records_monthly_payment_id_unique",
+          "columns": [
+            "monthly_payment_id"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "clubs": {
+      "name": "clubs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adress": {
+          "name": "adress",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monthly_fee": {
+          "name": "monthly_fee",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payment_due_day": {
+          "name": "payment_due_day",
+          "type": "smallint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sport_id": {
+          "name": "sport_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "sport_id_index": {
+          "name": "sport_id_index",
+          "columns": [
+            "sport_id"
+          ],
+          "isUnique": false
+        },
+        "name_index": {
+          "name": "name_index",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        },
+        "user_id_sport_id_index": {
+          "name": "user_id_sport_id_index",
+          "columns": [
+            "user_id",
+            "sport_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "clubs_user_id_users_id_fk": {
+          "name": "clubs_user_id_users_id_fk",
+          "tableFrom": "clubs",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "clubs_sport_id_sports_id_fk": {
+          "name": "clubs_sport_id_sports_id_fk",
+          "tableFrom": "clubs",
+          "tableTo": "sports",
+          "columnsFrom": [
+            "sport_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "clubs_id": {
+          "name": "clubs_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "monthly_payments": {
+      "name": "monthly_payments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "month": {
+          "name": "month",
+          "type": "smallint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "year": {
+          "name": "year",
+          "type": "smallint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','PAID','OVERDUE','PARTIALLY_PAID')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'PENDING'"
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "receipt_number": {
+          "name": "receipt_number",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reservation_series_id": {
+          "name": "reservation_series_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "status_index": {
+          "name": "status_index",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "month_year_index": {
+          "name": "month_year_index",
+          "columns": [
+            "month",
+            "year"
+          ],
+          "isUnique": false
+        },
+        "payment_date_index": {
+          "name": "payment_date_index",
+          "columns": [
+            "payment_date"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "monthly_payments_user_id_users_id_fk": {
+          "name": "monthly_payments_user_id_users_id_fk",
+          "tableFrom": "monthly_payments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "monthly_payments_reservation_series_id_reservation_series_id_fk": {
+          "name": "monthly_payments_reservation_series_id_reservation_series_id_fk",
+          "tableFrom": "monthly_payments",
+          "tableTo": "reservation_series",
+          "columnsFrom": [
+            "reservation_series_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "monthly_payments_id": {
+          "name": "monthly_payments_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "month_year_series_unique": {
+          "name": "month_year_series_unique",
+          "columns": [
+            "month",
+            "year",
+            "reservation_series_id"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "monthly_subscriptions": {
+      "name": "monthly_subscriptions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "end_date": {
+          "name": "end_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monthly_amount": {
+          "name": "monthly_amount",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('ACTIVE','CANCELLED','EXPIRED','SUSPENDED')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "auto_renew": {
+          "name": "auto_renew",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reservation_series_id": {
+          "name": "reservation_series_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "status_index": {
+          "name": "status_index",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "start_date_index": {
+          "name": "start_date_index",
+          "columns": [
+            "start_date"
+          ],
+          "isUnique": false
+        },
+        "end_date_index": {
+          "name": "end_date_index",
+          "columns": [
+            "end_date"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "monthly_subscriptions_user_id_users_id_fk": {
+          "name": "monthly_subscriptions_user_id_users_id_fk",
+          "tableFrom": "monthly_subscriptions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "monthly_subscriptions_reservation_series_id_reservation_series_id_fk": {
+          "name": "monthly_subscriptions_reservation_series_id_reservation_series_id_fk",
+          "tableFrom": "monthly_subscriptions",
+          "tableTo": "reservation_series",
+          "columnsFrom": [
+            "reservation_series_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "monthly_subscriptions_id": {
+          "name": "monthly_subscriptions_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "monthly_subscriptions_reservation_series_id_unique": {
+          "name": "monthly_subscriptions_reservation_series_id_unique",
+          "columns": [
+            "reservation_series_id"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
     "notifications": {
       "name": "notifications",
       "columns": {
@@ -12,7 +651,8 @@
           "type": "char(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(UUID())"
         },
         "type": {
           "name": "type",
@@ -79,7 +719,7 @@
         },
         "link": {
           "name": "link",
-          "type": "varchar(500)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -173,7 +813,34 @@
           "isUnique": false
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "notifications_user_id_users_id_fk": {
+          "name": "notifications_user_id_users_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "notifications_actor_user_id_users_id_fk": {
+          "name": "notifications_actor_user_id_users_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "users",
+          "columnsFrom": [
+            "actor_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "notifications_id": {
           "name": "notifications_id",
@@ -185,6 +852,758 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "reservation_series": {
+      "name": "reservation_series",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_time": {
+          "name": "end_time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day_of_week": {
+          "name": "day_of_week",
+          "type": "smallint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "recurrence_end_date": {
+          "name": "recurrence_end_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_fixed": {
+          "name": "is_fixed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "billing_type": {
+          "name": "billing_type",
+          "type": "enum('PER_SESSION','MONTHLY_SUBSCRIPTION')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "monthly_price": {
+          "name": "monthly_price",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_per_session": {
+          "name": "price_per_session",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "stadium_id": {
+          "name": "stadium_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "stadium_id_index": {
+          "name": "stadium_id_index",
+          "columns": [
+            "stadium_id"
+          ],
+          "isUnique": false
+        },
+        "day_of_week_index": {
+          "name": "day_of_week_index",
+          "columns": [
+            "day_of_week"
+          ],
+          "isUnique": false
+        },
+        "billing_type_index": {
+          "name": "billing_type_index",
+          "columns": [
+            "billing_type"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "recurrence_end_date_index": {
+          "name": "recurrence_end_date_index",
+          "columns": [
+            "recurrence_end_date"
+          ],
+          "isUnique": false
+        },
+        "start_time_end_time_index": {
+          "name": "start_time_end_time_index",
+          "columns": [
+            "start_time",
+            "end_time"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reservation_series_stadium_id_stadiums_id_fk": {
+          "name": "reservation_series_stadium_id_stadiums_id_fk",
+          "tableFrom": "reservation_series",
+          "tableTo": "stadiums",
+          "columnsFrom": [
+            "stadium_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reservation_series_user_id_users_id_fk": {
+          "name": "reservation_series_user_id_users_id_fk",
+          "tableFrom": "reservation_series",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "reservation_series_id": {
+          "name": "reservation_series_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "reservations": {
+      "name": "reservations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "start_date_time": {
+          "name": "start_date_time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_date_time": {
+          "name": "end_date_time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','APPROVED','DECLINED','CANCELLED','PAID','UNPAID')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'PENDING'"
+        },
+        "session_price": {
+          "name": "session_price",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_paid": {
+          "name": "is_paid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "payment_type": {
+          "name": "payment_type",
+          "type": "enum('SINGLE_SESSION','MONTHLY_SUBSCRIPTION')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stadium_id": {
+          "name": "stadium_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "monthly_payment_id": {
+          "name": "monthly_payment_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reservation_series_id": {
+          "name": "reservation_series_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "start_date_time_index": {
+          "name": "start_date_time_index",
+          "columns": [
+            "start_date_time"
+          ],
+          "isUnique": false
+        },
+        "end_date_time_index": {
+          "name": "end_date_time_index",
+          "columns": [
+            "end_date_time"
+          ],
+          "isUnique": false
+        },
+        "status_index": {
+          "name": "status_index",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "stadium_id_index": {
+          "name": "stadium_id_index",
+          "columns": [
+            "stadium_id"
+          ],
+          "isUnique": false
+        },
+        "monthly_payment_id_index": {
+          "name": "monthly_payment_id_index",
+          "columns": [
+            "monthly_payment_id"
+          ],
+          "isUnique": false
+        },
+        "reservation_series_id_index": {
+          "name": "reservation_series_id_index",
+          "columns": [
+            "reservation_series_id"
+          ],
+          "isUnique": false
+        },
+        "created_at_index": {
+          "name": "created_at_index",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "is_paid_index": {
+          "name": "is_paid_index",
+          "columns": [
+            "is_paid"
+          ],
+          "isUnique": false
+        },
+        "start_date_time_stadium_id_index": {
+          "name": "start_date_time_stadium_id_index",
+          "columns": [
+            "start_date_time",
+            "stadium_id"
+          ],
+          "isUnique": false
+        },
+        "status_start_date_time_index": {
+          "name": "status_start_date_time_index",
+          "columns": [
+            "status",
+            "start_date_time"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reservations_stadium_id_stadiums_id_fk": {
+          "name": "reservations_stadium_id_stadiums_id_fk",
+          "tableFrom": "reservations",
+          "tableTo": "stadiums",
+          "columnsFrom": [
+            "stadium_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reservations_user_id_users_id_fk": {
+          "name": "reservations_user_id_users_id_fk",
+          "tableFrom": "reservations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "reservations_id": {
+          "name": "reservations_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sports": {
+      "name": "sports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "name_ar": {
+          "name": "name_ar",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name_fr": {
+          "name": "name_fr",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "sports_id": {
+          "name": "sports_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "sports_name_ar_unique": {
+          "name": "sports_name_ar_unique",
+          "columns": [
+            "name_ar"
+          ]
+        },
+        "sports_name_fr_unique": {
+          "name": "sports_name_fr_unique",
+          "columns": [
+            "name_fr"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "stadium_images": {
+      "name": "stadium_images",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "index": {
+          "name": "index",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "0"
+        },
+        "image_uri": {
+          "name": "image_uri",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stadium_id": {
+          "name": "stadium_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "stadium_id_index": {
+          "name": "stadium_id_index",
+          "columns": [
+            "stadium_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "stadium_images_stadium_id_stadiums_id_fk": {
+          "name": "stadium_images_stadium_id_stadiums_id_fk",
+          "tableFrom": "stadium_images",
+          "tableTo": "stadiums",
+          "columnsFrom": [
+            "stadium_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "stadium_images_id": {
+          "name": "stadium_images_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "stadium_sports": {
+      "name": "stadium_sports",
+      "columns": {
+        "stadium_id": {
+          "name": "stadium_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sport_id": {
+          "name": "sport_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "stadium_sports_stadium_id_stadiums_id_fk": {
+          "name": "stadium_sports_stadium_id_stadiums_id_fk",
+          "tableFrom": "stadium_sports",
+          "tableTo": "stadiums",
+          "columnsFrom": [
+            "stadium_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "stadium_sports_sport_id_sports_id_fk": {
+          "name": "stadium_sports_sport_id_sports_id_fk",
+          "tableFrom": "stadium_sports",
+          "tableTo": "sports",
+          "columnsFrom": [
+            "sport_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "stadiums": {
+      "name": "stadiums",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "name_ar": {
+          "name": "name_ar",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adress": {
+          "name": "adress",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "googleMapUrl": {
+          "name": "googleMapUrl",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monthly_price": {
+          "name": "monthly_price",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price_per_session": {
+          "name": "price_per_session",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "monthly_price_index": {
+          "name": "monthly_price_index",
+          "columns": [
+            "monthly_price"
+          ],
+          "isUnique": false
+        },
+        "price_per_session": {
+          "name": "price_per_session",
+          "columns": [
+            "price_per_session"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "stadiums_id": {
+          "name": "stadiums_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "stadiums_name_ar_unique": {
+          "name": "stadiums_name_ar_unique",
+          "columns": [
+            "name_ar"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
     "users": {
       "name": "users",
       "columns": {
@@ -193,7 +1612,8 @@
           "type": "char(36)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(UUID())"
         },
         "name": {
           "name": "name",
