@@ -6,15 +6,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@heroui/badge";
 import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
-import { LocaleType } from "@/services/notification.service";
 import { disconnectPusher, pusherClient } from "@/lib/pusher/client";
-import { NotificationTypes } from "@/drizzle/schema";
 import { useSafePositionScreen } from "@/hooks/useSafePositionScreen";
 import { useTypedTranslations } from "@/utils/i18n";
+import { NotificationType, UserPreferredLocaleType } from "@/types/db";
 
 interface NotificationItem {
   id: string;
-  type: NotificationTypes;
+  type: NotificationType;
   title: string;
   message: string;
   time: string;
@@ -74,7 +73,7 @@ const NotificationBell = () => {
     notification: any,
     userLocale: string
   ): { title: string; message: string } => {
-    const localeKey = userLocale.toUpperCase() as LocaleType;
+    const localeKey = userLocale.toUpperCase() as UserPreferredLocaleType;
 
     switch (localeKey) {
       case "FR":
@@ -120,7 +119,7 @@ const NotificationBell = () => {
   // Remove the getLocalizedContent function or keep it only for Pusher
   // Handle new notification from Pusher (UPDATED)
   const handleNewNotification = useCallback((notificationData: any) => {
-    console.log("📩 New notification received:", notificationData);
+    // console.log("📩 New notification received:", notificationData);
 
     const newNotification: NotificationItem = {
       id: notificationData.id,
@@ -140,7 +139,7 @@ const NotificationBell = () => {
         notificationData.localizedMessage || notificationData.messageEn,
     };
 
-    console.log("📥 Adding to UI:", newNotification);
+    // console.log("📥 Adding to UI:", newNotification);
 
     // Add new notification at the top
     setNotifications((prev) => {
@@ -253,7 +252,7 @@ const NotificationBell = () => {
 
     const userId = session.user.id;
 
-    console.log("🔌 Setting up Pusher for user:", userId);
+    // console.log("🔌 Setting up Pusher for user:", userId);
     setConnectionStatus("connecting");
 
     // Request notification permission
@@ -271,12 +270,12 @@ const NotificationBell = () => {
 
     // Bind events
     channel.bind("pusher:subscription_succeeded", () => {
-      console.log(`✅ Connected to Pusher channel for user ${userId}`);
+      // console.log(`✅ Connected to Pusher channel for user ${userId}`);
       setConnectionStatus("connected");
     });
 
     channel.bind("notification", (data: any) => {
-      console.log("📩 New notification received:", data);
+      // console.log("📩 New notification received:", data);
       handleNewNotification(data);
     });
 
@@ -287,11 +286,11 @@ const NotificationBell = () => {
 
     // Connection listeners
     pusherClient.connection.bind("connected", () => {
-      console.log("✅ Pusher client connected");
+      // console.log("✅ Pusher client connected");
     });
 
     pusherClient.connection.bind("connecting", () => {
-      console.log("🔄 Connecting to Pusher...");
+      // console.log("🔄 Connecting to Pusher...");
     });
 
     pusherClient.connection.bind("disconnected", () => {

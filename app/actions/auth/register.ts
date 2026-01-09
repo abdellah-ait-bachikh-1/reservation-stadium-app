@@ -4,7 +4,7 @@ import { SALT } from "@/const";
 import { db } from "@/drizzle/db";
 import { users, NOTIFICATION_MODELS, notifications } from "@/drizzle/schema";
 import { validateRegisterFormData } from "@/lib/validations/register";
-import { LocaleEnumType,  } from "@/types";
+import { LocaleEnumType } from "@/types";
 import { isErrorHasMessage } from "@/utils";
 import { getLocalizedValidationMessage } from "@/utils/validation";
 import { hash } from "bcryptjs";
@@ -13,7 +13,7 @@ import { getLocale } from "next-intl/server";
 import { v4 as uuidv4 } from "uuid";
 import { addDays, format } from "date-fns";
 import { generateVerificationEmail, sendEmail } from "@/lib/email/config";
-import { sendNotificationToAdmins } from "@/lib/services/notification-service";
+import { sendNotificationToAdmins } from "@/lib/queries/notifications";
 import { RegisterFormData } from "@/types/auth";
 
 export async function registerUser({
@@ -26,13 +26,16 @@ export async function registerUser({
   try {
     const locale = await getLocale();
 
-    const { data, validationErrors } = validateRegisterFormData(locale as LocaleEnumType, {
-      name,
-      email,
-      phoneNumber,
-      password,
-      confirmPassword,
-    });
+    const { data, validationErrors } = validateRegisterFormData(
+      locale as LocaleEnumType,
+      {
+        name,
+        email,
+        phoneNumber,
+        password,
+        confirmPassword,
+      }
+    );
     if (validationErrors) return { status: 400, validationErrors };
 
     const [existingUser] = await db
@@ -45,7 +48,10 @@ export async function registerUser({
         status: 400,
         validationErrors: {
           email: [
-            getLocalizedValidationMessage("email.exists", locale as LocaleEnumType),
+            getLocalizedValidationMessage(
+              "email.exists",
+              locale as LocaleEnumType
+            ),
           ],
         },
       };
@@ -57,7 +63,10 @@ export async function registerUser({
     // 5️⃣ Generate verification token and expiry
     const verificationToken = uuidv4();
     const verificationTokenExpiresAt = addDays(new Date(), 1);
-    const verificationTokenExpiresAtStr = format(verificationTokenExpiresAt, "yyyy-MM-dd HH:mm:ss"); // MySQL DATETIME
+    const verificationTokenExpiresAtStr = format(
+      verificationTokenExpiresAt,
+      "yyyy-MM-dd HH:mm:ss"
+    ); // MySQL DATETIME
 
     // 6️⃣ Insert user (DB generates UUID)
     const insertData = {
@@ -67,7 +76,7 @@ export async function registerUser({
       password: hashedPassword,
       verificationToken,
       verificationTokenExpiresAt: verificationTokenExpiresAtStr,
-      preferredLocale: (locale.toUpperCase() as "EN" | "FR" | "AR"),
+      preferredLocale: locale.toUpperCase() as "EN" | "FR" | "AR",
     };
 
     await db.insert(users).values(insertData);
@@ -99,7 +108,7 @@ export async function registerUser({
 
     // 9️⃣ Send notification to all admins
     sendNotificationToAdmins({
-      type: "ADMIN_NEW_USER",
+      type: "USER_CREATED",
       model: "USER",
       referenceId: userId,
       titleEn: "New User Registration",

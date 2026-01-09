@@ -18,7 +18,6 @@ export const isAuthenticatedUserExistsInDB = async () => {
     !user.isApproved ||
     user.deletedAt !== null
   ) {
-    console.log({ userindb: user });
     return null;
   }
   return user;

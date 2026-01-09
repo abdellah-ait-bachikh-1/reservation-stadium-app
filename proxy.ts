@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import {
-  getUserPreferredLocaleLocale,
-  updateUserPreferredLocaleLocale,
+  updateUserPreferredLocaleLocale,getUserPreferredLocale
 } from "./lib/queries/user";
 import { getToken } from "next-auth/jwt";
 import { convertCase } from "./utils";
@@ -16,7 +15,7 @@ const secret = process.env.NEXTAUTH_SECRET;
 const validLocales = routing.locales; // This should contain ['en', 'fr', 'ar'] or similar
 
 export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname } =  request.nextUrl;
   const token = await getToken({
     req: request,
     secret: secret,
@@ -24,7 +23,7 @@ export default async function middleware(request: NextRequest) {
   
   let userPrefferedLocale = "FR";
   if (token) {
-    userPrefferedLocale = await getUserPreferredLocaleLocale(token.id);
+    userPrefferedLocale = await getUserPreferredLocale(token.id);
   }
 
   // Handle root path redirect

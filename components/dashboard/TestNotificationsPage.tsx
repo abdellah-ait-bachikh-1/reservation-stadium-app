@@ -104,8 +104,6 @@ export default function TestNotificationsPage() {
         throw new Error(adminsData.error);
       }
       
-      console.log(`Loaded ${usersData.data.length} users from API`);
-      console.log(`Loaded ${adminsData.data.length} admins from API`);
     } catch (error) {
       console.error("Error loading users from API:", error);
       setResult({

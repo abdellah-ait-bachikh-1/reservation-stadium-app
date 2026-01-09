@@ -1,4 +1,4 @@
-import { UserPreferredLocaleType } from "@/drizzle/schema";
+import { UserPreferredLocaleType } from "@/types/db";
 
 export const locales = ["en", "fr", "ar"];
 export const LOCALES: UserPreferredLocaleType[] = ["FR", "EN", "AR"] as const;

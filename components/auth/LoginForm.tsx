@@ -99,7 +99,6 @@ const LoginForm = () => {
       password: formData.password,
       redirect: false,
     });
-    console.log({ result });
     if (!result?.ok) {
       setErrorsState({
         email: [

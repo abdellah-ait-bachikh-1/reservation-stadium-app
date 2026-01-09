@@ -86,7 +86,6 @@ export default function UserAvatar({
   };
 
   const handleAction = (key: string) => {
-    console.log(`User action: ${key}`);
 
     switch (key) {
       case "dashboard":

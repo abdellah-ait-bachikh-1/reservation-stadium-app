@@ -1,6 +1,6 @@
 // app/api/users/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { getUsersWithDetails, getAdminsWithDetails } from "@/lib/services/notification-service";
+import { getUsersWithDetails, getAdminsWithDetails } from "@/lib/queries/user";
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,7 +1,5 @@
 import React from "react";
 import "./globals.css";
-import { Metadata } from "next";
-import { getAppName } from "@/utils";
 
 // const metadata: Metadata = {
 //   title: getAppName("fr"),

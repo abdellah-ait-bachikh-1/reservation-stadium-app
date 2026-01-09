@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     // Get the session
     const session = await getSession();
-    console.log({session})
+    // console.log({session})
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized - No session found' },
@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
     const socket_id = formData.get('socket_id') as string;
     const channel_name = formData.get('channel_name') as string;
 
-    console.log("🔐 Pusher auth request:", {
-      socket_id: socket_id?.substring(0, 10) + '...',
-      channel_name,
-      userId
-    });
+    // console.log("🔐 Pusher auth request:", {
+    //   socket_id: socket_id?.substring(0, 10) + '...',
+    //   channel_name,
+    //   userId
+    // });
 
     // Validate required fields
     if (!socket_id || !channel_name) {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("✅ Authorizing channel for user:", userId);
+    // console.log("✅ Authorizing channel for user:", userId);
 
     // Create auth response
     const authResponse = pusherServer.authorizeChannel(
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    console.log("✅ Auth successful");
+    // console.log("✅ Auth successful");
     return NextResponse.json(authResponse);
 
   } catch (error: any) {

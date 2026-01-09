@@ -7,7 +7,7 @@ import {
   sendNotificationToAdmins,
   sendNotificationToAllUsers,
   type NotificationData
-} from "@/lib/services/notification-service";
+} from "@/lib/queries/notifications";
 
 // Test notification data templates
 const getTestNotificationData = (
@@ -35,7 +35,7 @@ const getTestNotificationData = (
 
 // Debug function to check if server action is working
 export async function debugTest() {
-  console.log("🔍 DEBUG: Server action called");
+  // console.log("🔍 DEBUG: Server action called");
   return {
     success: true,
     message: "Server action is working",
@@ -50,14 +50,14 @@ export async function sendToUser(
   customMessage?: string,
   locale: "EN" | "FR" | "AR" = "FR"
 ) {
-  console.log("🔍 sendToUser called with:", { userId, type, customMessage, locale });
+  // console.log("🔍 sendToUser called with:", { userId, type, customMessage, locale });
   
   try {
     const data = getTestNotificationData(type, customMessage, locale);
-    console.log("🔍 Notification data created:", data);
+    // console.log("🔍 Notification data created:", data);
     
     const result = await sendNotificationToUser(userId, data);
-    console.log("🔍 sendNotificationToUser result:", result);
+    // console.log("🔍 sendNotificationToUser result:", result);
     
     return {
       success: result.success,
@@ -83,14 +83,14 @@ export async function sendToUsers(
   customMessage?: string,
   locale: "EN" | "FR" | "AR" = "FR"
 ) {
-  console.log("🔍 sendToUsers called with:", { userIds, type, customMessage, locale });
+  // console.log("🔍 sendToUsers called with:", { userIds, type, customMessage, locale });
   
   try {
     const data = getTestNotificationData(type, customMessage, locale);
-    console.log("🔍 Notification data created:", data);
+    // console.log("🔍 Notification data created:", data);
     
     const result = await sendNotificationToUsers(userIds, data);
-    console.log("🔍 sendNotificationToUsers result:", result);
+    // console.log("🔍 sendNotificationToUsers result:", result);
     
     // Filter results to show only successful ones
     const successful = result.results.filter(r => r.success);
@@ -122,14 +122,14 @@ export async function sendToAllAdmins(
   customMessage?: string,
   locale: "EN" | "FR" | "AR" = "FR"
 ) {
-  console.log("🔍 sendToAllAdmins called with:", { type, customMessage, locale });
+  // console.log("🔍 sendToAllAdmins called with:", { type, customMessage, locale });
   
   try {
     const data = getTestNotificationData(type, customMessage, locale);
-    console.log("🔍 Notification data created:", data);
+    // console.log("🔍 Notification data created:", data);
     
     const result = await sendNotificationToAdmins(data);
-    console.log("🔍 sendNotificationToAdmins result:", result);
+    // console.log("🔍 sendNotificationToAdmins result:", result);
     
     const successful = result.results.filter(r => r.success);
     
@@ -158,14 +158,14 @@ export async function sendToAllUsers(
   customMessage?: string,
   locale: "EN" | "FR" | "AR" = "FR"
 ) {
-  console.log("🔍 sendToAllUsers called with:", { type, customMessage, locale });
+  // console.log("🔍 sendToAllUsers called with:", { type, customMessage, locale });
   
   try {
     const data = getTestNotificationData(type, customMessage, locale);
-    console.log("🔍 Notification data created:", data);
+    // console.log("🔍 Notification data created:", data);
     
     const result = await sendNotificationToAllUsers(data);
-    console.log("🔍 sendNotificationToAllUsers result:", result);
+    // console.log("🔍 sendNotificationToAllUsers result:", result);
     
     const successful = result.results.filter(r => r.success);
     

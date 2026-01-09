@@ -12,6 +12,7 @@ import {
   monthlySubscriptions,
   stadiumSports,
   users,
+  notificationModelValues,notificationTypes,
 } from "@/drizzle/schema";
 
 // Base types from Drizzle schema
@@ -23,7 +24,8 @@ export type InsertClubType = typeof clubs.$inferInsert;
 export type SportType = typeof sports.$inferSelect;
 export type InsertSportType = typeof sports.$inferInsert;
 
-export type NotificationType = typeof notifications.$inferSelect;
+export type NotificationType = (typeof notificationTypes)[number];
+export type NotificationModelType = (typeof notificationModelValues)[number];
 export type InsertNotificationType = typeof notifications.$inferInsert;
 
 export type StadiumType = typeof stadiums.$inferSelect;
@@ -53,6 +55,8 @@ export type StadiumSportType = typeof stadiumSports.$inferSelect;
 export type InsertStadiumSportType = typeof stadiumSports.$inferInsert;
 
 // Enum types
+
+export type UserPreferredLocaleType = "FR" | "EN" | "AR"
 export type ReservationStatusType =
   | "PENDING"
   | "APPROVED"
@@ -198,4 +202,40 @@ export interface UpdateSubscriptionStatus {
   status: SubscriptionStatusType;
   endDate?: string;
   autoRenew?: boolean;
+}
+
+export interface NotificationDataType {
+  id: string;
+  type: NotificationType; // USER_CREATED, USER_APPROVED, etc.
+  model: NotificationModelType; // USER, RESERVATION, PAYMENT, etc.
+  referenceId: string;
+  titleEn: string;
+  titleFr: string;
+  titleAr: string;
+  messageEn: string;
+  messageFr: string;
+  messageAr: string;
+  link?: string | null;
+  metadata?: any;
+  actorUserId?: string | null;
+  userId: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+// For creating notifications
+export interface CreateNotificationInput {
+  type: NotificationType; // USER_CREATED, USER_APPROVED, etc.
+  model: NotificationModelType; // USER, RESERVATION, PAYMENT, etc.
+  referenceId: string;
+  titleEn: string;
+  titleFr: string;
+  titleAr: string;
+  messageEn: string;
+  messageFr: string;
+  messageAr: string;
+  link?: string;
+  metadata?: any;
+  actorUserId?: string;
+  userId: string;
 }
