@@ -12,9 +12,10 @@ import { eq } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 import { v4 as uuidv4 } from "uuid";
 import { addDays, format } from "date-fns";
-import { generateVerificationEmail, sendEmail } from "@/lib/email/config";
 import { sendNotificationToAdmins } from "@/lib/queries/notifications";
 import { RegisterFormData } from "@/types/auth";
+import { generateVerificationEmail } from "@/lib/email/verification-email";
+import { sendEmail } from "@/services/email";
 
 export async function registerUser({
   name,
