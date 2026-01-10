@@ -84,14 +84,41 @@
             "description": "Find stadiums near you with our interactive map and advanced filters."
           }
         }
-        
-      },"stadiumsShowcase": {
-          "badge": "Popular stadiums",
-          "title": "Discover our facilities",
-          "viewAll": "View all stadiums",
-          "priceSuffix": "/session",
-          "currency": "DH"
+      },
+      "stadiumsShowcase": {
+        "badge": "Popular stadiums",
+        "title": "Discover our facilities",
+        "viewAll": "View all stadiums",
+        "priceSuffix": "/session",
+        "currency": "DH"
+      },
+      "howItWorks": {
+        "badge": "How it works",
+        "title": "As easy as 1, 2, 3, 4",
+        "description": "Book your stadium in just a few simple steps",
+        "steps": {
+          "search": {
+            "step": "01",
+            "title": "Search",
+            "description": "Browse our stadium catalog and find the perfect facility for your team."
+          },
+          "book": {
+            "step": "02",
+            "title": "Book",
+            "description": "Choose your time slot and complete your booking in just a few clicks."
+          },
+          "pay": {
+            "step": "03",
+            "title": "Pay",
+            "description": "Pay per session or choose a monthly subscription that fits your needs."
+          },
+          "play": {
+            "step": "04",
+            "title": "Play",
+            "description": "Arrive at the stadium on time and enjoy your session."
+          }
         }
+      }
     },
     "stadiums": {
       "metadata": {

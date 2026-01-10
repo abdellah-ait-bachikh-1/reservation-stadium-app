@@ -229,11 +229,6 @@ export type TranslationKey =
     | 'pages.home.featuresSection.features.notifications.title'
     | 'pages.home.featuresSection.features.security.description'
     | 'pages.home.featuresSection.features.security.title'
-    | 'pages.home.featuresSection.stadiumsShowcase.badge'
-    | 'pages.home.featuresSection.stadiumsShowcase.currency'
-    | 'pages.home.featuresSection.stadiumsShowcase.priceSuffix'
-    | 'pages.home.featuresSection.stadiumsShowcase.title'
-    | 'pages.home.featuresSection.stadiumsShowcase.viewAll'
     | 'pages.home.featuresSection.title'
     | 'pages.home.hero.badge'
     | 'pages.home.hero.description'
@@ -246,6 +241,21 @@ export type TranslationKey =
     | 'pages.home.hero.stats.reservations'
     | 'pages.home.hero.stats.satisfaction'
     | 'pages.home.hero.stats.stadiums'
+    | 'pages.home.howItWorks.badge'
+    | 'pages.home.howItWorks.description'
+    | 'pages.home.howItWorks.steps.book.description'
+    | 'pages.home.howItWorks.steps.book.step'
+    | 'pages.home.howItWorks.steps.book.title'
+    | 'pages.home.howItWorks.steps.pay.description'
+    | 'pages.home.howItWorks.steps.pay.step'
+    | 'pages.home.howItWorks.steps.pay.title'
+    | 'pages.home.howItWorks.steps.play.description'
+    | 'pages.home.howItWorks.steps.play.step'
+    | 'pages.home.howItWorks.steps.play.title'
+    | 'pages.home.howItWorks.steps.search.description'
+    | 'pages.home.howItWorks.steps.search.step'
+    | 'pages.home.howItWorks.steps.search.title'
+    | 'pages.home.howItWorks.title'
     | 'pages.home.metadata.description'
     | 'pages.home.metadata.keywords'
     | 'pages.home.metadata.title'
@@ -297,7 +307,8 @@ export const _TranslationNamespaces = {
     "hero",
     "statsSection",
     "featuresSection",
-    "stadiumsShowcase"
+    "stadiumsShowcase",
+    "howItWorks"
   ],
   "pages.home.metadata": [
     "title",
@@ -394,6 +405,38 @@ export const _TranslationNamespaces = {
     "viewAll",
     "priceSuffix",
     "currency"
+  ],
+  "pages.home.howItWorks": [
+    "badge",
+    "title",
+    "description",
+    "steps"
+  ],
+  "pages.home.howItWorks.steps": [
+    "search",
+    "book",
+    "pay",
+    "play"
+  ],
+  "pages.home.howItWorks.steps.search": [
+    "step",
+    "title",
+    "description"
+  ],
+  "pages.home.howItWorks.steps.book": [
+    "step",
+    "title",
+    "description"
+  ],
+  "pages.home.howItWorks.steps.pay": [
+    "step",
+    "title",
+    "description"
+  ],
+  "pages.home.howItWorks.steps.play": [
+    "step",
+    "title",
+    "description"
   ],
   "pages.stadiums": [
     "metadata"
@@ -714,13 +757,6 @@ export const _TranslationNamespaces = {
   "common.toast.warning": [
     "unsavedChanges",
     "confirmationRequired"
-  ],
-  "pages.home.featuresSection.stadiumsShowcase": [
-    "badge",
-    "title",
-    "viewAll",
-    "priceSuffix",
-    "currency"
   ]
 } as const;
 

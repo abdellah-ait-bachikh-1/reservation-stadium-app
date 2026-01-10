@@ -91,6 +91,32 @@
         "viewAll": "Voir tous les stades",
         "priceSuffix": "/session",
         "currency": "DH"
+      },"howItWorks": {
+        "badge": "Comment ça marche",
+        "title": "Simple comme 1, 2, 3, 4",
+        "description": "Réservez votre stade en quelques étapes simples",
+        "steps": {
+          "search": {
+            "step": "01",
+            "title": "Recherchez",
+            "description": "Parcourez notre catalogue de stades et trouvez l'installation idéale pour votre équipe."
+          },
+          "book": {
+            "step": "02",
+            "title": "Réservez",
+            "description": "Choisissez votre créneau horaire et effectuez votre réservation en quelques clics."
+          },
+          "pay": {
+            "step": "03",
+            "title": "Payez",
+            "description": "Réglez par session ou optez pour un abonnement mensuel selon vos besoins."
+          },
+          "play": {
+            "step": "04",
+            "title": "Jouez",
+            "description": "Présentez-vous au stade à l'heure convenue et profitez de votre session."
+          }
+        }
       }
     },
     "stadiums": {
