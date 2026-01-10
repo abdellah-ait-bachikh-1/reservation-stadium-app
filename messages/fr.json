@@ -31,6 +31,27 @@
           "reservations": "Réservations",
           "satisfaction": "Satisfaction"
         }
+      },  "statsSection": {
+        "title": "Des chiffres qui parlent",
+        "description": "Notre plateforme connecte les clubs aux meilleures installations sportives de la région",
+        "stats": {
+          "stadiums": {
+            "label": "Stades disponibles",
+            "description": "Dans toute la région"
+          },
+          "clubs": {
+            "label": "Clubs enregistrés",
+            "description": "Communauté active"
+          },
+          "reservations": {
+            "label": "Réservations",
+            "description": "Cette année"
+          },
+          "satisfaction": {
+            "label": "Satisfaction",
+            "description": "Clients satisfaits"
+          }
+        }
       }
     },
     "stadiums": {

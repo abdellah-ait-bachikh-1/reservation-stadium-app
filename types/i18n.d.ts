@@ -229,6 +229,16 @@ export type TranslationKey =
     | 'pages.home.metadata.description'
     | 'pages.home.metadata.keywords'
     | 'pages.home.metadata.title'
+    | 'pages.home.statsSection.description'
+    | 'pages.home.statsSection.stats.clubs.description'
+    | 'pages.home.statsSection.stats.clubs.label'
+    | 'pages.home.statsSection.stats.reservations.description'
+    | 'pages.home.statsSection.stats.reservations.label'
+    | 'pages.home.statsSection.stats.satisfaction.description'
+    | 'pages.home.statsSection.stats.satisfaction.label'
+    | 'pages.home.statsSection.stats.stadiums.description'
+    | 'pages.home.statsSection.stats.stadiums.label'
+    | 'pages.home.statsSection.title'
     | 'pages.stadiums.metadata.description'
     | 'pages.stadiums.metadata.keywords'
     | 'pages.stadiums.metadata.title';
@@ -259,7 +269,8 @@ export const _TranslationNamespaces = {
   ],
   "pages.home": [
     "metadata",
-    "hero"
+    "hero",
+    "statsSection"
   ],
   "pages.home.metadata": [
     "title",
@@ -284,6 +295,33 @@ export const _TranslationNamespaces = {
     "clubs",
     "reservations",
     "satisfaction"
+  ],
+  "pages.home.statsSection": [
+    "title",
+    "description",
+    "stats"
+  ],
+  "pages.home.statsSection.stats": [
+    "stadiums",
+    "clubs",
+    "reservations",
+    "satisfaction"
+  ],
+  "pages.home.statsSection.stats.stadiums": [
+    "label",
+    "description"
+  ],
+  "pages.home.statsSection.stats.clubs": [
+    "label",
+    "description"
+  ],
+  "pages.home.statsSection.stats.reservations": [
+    "label",
+    "description"
+  ],
+  "pages.home.statsSection.stats.satisfaction": [
+    "label",
+    "description"
   ],
   "pages.stadiums": [
     "metadata"
