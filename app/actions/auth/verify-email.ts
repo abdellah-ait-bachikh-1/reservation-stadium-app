@@ -9,7 +9,7 @@ import { format } from "date-fns";
 export async function verifyEmail(token: string) {
   try {
     if (!token) {
-      return { status: 400, message: "Invalid verification token" };
+      return { status: 404, message: "Invalid verification token" };
     }
 
     const [user] = await db

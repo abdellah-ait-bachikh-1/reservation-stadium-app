@@ -44,7 +44,7 @@ const VerifyEmailPage = () => {
         const res = await verifyEmail(token);
 
         if (res.status !== 200) {
-          if (res.message === "Verification token not found") {
+          if (res.status === 404) {
             router.replace("/");
             return;
           }
