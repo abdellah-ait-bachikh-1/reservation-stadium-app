@@ -215,6 +215,21 @@ export type TranslationKey =
     | 'pages.error.technicalDetails'
     | 'pages.error.title'
     | 'pages.error.tryAgain'
+    | 'pages.home.featuresSection.badge'
+    | 'pages.home.featuresSection.description'
+    | 'pages.home.featuresSection.features.availability.description'
+    | 'pages.home.featuresSection.features.availability.title'
+    | 'pages.home.featuresSection.features.easyBooking.description'
+    | 'pages.home.featuresSection.features.easyBooking.title'
+    | 'pages.home.featuresSection.features.flexiblePayments.description'
+    | 'pages.home.featuresSection.features.flexiblePayments.title'
+    | 'pages.home.featuresSection.features.location.description'
+    | 'pages.home.featuresSection.features.location.title'
+    | 'pages.home.featuresSection.features.notifications.description'
+    | 'pages.home.featuresSection.features.notifications.title'
+    | 'pages.home.featuresSection.features.security.description'
+    | 'pages.home.featuresSection.features.security.title'
+    | 'pages.home.featuresSection.title'
     | 'pages.home.hero.badge'
     | 'pages.home.hero.description'
     | 'pages.home.hero.exploreStadiums'
@@ -270,7 +285,8 @@ export const _TranslationNamespaces = {
   "pages.home": [
     "metadata",
     "hero",
-    "statsSection"
+    "statsSection",
+    "featuresSection"
   ],
   "pages.home.metadata": [
     "title",
@@ -321,6 +337,44 @@ export const _TranslationNamespaces = {
   ],
   "pages.home.statsSection.stats.satisfaction": [
     "label",
+    "description"
+  ],
+  "pages.home.featuresSection": [
+    "badge",
+    "title",
+    "description",
+    "features"
+  ],
+  "pages.home.featuresSection.features": [
+    "easyBooking",
+    "flexiblePayments",
+    "notifications",
+    "security",
+    "availability",
+    "location"
+  ],
+  "pages.home.featuresSection.features.easyBooking": [
+    "title",
+    "description"
+  ],
+  "pages.home.featuresSection.features.flexiblePayments": [
+    "title",
+    "description"
+  ],
+  "pages.home.featuresSection.features.notifications": [
+    "title",
+    "description"
+  ],
+  "pages.home.featuresSection.features.security": [
+    "title",
+    "description"
+  ],
+  "pages.home.featuresSection.features.availability": [
+    "title",
+    "description"
+  ],
+  "pages.home.featuresSection.features.location": [
+    "title",
     "description"
   ],
   "pages.stadiums": [

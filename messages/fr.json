@@ -52,6 +52,36 @@
             "description": "Clients satisfaits"
           }
         }
+      },"featuresSection": {
+        "badge": "Fonctionnalités",
+        "title": "Tout ce dont vous avez besoin",
+        "description": "Une plateforme complète pour gérer vos réservations de stades",
+        "features": {
+          "easyBooking": {
+            "title": "Réservation facile",
+            "description": "Réservez votre terrain en quelques clics. Disponibilité en temps réel et confirmation instantanée."
+          },
+          "flexiblePayments": {
+            "title": "Paiements flexibles",
+            "description": "Options de paiement par session ou abonnement mensuel. Factures automatiques et suivi des paiements."
+          },
+          "notifications": {
+            "title": "Notifications",
+            "description": "Restez informé avec des rappels automatiques pour vos réservations et paiements."
+          },
+          "security": {
+            "title": "Sécurisé",
+            "description": "Vos données sont protégées. Transactions sécurisées et confidentialité garantie."
+          },
+          "availability": {
+            "title": "Disponibilité 24/7",
+            "description": "Accédez à la plateforme à tout moment. Gérez vos réservations quand vous le souhaitez."
+          },
+          "location": {
+            "title": "Localisation",
+            "description": "Trouvez les stades près de chez vous avec notre carte interactive et filtres avancés."
+          }
+        }
       }
     },
     "stadiums": {

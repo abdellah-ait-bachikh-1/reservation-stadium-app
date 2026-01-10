@@ -53,6 +53,37 @@
             "description": "Happy customers"
           }
         }
+      },
+      "featuresSection": {
+        "badge": "Features",
+        "title": "Everything you need",
+        "description": "A complete platform to manage your stadium bookings",
+        "features": {
+          "easyBooking": {
+            "title": "Easy booking",
+            "description": "Book your field in just a few clicks. Real-time availability and instant confirmation."
+          },
+          "flexiblePayments": {
+            "title": "Flexible payments",
+            "description": "Pay per session or via monthly subscription. Automatic invoices and payment tracking."
+          },
+          "notifications": {
+            "title": "Notifications",
+            "description": "Stay informed with automatic reminders for your bookings and payments."
+          },
+          "security": {
+            "title": "Secure",
+            "description": "Your data is protected. Secure transactions and guaranteed privacy."
+          },
+          "availability": {
+            "title": "24/7 availability",
+            "description": "Access the platform anytime. Manage your bookings whenever you want."
+          },
+          "location": {
+            "title": "Location",
+            "description": "Find stadiums near you with our interactive map and advanced filters."
+          }
+        }
       }
     },
     "stadiums": {
