@@ -84,7 +84,14 @@
             "description": "Find stadiums near you with our interactive map and advanced filters."
           }
         }
-      }
+        
+      },"stadiumsShowcase": {
+          "badge": "Popular stadiums",
+          "title": "Discover our facilities",
+          "viewAll": "View all stadiums",
+          "priceSuffix": "/session",
+          "currency": "DH"
+        }
     },
     "stadiums": {
       "metadata": {

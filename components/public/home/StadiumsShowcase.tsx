@@ -5,8 +5,10 @@ import { useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Button } from "@heroui/button"
 import { HiArrowRight, HiMapPin, HiStar } from "react-icons/hi2"
-import Link from "next/link"
 import Image from "next/image"
+import { useTypedTranslations } from "@/utils/i18n"
+import { useLocale } from "next-intl"
+import { Link } from "@/i18n/navigation"
 
 const stadiums = [
   {
@@ -48,6 +50,8 @@ const stadiums = [
 ]
 
 export function StadiumsShowcase() {
+  const t = useTypedTranslations()
+  const locale = useLocale()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [hoveredId, setHoveredId] = useState<number | null>(null)
@@ -63,20 +67,21 @@ export function StadiumsShowcase() {
         >
           <div>
             <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-sm font-medium mb-4">
-              Stades populaires
+              {t('pages.home.stadiumsShowcase.title')}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white text-balance">
-              Découvrez nos installations
+              {t('pages.home.stadiumsShowcase.title')}
             </h2>
           </div>
           <Button
             as={Link}
             href="/stadiums"
+            hrefLang={locale}
             variant="flat"
             color="warning"
             endContent={<HiArrowRight className="w-4 h-4" />}
           >
-            Voir tous les stades
+            {t('pages.home.stadiumsShowcase.viewAll')}
           </Button>
         </motion.div>
 
@@ -124,9 +129,9 @@ export function StadiumsShowcase() {
                 <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
                   <div>
                     <span className="text-xl font-bold text-amber-600 dark:text-amber-400">
-                      {stadium.pricePerSession} DH
+                      {stadium.pricePerSession} {t('pages.home.stadiumsShowcase.currency')}
                     </span>
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">/session</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{t('pages.home.stadiumsShowcase.priceSuffix')}</span>
                   </div>
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}

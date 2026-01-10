@@ -229,6 +229,11 @@ export type TranslationKey =
     | 'pages.home.featuresSection.features.notifications.title'
     | 'pages.home.featuresSection.features.security.description'
     | 'pages.home.featuresSection.features.security.title'
+    | 'pages.home.featuresSection.stadiumsShowcase.badge'
+    | 'pages.home.featuresSection.stadiumsShowcase.currency'
+    | 'pages.home.featuresSection.stadiumsShowcase.priceSuffix'
+    | 'pages.home.featuresSection.stadiumsShowcase.title'
+    | 'pages.home.featuresSection.stadiumsShowcase.viewAll'
     | 'pages.home.featuresSection.title'
     | 'pages.home.hero.badge'
     | 'pages.home.hero.description'
@@ -244,6 +249,11 @@ export type TranslationKey =
     | 'pages.home.metadata.description'
     | 'pages.home.metadata.keywords'
     | 'pages.home.metadata.title'
+    | 'pages.home.stadiumsShowcase.badge'
+    | 'pages.home.stadiumsShowcase.currency'
+    | 'pages.home.stadiumsShowcase.priceSuffix'
+    | 'pages.home.stadiumsShowcase.title'
+    | 'pages.home.stadiumsShowcase.viewAll'
     | 'pages.home.statsSection.description'
     | 'pages.home.statsSection.stats.clubs.description'
     | 'pages.home.statsSection.stats.clubs.label'
@@ -286,7 +296,8 @@ export const _TranslationNamespaces = {
     "metadata",
     "hero",
     "statsSection",
-    "featuresSection"
+    "featuresSection",
+    "stadiumsShowcase"
   ],
   "pages.home.metadata": [
     "title",
@@ -376,6 +387,13 @@ export const _TranslationNamespaces = {
   "pages.home.featuresSection.features.location": [
     "title",
     "description"
+  ],
+  "pages.home.stadiumsShowcase": [
+    "badge",
+    "title",
+    "viewAll",
+    "priceSuffix",
+    "currency"
   ],
   "pages.stadiums": [
     "metadata"
@@ -696,6 +714,13 @@ export const _TranslationNamespaces = {
   "common.toast.warning": [
     "unsavedChanges",
     "confirmationRequired"
+  ],
+  "pages.home.featuresSection.stadiumsShowcase": [
+    "badge",
+    "title",
+    "viewAll",
+    "priceSuffix",
+    "currency"
   ]
 } as const;
 
