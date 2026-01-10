@@ -1,3 +1,9 @@
+import { CTASection } from "@/components/public/home/CTASection";
+import { FeaturesSection } from "@/components/public/home/FeaturesSection";
+import { HeroSection } from "@/components/public/home/HeroSection";
+import { HowItWorks } from "@/components/public/home/HowItWorks";
+import { StadiumsShowcase } from "@/components/public/home/StadiumsShowcase";
+import { StatsSection } from "@/components/public/home/StatsSection";
 import TestToast from "@/components/TestToast";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 
@@ -25,15 +31,12 @@ export async function generateMetadata({
 const page = async () => {
   return (
     <div>
-      <ThemeSwitcher />
-      <TestToast />
-      {new Array(100).fill(null).map((_, i) => (
-        <div key={i}> {i} </div>
-      ))}
-      <div>
-        sqdnqkjsdhj kssssssssssss ssss ssssssssssss sssssssssssssssssssssssss
-        sssssssssssss ssssssssss ssssssssssssssssssssss
-      </div>
+            <HeroSection />
+      <StatsSection />
+      <FeaturesSection />
+      <StadiumsShowcase />
+      <HowItWorks />
+      <CTASection />
     </div>
   );
 };

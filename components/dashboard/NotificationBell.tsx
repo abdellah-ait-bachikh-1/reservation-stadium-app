@@ -50,8 +50,6 @@ const NotificationBell = () => {
     positionStyle,
     calculatePosition,
     refinePosition,
-    isMobile,
-    isCalculated,
   } = useSafePositionScreen(() => setIsOpen(false));
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
