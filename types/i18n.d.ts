@@ -215,9 +215,17 @@ export type TranslationKey =
     | 'pages.error.technicalDetails'
     | 'pages.error.title'
     | 'pages.error.tryAgain'
-    | 'pages.home.hero.cta'
-    | 'pages.home.hero.subtitle'
-    | 'pages.home.hero.title'
+    | 'pages.home.hero.badge'
+    | 'pages.home.hero.description'
+    | 'pages.home.hero.exploreStadiums'
+    | 'pages.home.hero.howItWorks'
+    | 'pages.home.hero.mainTitle.first'
+    | 'pages.home.hero.mainTitle.seconde'
+    | 'pages.home.hero.mainTitle.thirth'
+    | 'pages.home.hero.stats.clubs'
+    | 'pages.home.hero.stats.reservations'
+    | 'pages.home.hero.stats.satisfaction'
+    | 'pages.home.hero.stats.stadiums'
     | 'pages.home.metadata.description'
     | 'pages.home.metadata.keywords'
     | 'pages.home.metadata.title'
@@ -259,9 +267,23 @@ export const _TranslationNamespaces = {
     "keywords"
   ],
   "pages.home.hero": [
-    "title",
-    "subtitle",
-    "cta"
+    "badge",
+    "mainTitle",
+    "description",
+    "exploreStadiums",
+    "howItWorks",
+    "stats"
+  ],
+  "pages.home.hero.mainTitle": [
+    "first",
+    "seconde",
+    "thirth"
+  ],
+  "pages.home.hero.stats": [
+    "stadiums",
+    "clubs",
+    "reservations",
+    "satisfaction"
   ],
   "pages.stadiums": [
     "metadata"

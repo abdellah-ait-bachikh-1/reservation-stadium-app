@@ -28,10 +28,11 @@ export async function generateMetadata({
       "réservation stade Tantan, installations sportives Tan-Tan, réservation terrain sport Tantan Maroc, réserver terrain football Tan-Tan, location court basket Tantan, équipements sportifs Tan-Tan, complexe sportif Tantan, terrains athlétiques Tan-Tan, réservation terrain jeu Tantan, centres de loisirs Tan-Tan",
   };
 }
-const page = async () => {
+const page = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  await params
   return (
     <div>
-            <HeroSection />
+      <HeroSection />
       <StatsSection />
       <FeaturesSection />
       <StadiumsShowcase />
