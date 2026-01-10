@@ -1,13 +1,12 @@
 // hooks/useSafePositionScreen.ts
 import { useState, useEffect, useRef, useCallback } from "react";
 
-export const useSafePositionScreen = () => {
+export const useSafePositionScreen = (onClickOutside?: () => void) => {
   const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
   const [isMobile, setIsMobile] = useState(false);
   const [isCalculated, setIsCalculated] = useState(false);
   
   const bellRef = useRef<HTMLDivElement>(null);
-
   const dropdownRef = useRef<HTMLDivElement>(null);
  
   const calculatePosition = useCallback(() => {
@@ -22,31 +21,17 @@ export const useSafePositionScreen = () => {
     setIsMobile(mobileView);
 
     if (mobileView) {
-      // Mobile positioning - centered with fixed positioning
+      // Mobile positioning - centered in the screen with fixed positioning
       const dropdownWidth = Math.min(384, viewportWidth - 32);
-      const centerX = viewportWidth / 2;
-      let leftPosition = centerX - dropdownWidth / 2;
-
-      // Ensure dropdown stays within viewport bounds
-      leftPosition = Math.max(16, leftPosition);
-      leftPosition = Math.min(leftPosition, viewportWidth - dropdownWidth - 16);
-
-      // Estimate dropdown height (will be refined when dropdown opens)
-      const estimatedHeight = 400; // Approximate height
-
-      let topPosition: number;
-      const spaceBelow = viewportHeight - bellRect.bottom;
-
-      if (spaceBelow > estimatedHeight + 16) {
-        // Enough space below
-        topPosition = bellRect.bottom + 8;
-      } else if (bellRect.top > estimatedHeight + 16) {
-        // Enough space above
-        topPosition = bellRect.top - estimatedHeight - 8;
-      } else {
-        // Center vertically
-        topPosition = Math.max(16, (viewportHeight - estimatedHeight) / 2);
-      }
+      
+      // Center horizontally in the viewport
+      const leftPosition = Math.max(16, (viewportWidth - dropdownWidth) / 2);
+      
+      // Estimate dropdown height
+      const estimatedHeight = 400;
+      
+      // Position with adequate margin from top and bottom
+      const topPosition = Math.max(16, Math.min(80, (viewportHeight - estimatedHeight) / 2));
 
       setPositionStyle({
         position: "fixed",
@@ -54,18 +39,20 @@ export const useSafePositionScreen = () => {
         top: `${topPosition}px`,
         width: `${dropdownWidth}px`,
         maxWidth: "384px",
+        maxHeight: `${viewportHeight - 32}px`,
         zIndex: 9999,
       });
     } else {
-      // Desktop positioning - use your original logic
+      // Desktop positioning - relative to bell
       const spaceOnRight = viewportWidth - bellRect.right;
+      const estimatedHeight = 400;
       
       let desktopStyle: React.CSSProperties = {
         position: "absolute",
         top: "100%",
         marginTop: "8px",
         zIndex: 9999,
-        width: "384px", // Fixed width for desktop (w-96)
+        width: "384px",
       };
 
       // Check if dropdown would overflow on the right
@@ -80,7 +67,6 @@ export const useSafePositionScreen = () => {
       }
 
       // Check vertical space
-      const estimatedHeight = 400;
       if (bellRect.bottom + estimatedHeight + 8 > viewportHeight - 16) {
         // Position above if not enough space below
         desktopStyle.top = "auto";
@@ -101,13 +87,14 @@ export const useSafePositionScreen = () => {
 
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
     const bellRect = bellRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
     setPositionStyle(prev => {
       const newStyle = { ...prev };
       
-      // Refine vertical positioning based on actual dropdown height
       if (newStyle.position === "absolute") {
+        // Desktop refinement
         const isPositionedAbove = newStyle.bottom === "100%";
         
         if (!isPositionedAbove) {
@@ -129,41 +116,87 @@ export const useSafePositionScreen = () => {
           }
         }
       } else if (newStyle.position === "fixed") {
-        // Refine mobile positioning
-        const spaceBelow = viewportHeight - bellRect.bottom;
+        // Mobile refinement - ensure it's centered and visible
+        const dropdownWidth = Math.min(384, viewportWidth - 32);
         
-        if (spaceBelow < dropdownRect.height + 16 && bellRect.top > dropdownRect.height + 16) {
-          // Move above bell
-          newStyle.top = `${bellRect.top - dropdownRect.height - 8}px`;
-        } else if (spaceBelow >= dropdownRect.height + 16) {
-          // Keep below bell
-          newStyle.top = `${bellRect.bottom + 8}px`;
-        }
+        // Recalculate left position to ensure centering
+        const leftPosition = Math.max(16, (viewportWidth - dropdownWidth) / 2);
+        newStyle.left = `${leftPosition}px`;
         
-        // Ensure it doesn't go off screen
-        if (parseInt(newStyle.top as string) + dropdownRect.height > viewportHeight - 16) {
+        // Adjust top position if needed
+        const currentTop = parseInt(newStyle.top as string) || 0;
+        
+        if (currentTop + dropdownRect.height > viewportHeight - 16) {
+          // Too low, move up
           newStyle.top = `${Math.max(16, viewportHeight - dropdownRect.height - 16)}px`;
+        } else if (currentTop < 16) {
+          // Too high, move down
+          newStyle.top = "16px";
         }
         
-        // Set max height if needed
-        if (dropdownRect.height > viewportHeight - 32) {
-          newStyle.maxHeight = `${viewportHeight - 32}px`;
-        }
+        // Ensure max height doesn't exceed viewport
+        newStyle.maxHeight = `${viewportHeight - 32}px`;
       }
       
       return newStyle;
     });
   }, []);
 
+  // Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!onClickOutside) return;
+      
+      const target = event.target as Node;
+      
+      // Check if click is outside both bell container and dropdown
+      const isClickOutside = 
+        bellRef.current && 
+        !bellRef.current.contains(target) && 
+        dropdownRef.current && 
+        !dropdownRef.current.contains(target);
+      
+      if (isClickOutside) {
+        onClickOutside();
+      }
+    };
+
+    // Handle escape key
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && onClickOutside) {
+        onClickOutside();
+      }
+    };
+
+    if (onClickOutside) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    // Cleanup
+    return () => {
+      if (onClickOutside) {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleEscapeKey);
+      }
+    };
+  }, [onClickOutside]);
+
   useEffect(() => {
     calculatePosition();
 
-    window.addEventListener("resize", calculatePosition);
+    const handleResize = () => {
+      calculatePosition();
+      // Small delay to refine after resize
+      setTimeout(refinePosition, 100);
+    };
+
+    window.addEventListener("resize", handleResize);
     
     return () => {
-      window.removeEventListener("resize", calculatePosition);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [calculatePosition]);
+  }, [calculatePosition, refinePosition]);
 
   // Refine position when dropdown opens
   useEffect(() => {

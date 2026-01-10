@@ -13,7 +13,7 @@ import { NotificationType, UserPreferredLocaleType } from "@/types/db";
 import { markAllNotificationAsReadAction, markOnNotificationAsReadAction } from "@/app/actions/notifications/notifications";
 import { isErrorHasMessage } from "@/utils";
 import { addToast } from "@heroui/toast";
-import { FaCheck, FaEbay, FaEye } from "react-icons/fa";
+import { FaCheck, FaCheckDouble, FaEbay, FaEye } from "react-icons/fa";
 import { Tooltip } from "@heroui/tooltip"
 interface NotificationItem {
   id: string;
@@ -52,7 +52,7 @@ const NotificationBell = () => {
     refinePosition,
     isMobile,
     isCalculated,
-  } = useSafePositionScreen();
+  } = useSafePositionScreen(() => setIsOpen(false));
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -431,7 +431,7 @@ const NotificationBell = () => {
   };
 
   return (
-    <div className="relative" ref={bellRef}>
+    <div className="relative" ref={safeBallRef}>
       <Badge
         content={unreadCount}
         color="danger"
@@ -495,15 +495,23 @@ const NotificationBell = () => {
                   </p>
                 </div>
                 {unreadCount > 0 && (
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    className="text-xs"
-                    onPress={markAllAsRead}
+                  <Tooltip
+                    content={t("common.notifications.markAllRead")}
+                    placement="bottom"
+                    showArrow
+                    color="foreground"
                   >
-                    <HiCheck className="w-3 h-3 mr-1" />
-                    {t("common.notifications.markAllRead")}
-                  </Button>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      className="text-xs"
+                      radius="lg"
+                      onPress={markAllAsRead}
+                      isIconOnly
+                    >
+                      <FaCheckDouble className="w-3 h-3" />
+                    </Button>
+                  </Tooltip>
                 )}
               </div>
 
@@ -573,17 +581,19 @@ const NotificationBell = () => {
 
                         {/* This button is positioned relative to the entire notification card */}
                         {!notification.read && (
-                          <Tooltip content={t('common.notifications.markOneAsRead')} placement="right" showArrow>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                markAsRead(notification.id);
-                              }}
-                              className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-300 dark:hover:border-blue-700 shadow-sm z-10"
+                          <Tooltip color="foreground"
+                            content={t('common.notifications.markOneAsRead')} placement="bottom" showArrow>
+                            <Button
+                              size="sm"
+                              variant="flat"
+                              className="text-xs absolute top-3 right-3"
+                              radius="lg"
+                              onPress={() => markAsRead(notification.id)}
+                              isIconOnly
                             >
-                              <FaCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                            </button>
+                              <FaCheck className="w-3 h-3" />
+                            </Button>
+
                           </Tooltip>
                         )}
                       </motion.div>
