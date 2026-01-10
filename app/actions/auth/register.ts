@@ -5,7 +5,7 @@ import { db } from "@/drizzle/db";
 import { users, NOTIFICATION_MODELS, notifications } from "@/drizzle/schema";
 import { validateRegisterFormData } from "@/lib/validations/register";
 import { LocaleEnumType } from "@/types";
-import { isErrorHasMessage } from "@/utils";
+import { convertCase, isErrorHasMessage } from "@/utils";
 import { getLocalizedValidationMessage } from "@/utils/validation";
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
@@ -78,13 +78,14 @@ export async function registerUser({
       verificationToken,
       verificationTokenExpiresAt: verificationTokenExpiresAtStr,
       preferredLocale: locale.toUpperCase() as "EN" | "FR" | "AR",
+     
     };
 
     await db.insert(users).values(insertData);
 
     // 7️⃣ Retrieve the newly created user
     const [newUser] = await db
-      .select({ id: users.id, name: users.name, email: users.email })
+      .select({ id: users.id, name: users.name, email: users.email,preferredLocale:users.preferredLocale })
       .from(users)
       .where(eq(users.email, data.email))
       .limit(1);
@@ -98,7 +99,7 @@ export async function registerUser({
       name: data.name,
       email: data.email,
       verificationToken,
-      locale: locale as "EN" | "FR" | "AR",
+     locale: newUser.preferredLocale ,
     });
 
     sendEmail({

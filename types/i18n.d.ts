@@ -168,6 +168,10 @@ export type TranslationKey =
     | 'pages.auth.emailVerification.loading.steps.preparingDashboard'
     | 'pages.auth.emailVerification.loading.steps.updatingAccount'
     | 'pages.auth.emailVerification.loading.title'
+    | 'pages.auth.emailVerification.ready.message'
+    | 'pages.auth.emailVerification.ready.note'
+    | 'pages.auth.emailVerification.ready.title'
+    | 'pages.auth.emailVerification.ready.verifyButton'
     | 'pages.auth.emailVerification.success.adminReviewTitle'
     | 'pages.auth.emailVerification.success.adminWillCall'
     | 'pages.auth.emailVerification.success.callVerificationInfo'
@@ -515,10 +519,17 @@ export const _TranslationNamespaces = {
     "keywords"
   ],
   "pages.auth.emailVerification": [
+    "ready",
     "title",
     "loading",
     "success",
     "error"
+  ],
+  "pages.auth.emailVerification.ready": [
+    "title",
+    "message",
+    "verifyButton",
+    "note"
   ],
   "pages.auth.emailVerification.loading": [
     "title",

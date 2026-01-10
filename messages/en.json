@@ -180,6 +180,12 @@
       },
       "emailVerification": {
         "title": "Email Verification",
+         "ready": {
+          "title": "Ready to verify your email?",
+          "message": "Click the button below to verify your email address and complete your registration.",
+          "verifyButton": "Verify Email",
+          "note": "Make sure you're on a secure device before proceeding."
+        },
         "loading": {
           "title": "Verifying Your Email",
           "message": "Please wait while we verify your email address...",

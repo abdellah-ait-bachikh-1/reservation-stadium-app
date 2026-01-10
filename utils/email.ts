@@ -1,4 +1,5 @@
-// lib/email-templates/verification-email.ts
+import { convertCase } from ".";
+
 export function generateVerificationEmail({
   name,
   email,
@@ -47,7 +48,7 @@ export function generateVerificationEmail({
   };
 
   const t = translations[locale];
-  const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?token=${verificationToken}`;
+  const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/${convertCase(locale,"lower")}/auth/verify-email?token=${verificationToken}`;
 
   const html = `
 <!DOCTYPE html>
@@ -314,4 +315,19 @@ export function generateVerificationEmail({
     subject: t.subject,
     html
   };
+}
+
+// Also export a simple test function to verify it works
+export function testEmailGeneration() {
+  const testEmail = generateVerificationEmail({
+    name: "John Doe",
+    email: "john@example.com",
+    verificationToken: "test-token-123",
+    locale: "EN"
+  });
+  
+  console.log("Email subject:", testEmail.subject);
+  console.log("Email HTML length:", testEmail.html.length);
+  
+  return testEmail;
 }

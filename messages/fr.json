@@ -178,7 +178,12 @@
         "dont_have_account": "Vous n’avez pas de compte ?",
         "forgot_password": "Mot de passe oublié ?"
       },
-      "emailVerification": {
+      "emailVerification": {"ready": {
+          "title": "Prêt à vérifier votre email ?",
+          "message": "Cliquez sur le bouton ci-dessous pour vérifier votre adresse e-mail et terminer votre inscription.",
+          "verifyButton": "Vérifier l'email",
+          "note": "Assurez-vous d'être sur un appareil sécurisé avant de continuer."
+        },
         "title": "Vérification d'email",
         "loading": {
           "title": "Vérification de votre email",
