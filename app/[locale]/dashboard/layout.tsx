@@ -7,6 +7,8 @@
 //   const t = await getTypedTranslations();
 
 import NotificationBell from "@/components/dashboard/NotificationBell";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 
 //   return {
@@ -30,8 +32,8 @@ export default async function DashboardLayout({
  
   return (
     <>
-      <header>
-        <NotificationBell />
+      <header className="flex items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
+        <NotificationBell /> <ThemeSwitcher/> <LanguageSwitcher/>
       </header>
       {children}
     </>

@@ -10,7 +10,11 @@ import { disconnectPusher, pusherClient } from "@/lib/pusher/client";
 import { useSafePositionScreen } from "@/hooks/useSafePositionScreen";
 import { useTypedTranslations } from "@/utils/i18n";
 import { NotificationType, UserPreferredLocaleType } from "@/types/db";
-
+import { markAllNotificationAsReadAction, markOnNotificationAsReadAction } from "@/app/actions/notifications/notifications";
+import { isErrorHasMessage } from "@/utils";
+import { addToast } from "@heroui/toast";
+import { FaCheck, FaEbay, FaEye } from "react-icons/fa";
+import { Tooltip } from "@heroui/tooltip"
 interface NotificationItem {
   id: string;
   type: NotificationType;
@@ -68,31 +72,7 @@ const NotificationBell = () => {
     return "just now";
   };
 
-  // Get localized content based on user's locale
-  const getLocalizedContent = (
-    notification: any,
-    userLocale: string
-  ): { title: string; message: string } => {
-    const localeKey = userLocale.toUpperCase() as UserPreferredLocaleType;
 
-    switch (localeKey) {
-      case "FR":
-        return {
-          title: notification.titleFr,
-          message: notification.messageFr,
-        };
-      case "AR":
-        return {
-          title: notification.titleAr,
-          message: notification.messageAr,
-        };
-      default:
-        return {
-          title: notification.titleEn,
-          message: notification.messageEn,
-        };
-    }
-  };
 
   // Transform API response to NotificationItem
   // In your NotificationBell component
@@ -209,37 +189,46 @@ const NotificationBell = () => {
   // Mark notification as read
   const markAsRead = async (id: string) => {
     try {
-      const response = await fetch(`/api/notifications/${id}/read`, {
-        method: "POST",
-      });
+      const { success } = await markOnNotificationAsReadAction(id)
 
-      if (response.ok) {
-        // Update local state
+      if (success) {
         setNotifications((prev) =>
           prev.map((notif) =>
             notif.id === id ? { ...notif, read: true } : notif
           )
         );
+        addToast({ title: t('common.notifications.title'), description: t('common.notifications.markOneAsRead'), color: "primary" })
+
       }
     } catch (error) {
       console.error("Error marking notification as read:", error);
+      if (isErrorHasMessage(error)) {
+        throw new Error(error.message)
+      } else {
+        throw new Error("network Error")
+
+      }
     }
   };
 
   // Mark all as read
   const markAllAsRead = async () => {
     try {
-      const response = await fetch("/api/notifications/read-all", {
-        method: "POST",
-      });
-
-      if (response.ok) {
+      const { success } = await markAllNotificationAsReadAction()
+      if (success) {
         setNotifications((prev) =>
           prev.map((notif) => ({ ...notif, read: true }))
         );
+        addToast({ title: t('common.notifications.title'), description: t('common.notifications.markAllRead'), color: "primary" })
       }
     } catch (error) {
       console.error("Error marking all as read:", error);
+      if (isErrorHasMessage(error)) {
+        throw new Error(error.message)
+      } else {
+        throw new Error("network Error")
+
+      }
     }
   };
 
@@ -347,46 +336,46 @@ const NotificationBell = () => {
   // Get icon for notification type
   const getIconForType = (type: string) => {
     const colorMap: Record<string, { bg: string; text: string; icon: string }> =
-      {
-        USER: {
-          bg: "bg-blue-100 dark:bg-blue-900/30",
-          text: "text-blue-600 dark:text-blue-400",
-          icon: "👤",
-        },
-        RESERVATION: {
-          bg: "bg-green-100 dark:bg-green-900/30",
-          text: "text-green-600 dark:text-green-400",
-          icon: "📅",
-        },
-        PAYMENT: {
-          bg: "bg-purple-100 dark:bg-purple-900/30",
-          text: "text-purple-600 dark:text-purple-400",
-          icon: "💰",
-        },
-        SYSTEM: {
-          bg: "bg-gray-100 dark:bg-gray-900/30",
-          text: "text-gray-600 dark:text-gray-400",
-          icon: "⚙",
-        },
-        EMAIL: {
-          bg: "bg-amber-100 dark:bg-amber-900/30",
-          text: "text-amber-600 dark:text-amber-400",
-          icon: "✉",
-        },
-        CLUB: {
-          bg: "bg-indigo-100 dark:bg-indigo-900/30",
-          text: "text-indigo-600 dark:text-indigo-400",
-          icon: "🏆",
-        },
-        ADMIN: {
-          bg: "bg-red-100 dark:bg-red-900/30",
-          text: "text-red-600 dark:text-red-400",
-          icon: "🛡",
-        },
-      };
+    {
+      USER: {
+        bg: "bg-blue-100 dark:bg-blue-900/30",
+        text: "text-blue-600 dark:text-blue-400",
+        icon: "👤",
+      },
+      RESERVATION: {
+        bg: "bg-green-100 dark:bg-green-900/30",
+        text: "text-green-600 dark:text-green-400",
+        icon: "📅",
+      },
+      PAYMENT: {
+        bg: "bg-purple-100 dark:bg-purple-900/30",
+        text: "text-purple-600 dark:text-purple-400",
+        icon: "💰",
+      },
+      SYSTEM: {
+        bg: "bg-zinc-100 dark:bg-zinc-900/30",
+        text: "text-gray-600 dark:text-gray-400",
+        icon: "⚙",
+      },
+      EMAIL: {
+        bg: "bg-amber-100 dark:bg-amber-900/30",
+        text: "text-amber-600 dark:text-amber-400",
+        icon: "✉",
+      },
+      CLUB: {
+        bg: "bg-indigo-100 dark:bg-indigo-900/30",
+        text: "text-indigo-600 dark:text-indigo-400",
+        icon: "🏆",
+      },
+      ADMIN: {
+        bg: "bg-red-100 dark:bg-red-900/30",
+        text: "text-red-600 dark:text-red-400",
+        icon: "🛡",
+      },
+    };
 
     const config = colorMap[type.split("_")[0]] || {
-      bg: "bg-gray-100 dark:bg-gray-900/30",
+      bg: "bg-zinc-100 dark:bg-zinc-900/30",
       text: "text-gray-600 dark:text-gray-400",
       icon: "🔔",
     };
@@ -414,11 +403,11 @@ const NotificationBell = () => {
       case "CLUB":
         return "bg-indigo-500";
       case "SYSTEM":
-        return "bg-gray-500";
+        return "bg-zinc-500";
       case "ADMIN":
         return "bg-red-500";
       default:
-        return "bg-gray-500";
+        return "bg-zinc-500";
     }
   };
 
@@ -432,7 +421,7 @@ const NotificationBell = () => {
 
   // Handle notification click (mark as read and navigate)
   const handleNotificationClick = (notification: NotificationItem) => {
-    markAsRead(notification.id);
+    // markAsRead(notification.id);
 
     if (notification.link) {
       window.location.href = notification.link;
@@ -451,7 +440,9 @@ const NotificationBell = () => {
       >
         <Button
           isIconOnly
-          variant="light"
+          variant="flat"
+          size="sm"
+          radius="lg"
           className="relative"
           onPress={handleBellClick}
           aria-label="Notifications"
@@ -475,7 +466,7 @@ const NotificationBell = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.7, y: -10 }}
               style={positionStyle}
-              className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden w-96 max-w-[calc(100vw-2rem)] z-50"
+              className="bg-white absolute top-9 dark:bg-zinc-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden w-96 max-w-[calc(100vw-2rem)] z-50"
             >
               {/* Header */}
               <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -485,19 +476,18 @@ const NotificationBell = () => {
                       {t("common.notifications.title")}
                     </h3>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        connectionStatus === "connected"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : connectionStatus === "connecting"
+                      className={`text-xs px-2 py-1 rounded-full ${connectionStatus === "connected"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        : connectionStatus === "connecting"
                           ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
                           : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
+                        }`}
                     >
                       {connectionStatus === "connected"
                         ? t("common.notifications.live")
                         : connectionStatus === "connecting"
-                        ? t("common.notifications.connecting")
-                        : t("common.notifications.offline")}
+                          ? t("common.notifications.connecting")
+                          : t("common.notifications.offline")}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -553,47 +543,49 @@ const NotificationBell = () => {
                         key={notification.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
-                          notification.read
-                            ? ""
-                            : "bg-blue-50/50 dark:bg-blue-900/10"
-                        }`}
+                        className={`group p-4 relative hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer ${notification.read ? "" : "bg-blue-50/50 dark:bg-blue-900/10"
+                          }`}
                         onClick={() => handleNotificationClick(notification)}
                       >
                         <div className="flex gap-3">
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 relative">
                             {getIconForType(notification.type)}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-start">
                               <h4 className="font-medium text-gray-900 dark:text-white">
-                                {notification.localizedTitle ||
-                                  notification.title}
+                                {notification.localizedTitle || notification.title}
                               </h4>
-                              {!notification.read && (
-                                <div
-                                  className={`w-2 h-2 rounded-full ${getTypeColor(
-                                    notification.type
-                                  )}`}
-                                />
-                              )}
                             </div>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
-                              {notification.localizedMessage ||
-                                notification.message}
+                              {notification.localizedMessage || notification.message}
                             </p>
                             <div className="flex justify-between items-center mt-2">
                               <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {notification.time}
                               </span>
-                              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                                {notification.type
-                                  .replace(/_/g, " ")
-                                  .toLowerCase()}
+                              <span className="text-xs px-2 py-1 rounded-full bg-zinc-100 text-gray-600 dark:bg-zinc-800 dark:text-gray-400">
+                                {notification.type.replace(/_/g, " ").toLowerCase()}
                               </span>
                             </div>
                           </div>
                         </div>
+
+                        {/* This button is positioned relative to the entire notification card */}
+                        {!notification.read && (
+                          <Tooltip content={t('common.notifications.markOneAsRead')} placement="right" showArrow>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                markAsRead(notification.id);
+                              }}
+                              className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-300 dark:hover:border-blue-700 shadow-sm z-10"
+                            >
+                              <FaCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                            </button>
+                          </Tooltip>
+                        )}
                       </motion.div>
                     ))}
                   </div>
@@ -601,7 +593,7 @@ const NotificationBell = () => {
               </div>
 
               {/* Footer */}
-              <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-gray-50 dark:bg-gray-800/50">
+              <div className="p-3 border-t border-gray-200 dark:border-gray-700 text-center bg-zinc-50 dark:bg-zinc-800/50">
                 <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-2 px-2">
                   <span>
                     {notifications.length} {t("common.notifications.total")}{" "}

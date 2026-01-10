@@ -4,16 +4,14 @@ import { getSession } from "@/lib/auth";
 import { db } from "@/drizzle/db";
 import { notifications, users } from "@/drizzle/schema";
 import { eq, desc } from "drizzle-orm";
+import { getLimitedNotificationForUser } from "@/lib/queries/notifications";
 
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
-    
+
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userId = session.user.id;
@@ -24,28 +22,24 @@ export async function GET(request: NextRequest) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
       columns: {
-        preferredLocale: true
-      }
+        preferredLocale: true,
+      },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const locale = user.preferredLocale as "EN" | "FR" | "AR";
 
     // Get notifications for the user
-    const userNotifications = await db.query.notifications.findMany({
-      where: eq(notifications.userId, userId),
-      orderBy: [desc(notifications.createdAt)],
-      limit: limit
-    });
+    const userNotifications = await getLimitedNotificationForUser(
+      userId,
+      limit
+    );
 
     // Transform with ONLY the user's locale
-    const transformedNotifications = userNotifications.map(notification => {
+    const transformedNotifications = userNotifications.map((notification) => {
       // Get title and message based on user's locale
       let title = "";
       let message = "";
@@ -92,15 +86,14 @@ export async function GET(request: NextRequest) {
       data: transformedNotifications,
       total: transformedNotifications.length,
       limit,
-      userLocale: locale
+      userLocale: locale,
     });
-    
   } catch (error: any) {
     console.error("Error fetching notifications:", error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error.message || "Failed to fetch notifications" 
+      {
+        success: false,
+        error: error.message || "Failed to fetch notifications",
       },
       { status: 500 }
     );

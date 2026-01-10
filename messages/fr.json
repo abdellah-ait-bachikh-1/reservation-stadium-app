@@ -68,20 +68,22 @@
         "title": "Connectez-vous à votre compte",
         "dont_have_account": "Vous n’avez pas de compte ?",
         "forgot_password": "Mot de passe oublié ?"
-      },"emailVerification": {
-      "title": "Vérification d'email",
-      "loading": {
-        "title": "Vérification de votre email",
-        "message": "Veuillez patienter pendant que nous vérifions votre adresse email...",
-        "steps": {
-          "checkingToken": "Vérification du jeton de vérification",
-          "updatingAccount": "Mise à jour de votre compte",
-          "preparingDashboard": "Préparation de votre tableau de bord"
-        }
       },
-       "success": {"title": "Email Vérifié avec Succès!",
-    "message": "Votre email a été vérifié avec succès!",
-    "emailConfirmed": "Adresse email confirmée",
+      "emailVerification": {
+        "title": "Vérification d'email",
+        "loading": {
+          "title": "Vérification de votre email",
+          "message": "Veuillez patienter pendant que nous vérifions votre adresse email...",
+          "steps": {
+            "checkingToken": "Vérification du jeton de vérification",
+            "updatingAccount": "Mise à jour de votre compte",
+            "preparingDashboard": "Préparation de votre tableau de bord"
+          }
+        },
+        "success": {
+          "title": "Email Vérifié avec Succès!",
+          "message": "Votre email a été vérifié avec succès!",
+          "emailConfirmed": "Adresse email confirmée",
           "adminReviewTitle": "Compte en Révision",
           "waitForReview": "En Attente d'Approbation Admin",
           "reviewTimeInfo": "Votre compte est en attente de vérification par notre équipe d'administration. Cela prend généralement 24 à 48 heures.",
@@ -102,23 +104,23 @@
           "thankYouMessage": "Merci pour votre patience pendant le processus de vérification.",
           "weWillContactYou": "Nous vous contacterons bientôt par téléphone pour vérification."
         },
-      "error": {
-        "title": "Échec de la vérification",    "tryAgain": "Réessayer",
-
-        "invalidToken": "Jeton de vérification invalide",
-        "invalidTokenDetails": "Le lien de vérification semble incomplet ou mal formé.",
-        "alreadyVerified": "Email déjà vérifié",
-        "alreadyVerifiedDetails": "Votre email a déjà été vérifié. Vous pouvez procéder à la connexion.",
-        "expiredToken": "Jeton de vérification expiré",
-        "expiredTokenDetails": "Ce lien de vérification a expiré. Veuillez demander un nouvel email de vérification.",
-        "genericError": "Échec de la vérification",
-        "genericErrorDetails": "Une erreur inattendue s'est produite. Veuillez réessayer ou contacter le support.",
-        "goLogin": "Aller à la connexion",
-        "goHome": "Aller à la page d'accueil",
-        "contactSupport": "Contacter le support",
-        "needHelp": "Besoin d'aide ?"
+        "error": {
+          "title": "Échec de la vérification",
+          "tryAgain": "Réessayer",
+          "invalidToken": "Jeton de vérification invalide",
+          "invalidTokenDetails": "Le lien de vérification semble incomplet ou mal formé.",
+          "alreadyVerified": "Email déjà vérifié",
+          "alreadyVerifiedDetails": "Votre email a déjà été vérifié. Vous pouvez procéder à la connexion.",
+          "expiredToken": "Jeton de vérification expiré",
+          "expiredTokenDetails": "Ce lien de vérification a expiré. Veuillez demander un nouvel email de vérification.",
+          "genericError": "Échec de la vérification",
+          "genericErrorDetails": "Une erreur inattendue s'est produite. Veuillez réessayer ou contacter le support.",
+          "goLogin": "Aller à la connexion",
+          "goHome": "Aller à la page d'accueil",
+          "contactSupport": "Contacter le support",
+          "needHelp": "Besoin d'aide ?"
+        }
       }
-    }
     }
   },
   "common": {
@@ -262,6 +264,7 @@
       "title": "Notifications",
       "unread": "non lus",
       "markAllRead": "Tout marquer comme lu",
+      "markOneAsRead": "Marquer comme lu",
       "loading": "Chargement des notifications...",
       "retry": "Réessayer",
       "noNotifications": "Aucune notification",

@@ -103,6 +103,7 @@ export type TranslationKey =
     | 'common.notifications.live'
     | 'common.notifications.loading'
     | 'common.notifications.markAllRead'
+    | 'common.notifications.markOneAsRead'
     | 'common.notifications.noNotifications'
     | 'common.notifications.offline'
     | 'common.notifications.retry'
@@ -535,6 +536,7 @@ export const _TranslationNamespaces = {
     "title",
     "unread",
     "markAllRead",
+    "markOneAsRead",
     "loading",
     "retry",
     "noNotifications",

@@ -26,7 +26,7 @@ import {
   sendToUsers,
   sendToAllAdmins,
   sendToAllUsers,
-} from "@/app/actions/send-notification";
+} from "@/app/actions/notifications/send-notification";
 
 type Selection = "all" | Set<string>;
 

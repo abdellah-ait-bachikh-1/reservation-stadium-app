@@ -1,6 +1,6 @@
 // lib/notification-service.ts
 import { users, notifications } from "@/drizzle/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, ne } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/drizzle/db";
 import {
@@ -317,18 +317,36 @@ export async function getUserNotifications(userId: string) {
   });
 }
 
+export const markOnNotificationAsRead = async (
+  userId: string,
+  notificationId: string
+) => {
+ return await db
+    .update(notifications)
+    .set({ isRead: true })
+    .where(
+      and(
+        eq(notifications.id, notificationId),
+        eq(notifications.userId, userId)
+      )
+    );
+};
 
+export const markAllNotificationAsReadForSpecificUser = async (
+  userId: string
+) => {
+ return  await db
+    .update(notifications)
+    .set({ isRead: true })
+    .where(
+      and(eq(notifications.userId, userId), ne(notifications.isRead, true))
+    );
+};
 
-
-
-
-
-
-// 8️⃣ Send notification to multiple users (BATCH version for better performance)
-// lib/notification-service.ts
-// ... (previous imports and types)
-
-
-
-
-
+export const getLimitedNotificationForUser =async(userId:string,limit:number)=>{
+  return await db.query.notifications.findMany({
+      where: eq(notifications.userId, userId),
+      orderBy: [desc(notifications.createdAt)],
+      limit: limit
+    });
+}

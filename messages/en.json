@@ -68,20 +68,22 @@
         "title": "Login to Your Account",
         "dont_have_account": "Don’t have an account?",
         "forgot_password": "Forgot your password?"
-      },"emailVerification": {
-      "title": "Email Verification",
-      "loading": {
-        "title": "Verifying Your Email",
-        "message": "Please wait while we verify your email address...",
-        "steps": {
-          "checkingToken": "Checking verification token",
-          "updatingAccount": "Updating your account",
-          "preparingDashboard": "Preparing your dashboard"
-        }
       },
-      "success": {  "title": "Email Verified Successfully!", 
-    "message": "Your email has been verified successfully!",
-    "emailConfirmed": "Email address confirmed", 
+      "emailVerification": {
+        "title": "Email Verification",
+        "loading": {
+          "title": "Verifying Your Email",
+          "message": "Please wait while we verify your email address...",
+          "steps": {
+            "checkingToken": "Checking verification token",
+            "updatingAccount": "Updating your account",
+            "preparingDashboard": "Preparing your dashboard"
+          }
+        },
+        "success": {
+          "title": "Email Verified Successfully!",
+          "message": "Your email has been verified successfully!",
+          "emailConfirmed": "Email address confirmed",
           "adminReviewTitle": "Account Under Review",
           "waitForReview": "Awaiting Admin Approval",
           "reviewTimeInfo": "Your account is now pending review by our admin team. This usually takes 24-48 hours.",
@@ -102,22 +104,23 @@
           "thankYouMessage": "Thank you for your patience during the verification process.",
           "weWillContactYou": "We'll contact you soon via phone for verification."
         },
-      "error": { "tryAgain": "Try Again", 
-        "title": "Verification Failed",
-        "invalidToken": "Invalid verification token",
-        "invalidTokenDetails": "The verification link appears to be incomplete or malformed.",
-        "alreadyVerified": "Email already verified",
-        "alreadyVerifiedDetails": "Your email was already verified. You can proceed to login.",
-        "expiredToken": "Verification token expired",
-        "expiredTokenDetails": "This verification link has expired. Please request a new verification email.",
-        "genericError": "Verification failed",
-        "genericErrorDetails": "An unexpected error occurred. Please try again or contact support.",
-        "goLogin": "Go to Login",
-        "goHome": "Go to Homepage",
-        "contactSupport": "Contact Support",
-        "needHelp": "Need help?"
+        "error": {
+          "tryAgain": "Try Again",
+          "title": "Verification Failed",
+          "invalidToken": "Invalid verification token",
+          "invalidTokenDetails": "The verification link appears to be incomplete or malformed.",
+          "alreadyVerified": "Email already verified",
+          "alreadyVerifiedDetails": "Your email was already verified. You can proceed to login.",
+          "expiredToken": "Verification token expired",
+          "expiredTokenDetails": "This verification link has expired. Please request a new verification email.",
+          "genericError": "Verification failed",
+          "genericErrorDetails": "An unexpected error occurred. Please try again or contact support.",
+          "goLogin": "Go to Login",
+          "goHome": "Go to Homepage",
+          "contactSupport": "Contact Support",
+          "needHelp": "Need help?"
+        }
       }
-    }
     }
   },
   "common": {
@@ -261,6 +264,7 @@
       "title": "Notifications",
       "unread": "unread",
       "markAllRead": "Mark all as read",
+      "markOneAsRead": "Mark as read",
       "loading": "Loading notifications...",
       "retry": "Try again",
       "noNotifications": "No notifications",
