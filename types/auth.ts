@@ -1,4 +1,4 @@
-import { InsertUserType } from "@/drizzle/schema";
+import { InsertUserType } from "./db";
 
 export type RegisterFormData = Pick<
   InsertUserType,

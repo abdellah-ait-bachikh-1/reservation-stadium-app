@@ -1,6 +1,6 @@
 import { pusherServer } from "@/lib/pusher/server";
+import { NotificationData } from "@/lib/queries/notifications";
 import { getUserPreferredLocale } from "@/lib/queries/user";
-import { NotificationData } from "@/lib/services/notification-service";
 
 
 // 6️⃣ Send real-time notification via Pusher
