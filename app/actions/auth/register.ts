@@ -14,8 +14,8 @@ import { v4 as uuidv4 } from "uuid";
 import { addDays, format } from "date-fns";
 import { sendNotificationToAdmins } from "@/lib/queries/notifications";
 import { RegisterFormData } from "@/types/auth";
-import { generateVerificationEmail } from "@/lib/email/verification-email";
 import { sendEmail } from "@/services/email";
+import { generateVerificationEmail } from "@/utils/email";
 
 export async function registerUser({
   name,

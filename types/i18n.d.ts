@@ -215,6 +215,12 @@ export type TranslationKey =
     | 'pages.error.technicalDetails'
     | 'pages.error.title'
     | 'pages.error.tryAgain'
+    | 'pages.home.ctaSection.buttons.contactUs'
+    | 'pages.home.ctaSection.buttons.createAccount'
+    | 'pages.home.ctaSection.description'
+    | 'pages.home.ctaSection.footerText'
+    | 'pages.home.ctaSection.highlightedWord'
+    | 'pages.home.ctaSection.title'
     | 'pages.home.featuresSection.badge'
     | 'pages.home.featuresSection.description'
     | 'pages.home.featuresSection.features.availability.description'
@@ -308,7 +314,8 @@ export const _TranslationNamespaces = {
     "statsSection",
     "featuresSection",
     "stadiumsShowcase",
-    "howItWorks"
+    "howItWorks",
+    "ctaSection"
   ],
   "pages.home.metadata": [
     "title",
@@ -437,6 +444,17 @@ export const _TranslationNamespaces = {
     "step",
     "title",
     "description"
+  ],
+  "pages.home.ctaSection": [
+    "title",
+    "highlightedWord",
+    "description",
+    "buttons",
+    "footerText"
+  ],
+  "pages.home.ctaSection.buttons": [
+    "createAccount",
+    "contactUs"
   ],
   "pages.stadiums": [
     "metadata"

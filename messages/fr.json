@@ -91,7 +91,8 @@
         "viewAll": "Voir tous les stades",
         "priceSuffix": "/session",
         "currency": "DH"
-      },"howItWorks": {
+      },
+      "howItWorks": {
         "badge": "Comment ça marche",
         "title": "Simple comme 1, 2, 3, 4",
         "description": "Réservez votre stade en quelques étapes simples",
@@ -117,6 +118,16 @@
             "description": "Présentez-vous au stade à l'heure convenue et profitez de votre session."
           }
         }
+      },
+      "ctaSection": {
+        "title": "Prêt à réserver votre prochain match ?",
+        "highlightedWord": "prochain match",
+        "description": "Rejoignez des centaines de clubs qui font confiance à notre plateforme pour leurs réservations de stades.",
+        "buttons": {
+          "createAccount": "Créer un compte gratuit",
+          "contactUs": "Nous contacter"
+        },
+        "footerText": "Inscription gratuite. Aucune carte de crédit requise."
       }
     },
     "stadiums": {

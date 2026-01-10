@@ -118,6 +118,16 @@
             "description": "Arrive at the stadium on time and enjoy your session."
           }
         }
+      },
+      "ctaSection": {
+        "title": "Ready to book your next match?",
+        "highlightedWord": "next match",
+        "description": "Join hundreds of clubs who trust our platform for their stadium bookings.",
+        "buttons": {
+          "createAccount": "Create a free account",
+          "contactUs": "Contact us"
+        },
+        "footerText": "Free registration. No credit card required."
       }
     },
     "stadiums": {
