@@ -1,5 +1,6 @@
 // drizzle.config.ts
 import { defineConfig } from "drizzle-kit";
+import 'dotenv/config'
 
 export default defineConfig({
   schema: "./drizzle/schema.ts",
@@ -9,5 +10,5 @@ export default defineConfig({
     url: process.env.DATABASE_URL!,
   },
   verbose: true,
-  strict: true,
+  strict: true, 
 });
