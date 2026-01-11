@@ -1,3 +1,4 @@
+"use client"
 import StadiumFilters from './StadiumFilters'
 import StadiumCard from './StadiumCard'
 
