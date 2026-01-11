@@ -1,12 +1,222 @@
 "use client"
 import StadiumFilters from './StadiumFilters'
 import StadiumCard from './StadiumCard'
+import { useCallback, useEffect, useState, useRef } from 'react'
+import StadiumCardSkeleton from './StadiumCardSkeleton'
+import { useSearchParams } from 'next/navigation'
+import { Button } from '@heroui/button'
+import { MdSportsSoccer } from 'react-icons/md'
+
+interface Stadium {
+  id: string;
+  name: string;
+  address: string;
+  googleMapsUrl: string | null;
+  monthlyPrice: string | null;
+  pricePerSession: string | null;
+  image: string | null;
+  sports: {
+    id: string;
+    nameAr: string;
+    nameFr: string;
+    icon: string | null;
+  }[];
+}
 
 const StadiumsClientPage = () => {
+  const searchParams = useSearchParams()
+  const abortControllerRef = useRef<AbortController | null>(null)
+  
+  const [stadiums, setStadiums] = useState<Stadium[]>([])
+  const [name, setName] = useState(() => {
+    return searchParams.get('name') || ''
+  })
+  const [sportsId, setSportsId] = useState<string[]>(() => {
+    const sportsParams = searchParams.get("sports")
+    return sportsParams ? sportsParams.split(',').filter(Boolean) : []
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Update URL without navigation
+  const updateUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    
+    if (name) params.set('name', name)
+    if (sportsId.length > 0) {
+      params.set('sports', sportsId.join(','))
+    } else {
+      params.delete('sports')
+    }
+    
+    const newUrl = `${window.location.pathname}?${params.toString()}`
+    window.history.pushState({}, '', newUrl)
+  }, [name, sportsId])
+
+  // Fetch stadiums with debouncing
+  const fetchStadiums = useCallback(async () => {
+    // Cancel previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    
+    abortControllerRef.current = new AbortController()
+    
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const params = new URLSearchParams()
+      if (name) params.set('name', name)
+      if (sportsId.length > 0) params.set('sports', sportsId.join(','))
+      
+      const response = await fetch(`/api/public/stadiums?${params.toString()}`, {
+        signal: abortControllerRef.current.signal
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      setStadiums(data)
+    } catch (error) {
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Error fetching stadiums:', error)
+        setError('Failed to load stadiums. Please try again.')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [name, sportsId])
+
+  // Update URL and fetch when filters change (with debounce)
+  useEffect(() => {
+      updateUrl()
+      fetchStadiums()
+  }, [updateUrl, fetchStadiums])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [])
+
+  const handleNameChange = (newName: string) => {
+    setName(newName)
+  }
+
+  const handleSportsIdChange = (newSportsId: string[]) => {
+    setSportsId(newSportsId)
+  }
+
   return (
-    <div>
-      <StadiumFilters />
-      <StadiumCard />
+    <div className="min-h-screen ">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            Trouvez votre stade idéal
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Découvrez les meilleurs stades pour vos activités sportives. 
+            Filtrez par sport et trouvez l'endroit parfait pour votre prochain match.
+          </p>
+        </div>
+
+        {/* Filters */}
+        <div className="mb-12">
+          <StadiumFilters 
+            name={name}
+            sportsId={sportsId}
+            handleNameChange={handleNameChange}
+            handelSportsIdChange={handleSportsIdChange}
+          />
+        </div>
+
+        {/* Results */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+              Stades disponibles
+              {stadiums.length > 0 && (
+                <span className="text-gray-500 dark:text-gray-400 text-lg ml-2">
+                  ({stadiums.length} trouvé{stadiums.length > 1 ? 's' : ''})
+                </span>
+              )}
+            </h2>
+            
+            {!loading && stadiums.length === 0 && !error && (
+              <Button 
+                variant="light" 
+                onPress={() => {
+                  setName('')
+                  setSportsId([])
+                }}
+              >
+                Effacer tous les filtres
+              </Button>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 
+            rounded-xl p-6 text-center mb-6">
+              <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
+              <Button 
+                color="danger" 
+                variant="flat" 
+                className="mt-3"
+                onPress={fetchStadiums}
+              >
+                Réessayer
+              </Button>
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <StadiumCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : stadiums.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stadiums.map((stadium) => (
+                <StadiumCard key={stadium.id} stadium={stadium} />
+              ))}
+            </div>
+          ) : !error ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center 
+              rounded-full bg-gray-100 dark:bg-zinc-800">
+                <MdSportsSoccer className="w-12 h-12 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Aucun stade trouvé
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                Essayez de modifier vos critères de recherche ou de supprimer certains filtres.
+              </p>
+              <Button 
+                color="primary" 
+                variant="flat"
+                onPress={() => {
+                  setName('')
+                  setSportsId([])
+                }}
+              >
+                Réinitialiser les filtres
+              </Button>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   )
 }
