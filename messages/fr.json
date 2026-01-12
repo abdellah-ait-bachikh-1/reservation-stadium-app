@@ -184,6 +184,15 @@
     "reserve": "Réserver",
     "otherSports": "Autres sports :",
     "availableSports": "Sports disponibles:"
+  }, "pagination": {
+    "showing": "Affichage",
+    "of": "sur",
+    "stadiums": "stades",
+    "page": "Page",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "first": "Premier",
+    "last": "Dernier"
   }
     },
     "about": {

@@ -3,8 +3,9 @@ import StadiumFilters from './StadiumFilters'
 import StadiumCard from './StadiumCard'
 import { useCallback, useEffect, useState, useRef } from 'react'
 import StadiumCardSkeleton from './StadiumCardSkeleton'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@heroui/button'
+import { Pagination } from '@heroui/pagination'
 import { MdSportsSoccer } from 'react-icons/md'
 import { useTypedTranslations } from '@/utils/i18n'
 
@@ -24,10 +25,26 @@ interface Stadium {
   }[];
 }
 
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+interface ApiResponse {
+  stadiums: Stadium[];
+  pagination: PaginationInfo;
+}
+
 const StadiumsClientPage = () => {
   const t = useTypedTranslations()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const abortControllerRef = useRef<AbortController | null>(null)
+  const filtersSectionRef = useRef<HTMLDivElement>(null)
 
   const [stadiums, setStadiums] = useState<Stadium[]>([])
   const [name, setName] = useState(() => {
@@ -37,25 +54,49 @@ const StadiumsClientPage = () => {
     const sportsParams = searchParams.get("sports")
     return sportsParams ? sportsParams.split(',').filter(Boolean) : []
   })
+  const [page, setPage] = useState(() => {
+    return parseInt(searchParams.get('page') || '1')
+  })
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 12,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Update URL without navigation
-  const updateUrl = useCallback(() => {
+  const updateUrl = useCallback((newPage?: number) => {
     const params = new URLSearchParams()
 
     if (name) params.set('name', name)
     if (sportsId.length > 0) {
       params.set('sports', sportsId.join(','))
+    }
+    if (newPage !== undefined) {
+      params.set('page', newPage.toString())
     } else {
-      params.delete('sports')
+      params.set('page', page.toString())
     }
 
     const newUrl = `${window.location.pathname}?${params.toString()}`
     window.history.pushState({}, '', newUrl)
-  }, [name, sportsId])
+  }, [name, sportsId, page])
 
-  // Fetch stadiums with debouncing
+  // Scroll to filters section
+  const scrollToFilters = useCallback(() => {
+    if (filtersSectionRef.current) {
+      filtersSectionRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      })
+    }
+  }, [])
+
+  // Fetch stadiums with pagination
   const fetchStadiums = useCallback(async () => {
     // Cancel previous request
     if (abortControllerRef.current) {
@@ -71,6 +112,8 @@ const StadiumsClientPage = () => {
       const params = new URLSearchParams()
       if (name) params.set('name', name)
       if (sportsId.length > 0) params.set('sports', sportsId.join(','))
+      params.set('page', page.toString())
+      params.set('limit', '12') // Set items per page
 
       const response = await fetch(`/api/public/stadiums?${params.toString()}`, {
         signal: abortControllerRef.current.signal
@@ -80,8 +123,9 @@ const StadiumsClientPage = () => {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json()
-      setStadiums(data)
+      const data: ApiResponse = await response.json()
+      setStadiums(data.stadiums)
+      setPagination(data.pagination)
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
         console.error('Error fetching stadiums:', error)
@@ -90,13 +134,19 @@ const StadiumsClientPage = () => {
     } finally {
       setLoading(false)
     }
+  }, [name, sportsId, page])
+
+  // Update URL and fetch when filters change
+  useEffect(() => {
+    // Reset to page 1 when filters change
+    setPage(1)
+    updateUrl(1)
   }, [name, sportsId])
 
-  // Update URL and fetch when filters change (with debounce)
+  // Fetch stadiums when page or filters change
   useEffect(() => {
-    updateUrl()
     fetchStadiums()
-  }, [updateUrl, fetchStadiums])
+  }, [fetchStadiums])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -115,22 +165,18 @@ const StadiumsClientPage = () => {
     setSportsId(newSportsId)
   }
 
-  return (
-    <div className="min-h-screen ">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        {/* <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">
-            Trouvez votre stade idéal
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Découvrez les meilleurs stades pour vos activités sportives. 
-            Filtrez par sport et trouvez l'endroit parfait pour votre prochain match.
-          </p>
-        </div> */}
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage)
+    updateUrl(newPage)
+    // Scroll to filters section when page changes
+    scrollToFilters()
+  }
 
-        {/* Filters */}
-        <div className="mb-12">
+  return (
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Filters Section with ref */}
+        <div ref={filtersSectionRef} className="mb-12">
           <StadiumFilters
             name={name}
             sportsId={sportsId}
@@ -142,14 +188,16 @@ const StadiumsClientPage = () => {
         {/* Results */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-              {t('pages.stadiums.results.title')}
-              {stadiums.length > 0 && (
-                <span className="text-gray-500 dark:text-gray-400 text-lg ml-2">
-                  ({stadiums.length} {t('pages.stadiums.results.found')}{stadiums.length > 1 ? 's' : ''})
-                </span>
+            <div>
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                {t('pages.stadiums.results.title')}
+              </h2>
+              {!loading && stadiums.length > 0 && (
+                <p className="text-gray-500 dark:text-gray-400 mt-1">
+                  {t('pages.stadiums.pagination.showing')} {((page - 1) * pagination.limit) + 1} - {Math.min(page * pagination.limit, pagination.total)} {t('pages.stadiums.pagination.of')} {pagination.total} {t('pages.stadiums.pagination.stadiums')}
+                </p>
               )}
-            </h2>
+            </div>
 
             {!loading && stadiums.length === 0 && !error && (
               <Button
@@ -157,10 +205,12 @@ const StadiumsClientPage = () => {
                 onPress={() => {
                   setName('')
                   setSportsId([])
+                  setPage(1)
+                  // Scroll to top after clearing filters
+                  scrollToFilters()
                 }}
               >
                 {t('pages.stadiums.results.clearFilters')}
-
               </Button>
             )}
           </div>
@@ -177,7 +227,6 @@ const StadiumsClientPage = () => {
                 onPress={fetchStadiums}
               >
                 {t('pages.stadiums.results.error.retry')}
-
               </Button>
             </div>
           )}
@@ -185,16 +234,38 @@ const StadiumsClientPage = () => {
           {/* Loading State */}
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 12 }).map((_, i) => (
                 <StadiumCardSkeleton key={i} />
               ))}
             </div>
           ) : stadiums.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {stadiums.map((stadium) => (
-                <StadiumCard key={stadium.id} stadium={stadium} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {stadiums.map((stadium) => (
+                  <StadiumCard key={stadium.id} stadium={stadium} />
+                ))}
+              </div>
+              
+              {/* Pagination */}
+              {pagination.totalPages > 1 && (
+                <div className="flex justify-center mt-8">
+                  <Pagination
+                    total={pagination.totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    showControls
+                    showShadow
+                    color="warning"
+                    size="lg"
+                    classNames={{
+                      wrapper: "gap-2",
+                      item: "w-8 h-8 text-sm",
+                      cursor: "bg-warning-500 text-white font-semibold"
+                    }}
+                  />
+                </div>
+              )}
+            </>
           ) : !error ? (
             <div className="text-center py-16">
               <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center 
@@ -213,6 +284,9 @@ const StadiumsClientPage = () => {
                 onPress={() => {
                   setName('')
                   setSportsId([])
+                  setPage(1)
+                  // Scroll to top after resetting filters
+                  scrollToFilters()
                 }}
               >
                 {t('pages.stadiums.results.noResults.resetFilters')}

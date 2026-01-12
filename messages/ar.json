@@ -184,6 +184,15 @@
     "reserve": "احجز",
     "otherSports": "رياضات أخرى:",
     "availableSports": "الرياضات المتاحة:"
+  }, "pagination": {
+    "showing": "عرض",
+    "of": "من",
+    "stadiums": "ملاعب",
+    "page": "الصفحة",
+    "next": "التالي",
+    "previous": "السابق",
+    "first": "الأول",
+    "last": "الأخير"
   }
     },
     "about": {

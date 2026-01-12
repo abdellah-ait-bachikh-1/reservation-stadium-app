@@ -164,7 +164,146 @@ async function comprehensiveSeed() {
         googleMapsUrl: "https://maps.google.com/?q=28.4280,-11.1100",
         monthlyPrice: "2000.00",
         pricePerSession: "200.00",
-      },
+      },  {
+      name: "Terrain de Football Oasis",
+      address: "Quartier Oasis, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4250,-11.1150",
+      monthlyPrice: "1500.00",
+      pricePerSession: "200.00",
+    },
+    {
+      name: "Stade El Massira",
+      address: "Avenue El Massira, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4400,-11.0900",
+      monthlyPrice: "2800.00",
+      pricePerSession: "350.00",
+    },
+    {
+      name: "Complexe Sportif Atlas",
+      address: "Boulevard Atlas, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4200,-11.1200",
+      monthlyPrice: "2200.00",
+      pricePerSession: "280.00",
+    },
+    {
+      name: "Stade Mohammed VI",
+      address: "Avenue Mohammed VI, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4500,-11.0850",
+      monthlyPrice: "4000.00",
+      pricePerSession: "450.00",
+    },
+    {
+      name: "Salle Polyvalente Al Inbiaat",
+      address: "Rue Al Inbiaat, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4150,-11.1250",
+      monthlyPrice: "1000.00",
+      pricePerSession: "120.00",
+    },
+    {
+      name: "Stade des Jeunes",
+      address: "Quartier Jeunes, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4600,-11.0800",
+      monthlyPrice: "1200.00",
+      pricePerSession: "150.00",
+    },
+    {
+      name: "Complexe Football City",
+      address: "Zone Industrielle, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4100,-11.1300",
+      monthlyPrice: "3200.00",
+      pricePerSession: "380.00",
+    },
+    {
+      name: "Stade Al Kawkab",
+      address: "Avenue des Palmiers, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4700,-11.0750",
+      monthlyPrice: "1800.00",
+      pricePerSession: "220.00",
+    },
+    {
+      name: "Salle Omnisports",
+      address: "Rue du Stade, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4050,-11.1350",
+      monthlyPrice: "1400.00",
+      pricePerSession: "180.00",
+    },
+    {
+      name: "Stade Hassan I",
+      address: "Boulevard Hassan I, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4800,-11.0700",
+      monthlyPrice: "2600.00",
+      pricePerSession: "320.00",
+    },
+    {
+      name: "Complexe Sportif Al Fath",
+      address: "Quartier Al Fath, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4000,-11.1400",
+      monthlyPrice: "1900.00",
+      pricePerSession: "240.00",
+    },
+    {
+      name: "Stade Moulay Rachid",
+      address: "Avenue Moulay Rachid, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.4900,-11.0650",
+      monthlyPrice: "3500.00",
+      pricePerSession: "420.00",
+    },
+    {
+      name: "Terrain de Basket Al Amal",
+      address: "Rue du Sport, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.3950,-11.1450",
+      monthlyPrice: "800.00",
+      pricePerSession: "100.00",
+    },
+    {
+      name: "Stade Olympique Sud",
+      address: "Quartier Sud, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.5000,-11.0600",
+      monthlyPrice: "4200.00",
+      pricePerSession: "500.00",
+    },
+    {
+      name: "Complexe Handball",
+      address: "Avenue des Sportifs, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.3900,-11.1500",
+      monthlyPrice: "1600.00",
+      pricePerSession: "200.00",
+    },
+    {
+      name: "Stade de la Gare",
+      address: "Près de la Gare, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.5100,-11.0550",
+      monthlyPrice: "2400.00",
+      pricePerSession: "300.00",
+    },
+    {
+      name: "Salle de Tennis Couverte",
+      address: "Complexe Sportif, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.3850,-11.1550",
+      monthlyPrice: "1300.00",
+      pricePerSession: "160.00",
+    },
+    {
+      name: "Stade Al Qods",
+      address: "Avenue Al Qods, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.5200,-11.0500",
+      monthlyPrice: "2900.00",
+      pricePerSession: "350.00",
+    },
+    {
+      name: "Terrain de Volley Plage",
+      address: "Plage de Tantan, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.3800,-11.1600",
+      monthlyPrice: "900.00",
+      pricePerSession: "110.00",
+    },
+    {
+      name: "Stade du 20 Août",
+      address: "Avenue du 20 Août, Tantan 89000",
+      googleMapsUrl: "https://maps.google.com/?q=28.5300,-11.0450",
+      monthlyPrice: "3800.00",
+      pricePerSession: "450.00",
+    },
     ];
 
     await db.insert(schema.stadiums).values(stadiumsData);
@@ -230,7 +369,34 @@ async function comprehensiveSeed() {
     stadiumSportsData.push(
       { stadiumId: allStadiums[4].id, sportId: allSports[5].id }
     );
+ stadiumSportsData.push(
+      { stadiumId: allStadiums[5].id, sportId: allSports[0].id },
+      { stadiumId: allStadiums[5].id, sportId: allSports[7].id }
+    );
 
+    // Stadium 7: Basketball, Athletics
+    stadiumSportsData.push(
+      { stadiumId: allStadiums[6].id, sportId: allSports[1].id },
+      { stadiumId: allStadiums[6].id, sportId: allSports[6].id }
+    );
+
+    // Stadium 8: Football, Handball
+    stadiumSportsData.push(
+      { stadiumId: allStadiums[7].id, sportId: allSports[0].id },
+      { stadiumId: allStadiums[7].id, sportId: allSports[2].id }
+    );
+
+    // Stadium 9: Tennis, Volleyball
+    stadiumSportsData.push(
+      { stadiumId: allStadiums[8].id, sportId: allSports[4].id },
+      { stadiumId: allStadiums[8].id, sportId: allSports[3].id }
+    );
+
+    // Stadium 10: Football, Athletics
+    stadiumSportsData.push(
+      { stadiumId: allStadiums[9].id, sportId: allSports[0].id },
+      { stadiumId: allStadiums[9].id, sportId: allSports[6].id }
+    );
     await db.insert(schema.stadiumSports).values(stadiumSportsData);
     console.log(`✅ Created ${stadiumSportsData.length} stadium-sport links\n`);
 

@@ -184,6 +184,15 @@
     "reserve": "Reserve",
     "otherSports": "Other sports:",
     "availableSports": "Available sports:"
+  },"pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "stadiums": "stadiums",
+    "page": "Page",
+    "next": "Next",
+    "previous": "Previous",
+    "first": "First",
+    "last": "Last"
   }
     },
     "about": {

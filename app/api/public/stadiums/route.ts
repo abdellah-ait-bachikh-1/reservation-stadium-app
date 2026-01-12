@@ -9,20 +9,26 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const name = searchParams.get('name') || '';
     const sportsParam = searchParams.get('sports') || '';
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '12'); // Default 12 items per page
     const sportIds = sportsParam ? sportsParam.split(',').filter(Boolean) : [];
+    
+    // Calculate offset
+    const offset = (page - 1) * limit;
     
     // Build conditions
     const conditions = [];
     
     if (name) {
-      // For MySQL, use LIKE with LOWER for case-insensitive search
       conditions.push(
         sql`LOWER(${stadiums.name}) LIKE ${`%${name.toLowerCase()}%`}`
       );
     }
     
+    // First, get stadium IDs that match sports filter (if any)
+    let stadiumIdsFromSports: string[] = [];
+    
     if (sportIds.length > 0) {
-      // Get stadium IDs that have ALL the selected sports
       const stadiumsWithSports = await db
         .select({ stadiumId: stadiumSports.stadiumId })
         .from(stadiumSports)
@@ -30,16 +36,40 @@ export async function GET(request: NextRequest) {
         .groupBy(stadiumSports.stadiumId)
         .having(sql`COUNT(DISTINCT ${stadiumSports.sportId}) = ${sportIds.length}`);
       
-      const stadiumIds = stadiumsWithSports.map(s => s.stadiumId);
-      if (stadiumIds.length > 0) {
-        conditions.push(inArray(stadiums.id, stadiumIds));
-      } else {
-        // If no stadium has all selected sports, return empty array
-        return NextResponse.json([], { status: 200 });
+      stadiumIdsFromSports = stadiumsWithSports.map(s => s.stadiumId);
+      
+      if (stadiumIdsFromSports.length === 0) {
+        // If no stadium has all selected sports, return empty results
+        return NextResponse.json({
+          stadiums: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            totalPages: 0,
+            hasNext: false,
+            hasPrev: false
+          }
+        }, { status: 200 });
       }
+      
+      conditions.push(inArray(stadiums.id, stadiumIdsFromSports));
     }
     
-    // Fetch stadiums with their main image in a single query using LEFT JOIN
+    // Get total count for pagination
+    const countQuery = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(stadiums)
+      .where(
+        conditions.length > 0 
+          ? and(...conditions) 
+          : undefined
+      );
+
+    const total = Number(countQuery[0]?.count || 0);
+    const totalPages = Math.ceil(total / limit);
+    
+    // Fetch stadiums with pagination
     const stadiumsQuery = await db
       .select({
         id: stadiums.id,
@@ -49,7 +79,6 @@ export async function GET(request: NextRequest) {
         monthlyPrice: stadiums.monthlyPrice,
         pricePerSession: stadiums.pricePerSession,
         createdAt: stadiums.createdAt,
-        // Get first image using subquery
         image: sql<string>`(
           SELECT ${stadiumImages.imageUri}
           FROM ${stadiumImages}
@@ -65,7 +94,8 @@ export async function GET(request: NextRequest) {
           : undefined
       )
       .orderBy(stadiums.createdAt)
-      .limit(50); // Add a limit for safety
+      .limit(limit)
+      .offset(offset);
 
     // Fetch sports for all stadiums in a single query
     const stadiumIds = stadiumsQuery.map(s => s.id);
@@ -117,7 +147,18 @@ export async function GET(request: NextRequest) {
       sports: sportsByStadiumId[stadium.id] || [],
     }));
 
-    return NextResponse.json(stadiumsWithDetails, { status: 200 });
+    return NextResponse.json({
+      stadiums: stadiumsWithDetails,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    }, { status: 200 });
+    
   } catch (error) {
     console.error('Error fetching stadiums:', error);
     return NextResponse.json(

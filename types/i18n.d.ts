@@ -317,6 +317,14 @@ export type TranslationKey =
     | 'pages.stadiums.metadata.description'
     | 'pages.stadiums.metadata.keywords'
     | 'pages.stadiums.metadata.title'
+    | 'pages.stadiums.pagination.first'
+    | 'pages.stadiums.pagination.last'
+    | 'pages.stadiums.pagination.next'
+    | 'pages.stadiums.pagination.of'
+    | 'pages.stadiums.pagination.page'
+    | 'pages.stadiums.pagination.previous'
+    | 'pages.stadiums.pagination.showing'
+    | 'pages.stadiums.pagination.stadiums'
     | 'pages.stadiums.results.clearFilters'
     | 'pages.stadiums.results.error.message'
     | 'pages.stadiums.results.error.retry'
@@ -503,7 +511,8 @@ export const _TranslationNamespaces = {
     "hero",
     "filters",
     "results",
-    "card"
+    "card",
+    "pagination"
   ],
   "pages.stadiums.metadata": [
     "title",
@@ -561,6 +570,16 @@ export const _TranslationNamespaces = {
     "reserve",
     "otherSports",
     "availableSports"
+  ],
+  "pages.stadiums.pagination": [
+    "showing",
+    "of",
+    "stadiums",
+    "page",
+    "next",
+    "previous",
+    "first",
+    "last"
   ],
   "pages.about": [
     "metadata"
