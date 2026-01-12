@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { Chip } from '@heroui/chip';
 import { useTypedTranslations } from '@/utils/i18n';
+import Image from 'next/image';
 
 interface Sport {
   id: string;
@@ -32,28 +33,53 @@ interface StadiumCardProps {
 
 const StadiumCard = ({ stadium }: StadiumCardProps) => {
   const locale = useLocale();
-  const t= useTypedTranslations()
+  const t = useTypedTranslations();
+  
   // Get the appropriate sport name based on locale
   const getSportName = (sport: Sport) => {
     return locale === 'ar' ? sport.nameAr : sport.nameFr;
   };
 
-  // Format price with currency
+  // Format price with Moroccan currency based on locale
   const formatPrice = (price: string | null) => {
     if (!price) return null;
-    return new Intl.NumberFormat('fr-FR', {
+    
+    const priceNumber = Number(price);
+    
+    // For Arabic locale
+    if (locale === 'ar') {
+      // Format as Moroccan Dirham in Arabic
+      return new Intl.NumberFormat('ar-MA', {
+        style: 'currency',
+        currency: 'MAD',
+        currencyDisplay: 'symbol',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(priceNumber);
+    }
+    
+    // For French locale
+    if (locale === 'fr') {
+      // Format as Moroccan Dirham in French
+      return new Intl.NumberFormat('fr-MA', {
+        style: 'currency',
+        currency: 'MAD',
+        currencyDisplay: 'symbol',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(priceNumber);
+    }
+    
+    // For English and other locales
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'MAD',
+      currencyDisplay: 'symbol',
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
-    }).format(Number(price));
+    }).format(priceNumber);
   };
-
-  // Get background image URL or default
-  const backgroundImage = stadium.image
-    ? `url(${stadium.image})`
-    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-
+console.log(stadium.image)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -65,18 +91,38 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
         className="w-full max-w-md mx-auto overflow-hidden bg-white dark:bg-zinc-900 
         shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl
         border border-gray-100 dark:border-zinc-800"
-        isPressable
+        
         onPress={() => console.log('View stadium details:', stadium.id)}
       >
         {/* Image Section */}
         <div className="relative h-56 overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage }}
-          />
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+          {stadium.image ? (
+            // Show actual image when available
+            <>
+              <img 
+                src={stadium.image} 
+                alt={stadium.name}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+            </>
+          ) : (
+            // Show default image when no image available
+            <>
+              <Image
+                src="/default-stadium-image.jpg"
+                alt={stadium.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={false}
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+            </>
+          )}
 
           {/* Price Badge with Tooltip */}
           {(stadium.monthlyPrice || stadium.pricePerSession) && (
@@ -84,7 +130,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
               content={
                 stadium.monthlyPrice 
                   ? t('pages.stadiums.card.monthlyTooltip')
-                  :  t('pages.stadiums.card.sessionTooltip')
+                  : t('pages.stadiums.card.sessionTooltip')
               }
               placement="left"
               color="warning"
@@ -95,28 +141,27 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="absolute top-4 right-4 bg-gradient-to-r from-amber-300 to-orange-500 
-                text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 cursor-help"
+                text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 cursor-help z-10"
               >
-                <MdEuro className="text-lg" />
                 <span className="font-bold text-sm">
                   {stadium.monthlyPrice
-                    ? formatPrice(stadium.monthlyPrice) + '/mois'
-                    : formatPrice(stadium.pricePerSession) + '/session'}
+                    ? `${formatPrice(stadium.monthlyPrice)}/mois`
+                    : `${formatPrice(stadium.pricePerSession)}/session`}
                 </span>
               </motion.div>
             </Tooltip>
           )}
 
-          {/* Image Info Tooltip */}
+          {/* Image Info Tooltip - Only show when NO image */}
           {!stadium.image && (
             <Tooltip
               content={t('pages.stadiums.card.imageTooltip')}
-               placement="bottom"
-                showArrow
+              placement="bottom"
+              showArrow
               color="default"
               className="max-w-xs"
             >
-              <div className="absolute top-4 left-4 bg-black/50 text-white p-2 rounded-full cursor-help">
+              <div className="absolute top-4 left-4 bg-black/50 text-white p-2 rounded-full cursor-help z-10">
                 <MdInfo className="w-4 h-4" />
               </div>
             </Tooltip>
@@ -125,22 +170,22 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
 
         <CardBody className="p-6">
           {/* Name and Location */}
-          <div className="mb-4" dir='ltr'>
+          <div className="mb-4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <Tooltip
               content={stadium.name}
               isDisabled={stadium.name.length <= 30}
               placement="bottom"
               color="foreground"
             >
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-1 cursor-default w-full ">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-1 cursor-default w-full">
                 {stadium.name}  
               </h3>
             </Tooltip>
 
-            <div className="flex items-start gap-2 text-gray-600 dark:text-gray-300">
+            <div className={`flex items-start gap-2 text-gray-600 dark:text-gray-300 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
               <Tooltip
                 content={t('pages.stadiums.card.addressTooltip')}
-              placement="bottom"
+                placement="bottom"
                 showArrow
                 color="primary"
               >
@@ -164,11 +209,10 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
 
           {/* Sports Tags */}
           <div className="mb-4">
-            <div className="flex items-center gap-2 mb-3">
+            <div className={`flex items-center gap-2 mb-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
               <Tooltip
                 content={t('pages.stadiums.card.sportsTooltip')}
-
-                 placement="bottom"
+                placement="bottom"
                 showArrow
                 color="success"
               >
@@ -177,11 +221,11 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 </div>
               </Tooltip>
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-  {t('pages.stadiums.card.availableSports')}
+                {t('pages.stadiums.card.availableSports')}
               </span>
               <Tooltip
-content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
-                 placement="bottom"
+                content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
+                placement="bottom"
                 showArrow
                 color="default"
               >
@@ -191,7 +235,7 @@ content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
               </Tooltip>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
               {stadium.sports.slice(0, 4).map((sport) => (
                 <Tooltip
                   key={sport.id}
@@ -207,9 +251,8 @@ content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
                     </div>
                   }
                   placement="bottom"
-                showArrow
+                  showArrow
                   color="warning"
-                  
                 >
                   <Chip
                     size="sm"
@@ -243,7 +286,7 @@ content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
                     </div>
                   }
                   placement="bottom"
-                showArrow
+                  showArrow
                   color="default"
                   delay={300}
                 >
@@ -265,15 +308,15 @@ content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
             {stadium.monthlyPrice && (
               <Tooltip
                 content={t('pages.stadiums.card.monthlyPriceTooltip')}
-                 placement="bottom"
+                placement="bottom"
                 showArrow
                 color="secondary"
               >
-                <div className="flex items-center justify-between cursor-help">
-                  <div className="flex items-center gap-2">
+                <div className={`flex items-center justify-between cursor-help ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <FaCalendarAlt className="w-4 h-4 text-purple-500" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                       {t('pages.stadiums.card.monthly')}
+                      {t('pages.stadiums.card.monthly')}
                     </span>
                   </div>
                   <span className="font-bold text-gray-800 dark:text-white">
@@ -285,13 +328,13 @@ content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
 
             {stadium.pricePerSession && (
               <Tooltip
-content={t('pages.stadiums.card.sessionPriceTooltip')}
+                content={t('pages.stadiums.card.sessionPriceTooltip')}
                 placement="bottom"
                 showArrow
                 color="success"
               >
-                <div className="flex items-center justify-between cursor-help">
-                  <div className="flex items-center gap-2">
+                <div className={`flex items-center justify-between cursor-help ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <MdSportsSoccer className="w-4 h-4 text-green-500" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">
                       {t('pages.stadiums.card.perSession')}
@@ -308,21 +351,21 @@ content={t('pages.stadiums.card.sessionPriceTooltip')}
             {stadium.monthlyPrice && stadium.pricePerSession && (
               <div className="pt-2 border-t border-gray-200 dark:border-zinc-700">
                 <Tooltip
-                 content={
-  <div className="text-center">
-    <p className="font-semibold mb-1">{t('pages.stadiums.card.pricingTooltip')}</p>
-    <p className="text-sm">{t('pages.stadiums.card.pricingDescription')}</p>
-  </div>
-}
+                  content={
+                    <div className="text-center">
+                      <p className="font-semibold mb-1">{t('pages.stadiums.card.pricingTooltip')}</p>
+                      <p className="text-sm">{t('pages.stadiums.card.pricingDescription')}</p>
+                    </div>
+                  }
                   showArrow
                   placement="bottom"
                   color="foreground"
                   className="max-w-xs"
                 >
-                  <div className="flex items-center justify-center gap-2 cursor-help">
+                  <div className={`flex items-center justify-center gap-2 cursor-help ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <MdInfo className="w-3 h-3 text-gray-400" />
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-  {t('pages.stadiums.card.twoOptions')}
+                      {t('pages.stadiums.card.twoOptions')}
                     </span>
                   </div>
                 </Tooltip>
@@ -332,11 +375,11 @@ content={t('pages.stadiums.card.sessionPriceTooltip')}
         </CardBody>
 
         <CardFooter className="p-6 pt-0">
-          <div className="flex gap-3 w-full">
+          <div className="flex gap-3 w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <Tooltip
-content={t('pages.stadiums.card.reserveTooltip')}
-               placement="bottom"
-                showArrow
+              content={t('pages.stadiums.card.reserveTooltip')}
+              placement="bottom"
+              showArrow
               color="warning"
               delay={300}
             >
@@ -348,14 +391,14 @@ content={t('pages.stadiums.card.reserveTooltip')}
                 endContent={<span>→</span>}
                 onPress={() => console.log('Reserve clicked')}
               >
-{t('pages.stadiums.card.reserve')}
+                {t('pages.stadiums.card.reserve')}
               </Button>
             </Tooltip>
 
             {stadium.googleMapsUrl && (
               <Tooltip
-content={t('pages.stadiums.card.mapTooltip')}
-                 placement="bottom"
+                content={t('pages.stadiums.card.mapTooltip')}
+                placement="bottom"
                 showArrow
                 color="danger"
               >

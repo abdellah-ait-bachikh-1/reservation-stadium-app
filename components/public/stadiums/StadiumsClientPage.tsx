@@ -87,15 +87,20 @@ const StadiumsClientPage = () => {
   }, [name, sportsId, page])
 
   // Scroll to filters section
-  const scrollToFilters = useCallback(() => {
-    if (filtersSectionRef.current) {
-      filtersSectionRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
-      })
-    }
-  }, [])
-
+const scrollToFilters = useCallback(() => {
+  if (filtersSectionRef.current) {
+    const offset = 80; // 80px for header
+    
+    // Calculate position
+    const top = filtersSectionRef.current.offsetTop - offset;
+    
+    // Scroll to position
+    window.scrollTo({
+      top,
+      behavior: 'smooth'
+    });
+  }
+}, []);
   // Fetch stadiums with pagination
   const fetchStadiums = useCallback(async () => {
     // Cancel previous request
