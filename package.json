@@ -8,7 +8,8 @@
     "build": "npx drizzle-kit generate && npx drizzle-kit push && next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-i18n": "tsx scripts/generate-i18n.ts"
+    "generate-i18n": "tsx scripts/generate-i18n.ts",
+    "db:seed":"tsx scripts/seed.ts"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",

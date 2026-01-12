@@ -1,0 +1,474 @@
+{
+  "pages": {
+    "error": {
+      "title": "Quelque chose s'est mal passé !",
+      "subtitle": "Une erreur inattendue s'est produite",
+      "tryAgain": "Réessayer",
+      "goHome": "Retour à l'accueil",
+      "technicalDetails": "Détails techniques",
+      "errorId": "ID d'erreur",
+      "noStackTrace": "Aucune trace de pile disponible"
+    },
+    "home": {
+      "metadata": {
+        "title": "Accueil",
+        "description": "Réservez et louez des stades et installations sportives à Tantan, Maroc. Réservations en ligne faciles pour terrains de football, courts de basket et équipements sportifs dans la région de Tan-Tan.",
+        "keywords": "réservation stade Tantan, installations sportives Tan-Tan, réservation terrain sport Tantan Maroc, réserver terrain football Tan-Tan, location court basket Tantan, équipements sportifs Tan-Tan, complexe sportif Tantan, terrains athlétiques Tan-Tan, réservation terrain jeu Tantan, centres de loisirs Tan-Tan"
+      },
+      "hero": {
+        "badge": "Plateforme de réservation de stades",
+        "mainTitle": {
+          "first": "Réservez votre",
+          "seconde": "terrain parfait",
+          "thirth": "en quelques clics"
+        },
+        "description": "Conçu spécialement pour les clubs et associations de la ville de Tantan. Accédez aux meilleurs stades de la région. Réservation simple, paiements flexibles et installations de qualité pour votre club.",
+        "exploreStadiums": "Explorer les stades",
+        "howItWorks": "Comment ça marche",
+        "stats": {
+          "stadiums": "Stades",
+          "clubs": "Clubs",
+          "reservations": "Réservations",
+          "satisfaction": "Satisfaction"
+        }
+      },
+      "statsSection": {
+        "title": "Des chiffres qui parlent",
+        "description": "Notre plateforme connecte les clubs aux meilleures installations sportives de la région",
+        "stats": {
+          "stadiums": {
+            "label": "Stades disponibles",
+            "description": "Dans toute la région"
+          },
+          "clubs": {
+            "label": "Clubs enregistrés",
+            "description": "Communauté active"
+          },
+          "reservations": {
+            "label": "Réservations",
+            "description": "Cette année"
+          },
+          "satisfaction": {
+            "label": "Satisfaction",
+            "description": "Clients satisfaits"
+          }
+        }
+      },
+      "featuresSection": {
+        "badge": "Fonctionnalités",
+        "title": "Tout ce dont vous avez besoin",
+        "description": "Une plateforme complète pour gérer vos réservations de stades",
+        "features": {
+          "easyBooking": {
+            "title": "Réservation facile",
+            "description": "Réservez votre terrain en quelques clics. Disponibilité en temps réel et confirmation instantanée."
+          },
+          "flexiblePayments": {
+            "title": "Paiements flexibles",
+            "description": "Options de paiement par session ou abonnement mensuel. Factures automatiques et suivi des paiements."
+          },
+          "notifications": {
+            "title": "Notifications",
+            "description": "Restez informé avec des rappels automatiques pour vos réservations et paiements."
+          },
+          "security": {
+            "title": "Sécurisé",
+            "description": "Vos données sont protégées. Transactions sécurisées et confidentialité garantie."
+          },
+          "availability": {
+            "title": "Disponibilité 24/7",
+            "description": "Accédez à la plateforme à tout moment. Gérez vos réservations quand vous le souhaitez."
+          },
+          "location": {
+            "title": "Localisation",
+            "description": "Trouvez les stades près de chez vous avec notre carte interactive et filtres avancés."
+          }
+        }
+      },
+      "stadiumsShowcase": {
+        "badge": "Stades populaires",
+        "title": "Découvrez nos installations",
+        "viewAll": "Voir tous les stades",
+        "priceSuffix": "/session",
+        "currency": "DH"
+      },
+      "howItWorks": {
+        "badge": "Comment ça marche",
+        "title": "Simple comme 1, 2, 3, 4",
+        "description": "Réservez votre stade en quelques étapes simples",
+        "steps": {
+          "search": {
+            "step": "01",
+            "title": "Recherchez",
+            "description": "Parcourez notre catalogue de stades et trouvez l'installation idéale pour votre équipe."
+          },
+          "book": {
+            "step": "02",
+            "title": "Réservez",
+            "description": "Choisissez votre créneau horaire et effectuez votre réservation en quelques clics."
+          },
+          "pay": {
+            "step": "03",
+            "title": "Payez",
+            "description": "Réglez par session ou optez pour un abonnement mensuel selon vos besoins."
+          },
+          "play": {
+            "step": "04",
+            "title": "Jouez",
+            "description": "Présentez-vous au stade à l'heure convenue et profitez de votre session."
+          }
+        }
+      },
+      "ctaSection": {
+        "title": "Prêt à réserver votre prochain match ?",
+        "highlightedWord": "prochain match",
+        "description": "Rejoignez des centaines de clubs qui font confiance à notre plateforme pour leurs réservations de stades.",
+        "buttons": {
+          "createAccount": "Créer un compte gratuit",
+          "contactUs": "Nous contacter"
+        },
+        "footerText": "Inscription gratuite. Aucune carte de crédit requise."
+      }
+    },
+    "stadiums": {
+      "metadata": {
+        "title": "Stades",
+        "description": "Parcourez et réservez les stades et installations sportives disponibles à Tantan, Maroc. Trouvez des terrains de football, courts de basket, courts de tennis et autres équipements sportifs à louer dans la région de Tan-Tan.",
+        "keywords": "stades Tantan, installations sportives Tantan, terrains de football Tan-Tan, location courts de basket Tantan, courts de tennis Tantan, réservation d'équipements sportifs Tan-Tan, système de réservation de stade, stades disponibles Tantan, réservation de complexe sportif"
+      }, "hero": {
+      "badge": "Trouvez Votre Lieu Idéal",
+      "title": "Explorer Tous les",
+      "highlighted": "Stades",
+      "description": "Découvrez les meilleures installations sportives de votre région. Filtrez par nom ou par sport pour trouver votre lieu idéal."
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher un stade...",
+      "filterBySport": "Filtrer par Sport",
+      "hideSports": "Cacher Sports",
+      "sportsSelected": "sélectionné(s)",
+      "selectSports": "Sélectionnez un ou plusieurs sports",
+      "sportSearch": "Rechercher un sport...",
+      "noSportsFound": "Aucun sport trouvé",
+      "clearAll": "Tout effacer"
+    },
+    "results": {
+      "title": "Stades disponibles",
+      "found": "trouvé(s)",
+      "clearFilters": "Effacer tous les filtres",
+      "noResults": {
+        "title": "Aucun stade trouvé",
+        "description": "Essayez de modifier vos critères de recherche ou de supprimer certains filtres.",
+        "resetFilters": "Réinitialiser les filtres"
+      },
+      "error": {
+        "message": "Échec du chargement des stades. Veuillez réessayer.",
+        "retry": "Réessayer"
+      }
+    },
+    "card": {
+    "monthlyTooltip": "Prix mensuel pour l'abonnement complet",
+    "sessionTooltip": "Prix pour une seule session",
+    "imageTooltip": "Image non disponible - Photo par défaut",
+    "addressTooltip": "Adresse du stade",
+    "sportsTooltip": "Sports pratiqués dans ce stade",
+    "totalSports": "Total : {count} sports",
+    "monthlyPriceTooltip": "Prix pour un abonnement mensuel complet",
+    "sessionPriceTooltip": "Prix pour une seule session (réservation unique)",
+    "pricingTooltip": "Options de tarification",
+    "pricingDescription": "Choisissez entre l'abonnement mensuel pour un accès régulier ou le paiement à la session pour une utilisation occasionnelle.",
+    "twoOptions": "Deux options de paiement disponibles",
+    "reserveTooltip": "Réserver ce stade pour votre activité sportive",
+    "mapTooltip": "Voir l'emplacement sur Google Maps",
+    "monthly": "Abonnement mensuel",
+    "perSession": "Prix par session",
+    "reserve": "Réserver",
+    "otherSports": "Autres sports :",
+    "availableSports": "Sports disponibles:"
+  }
+    },
+    "about": {
+      "metadata": {
+        "title": "À propos",
+        "description": "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
+        "keywords": "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan"
+      }
+    },
+    "contact": {
+      "metadata": {
+        "title": "Contactez-nous",
+        "description": "Contactez notre équipe pour les réservations de stades, le support ou les demandes concernant les installations sportives à Tantan, Maroc. Contactez-nous pour assistance à la réservation et opportunités de partenariat.",
+        "keywords": "contact stades Tantan, support réservation stade, demandes d'installations sportives Tan-Tan, service client réservation stade, opportunités de partenariat Tantan, assistance réservation Maroc"
+      }
+    },
+    "auth": {
+      "register": {
+        "metadata": {
+          "title": "Créer un compte",
+          "description": "Créez votre compte pour réserver des stades et des installations sportives à Tantan, au Maroc.",
+          "keywords": "création de compte, inscription, réservation de stades Tantan, terrains de sport Maroc, plateforme sportive Tan-Tan"
+        },
+        "title": "Créer votre compte",
+        "already_have_account": "Vous avez déjà un compte ?",
+        "forgot_password": "Mot de passe oublié ?",
+        "instructions": {
+          "name_requirement": "Le nom complet doit être en français",
+          "phone_requirement": "Le numéro de téléphone doit commencer par +212 ou 06",
+          "email_requirement": "L'adresse email doit être valide et active",
+          "verification_process": "Vous recevrez un email de vérification après l'inscription"
+        }
+      },
+      "login": {
+        "metadata": {
+          "title": "Connexion",
+          "description": "Connectez-vous à votre compte pour gérer vos réservations de stades et d’espaces sportifs à Tantan, Maroc.",
+          "keywords": "connexion, se connecter, réservation de stades Tantan, espaces sportifs Maroc, plateforme sportive Tan-Tan"
+        },
+        "title": "Connectez-vous à votre compte",
+        "dont_have_account": "Vous n’avez pas de compte ?",
+        "forgot_password": "Mot de passe oublié ?"
+      },
+      "emailVerification": {"ready": {
+          "title": "Prêt à vérifier votre email ?",
+          "message": "Cliquez sur le bouton ci-dessous pour vérifier votre adresse e-mail et terminer votre inscription.",
+          "verifyButton": "Vérifier l'email",
+          "note": "Assurez-vous d'être sur un appareil sécurisé avant de continuer."
+        },
+        "title": "Vérification d'email",
+        "loading": {
+          "title": "Vérification de votre email",
+          "message": "Veuillez patienter pendant que nous vérifions votre adresse email...",
+          "steps": {
+            "checkingToken": "Vérification du jeton de vérification",
+            "updatingAccount": "Mise à jour de votre compte",
+            "preparingDashboard": "Préparation de votre tableau de bord"
+          }
+        },
+        "success": {
+          "title": "Email Vérifié avec Succès!",
+          "message": "Votre email a été vérifié avec succès!",
+          "emailConfirmed": "Adresse email confirmée",
+          "adminReviewTitle": "Compte en Révision",
+          "waitForReview": "En Attente d'Approbation Admin",
+          "reviewTimeInfo": "Votre compte est en attente de vérification par notre équipe d'administration. Cela prend généralement 24 à 48 heures.",
+          "adminWillCall": "L'Admin Vous Appellera",
+          "callVerificationInfo": "Un administrateur vous appellera sur le numéro de téléphone que vous avez fourni pour vérifier votre identité.",
+          "securityCheck": "Vérification de Sécurité",
+          "manualVerificationInfo": "Pour des raisons de sécurité, nous vérifions manuellement chaque nouveau compte. Cela aide à prévenir la fraude.",
+          "nextStepsTitle": "Étapes Suivantes :",
+          "steps": {
+            "adminReview": "L'admin examine vos détails d'inscription",
+            "adminCall": "L'admin vous appelle pour vérification",
+            "approvalEmail": "Vous recevez un email d'approbation",
+            "fullAccess": "Vous obtenez un accès complet à votre compte"
+          },
+          "keepPhoneReady": "Veuillez garder votre téléphone à proximité. Notre équipe appellera à partir d'un numéro officiel.",
+          "goToHomepage": "Aller à la Page d'Accueil",
+          "contactSupport": "Contacter le Support",
+          "thankYouMessage": "Merci pour votre patience pendant le processus de vérification.",
+          "weWillContactYou": "Nous vous contacterons bientôt par téléphone pour vérification."
+        },
+        "error": {
+          "title": "Échec de la vérification",
+          "tryAgain": "Réessayer",
+          "invalidToken": "Jeton de vérification invalide",
+          "invalidTokenDetails": "Le lien de vérification semble incomplet ou mal formé.",
+          "alreadyVerified": "Email déjà vérifié",
+          "alreadyVerifiedDetails": "Votre email a déjà été vérifié. Vous pouvez procéder à la connexion.",
+          "expiredToken": "Jeton de vérification expiré",
+          "expiredTokenDetails": "Ce lien de vérification a expiré. Veuillez demander un nouvel email de vérification.",
+          "genericError": "Échec de la vérification",
+          "genericErrorDetails": "Une erreur inattendue s'est produite. Veuillez réessayer ou contacter le support.",
+          "goLogin": "Aller à la connexion",
+          "goHome": "Aller à la page d'accueil",
+          "contactSupport": "Contacter le support",
+          "needHelp": "Besoin d'aide ?"
+        }
+      }
+    }
+  },
+  "common": {
+    "actions": {
+      "reserve": "Réserver maintenant",
+      "search": "Rechercher",
+      "login": "Connexion",
+      "register": "S'inscrire",
+      "logout": "Se déconnecter",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "view": "Voir les détails",
+      "book": "Réserver",
+      "checkout": "Finaliser",
+      "checkout_now": "Finaliser maintenant",
+      "continue": "Continuer",
+      "back": "Retour",
+      "filter": "Filtrer",
+      "sort": "Trier",
+      "download": "Télécharger",
+      "create": "Créer",
+      "update": "Mettre à jour",
+      "duplicate": "Dupliquer",
+      "archive": "Archiver",
+      "unarchive": "Désarchiver",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "export": "Exporter",
+      "import": "Importer",
+      "preview": "Aperçu",
+      "share": "Partager",
+      "send": "Envoyer",
+      "cancel_subscription": "Annuler l'abonnement",
+      "retry": "Réessayer",
+      "refresh": "Actualiser",
+      "close": "Fermer",
+      "open": "Ouvrir",
+      "select_all": "Tout sélectionner",
+      "deselect_all": "Tout désélectionner",
+      "pay": "Payer",
+      "add_to_cart": "Ajouter au panier",
+      "remove_from_cart": "Retirer du panier",
+      "apply": "Appliquer",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "submit": "Soumettre",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "reset": "Réinitialiser"
+    },
+    "theme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système",
+      "select": "Sélectionner le thème",
+      "description": {
+        "light": "Thème clair",
+        "dark": "Thème sombre",
+        "system": "Utiliser le thème système"
+      }
+    },
+    "user": {
+      "dashboard": "Tableau de bord",
+      "profile": "Profil",
+      "logout": "Déconnexion",
+      "role": "Rôle",
+      "roles": {
+        "admin": "Administrateur",
+        "club": "Gestionnaire de Club"
+      }
+    },
+    "modals": {
+      "logout": {
+        "title": "Déconnexion",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte."
+      }
+    },
+    "navigation": {
+      "public": {
+        "title": "Navigation",
+        "links": {
+          "home": "Accueil",
+          "stadiums": "Stades",
+          "about": "À propos",
+          "contact": "Contact",
+          "sectionTitle": "Navigation"
+        }
+      }
+    },
+    "inputs": {
+      "labels": {
+        "full_name": "Nom Complet",
+        "email": "Adresse Email",
+        "password": "Mot de Passe",
+        "phoneNumber": "Numéro de Téléphone",
+        "confirm_password": "Confirmer le Mot de Passe",
+        "role": "Rôle",
+        "preferred_locale": "Langue Préférée",
+        "search": "Rechercher",
+        "name": "Nom",
+        "description": "Description",
+        "address": "Adresse",
+        "capacity": "Capacité",
+        "price": "Prix",
+        "date": "Date",
+        "time": "Heure",
+        "duration": "Durée",
+        "status": "Statut"
+      },
+      "placeholders": {
+        "full_name": "Entrez votre nom complet",
+        "email": "Entrez votre adresse email",
+        "password": "Entrez votre mot de passe",
+        "phoneNumber": "Entrez votre numéro de téléphone",
+        "confirm_password": "Confirmez votre mot de passe",
+        "search": "Rechercher...",
+        "name": "Entrez le nom",
+        "description": "Entrez la description",
+        "address": "Entrez l'adresse",
+        "capacity": "Entrez la capacité",
+        "price": "Entrez le prix",
+        "date": "Sélectionnez la date",
+        "time": "Sélectionnez l'heure",
+        "duration": "Entrez la durée en heures"
+      },
+      "errors": {
+        "required": "Ce champ est obligatoire",
+        "email": "Veuillez entrer une adresse email valide",
+        "password_length": "Le mot de passe doit contenir au moins 8 caractères",
+        "password_match": "Les mots de passe ne correspondent pas",
+        "phone": "Veuillez entrer un numéro de téléphone valide",
+        "min": "La valeur doit être supérieure à {min}",
+        "max": "La valeur doit être inférieure à {max}",
+        "invalid": "Valeur invalide"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unread": "non lus",
+      "markAllRead": "Tout marquer comme lu",
+      "markOneAsRead": "Marquer comme lu",
+      "loading": "Chargement des notifications...",
+      "retry": "Réessayer",
+      "noNotifications": "Aucune notification",
+      "live": "En direct",
+      "connecting": "Connexion...",
+      "offline": "Hors ligne",
+      "total": "total",
+      "viewAll": "Voir tout",
+      "close": "Fermer"
+    },
+    "toast": {
+      "success": {
+        "created": "Créé avec succès",
+        "updated": "Mis à jour avec succès",
+        "deleted": "Supprimé avec succès",
+        "saved": "Enregistré avec succès",
+        "registered": "Inscription réussie. Un email de vérification a été envoyé à votre adresse email. Veuillez vérifier votre email et confirmer que c'est bien vous. Après vérification, l'administrateur examinera votre compte et l'approuvera ou le refusera. Si vous ne pouvez pas vous connecter après vérification, veuillez contacter l'équipe municipale.",
+        "loggedIn": "Connecté avec succès",
+        "loggedOut": "Déconnecté avec succès",
+        "sent": "Envoyé avec succès"
+      },
+      "error": {
+        "creationFailed": "Erreur lors de la création, vérifiez vos identifiants et réessayez",
+        "updateFailed": "Erreur lors de la mise à jour, veuillez réessayer",
+        "deleteFailed": "Erreur lors de la suppression, veuillez réessayer",
+        "saveFailed": "Erreur lors de l'enregistrement, veuillez réessayer",
+        "registrationFailed": "Échec de l'inscription, vérifiez vos informations",
+        "loginFailed": "Échec de la connexion, vérifiez vos identifiants",
+        "generic": "Une erreur s'est produite, veuillez réessayer",
+        "network": "Erreur réseau, vérifiez votre connexion",
+        "validation": "Veuillez vérifier vos informations"
+      },
+      "info": {
+        "loading": "Chargement...",
+        "processing": "Traitement en cours...",
+        "updating": "Mise à jour en cours..."
+      },
+      "warning": {
+        "unsavedChanges": "Vous avez des modifications non enregistrées",
+        "confirmationRequired": "Confirmation requise"
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { useLocale } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { CiFilter, CiSearch } from "react-icons/ci";
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useTypedTranslations } from '@/utils/i18n';
 
 type Sport = {
   id: string;
@@ -24,6 +25,8 @@ type StadiumFiltersProps = {
 }
 
 const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange }: StadiumFiltersProps) => {
+  const t = useTypedTranslations()
+
   const locale = useLocale()
   const [sports, setSports] = useState<Sport[] | null>(null)
   const [loading, setLoading] = useState(true)
@@ -90,7 +93,7 @@ const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange
         <div className='w-full sm:flex-1'>
           <Input
             variant='bordered'
-            placeholder="Rechercher un stade..."
+            placeholder={t('pages.stadiums.filters.searchPlaceholder')}
             className='w-full'
             size='md'
             value={name}
@@ -110,7 +113,7 @@ const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange
           onPress={toggleSportFilter}
         >
           <span className='text-sm sm:text-base'>
-            {isFilteringBySport ? 'Cacher Sports' : 'Filtrer par Sport'}
+            {isFilteringBySport ? t('pages.stadiums.filters.hideSports') : t('pages.stadiums.filters.filterBySport')}
             {sportsId.length > 0 && ` (${sportsId.length})`}
           </span>
           {sportsId.length > 0 && (
@@ -147,7 +150,7 @@ const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange
               </Chip>
             ))}
             <Button size="sm" variant="light" className="ml-auto" onPress={handleClearAllSports}>
-              Tout effacer
+              {t('pages.stadiums.filters.clearAll')}
             </Button>
           </motion.div>
         )}
@@ -165,16 +168,17 @@ const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange
           >
             <div className="bg-white/50 dark:bg-zinc-800/50 rounded-xl sm:rounded-2xl p-4 shadow-sm dark:shadow-zinc-900/30">
               <div className="mb-4 flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">Sélectionnez un ou plusieurs sports</h3>
+                <h3 className="text-lg font-semibold dark:text-white">              {t('pages.stadiums.filters.selectSports')}
+                </h3>
                 {sportsId.length > 0 && (
-                  <span className="text-sm text-gray-600 dark:text-gray-300">{sportsId.length} sélectionné(s)</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{sportsId.length} {t('pages.stadiums.filters.sportsSelected')}</span>
                 )}
               </div>
 
               {/* Sport Search */}
               <Input
                 variant="bordered"
-                placeholder="Rechercher un sport..."
+                placeholder={t('pages.stadiums.filters.sportSearch')}
                 value={sportSearch}
                 onValueChange={setSportSearch}
                 size="sm"
@@ -198,7 +202,7 @@ const StadiumFilters = ({ name, sportsId, handleNameChange, handelSportsIdChange
                     </Chip>
                   ))
                 ) : (
-                  <p className="text-gray-500 dark:text-gray-400">Aucun sport trouvé</p>
+                  <p className="text-gray-500 dark:text-gray-400">  {t('pages.stadiums.filters.noSportsFound')}</p>
                 )}
               </div>
             </div>

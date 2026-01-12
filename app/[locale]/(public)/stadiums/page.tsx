@@ -1,4 +1,5 @@
 import StadiumsClientPage from "@/components/public/stadiums/StadiumsClientPage";
+import { getTypedTranslations } from "@/utils/i18n";
 import { Chip } from "@heroui/chip";
 import { Metadata } from "next";
 
@@ -22,22 +23,24 @@ export async function generateMetadata({
       "stades Tantan, installations sportives Tantan, terrains de football Tan-Tan, location courts de basket Tantan, courts de tennis Tantan, réservation d'équipements sportifs Tan-Tan, système de réservation de stade, stades disponibles Tantan, réservation de complexe sportif",
   };
 }
-const StadiumsPage = () => {
+const StadiumsPage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  await params
+  const t = await getTypedTranslations()
   return (
     <div>
       <section className="pt-24 pb-12">
         <div className="text-center max-w-3xl mx-auto">
           <div className="mx-auto px-4">
             <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-sm font-medium mb-4">
-              Trouvez Votre Lieu Idéal
+              {t('pages.stadiums.hero.badge')}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4 text-balance">
-              Explorer Tous les
-              <span className="text-amber-600 dark:text-amber-400">Stades</span>
+              {t('pages.stadiums.hero.title')}
+              <span className="text-amber-600 dark:text-amber-400"> {t('pages.stadiums.hero.highlighted')}
+              </span>
             </h1>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 text-pretty">
-              Découvrez les meilleures installations sportives de votre région.
-              Filtrez par nom ou par sport pour trouver votre lieu idéal.
+              {t('pages.stadiums.hero.description')}
             </p>
           </div>
         </div>

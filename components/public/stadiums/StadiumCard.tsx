@@ -4,10 +4,11 @@ import { Card, CardBody, CardFooter } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
 import { MdLocationOn, MdEuro, MdSportsSoccer, MdInfo } from 'react-icons/md';
-import { FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaMapMarkedAlt, FaMapMarkerAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { Chip } from '@heroui/chip';
+import { useTypedTranslations } from '@/utils/i18n';
 
 interface Sport {
   id: string;
@@ -31,7 +32,7 @@ interface StadiumCardProps {
 
 const StadiumCard = ({ stadium }: StadiumCardProps) => {
   const locale = useLocale();
-
+  const t= useTypedTranslations()
   // Get the appropriate sport name based on locale
   const getSportName = (sport: Sport) => {
     return locale === 'ar' ? sport.nameAr : sport.nameFr;
@@ -82,8 +83,8 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
             <Tooltip 
               content={
                 stadium.monthlyPrice 
-                  ? "Prix mensuel pour l'abonnement complet"
-                  : "Prix pour une seule session"
+                  ? t('pages.stadiums.card.monthlyTooltip')
+                  :  t('pages.stadiums.card.sessionTooltip')
               }
               placement="left"
               color="warning"
@@ -109,7 +110,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
           {/* Image Info Tooltip */}
           {!stadium.image && (
             <Tooltip
-              content="Image non disponible - Photo par défaut"
+              content={t('pages.stadiums.card.imageTooltip')}
                placement="bottom"
                 showArrow
               color="default"
@@ -124,22 +125,22 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
 
         <CardBody className="p-6">
           {/* Name and Location */}
-          <div className="mb-4">
+          <div className="mb-4" dir='ltr'>
             <Tooltip
               content={stadium.name}
               isDisabled={stadium.name.length <= 30}
-              placement="top-start"
+              placement="bottom"
               color="foreground"
             >
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-1 cursor-default">
-                {stadium.name}
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-1 cursor-default w-full ">
+                {stadium.name}  
               </h3>
             </Tooltip>
 
             <div className="flex items-start gap-2 text-gray-600 dark:text-gray-300">
               <Tooltip
-                content="Adresse du stade"
-                 placement="bottom"
+                content={t('pages.stadiums.card.addressTooltip')}
+              placement="bottom"
                 showArrow
                 color="primary"
               >
@@ -165,7 +166,8 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-3">
               <Tooltip
-                content="Sports pratiqués dans ce stade"
+                content={t('pages.stadiums.card.sportsTooltip')}
+
                  placement="bottom"
                 showArrow
                 color="success"
@@ -175,10 +177,10 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 </div>
               </Tooltip>
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Sports disponibles:
+  {t('pages.stadiums.card.availableSports')}
               </span>
               <Tooltip
-                content={`Total: ${stadium.sports.length} sports`}
+content={t('pages.stadiums.card.totalSports', { count: stadium.sports.length })}
                  placement="bottom"
                 showArrow
                 color="default"
@@ -225,7 +227,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 <Tooltip
                   content={
                     <div className="max-w-xs">
-                      <p className="font-semibold mb-2">Autres sports:</p>
+                      <p className="font-semibold mb-2">{t('pages.stadiums.card.otherSports')}</p>
                       <div className="flex flex-wrap gap-1">
                         {stadium.sports.slice(4).map((sport) => (
                           <Chip
@@ -262,7 +264,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
           dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-lg">
             {stadium.monthlyPrice && (
               <Tooltip
-                content="Prix pour un abonnement mensuel complet"
+                content={t('pages.stadiums.card.monthlyPriceTooltip')}
                  placement="bottom"
                 showArrow
                 color="secondary"
@@ -271,7 +273,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                   <div className="flex items-center gap-2">
                     <FaCalendarAlt className="w-4 h-4 text-purple-500" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Abonnement mensuel
+                       {t('pages.stadiums.card.monthly')}
                     </span>
                   </div>
                   <span className="font-bold text-gray-800 dark:text-white">
@@ -283,7 +285,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
 
             {stadium.pricePerSession && (
               <Tooltip
-                content="Prix pour une seule session (réservation unique)"
+content={t('pages.stadiums.card.sessionPriceTooltip')}
                 placement="bottom"
                 showArrow
                 color="success"
@@ -292,7 +294,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                   <div className="flex items-center gap-2">
                     <MdSportsSoccer className="w-4 h-4 text-green-500" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Prix par session
+                      {t('pages.stadiums.card.perSession')}
                     </span>
                   </div>
                   <span className="font-bold text-gray-800 dark:text-white">
@@ -306,15 +308,12 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
             {stadium.monthlyPrice && stadium.pricePerSession && (
               <div className="pt-2 border-t border-gray-200 dark:border-zinc-700">
                 <Tooltip
-                  content={
-                    <div className="text-center">
-                      <p className="font-semibold mb-1">Options de tarification</p>
-                      <p className="text-sm">
-                        Choisissez entre l'abonnement mensuel pour un accès régulier
-                        ou le paiement à la session pour une utilisation occasionnelle.
-                      </p>
-                    </div>
-                  }
+                 content={
+  <div className="text-center">
+    <p className="font-semibold mb-1">{t('pages.stadiums.card.pricingTooltip')}</p>
+    <p className="text-sm">{t('pages.stadiums.card.pricingDescription')}</p>
+  </div>
+}
                   showArrow
                   placement="bottom"
                   color="foreground"
@@ -323,7 +322,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                   <div className="flex items-center justify-center gap-2 cursor-help">
                     <MdInfo className="w-3 h-3 text-gray-400" />
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Deux options de paiement disponibles
+  {t('pages.stadiums.card.twoOptions')}
                     </span>
                   </div>
                 </Tooltip>
@@ -335,7 +334,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
         <CardFooter className="p-6 pt-0">
           <div className="flex gap-3 w-full">
             <Tooltip
-              content="Réserver ce stade pour votre activité sportive"
+content={t('pages.stadiums.card.reserveTooltip')}
                placement="bottom"
                 showArrow
               color="warning"
@@ -349,13 +348,13 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 endContent={<span>→</span>}
                 onPress={() => console.log('Reserve clicked')}
               >
-                Réserver
+{t('pages.stadiums.card.reserve')}
               </Button>
             </Tooltip>
 
             {stadium.googleMapsUrl && (
               <Tooltip
-                content="Voir l'emplacement sur Google Maps"
+content={t('pages.stadiums.card.mapTooltip')}
                  placement="bottom"
                 showArrow
                 color="danger"
@@ -369,7 +368,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <MdLocationOn className="w-5 h-5 text-red-500" />
+                  <FaMapMarkedAlt className="w-5 h-5 text-red-500" />
                 </Button>
               </Tooltip>
             )}

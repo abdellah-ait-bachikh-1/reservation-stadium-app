@@ -6,6 +6,7 @@ import StadiumCardSkeleton from './StadiumCardSkeleton'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@heroui/button'
 import { MdSportsSoccer } from 'react-icons/md'
+import { useTypedTranslations } from '@/utils/i18n'
 
 interface Stadium {
   id: string;
@@ -24,9 +25,10 @@ interface Stadium {
 }
 
 const StadiumsClientPage = () => {
+  const t = useTypedTranslations()
   const searchParams = useSearchParams()
   const abortControllerRef = useRef<AbortController | null>(null)
-  
+
   const [stadiums, setStadiums] = useState<Stadium[]>([])
   const [name, setName] = useState(() => {
     return searchParams.get('name') || ''
@@ -41,14 +43,14 @@ const StadiumsClientPage = () => {
   // Update URL without navigation
   const updateUrl = useCallback(() => {
     const params = new URLSearchParams()
-    
+
     if (name) params.set('name', name)
     if (sportsId.length > 0) {
       params.set('sports', sportsId.join(','))
     } else {
       params.delete('sports')
     }
-    
+
     const newUrl = `${window.location.pathname}?${params.toString()}`
     window.history.pushState({}, '', newUrl)
   }, [name, sportsId])
@@ -59,25 +61,25 @@ const StadiumsClientPage = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-    
+
     abortControllerRef.current = new AbortController()
-    
+
     try {
       setLoading(true)
       setError(null)
-      
+
       const params = new URLSearchParams()
       if (name) params.set('name', name)
       if (sportsId.length > 0) params.set('sports', sportsId.join(','))
-      
+
       const response = await fetch(`/api/public/stadiums?${params.toString()}`, {
         signal: abortControllerRef.current.signal
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      
+
       const data = await response.json()
       setStadiums(data)
     } catch (error) {
@@ -92,8 +94,8 @@ const StadiumsClientPage = () => {
 
   // Update URL and fetch when filters change (with debounce)
   useEffect(() => {
-      updateUrl()
-      fetchStadiums()
+    updateUrl()
+    fetchStadiums()
   }, [updateUrl, fetchStadiums])
 
   // Cleanup on unmount
@@ -117,7 +119,7 @@ const StadiumsClientPage = () => {
     <div className="min-h-screen ">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-10">
+        {/* <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">
             Trouvez votre stade idéal
           </h1>
@@ -125,11 +127,11 @@ const StadiumsClientPage = () => {
             Découvrez les meilleurs stades pour vos activités sportives. 
             Filtrez par sport et trouvez l'endroit parfait pour votre prochain match.
           </p>
-        </div>
+        </div> */}
 
         {/* Filters */}
         <div className="mb-12">
-          <StadiumFilters 
+          <StadiumFilters
             name={name}
             sportsId={sportsId}
             handleNameChange={handleNameChange}
@@ -141,23 +143,24 @@ const StadiumsClientPage = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-              Stades disponibles
+              {t('pages.stadiums.results.title')}
               {stadiums.length > 0 && (
                 <span className="text-gray-500 dark:text-gray-400 text-lg ml-2">
-                  ({stadiums.length} trouvé{stadiums.length > 1 ? 's' : ''})
+                  ({stadiums.length} {t('pages.stadiums.results.found')}{stadiums.length > 1 ? 's' : ''})
                 </span>
               )}
             </h2>
-            
+
             {!loading && stadiums.length === 0 && !error && (
-              <Button 
-                variant="light" 
+              <Button
+                variant="light"
                 onPress={() => {
                   setName('')
                   setSportsId([])
                 }}
               >
-                Effacer tous les filtres
+                {t('pages.stadiums.results.clearFilters')}
+
               </Button>
             )}
           </div>
@@ -167,13 +170,14 @@ const StadiumsClientPage = () => {
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 
             rounded-xl p-6 text-center mb-6">
               <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
-              <Button 
-                color="danger" 
-                variant="flat" 
+              <Button
+                color="danger"
+                variant="flat"
                 className="mt-3"
                 onPress={fetchStadiums}
               >
-                Réessayer
+                {t('pages.stadiums.results.error.retry')}
+
               </Button>
             </div>
           )}
@@ -198,20 +202,20 @@ const StadiumsClientPage = () => {
                 <MdSportsSoccer className="w-12 h-12 text-gray-400 dark:text-gray-500" />
               </div>
               <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Aucun stade trouvé
+                {t('pages.stadiums.results.noResults.title')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                Essayez de modifier vos critères de recherche ou de supprimer certains filtres.
+                {t('pages.stadiums.results.noResults.description')}
               </p>
-              <Button 
-                color="primary" 
+              <Button
+                color="primary"
                 variant="flat"
                 onPress={() => {
                   setName('')
                   setSportsId([])
                 }}
               >
-                Réinitialiser les filtres
+                {t('pages.stadiums.results.noResults.resetFilters')}
               </Button>
             </div>
           ) : null}

@@ -1,0 +1,475 @@
+{
+  "pages": {
+    "error": {
+      "title": "Something went wrong!",
+      "subtitle": "An unexpected error occurred",
+      "tryAgain": "Try Again",
+      "goHome": "Go Home",
+      "technicalDetails": "Technical Details",
+      "errorId": "Error ID",
+      "noStackTrace": "No stack trace available"
+    },
+    "home": {
+      "metadata": {
+        "title": "Home",
+        "description": "Reserve and book stadiums and sports venues in Tantan, Morocco. Easy online reservations for football fields, basketball courts, and sports facilities in Tan-Tan region.",
+        "keywords": "Tantan stadium reservation, Tan-Tan sports venues, stadium reservation Tantan Morocco, reserve football field Tan-Tan, basketball court rental Tantan, sports facilities Tan-Tan, Tantan sports complex, Tan-Tan athletic fields, Tantan playground reservation, Tan-Tan recreation centers"
+      },
+      "hero": {
+        "badge": "Stadium Booking Platform",
+        "mainTitle": {
+          "first": "Book your",
+          "seconde": "perfect field",
+          "thirth": "in a few clicks"
+        },
+        "description": "Designed specifically for clubs and associations in Tantan city. Access the best stadiums in the region. Simple booking, flexible payments, and quality facilities for your club.",
+        "exploreStadiums": "Explore Stadiums",
+        "howItWorks": "How it works",
+        "stats": {
+          "stadiums": "Stadiums",
+          "clubs": "Clubs",
+          "reservations": "Bookings",
+          "satisfaction": "Satisfaction"
+        }
+      },
+      "statsSection": {
+        "title": "Numbers that speak for themselves",
+        "description": "Our platform connects clubs with the best sports facilities in the region",
+        "stats": {
+          "stadiums": {
+            "label": "Available stadiums",
+            "description": "Across the entire region"
+          },
+          "clubs": {
+            "label": "Registered clubs",
+            "description": "Active community"
+          },
+          "reservations": {
+            "label": "Bookings",
+            "description": "This year"
+          },
+          "satisfaction": {
+            "label": "Satisfaction",
+            "description": "Happy customers"
+          }
+        }
+      },
+      "featuresSection": {
+        "badge": "Features",
+        "title": "Everything you need",
+        "description": "A complete platform to manage your stadium bookings",
+        "features": {
+          "easyBooking": {
+            "title": "Easy booking",
+            "description": "Book your field in just a few clicks. Real-time availability and instant confirmation."
+          },
+          "flexiblePayments": {
+            "title": "Flexible payments",
+            "description": "Pay per session or via monthly subscription. Automatic invoices and payment tracking."
+          },
+          "notifications": {
+            "title": "Notifications",
+            "description": "Stay informed with automatic reminders for your bookings and payments."
+          },
+          "security": {
+            "title": "Secure",
+            "description": "Your data is protected. Secure transactions and guaranteed privacy."
+          },
+          "availability": {
+            "title": "24/7 availability",
+            "description": "Access the platform anytime. Manage your bookings whenever you want."
+          },
+          "location": {
+            "title": "Location",
+            "description": "Find stadiums near you with our interactive map and advanced filters."
+          }
+        }
+      },
+      "stadiumsShowcase": {
+        "badge": "Popular stadiums",
+        "title": "Discover our facilities",
+        "viewAll": "View all stadiums",
+        "priceSuffix": "/session",
+        "currency": "DH"
+      },
+      "howItWorks": {
+        "badge": "How it works",
+        "title": "As easy as 1, 2, 3, 4",
+        "description": "Book your stadium in just a few simple steps",
+        "steps": {
+          "search": {
+            "step": "01",
+            "title": "Search",
+            "description": "Browse our stadium catalog and find the perfect facility for your team."
+          },
+          "book": {
+            "step": "02",
+            "title": "Book",
+            "description": "Choose your time slot and complete your booking in just a few clicks."
+          },
+          "pay": {
+            "step": "03",
+            "title": "Pay",
+            "description": "Pay per session or choose a monthly subscription that fits your needs."
+          },
+          "play": {
+            "step": "04",
+            "title": "Play",
+            "description": "Arrive at the stadium on time and enjoy your session."
+          }
+        }
+      },
+      "ctaSection": {
+        "title": "Ready to book your next match?",
+        "highlightedWord": "next match",
+        "description": "Join hundreds of clubs who trust our platform for their stadium bookings.",
+        "buttons": {
+          "createAccount": "Create a free account",
+          "contactUs": "Contact us"
+        },
+        "footerText": "Free registration. No credit card required."
+      }
+    },
+    "stadiums": {
+      "metadata": {
+        "title": "Stadiums",
+        "description": "Browse and book available stadiums and sports venues in Tantan, Morocco. Find football fields, basketball courts, tennis courts, and other sports facilities for rent in the Tan-Tan region.",
+        "keywords": "stadiums Tantan, sports venues Tantan, football fields Tan-Tan, basketball courts rental Tantan, tennis courts Tantan, sports facilities booking Tan-Tan, stadium reservation system, available stadiums Tantan, sports complex booking"
+      },    "hero": {
+      "badge": "Find Your Ideal Venue",
+      "title": "Explore All",
+      "highlighted": "Stadiums",
+      "description": "Discover the best sports facilities in your region. Filter by name or sport to find your ideal location."
+    },
+    "filters": {
+      "searchPlaceholder": "Search for a stadium...",
+      "filterBySport": "Filter by Sport",
+      "hideSports": "Hide Sports",
+      "sportsSelected": "selected",
+      "selectSports": "Select one or more sports",
+      "sportSearch": "Search for a sport...",
+      "noSportsFound": "No sports found",
+      "clearAll": "Clear All"
+    },
+    "results": {
+      "title": "Available stadiums",
+      "found": "found",
+      "clearFilters": "Clear all filters",
+      "noResults": {
+        "title": "No stadium found",
+        "description": "Try adjusting your search criteria or removing some filters.",
+        "resetFilters": "Reset filters"
+      },
+      "error": {
+        "message": "Failed to load stadiums. Please try again.",
+        "retry": "Try Again"
+      }
+    },
+     "card": {
+    "monthlyTooltip": "Monthly price for full subscription",
+    "sessionTooltip": "Price for a single session",
+    "imageTooltip": "Image not available - Default photo",
+    "addressTooltip": "Stadium address",
+    "sportsTooltip": "Sports practiced in this stadium",
+    "totalSports": "Total: {count} sports",
+    "monthlyPriceTooltip": "Price for a monthly subscription",
+    "sessionPriceTooltip": "Price for a single session (one-time booking)",
+    "pricingTooltip": "Pricing Options",
+    "pricingDescription": "Choose between monthly subscription for regular access or pay-per-session for occasional use.",
+    "twoOptions": "Two payment options available",
+    "reserveTooltip": "Reserve this stadium for your sports activity",
+    "mapTooltip": "View location on Google Maps",
+    "monthly": "Monthly subscription",
+    "perSession": "Price per session",
+    "reserve": "Reserve",
+    "otherSports": "Other sports:",
+    "availableSports": "Available sports:"
+  }
+    },
+    "about": {
+      "metadata": {
+        "title": "About Us",
+        "description": "Learn about our stadium reservation platform in Tantan, Morocco. Our mission is to make sports venue booking easy and accessible for everyone in the Tan-Tan region.",
+        "keywords": "about Tantan stadiums, stadium reservation platform, Tan-Tan sports booking service, our mission, about our company, stadium booking system Morocco, Tan-Tan sports community"
+      }
+    },
+    "contact": {
+      "metadata": {
+        "title": "Contact Us",
+        "description": "Get in touch with our team for stadium reservations, support, or inquiries about sports venues in Tantan, Morocco. Contact us for booking assistance and partnership opportunities.",
+        "keywords": "contact Tantan stadiums, stadium booking support, sports venue inquiries Tan-Tan, customer service stadium reservation, partnership opportunities Tantan, booking assistance Morocco"
+      }
+    },
+    "auth": {
+      "register": {
+        "metadata": {
+          "title": "Create Account",
+          "description": "Create your account to reserve stadiums and sports venues in Tantan, Morocco.",
+          "keywords": "create account, sign up, stadium reservation Tantan, sports venues Morocco, Tan-Tan sports platform"
+        },
+        "title": "Create Your Account",
+        "already_have_account": "Already have an account?",
+        "forgot_password": "Forgot your password?",
+        "instructions": {
+          "name_requirement": "Full name must be in French",
+          "phone_requirement": "Phone number must start with +212 or 06",
+          "email_requirement": "Email must be valid and active",
+          "verification_process": "You will receive a verification email after registration"
+        }
+      },
+      "login": {
+        "metadata": {
+          "title": "Login",
+          "description": "Login to your account to manage stadium and sports venue reservations in Tantan, Morocco.",
+          "keywords": "login, Login, stadium reservation Tantan, sports venues Morocco, Tan-Tan sports platform"
+        },
+        "title": "Login to Your Account",
+        "dont_have_account": "Don’t have an account?",
+        "forgot_password": "Forgot your password?"
+      },
+      "emailVerification": {
+        "title": "Email Verification",
+         "ready": {
+          "title": "Ready to verify your email?",
+          "message": "Click the button below to verify your email address and complete your registration.",
+          "verifyButton": "Verify Email",
+          "note": "Make sure you're on a secure device before proceeding."
+        },
+        "loading": {
+          "title": "Verifying Your Email",
+          "message": "Please wait while we verify your email address...",
+          "steps": {
+            "checkingToken": "Checking verification token",
+            "updatingAccount": "Updating your account",
+            "preparingDashboard": "Preparing your dashboard"
+          }
+        },
+        "success": {
+          "title": "Email Verified Successfully!",
+          "message": "Your email has been verified successfully!",
+          "emailConfirmed": "Email address confirmed",
+          "adminReviewTitle": "Account Under Review",
+          "waitForReview": "Awaiting Admin Approval",
+          "reviewTimeInfo": "Your account is now pending review by our admin team. This usually takes 24-48 hours.",
+          "adminWillCall": "Admin Will Call You",
+          "callVerificationInfo": "An administrator will call you on the phone number you provided to verify your identity.",
+          "securityCheck": "Security Verification",
+          "manualVerificationInfo": "For security reasons, we manually verify each new account. This helps prevent fraud.",
+          "nextStepsTitle": "What Happens Next:",
+          "steps": {
+            "adminReview": "Admin reviews your registration details",
+            "adminCall": "Admin calls you for verification",
+            "approvalEmail": "You receive an approval email",
+            "fullAccess": "You get full access to your account"
+          },
+          "keepPhoneReady": "Please keep your phone nearby. Our team will call from an official number.",
+          "goToHomepage": "Go to Homepage",
+          "contactSupport": "Contact Support",
+          "thankYouMessage": "Thank you for your patience during the verification process.",
+          "weWillContactYou": "We'll contact you soon via phone for verification."
+        },
+        "error": {
+          "tryAgain": "Try Again",
+          "title": "Verification Failed",
+          "invalidToken": "Invalid verification token",
+          "invalidTokenDetails": "The verification link appears to be incomplete or malformed.",
+          "alreadyVerified": "Email already verified",
+          "alreadyVerifiedDetails": "Your email was already verified. You can proceed to login.",
+          "expiredToken": "Verification token expired",
+          "expiredTokenDetails": "This verification link has expired. Please request a new verification email.",
+          "genericError": "Verification failed",
+          "genericErrorDetails": "An unexpected error occurred. Please try again or contact support.",
+          "goLogin": "Go to Login",
+          "goHome": "Go to Homepage",
+          "contactSupport": "Contact Support",
+          "needHelp": "Need help?"
+        }
+      }
+    }
+  },
+  "common": {
+    "actions": {
+      "reserve": "Reserve Now",
+      "search": "Search",
+      "login": "Login",
+      "register": "Register",
+      "logout": "Logout",
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View Details",
+      "book": "Make Reservation",
+      "checkout": "Checkout",
+      "checkout_now": "Checkout Now",
+      "continue": "Continue",
+      "back": "Go Back",
+      "filter": "Filter",
+      "sort": "Sort",
+      "download": "Download",
+      "create": "Create",
+      "update": "Update",
+      "duplicate": "Duplicate",
+      "archive": "Archive",
+      "unarchive": "Unarchive",
+      "enable": "Enable",
+      "disable": "Disable",
+      "export": "Export",
+      "import": "Import",
+      "preview": "Preview",
+      "share": "Share",
+      "send": "Send",
+      "cancel_subscription": "Cancel Subscription",
+      "retry": "Retry",
+      "refresh": "Refresh",
+      "close": "Close",
+      "open": "Open",
+      "select_all": "Select All",
+      "deselect_all": "Deselect All",
+      "pay": "Pay",
+      "add_to_cart": "Add to Cart",
+      "remove_from_cart": "Remove from Cart",
+      "apply": "Apply",
+      "approve": "Approve",
+      "reject": "Reject",
+      "submit": "Submit",
+      "next": "Next",
+      "previous": "Previous",
+      "reset": "Reset"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "select": "Select Theme",
+      "description": {
+        "light": "Light theme",
+        "dark": "Dark theme",
+        "system": "Use system theme"
+      }
+    },
+    "user": {
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "logout": "Logout",
+      "role": "Role",
+      "roles": {
+        "admin": "Administrator",
+        "club": "Club Manager"
+      }
+    },
+    "modals": {
+      "logout": {
+        "title": "Logout",
+        "message": "Are you sure you want to log out? You'll need to login again to access your account."
+      }
+    },
+    "navigation": {
+      "public": {
+        "title": "Navigation",
+        "links": {
+          "home": "Home",
+          "stadiums": "Stadiums",
+          "about": "About Us",
+          "contact": "Contact",
+          "sectionTitle": "Navigation"
+        }
+      }
+    },
+    "inputs": {
+      "labels": {
+        "full_name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "phoneNumber": "Phone Number",
+        "confirm_password": "Confirm Password",
+        "role": "Role",
+        "preferred_locale": "Preferred Language",
+        "search": "Search",
+        "name": "Name",
+        "description": "Description",
+        "address": "Address",
+        "capacity": "Capacity",
+        "price": "Price",
+        "date": "Date",
+        "time": "Time",
+        "duration": "Duration",
+        "status": "Status"
+      },
+      "placeholders": {
+        "full_name": "Enter your full name",
+        "email": "Enter your email address",
+        "password": "Enter your password",
+        "phoneNumber": "Enter your phone number",
+        "confirm_password": "Confirm your password",
+        "search": "Search...",
+        "name": "Enter name",
+        "description": "Enter description",
+        "address": "Enter address",
+        "capacity": "Enter capacity",
+        "price": "Enter price",
+        "date": "Select date",
+        "time": "Select time",
+        "duration": "Enter duration in hours"
+      },
+      "errors": {
+        "required": "This field is required",
+        "email": "Please enter a valid email address",
+        "password_length": "Password must be at least 8 characters",
+        "password_match": "Passwords do not match",
+        "phone": "Please enter a valid phone number",
+        "min": "Value must be greater than {min}",
+        "max": "Value must be less than {max}",
+        "invalid": "Invalid value"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unread": "unread",
+      "markAllRead": "Mark all as read",
+      "markOneAsRead": "Mark as read",
+      "loading": "Loading notifications...",
+      "retry": "Try again",
+      "noNotifications": "No notifications",
+      "live": "Live",
+      "connecting": "Connecting...",
+      "offline": "Offline",
+      "total": "total",
+      "viewAll": "View all",
+      "close": "Close"
+    },
+    "toast": {
+      "success": {
+        "created": "Created successfully",
+        "updated": "Updated successfully",
+        "deleted": "Deleted successfully",
+        "saved": "Saved successfully",
+        "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
+        "loggedIn": "Logged in successfully",
+        "loggedOut": "Logged out successfully",
+        "sent": "Sent successfully"
+      },
+      "error": {
+        "creationFailed": "Error creating, check your credentials and try again",
+        "updateFailed": "Error updating, please try again",
+        "deleteFailed": "Error deleting, please try again",
+        "saveFailed": "Error saving, please try again",
+        "registrationFailed": "Registration failed, check your information",
+        "loginFailed": "Login failed, check your credentials",
+        "generic": "An error occurred, please try again",
+        "network": "Network error, check your connection",
+        "validation": "Please check your information"
+      },
+      "info": {
+        "loading": "Loading...",
+        "processing": "Processing...",
+        "updating": "Updating..."
+      },
+      "warning": {
+        "unsavedChanges": "You have unsaved changes",
+        "confirmationRequired": "Confirmation required"
+      }
+    }
+  }
+}
