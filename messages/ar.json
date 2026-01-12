@@ -85,13 +85,15 @@
           }
         }
       },
-      "stadiumsShowcase": {
-        "badge": "الملاعب الشائعة",
-        "title": "اكتشف منشآتنا",
-        "viewAll": "عرض جميع الملاعب",
-        "priceSuffix": "/الحصة",
-        "currency": "درهم"
-      },
+     "stadiumsShowcase": {
+  "badge": "الملاعب الشعبية",
+  "title": "اكتشف منشآتنا",
+  "viewAll": "عرض جميع الملاعب",
+  "priceSuffix": "/الجلسة",
+  "currency": "درهم",
+  
+  "bookNow": "احجز الآن"
+},
       "howItWorks": {
         "badge": "كيف يعمل",
         "title": "سهل مثل 1، 2، 3، 4",

@@ -288,6 +288,7 @@ export type TranslationKey =
     | 'pages.home.metadata.keywords'
     | 'pages.home.metadata.title'
     | 'pages.home.stadiumsShowcase.badge'
+    | 'pages.home.stadiumsShowcase.bookNow'
     | 'pages.home.stadiumsShowcase.currency'
     | 'pages.home.stadiumsShowcase.priceSuffix'
     | 'pages.home.stadiumsShowcase.title'
@@ -479,7 +480,8 @@ export const _TranslationNamespaces = {
     "title",
     "viewAll",
     "priceSuffix",
-    "currency"
+    "currency",
+    "bookNow"
   ],
   "pages.home.howItWorks": [
     "badge",

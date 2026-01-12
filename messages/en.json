@@ -85,13 +85,15 @@
           }
         }
       },
-      "stadiumsShowcase": {
-        "badge": "Popular stadiums",
-        "title": "Discover our facilities",
-        "viewAll": "View all stadiums",
-        "priceSuffix": "/session",
-        "currency": "DH"
-      },
+     "stadiumsShowcase": {
+  "badge": "Popular stadiums",
+  "title": "Discover our facilities",
+  "viewAll": "View all stadiums",
+  "priceSuffix": "/session",
+  "currency": "DH",
+ 
+  "bookNow": "Book Now"                  
+},
       "howItWorks": {
         "badge": "How it works",
         "title": "As easy as 1, 2, 3, 4",

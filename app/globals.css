@@ -1,0 +1,72 @@
+@import "tailwindcss";
+@plugin '../hero.ts';
+/* Note: You may need to change the path to fit your project structure */
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+
+.swiper {
+  width: 100%;
+ 
+}
+.stadiumsSwiper {
+  padding: 60px 0 80px !important;
+  width: 100%;
+}
+
+.stadiumsSwiper .swiper-slide {
+  width: 300px !important;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .stadiumsSwiper .swiper-slide {
+    width: 320px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .stadiumsSwiper .swiper-slide {
+    width: 340px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stadiumsSwiper .swiper-slide {
+    width: 360px !important;
+  }
+}
+
+.stadiumsSwiper .swiper-slide-shadow-left,
+.stadiumsSwiper .swiper-slide-shadow-right {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) !important;
+}
+
+.stadiumsSwiper .swiper-pagination {
+  bottom: 0 !important;
+}
+
+.stadiumsSwiper .swiper-pagination-bullet {
+  background-color: #d4d4d8 !important;
+  opacity: 0.6;
+  width: 8px;
+  height: 8px;
+  transition: all 0.3s ease;
+}
+
+.stadiumsSwiper .swiper-pagination-bullet-active {
+  background-color: #f59e0b !important;
+  opacity: 1;
+  width: 20px;
+  border-radius: 4px;
+}
+
+.stadiumsSwiper .swiper-slide-active {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.stadiumsSwiper .swiper-slide-active .swiper-slide-shadow-left,
+.stadiumsSwiper .swiper-slide-active .swiper-slide-shadow-right {
+  background-image: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(0, 0, 0, 0)) !important;
+}
