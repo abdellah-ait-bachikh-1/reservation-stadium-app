@@ -51,6 +51,24 @@ export type TranslationKey =
     | 'common.actions.unarchive'
     | 'common.actions.update'
     | 'common.actions.view'
+    | 'common.footer.address'
+    | 'common.footer.allRightsReserved'
+    | 'common.footer.appName'
+    | 'common.footer.appSubName'
+    | 'common.footer.contactPageLink'
+    | 'common.footer.contactUs'
+    | 'common.footer.designedFor'
+    | 'common.footer.email'
+    | 'common.footer.emailDescription'
+    | 'common.footer.emailTitle'
+    | 'common.footer.getInTouch'
+    | 'common.footer.mapsUrl'
+    | 'common.footer.officeDescription'
+    | 'common.footer.officeTitle'
+    | 'common.footer.phone'
+    | 'common.footer.phoneDescription'
+    | 'common.footer.phoneTitle'
+    | 'common.footer.teamAlwaysHere'
     | 'common.inputs.errors.email'
     | 'common.inputs.errors.invalid'
     | 'common.inputs.errors.max'
@@ -703,7 +721,8 @@ export const _TranslationNamespaces = {
     "navigation",
     "inputs",
     "notifications",
-    "toast"
+    "toast",
+    "footer"
   ],
   "common.actions": [
     "reserve",
@@ -899,6 +918,26 @@ export const _TranslationNamespaces = {
   "common.toast.warning": [
     "unsavedChanges",
     "confirmationRequired"
+  ],
+  "common.footer": [
+    "emailTitle",
+    "emailDescription",
+    "email",
+    "officeTitle",
+    "officeDescription",
+    "address",
+    "mapsUrl",
+    "phoneTitle",
+    "phoneDescription",
+    "phone",
+    "contactUs",
+    "getInTouch",
+    "teamAlwaysHere",
+    "contactPageLink",
+    "allRightsReserved",
+    "designedFor",
+    "appName",
+    "appSubName"
   ]
 } as const;
 

@@ -479,6 +479,25 @@
         "unsavedChanges": "You have unsaved changes",
         "confirmationRequired": "Confirmation required"
       }
-    }
+    },"footer": {
+    "emailTitle": "Email",
+    "emailDescription": "For general inquiries and support",
+    "email": "contact@example.com",
+    "officeTitle": "Office Location",
+    "officeDescription": "Visit our main headquarters",
+    "address": "123 Sports Street, Tantan, Morocco",
+    "mapsUrl": "https://maps.google.com/?q=123+Sports+Street+Tantan+Morocco",
+    "phoneTitle": "Phone",
+    "phoneDescription": "Call us during business hours",
+    "phone": "+212 5XX-XXXXXX",
+    "contactUs": "Contact Us",
+    "getInTouch": "Get In Touch With Us",
+    "teamAlwaysHere": "Our team is always here to help you succeed",
+    "contactPageLink": "Go to Contact Page",
+    "allRightsReserved": "All rights reserved",
+    "designedFor": "Designed for sports clubs and teams",
+    "appName": "Tantan Stadium Booking", 
+    "appSubName": "Your sports venue reservation platform" 
+  }
   }
 }

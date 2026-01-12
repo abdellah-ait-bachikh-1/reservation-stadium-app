@@ -478,6 +478,25 @@
         "unsavedChanges": "لديك تغييرات غير محفوظة",
         "confirmationRequired": "مطلوب تأكيد"
       }
-    }
+    }, "footer": {
+    "emailTitle": "البريد الإلكتروني",
+    "emailDescription": "للاستفسارات العامة والدعم",
+    "email": "contact@example.com",
+    "officeTitle": "موقع المكتب",
+    "officeDescription": "تفضل بزيارة المقر الرئيسي",
+    "address": "شارع الرياضة 123، طانطان، المغرب",
+    "mapsUrl": "https://maps.google.com/?q=شارع+الرياضة+123+طانطان+المغرب",
+    "phoneTitle": "الهاتف",
+    "phoneDescription": "اتصل بنا خلال ساعات العمل",
+    "phone": "+212 5XX-XXXXXX",
+    "contactUs": "اتصل بنا",
+    "getInTouch": "تواصل معنا",
+    "teamAlwaysHere": "فريقنا دائمًا هنا لمساعدتك على النجاح",
+    "contactPageLink": "انتقل إلى صفحة الاتصال",
+    "allRightsReserved": "جميع الحقوق محفوظة",
+    "designedFor": "مصمم لأندية وفرق الرياضة",
+    "appName": "حجز ملاعب طانطان",
+    "appSubName": "منصتك لحجز المنشآت الرياضية"
+  }
   }
 }

@@ -478,6 +478,25 @@
         "unsavedChanges": "Vous avez des modifications non enregistrées",
         "confirmationRequired": "Confirmation requise"
       }
-    }
+    },"footer": {
+    "emailTitle": "Email",
+    "emailDescription": "Pour les demandes générales et le support",
+    "email": "contact@example.com",
+    "officeTitle": "Emplacement du bureau",
+    "officeDescription": "Visitez notre siège principal",
+    "address": "123 Rue des Sports, Tantan, Maroc",
+    "mapsUrl": "https://maps.google.com/?q=123+Rue+des+Sports+Tantan+Maroc",
+    "phoneTitle": "Téléphone",
+    "phoneDescription": "Appelez-nous pendant les heures de bureau",
+    "phone": "+212 5XX-XXXXXX",
+    "contactUs": "Contactez-nous",
+    "getInTouch": "Entrer en contact avec nous",
+    "teamAlwaysHere": "Notre équipe est toujours là pour vous aider à réussir",
+    "contactPageLink": "Aller à la page de contact",
+    "allRightsReserved": "Tous droits réservés",
+    "designedFor": "Conçu pour les clubs et équipes sportives",
+    "appName": "Réservation de stades Tantan",
+    "appSubName": "Votre plateforme de réservation d'installations sportives"
+  }
   }
 }
