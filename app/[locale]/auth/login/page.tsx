@@ -32,7 +32,6 @@ const LoginPage = async ({
 }) => {
   const { locale } = await params;
   const t = await getTypedTranslations();
- await wait(12333)
   const authenticatedUser = await isAuthenticatedUserExistsInDB()
   console.log({authenticatedUser})
   if (authenticatedUser) {

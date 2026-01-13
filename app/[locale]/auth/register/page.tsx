@@ -1,6 +1,7 @@
 import RegisterForm from "@/components/auth/RegisterForm";
 import { redirect } from "@/i18n/navigation";
 import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { wait } from "@/utils";
 import { getTypedTranslations } from "@/utils/i18n";
 import { Metadata } from "next";
 
@@ -33,6 +34,8 @@ const RegisterPage = async ({
 }) => {
   const {locale} =  await params;
   const t = await getTypedTranslations();
+   await wait(3333)
+
   const authenticatedUser = await isAuthenticatedUserExistsInDB()
   if (authenticatedUser) {
     redirect({ locale: locale, href: "/" })
