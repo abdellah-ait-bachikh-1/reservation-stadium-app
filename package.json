@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npx drizzle-kit generate && npx drizzle-kit push && next build",
+    "build":"next build",
     "start": "next start",
     "lint": "eslint",
     "generate-i18n": "tsx scripts/generate-i18n.ts",

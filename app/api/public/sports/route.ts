@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json(sports, { status: 200 });
   } catch (error) {
-    if (isErrorHasMessage(error)) {
-      return NextResponse.json({ message: error.message }, { status: 500 });
-    } else {
-      return NextResponse.json({ message: "unknown error" }, { status: 500 });
-    }
+    if (isErrorHasMessage(error)) throw new Error(error.message);
+    throw new Error("Unexpected registration error");
   }
 }

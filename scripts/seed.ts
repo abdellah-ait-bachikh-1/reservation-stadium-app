@@ -1,6 +1,7 @@
 // scripts/comprehensive-seed.ts
 import { db } from "@/drizzle/db";
-import * as schema from "@/drizzle/schema";
+import { cashPaymentRecords, clubs, monthlyPayments, monthlySubscriptions, notifications, reservations, reservationSeries, sports, stadiumImages, stadiums, stadiumSports, users } from "@/drizzle/schema";
+import { InsertCashPaymentRecordType, InsertClubType, InsertMonthlyPaymentType, InsertNotificationType, InsertReservationType } from "@/types/db";
 import bcrypt from "bcryptjs";
 import { addDays, addMonths, format, subDays, subMonths } from "date-fns";
 
@@ -12,18 +13,18 @@ async function comprehensiveSeed() {
     // ===== CLEAR ALL DATA =====
     console.log("🧹 Clearing all existing data...");
     const clearOrder = [
-      schema.cashPaymentRecords,
-      schema.monthlyPayments,
-      schema.reservations,
-      schema.monthlySubscriptions,
-      schema.reservationSeries,
-      schema.notifications,
-      schema.stadiumSports,
-      schema.stadiumImages,
-      schema.clubs,
-      schema.stadiums,
-      schema.sports,
-      schema.users,
+      cashPaymentRecords,
+      monthlyPayments,
+      reservations,
+      monthlySubscriptions,
+      reservationSeries,
+      notifications,
+      stadiumSports,
+      stadiumImages,
+      clubs,
+      stadiums,
+      sports,
+      users,
     ];
 
     for (const table of clearOrder) {
@@ -106,8 +107,8 @@ async function comprehensiveSeed() {
       },
     ];
 
-    await db.insert(schema.users).values(usersData);
-    const allUsers = await db.select().from(schema.users);
+    await db.insert(users).values(usersData);
+    const allUsers = await db.select().from(users);
     console.log(`✅ Created ${allUsers.length} users\n`);
 
     // ===== 2. CREATE SPORTS =====
@@ -123,8 +124,8 @@ async function comprehensiveSeed() {
       { nameAr: "الكرة الطائرة الشاطئية", nameFr: "Beach Volleyball", icon: "🏖️" },
     ];
 
-    await db.insert(schema.sports).values(sportsData);
-    const allSports = await db.select().from(schema.sports);
+    await db.insert(sports).values(sportsData);
+    const allSports = await db.select().from(sports);
     console.log(`✅ Created ${allSports.length} sports\n`);
 
     // ===== 3. CREATE STADIUMS =====
@@ -306,13 +307,13 @@ async function comprehensiveSeed() {
     },
     ];
 
-    await db.insert(schema.stadiums).values(stadiumsData);
-    const allStadiums = await db.select().from(schema.stadiums);
+    await db.insert(stadiums).values(stadiumsData);
+    const allStadiums = await db.select().from(stadiums);
     console.log(`✅ Created ${allStadiums.length} stadiums\n`);
 
     // ===== 4. CREATE STADIUM IMAGES =====
     console.log("📷 Creating stadium images...");
-    const stadiumImagesData = [];
+    const stadiumImagesData:{index:number,imageUri:string,stadiumId:string}[] = [];
     const imageUrls = [
       "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=800",
       "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w-800",
@@ -333,7 +334,7 @@ async function comprehensiveSeed() {
       }
     });
 
-    await db.insert(schema.stadiumImages).values(stadiumImagesData);
+    await db.insert(stadiumImages).values(stadiumImagesData);
     console.log(`✅ Created ${stadiumImagesData.length} stadium images\n`);
 
     // ===== 5. LINK STADIUMS WITH SPORTS =====
@@ -397,12 +398,12 @@ async function comprehensiveSeed() {
       { stadiumId: allStadiums[9].id, sportId: allSports[0].id },
       { stadiumId: allStadiums[9].id, sportId: allSports[6].id }
     );
-    await db.insert(schema.stadiumSports).values(stadiumSportsData);
+    await db.insert(stadiumSports).values(stadiumSportsData);
     console.log(`✅ Created ${stadiumSportsData.length} stadium-sport links\n`);
 
     // ===== 6. CREATE CLUBS =====
     console.log("🏢 Creating clubs...");
-    const clubsData = [
+    const clubsData:InsertClubType[] = [
       {
         name: "Tantan Football Club",
         address: "Rue du Stade, Quartier Al Amal, Tantan",
@@ -445,8 +446,8 @@ async function comprehensiveSeed() {
       },
     ];
 
-    await db.insert(schema.clubs).values(clubsData);
-    const allClubs = await db.select().from(schema.clubs);
+    await db.insert(clubs).values(clubsData);
+    const allClubs = await db.select().from(clubs);
     console.log(`✅ Created ${allClubs.length} clubs\n`);
 
     // ===== 7. CREATE RESERVATION SERIES =====
@@ -517,8 +518,8 @@ async function comprehensiveSeed() {
       },
     ];
 
-    await db.insert(schema.reservationSeries).values(reservationSeriesData);
-    const allSeries = await db.select().from(schema.reservationSeries);
+    await db.insert(reservationSeries).values(reservationSeriesData);
+    const allSeries = await db.select().from(reservationSeries);
     console.log(`✅ Created ${allSeries.length} reservation series\n`);
 
     // ===== 8. CREATE MONTHLY SUBSCRIPTIONS =====
@@ -562,12 +563,12 @@ async function comprehensiveSeed() {
       },
     ];
 
-    await db.insert(schema.monthlySubscriptions).values(subscriptionsData);
+    await db.insert(monthlySubscriptions).values(subscriptionsData);
     console.log(`✅ Created ${subscriptionsData.length} monthly subscriptions\n`);
 
     // ===== 9. CREATE MONTHLY PAYMENTS =====
     console.log("💳 Creating monthly payments...");
-    const monthlyPaymentsData = [];
+    const monthlyPaymentsData:InsertMonthlyPaymentType[] = [];
     const currentMonth = today.getMonth() + 1;
     const currentYear = today.getFullYear();
 
@@ -634,13 +635,13 @@ async function comprehensiveSeed() {
       reservationSeriesId: allSeries[2].id,
     });
 
-    await db.insert(schema.monthlyPayments).values(monthlyPaymentsData);
-    const allMonthlyPayments = await db.select().from(schema.monthlyPayments);
+    await db.insert(monthlyPayments).values(monthlyPaymentsData);
+    const allMonthlyPayments = await db.select().from(monthlyPayments);
     console.log(`✅ Created ${allMonthlyPayments.length} monthly payments\n`);
 
     // ===== 10. CREATE RESERVATIONS =====
     console.log("📋 Creating reservations...");
-    const reservationsData = [];
+    const reservationsData:InsertReservationType[] = [];
     const paidMonthlyPaymentIds = allMonthlyPayments
       .filter(p => p.status === "PAID")
       .map(p => p.id);
@@ -711,13 +712,13 @@ async function comprehensiveSeed() {
       }
     }
 
-    await db.insert(schema.reservations).values(reservationsData);
-    const allReservations = await db.select().from(schema.reservations);
+    await db.insert(reservations).values(reservationsData);
+    const allReservations = await db.select().from(reservations);
     console.log(`✅ Created ${allReservations.length} reservations\n`);
 
     // ===== 11. CREATE CASH PAYMENT RECORDS =====
     console.log("💵 Creating cash payment records...");
-    const cashPaymentsData = [];
+    const cashPaymentsData:InsertCashPaymentRecordType[] = [];
 
     // Create cash payments for some reservations
     allReservations.slice(0, 20).forEach((reservation, index) => {
@@ -747,12 +748,12 @@ async function comprehensiveSeed() {
       }
     });
 
-    await db.insert(schema.cashPaymentRecords).values(cashPaymentsData);
+    await db.insert(cashPaymentRecords).values(cashPaymentsData);
     console.log(`✅ Created ${cashPaymentsData.length} cash payment records\n`);
 
     // ===== 12. CREATE NOTIFICATIONS =====
     console.log("🔔 Creating notifications...");
-    const notificationsData = [];
+    const notificationsData:InsertNotificationType[] = [];
 
     // Notifications for all users
     allUsers.forEach((user, userIndex) => {
@@ -791,7 +792,7 @@ async function comprehensiveSeed() {
           messageAr: user.isApproved
             ? "تمت الموافقة على حسابك من قبل المسؤول."
             : "تم إنشاء حسابك وهو في انتظار الموافقة.",
-          isRead: user.isApproved,
+          isRead: !!user.isApproved  ,
           userId: user.id,
           actorUserId: allUsers[0].id,
           createdAt: format(subDays(today, 5 + userIndex), "yyyy-MM-dd HH:mm:ss"),
@@ -853,7 +854,7 @@ async function comprehensiveSeed() {
       }
     });
 
-    await db.insert(schema.notifications).values(notificationsData);
+    await db.insert(notifications).values(notificationsData);
     console.log(`✅ Created ${notificationsData.length} notifications\n`);
 
     // ===== SUMMARY =====

@@ -1,6 +1,7 @@
 // app/api/public/stadiums/route.ts
 import { db } from "@/drizzle/db";
 import { stadiums, stadiumSports, stadiumImages, sports } from "@/drizzle/schema";
+import { isErrorHasMessage } from "@/utils";
 import { and, eq, like, inArray, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -121,10 +122,7 @@ export async function GET(request: NextRequest) {
     }, { status: 200 });
     
   } catch (error) {
-    console.error('Error fetching stadiums:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch stadiums' },
-      { status: 500 }
-    );
+    if (isErrorHasMessage(error)) throw new Error(error.message);
+        throw new Error("Unexpected registration error");
   }
 }
