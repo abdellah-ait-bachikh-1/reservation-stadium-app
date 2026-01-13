@@ -12,3 +12,4 @@ export const APP_NAMES = {
 export const SALT = parseInt(process.env.SALT as string);
 
 export const AUTH_SECRET =  process.env.AUTH_SECRET
+export const NEXT_PUBLIC_APP_URL =  process.env.NEXT_PUBLIC_APP_URL

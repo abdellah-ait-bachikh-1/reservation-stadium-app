@@ -2,7 +2,7 @@ import { authConfig } from "@/auth.config";
 import { getServerSession } from "next-auth";
 import { getUserByIdForAuth } from "./queries/user";
 import { getToken } from "next-auth/jwt";
-import { AUTH_SECRET } from "@/const";
+import { AUTH_SECRET, NEXT_PUBLIC_APP_URL } from "@/const";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/drizzle/db";
 import { cookies } from "next/headers";
@@ -151,7 +151,7 @@ export async function apiLogout() {
       .map(cookie => `${cookie.name}=${cookie.value}`)
       .join('; ');
     
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/logout`, {
+    const response = await fetch(`${NEXT_PUBLIC_APP_URL}/api/auth/logout`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

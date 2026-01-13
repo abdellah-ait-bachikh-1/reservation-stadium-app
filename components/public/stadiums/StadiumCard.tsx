@@ -79,7 +79,6 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
       maximumFractionDigits: 2,
     }).format(priceNumber);
   };
-console.log(stadium.image)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
