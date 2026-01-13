@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt";
 import { AUTH_SECRET } from "@/const";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/drizzle/db";
+import { cookies } from "next/headers";
 
 //------server component
 
@@ -29,9 +30,10 @@ export const isAuthenticatedUserExistsInDB = async () => {
 };
 //-----------------------------------usage
 //  const authenticatedUser = await isAuthenticatedUserExistsInDB()
+
 //   if (!authenticatedUser) {
-//     await logoutUser()
-//     redirect({locale:locale,href:"/auth/login"})
+//     await apiLogout()
+//     redirect({ locale: locale, href: "/auth/login" })
 //   }
 
 
@@ -133,4 +135,57 @@ export function clearAuthCookies(response: NextResponse) {
       response.cookies.delete(cookie.name);
     }
   });
+}
+
+
+
+
+
+
+// lib/auth.ts - Update the apiLogout function
+export async function apiLogout() {
+  try {
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map(cookie => `${cookie.name}=${cookie.value}`)
+      .join('; ');
+    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/logout`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': cookieHeader,
+      },
+      cache: 'no-store'
+    });
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API logout error:', error);
+    return { success: false, error: 'Network error' };
+  }
+}
+
+// Add this new function that handles logout + redirect
+export async function logoutAndRedirect(locale: string) {
+  try {
+    const result = await apiLogout();
+    
+    if (result.success) {
+      // IMPORTANT: You need to throw a redirect, not return it
+      throw {
+        type: 'redirect',
+        url: `/${locale}/auth/login`
+      };
+    }
+    
+    return { success: false };
+  } catch (error: any) {
+    if (error.type === 'redirect') {
+      throw error; // Re-throw redirect errors
+    }
+    return { success: false, error: error.message };
+  }
 }

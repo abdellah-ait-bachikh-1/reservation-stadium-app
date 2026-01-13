@@ -11,8 +11,8 @@ import NotificationBell from "@/components/dashboard/NotificationBell";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { redirect } from "@/i18n/navigation";
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
-export const dynamic = 'force-dynamic'; 
+import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
+export const dynamic = 'force-dynamic';
 //   return {
 //     title: {
 //       template: `%s | ${getAppName(locale as LocaleEnumType)}`,
@@ -30,17 +30,17 @@ export default async function DashboardLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
- const {locale} = await params;
+  const { locale } = await params;
   const authenticatedUser = await isAuthenticatedUserExistsInDB()
-  
-  if (!authenticatedUser) {
-    await logoutUser()
-    redirect({locale:locale,href:"/auth/login"})
-  }
+ 
+   if (!authenticatedUser) {
+     await apiLogout()
+     redirect({ locale: locale, href: "/auth/login" })
+   }
   return (
     <>
       <header className="flex items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
-        <NotificationBell /> <ThemeSwitcher/> <LanguageSwitcher/>
+        <NotificationBell /> <ThemeSwitcher /> <LanguageSwitcher />
       </header>
       {children}
     </>

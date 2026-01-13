@@ -73,26 +73,6 @@ export default async function middleware(request: NextRequest) {
     );
   }
 
-  // // Page protection logic (only for non-API routes)
-  // const isAuthPage = pathname.startsWith(`/${locale}/auth`);
-  // const isDashboardPage = pathname.startsWith(`/${locale}/dashboard`);
-  // const isVerifyEmailPage = pathname.startsWith(`/${locale}/auth/verify-email`);
-  // const isAuthenticated = !!token;
-
-  // // Authenticated users → block /auth/*
-  // if (isAuthPage && isAuthenticated && !isVerifyEmailPage) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = `/${locale}`;
-  //   return NextResponse.redirect(url);
-  // }
-
-  // // Unauthenticated users → block /dashboard/*
-  // if (isDashboardPage && !isAuthenticated) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = `/${locale}/auth/login`;
-  //   return NextResponse.redirect(url);
-  // }
-
   // Pass through to i18n middleware for non-API routes
   return intlMiddleware(request);
 }
