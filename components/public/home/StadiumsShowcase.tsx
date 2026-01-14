@@ -339,7 +339,7 @@ export function StadiumsShowcase() {
           </div>
 
           {/* Right Content - Swiper taking the rest of the grid */}
-          <div className="w-full h-[600px] lg:h-[700px] flex items-center justify-center relative">
+          <div className="w-full h-[600px] lg:h-[700px] flex items-center justify-center relative  ">
             {loading ? (
               <div className="w-full h-full flex items-center justify-center">
                 <div className="animate-pulse">
