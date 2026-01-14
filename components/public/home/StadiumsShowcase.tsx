@@ -194,16 +194,19 @@ export function StadiumsShowcase() {
   const [stadiums, setStadiums] = useState<Stadium[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-const [timeLeft, setTimeLeft] = useState(3); // 3 seconds
-const timerRef = useRef<number>(3);
 
-useEffect(() => {
-  // Initialize timer display
-  const timerElement = document.getElementById(`autoplay-timer`);
-  if (timerElement) {
-    timerElement.textContent = `${timerRef.current}s`;
-  }
-}, []);
+  const progressCircle = useRef<SVGCircleElement>(null);
+  const progressContent = useRef<HTMLSpanElement>(null);
+
+  const onAutoplayTimeLeft = (s: any, time: number, progress: number) => {
+    if (progressCircle.current) {
+      progressCircle.current.style.setProperty('--progress', (1 - progress).toString());
+    }
+    if (progressContent.current) {
+      progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
+    }
+  };
+
   useEffect(() => {
     const fetchStadiums = async () => {
       try {
@@ -218,7 +221,6 @@ useEffect(() => {
         setStadiums(data.stadiums || [])
       } catch (err) {
         console.error('Error fetching stadiums:', err)
-
       } finally {
         setLoading(false)
       }
@@ -227,9 +229,77 @@ useEffect(() => {
     fetchStadiums()
   }, [])
 
-
   return (
     <section className="py-20 md:py-32 relative overflow-hidden">
+      <style jsx>{`
+        .autoplay-progress {
+          position: absolute;
+          right: 24px;
+          bottom: 24px;
+          z-index: 10;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: #f5a524;
+        }
+
+        .autoplay-progress svg {
+          --progress: 0;
+          position: absolute;
+          left: 0;
+          top: 0px;
+          z-index: 10;
+          width: 100%;
+          height: 100%;
+          stroke-width: 4px;
+          stroke: #f5a524;
+          fill: none;
+          stroke-dashoffset: calc(125.6px * (1 - var(--progress)));
+          stroke-dasharray: 125.6px;
+          transform: rotate(-90deg);
+        }
+        
+        /* Custom pagination dots color */
+        .stadiumSwiper .swiper-pagination-bullet {
+          background-color: #d1d5db;
+          opacity: 0.5;
+        }
+        
+        .stadiumSwiper .swiper-pagination-bullet-active {
+          background-color: #f5a524;
+          opacity: 1;
+        }
+        
+        .stadiumSwiper .swiper-button-next,
+        .stadiumSwiper .swiper-button-prev {
+          color: #f5a524;
+        }
+        
+        .stadiumSwiper .swiper-button-next:after,
+        .stadiumSwiper .swiper-button-prev:after {
+          font-size: 24px;
+          font-weight: bold;
+        }
+        
+        .stadiumSwiper .swiper-button-next:hover,
+        .stadiumSwiper .swiper-button-prev:hover {
+          color: #d97706;
+        }
+        
+        /* Dark mode support */
+        .dark .stadiumSwiper .swiper-pagination-bullet {
+          background-color: #6b7280;
+        }
+        
+        .dark .stadiumSwiper .swiper-button-next,
+        .dark .stadiumSwiper .swiper-button-prev {
+          color: #fbbf24;
+        }
+      `}</style>
+      
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Content */}
@@ -282,93 +352,58 @@ useEffect(() => {
               </div>
             ) : (
               <div className="w-full h-full relative">
-  <Swiper
-    effect={'coverflow'}
-    grabCursor={true}
-    centeredSlides={true}
-    slidesPerView={'auto'}
-    spaceBetween={20}
-    loop={true}
-    coverflowEffect={{
-      rotate: 30,
-      stretch: 0,
-      depth: 100,
-      modifier: 1,
-      slideShadows: false,
-    }}
-    pagination={{ 
-      clickable: true,
-      dynamicBullets: true
-    }}
-    navigation={true}
-    autoplay={{
-      delay: 3000,
-      disableOnInteraction: false,
-      pauseOnMouseEnter: true,
-    }}
-    modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
-    className="stadiumSwiper h-full"
-    onAutoplayTimeLeft={(swiper, timeLeft, percentage) => {
-      // Update the timer display
-      const timerElement = document.getElementById(`autoplay-timer`);
-      if (timerElement) {
-        const seconds = Math.ceil(timeLeft / 1000);
-        timerElement.textContent = `${seconds}s`;
-        const circle = document.getElementById(`autoplay-circle`);
-        if (circle) {
-          circle.style.strokeDashoffset = `calc(125.6 * (1 - ${percentage}))`;
-        }
-      }
-    }}
-  >
-    {stadiums && stadiums.slice(0, 6).map((stadium) => (
-      <SwiperSlide key={stadium.id} className="!w-auto !h-auto">
-        <div className="w-full h-full flex items-center justify-center p-2">
-          <div className="w-[350px] h-[500px]">
-            <StadiumCard stadium={stadium} locale={locale} />
-          </div>
-        </div>
-      </SwiperSlide>
-    ))}
-  </Swiper>
-  
-  {/* Auto-play Timer Indicator */}
-  <div className="absolute bottom-6 right-6 z-10">
-    <div className="relative w-12 h-12">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 42 42">
-        <circle 
-          cx="21" 
-          cy="21" 
-          r="19" 
-          fill="none" 
-          stroke="#e5e7eb" 
-          strokeWidth="3" 
-          className="dark:stroke-gray-700"
-        />
-        <circle 
-          id="autoplay-circle"
-          cx="21" 
-          cy="21" 
-          r="19" 
-          fill="none" 
-          stroke="#f5a524" 
-          strokeWidth="3" 
-          strokeDasharray="125.6"
-          strokeDashoffset="125.6"
-          strokeLinecap="round"
-        />
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span 
-          id="autoplay-timer"
-          className="text-xs font-bold text-gray-700 dark:text-gray-300"
-        >
-          3s
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+                <Swiper
+                  effect={'coverflow'}
+                  grabCursor={true}
+                  centeredSlides={true}
+                  slidesPerView={'auto'}
+                  spaceBetween={20}
+                  loop={true}
+                  coverflowEffect={{
+                    rotate: 30,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows: false,
+                  }}
+                  pagination={{ 
+                    clickable: true,
+                    dynamicBullets: true
+                  }}
+                  navigation={true}
+                  autoplay={{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                  }}
+                  modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+                  className="stadiumSwiper h-full"
+                  onAutoplayTimeLeft={onAutoplayTimeLeft}
+                >
+                  {stadiums && stadiums.slice(0, 6).map((stadium) => (
+                    <SwiperSlide key={stadium.id} className="!w-auto !h-auto">
+                      <div className="w-full h-full flex items-center justify-center p-2">
+                        <div className="w-[350px] h-[500px]">
+                          <StadiumCard stadium={stadium} locale={locale} />
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                  
+                  {/* Timer element */}
+                  <div className="autoplay-progress" slot="container-end">
+                    <svg viewBox="0 0 48 48">
+                      <circle 
+                        ref={progressCircle}
+                        cx="24" 
+                        cy="24" 
+                        r="20"
+                      />
+                    </svg>
+                    <span ref={progressContent}></span>
+                  </div>
+                </Swiper>
+              </div>
             )}
 
             {/* Floating Elements for Decoration */}
