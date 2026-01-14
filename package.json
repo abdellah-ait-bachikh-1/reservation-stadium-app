@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "generate-i18n": "tsx scripts/generate-i18n.ts",
+    "db:test-conection":"tsx scripts/test-connection-simple.ts",
     "db:seed":"tsx scripts/seed.ts"
   },
   "dependencies": {
