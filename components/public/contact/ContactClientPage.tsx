@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 
 export default function ContactClientPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white/50 via-white to-zinc-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <main className="min-h-screen ">
       {/* Hero Section */}
       <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-20 pb-12">
         <div className="relative z-10 container mx-auto px-4">

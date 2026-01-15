@@ -197,13 +197,128 @@
     "last": "Last"
   }
     },
-    "about": {
-      "metadata": {
-        "title": "About Us",
-        "description": "Learn about our stadium reservation platform in Tantan, Morocco. Our mission is to make sports venue booking easy and accessible for everyone in the Tan-Tan region.",
-        "keywords": "about Tantan stadiums, stadium reservation platform, Tan-Tan sports booking service, our mission, about our company, stadium booking system Morocco, Tan-Tan sports community"
-      }
+   "about": {
+  "metadata": {
+    "title": "About Us",
+    "description": "Learn about our stadium reservation platform in Tantan, Morocco. Our mission is to make sports venue booking easy and accessible for everyone in the Tan-Tan region.",
+    "keywords": "about Tantan stadiums, stadium reservation platform, Tan-Tan sports booking service, our mission, about our company, stadium booking system Morocco, Tan-Tan sports community"
+  },
+  "hero": {
+    "badge": "About Our Platform",
+    "title": "Making Stadium Booking",
+    "highlighted": "Easy for Everyone",
+    "description": "Since 2023, we've been dedicated to transforming how sports clubs and associations reserve stadiums in Tantan. With our platform, booking your perfect venue has never been easier.",
+    "cta": {
+    "exploreStadiums": "Explore Stadiums",
+    "getInTouch": "Get in Touch"
+  }
+  },
+  "stats": {
+    "stadiums": {
+    
+      "label": "Stadiums",
+      "description": "Available venues"
     },
+    "clubs": {
+     
+      "label": "Clubs",
+      "description": "Active members"
+    },
+    "bookings": {
+     
+      "label": "Bookings",
+      "description": "This year"
+    },
+    "satisfaction": {
+     
+      "label": "Satisfaction",
+      "description": "Happy users"
+    }
+  },
+  "mission": {
+    "title": "Our Mission & Values",
+    "description": "We're driven by a clear purpose: to empower sports communities through technology.",
+    "values": {
+      "mission": {
+        "title": "Our Mission",
+        "description": "To make stadium booking simple, transparent, and accessible to every sports club and association in Tantan."
+      },
+      "community": {
+        "title": "Community First",
+        "description": "We believe in building a thriving sports community where clubs can focus on what matters most—playing."
+      },
+      "trust": {
+        "title": "Trust & Security",
+        "description": "Your data and payments are protected with enterprise-grade security. We take your trust seriously."
+      },
+      "sustainability": {
+        "title": "Sustainable Growth",
+        "description": "We're committed to supporting local sports culture while maintaining fair pricing for all."
+      }
+    }
+  },
+  "features": {
+    "badge": "Key Features",
+    "title": "Why Choose Our Platform?",
+    "description": "Designed with clubs in mind, built for efficiency and ease of use.",
+    "items": {
+      "availability": {
+        "title": "Real-Time Availability",
+        "description": "See available stadiums instantly and book your preferred time slots without delays."
+      },
+      "payments": {
+        "title": "Flexible Payment Plans",
+        "description": "Choose between pay-per-session or monthly subscriptions based on your club's needs."
+      },
+      "access": {
+        "title": "24/7 Access",
+        "description": "Book and manage your reservations anytime, anywhere through our mobile-friendly platform."
+      },
+      "support": {
+        "title": "Expert Support",
+        "description": "Our dedicated team is here to help with booking assistance and technical support."
+      },
+      "quality": {
+        "title": "Quality Venues",
+        "description": "Access the best-maintained and most reliable sports facilities in the Tantan region."
+      },
+      "community": {
+        "title": "Community Benefits",
+        "description": "Join a network of clubs, get exclusive updates, and participate in regional sports events."
+      }
+    }
+  },
+  "journey": {
+    "title": "Our Journey",
+    "description": "From vision to reality—how we're transforming sports venue booking in Tantan.",
+    "timeline": {
+     "2024": {
+    "title": "Start Building Stadiums",
+    "description": "Started construction and preparation of sports facilities in the Tantan region."
+  },
+  "2025": {
+    "title": "Stadiums Opening",
+    "description": "Opened stadiums to serve the local sports community with modern facilities."
+  },
+  "2026": {
+    "title": "Platform Launch",
+    "description": "Launched our stadium reservation system to serve the Tantan sports community."
+  }
+    }
+  },
+  "commitment": {
+    "title": "Our Commitment to You",
+    "description": "We're committed to continuous improvement and supporting your success.",
+    "items": [
+      "Transparent and fair pricing for all clubs",
+      "Regular platform updates and new features",
+      "Professional customer support team available 24/7",
+      "Data security and privacy protection",
+      "Community events and networking opportunities",
+      "Regular system maintenance and reliability"
+    ]
+  }
+},
     "contact": {
       "metadata": {
         "title": "Contact Us",

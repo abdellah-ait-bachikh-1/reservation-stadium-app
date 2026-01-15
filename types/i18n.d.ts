@@ -164,9 +164,64 @@ export type TranslationKey =
     | 'common.user.role'
     | 'common.user.roles.admin'
     | 'common.user.roles.club'
+    | 'pages.about.commitment.description'
+    | 'pages.about.commitment.items.0'
+    | 'pages.about.commitment.items.1'
+    | 'pages.about.commitment.items.2'
+    | 'pages.about.commitment.items.3'
+    | 'pages.about.commitment.items.4'
+    | 'pages.about.commitment.items.5'
+    | 'pages.about.commitment.title'
+    | 'pages.about.features.badge'
+    | 'pages.about.features.description'
+    | 'pages.about.features.items.access.description'
+    | 'pages.about.features.items.access.title'
+    | 'pages.about.features.items.availability.description'
+    | 'pages.about.features.items.availability.title'
+    | 'pages.about.features.items.community.description'
+    | 'pages.about.features.items.community.title'
+    | 'pages.about.features.items.payments.description'
+    | 'pages.about.features.items.payments.title'
+    | 'pages.about.features.items.quality.description'
+    | 'pages.about.features.items.quality.title'
+    | 'pages.about.features.items.support.description'
+    | 'pages.about.features.items.support.title'
+    | 'pages.about.features.title'
+    | 'pages.about.hero.badge'
+    | 'pages.about.hero.cta.exploreStadiums'
+    | 'pages.about.hero.cta.getInTouch'
+    | 'pages.about.hero.description'
+    | 'pages.about.hero.highlighted'
+    | 'pages.about.hero.title'
+    | 'pages.about.journey.description'
+    | 'pages.about.journey.timeline.2024.description'
+    | 'pages.about.journey.timeline.2024.title'
+    | 'pages.about.journey.timeline.2025.description'
+    | 'pages.about.journey.timeline.2025.title'
+    | 'pages.about.journey.timeline.2026.description'
+    | 'pages.about.journey.timeline.2026.title'
+    | 'pages.about.journey.title'
     | 'pages.about.metadata.description'
     | 'pages.about.metadata.keywords'
     | 'pages.about.metadata.title'
+    | 'pages.about.mission.description'
+    | 'pages.about.mission.title'
+    | 'pages.about.mission.values.community.description'
+    | 'pages.about.mission.values.community.title'
+    | 'pages.about.mission.values.mission.description'
+    | 'pages.about.mission.values.mission.title'
+    | 'pages.about.mission.values.sustainability.description'
+    | 'pages.about.mission.values.sustainability.title'
+    | 'pages.about.mission.values.trust.description'
+    | 'pages.about.mission.values.trust.title'
+    | 'pages.about.stats.bookings.description'
+    | 'pages.about.stats.bookings.label'
+    | 'pages.about.stats.clubs.description'
+    | 'pages.about.stats.clubs.label'
+    | 'pages.about.stats.satisfaction.description'
+    | 'pages.about.stats.satisfaction.label'
+    | 'pages.about.stats.stadiums.description'
+    | 'pages.about.stats.stadiums.label'
     | 'pages.auth.emailVerification.error.alreadyVerified'
     | 'pages.auth.emailVerification.error.alreadyVerifiedDetails'
     | 'pages.auth.emailVerification.error.contactSupport'
@@ -602,12 +657,151 @@ export const _TranslationNamespaces = {
     "last"
   ],
   "pages.about": [
-    "metadata"
+    "metadata",
+    "hero",
+    "stats",
+    "mission",
+    "features",
+    "journey",
+    "commitment"
   ],
   "pages.about.metadata": [
     "title",
     "description",
     "keywords"
+  ],
+  "pages.about.hero": [
+    "badge",
+    "title",
+    "highlighted",
+    "description",
+    "cta"
+  ],
+  "pages.about.hero.cta": [
+    "exploreStadiums",
+    "getInTouch"
+  ],
+  "pages.about.stats": [
+    "stadiums",
+    "clubs",
+    "bookings",
+    "satisfaction"
+  ],
+  "pages.about.stats.stadiums": [
+    "label",
+    "description"
+  ],
+  "pages.about.stats.clubs": [
+    "label",
+    "description"
+  ],
+  "pages.about.stats.bookings": [
+    "label",
+    "description"
+  ],
+  "pages.about.stats.satisfaction": [
+    "label",
+    "description"
+  ],
+  "pages.about.mission": [
+    "title",
+    "description",
+    "values"
+  ],
+  "pages.about.mission.values": [
+    "mission",
+    "community",
+    "trust",
+    "sustainability"
+  ],
+  "pages.about.mission.values.mission": [
+    "title",
+    "description"
+  ],
+  "pages.about.mission.values.community": [
+    "title",
+    "description"
+  ],
+  "pages.about.mission.values.trust": [
+    "title",
+    "description"
+  ],
+  "pages.about.mission.values.sustainability": [
+    "title",
+    "description"
+  ],
+  "pages.about.features": [
+    "badge",
+    "title",
+    "description",
+    "items"
+  ],
+  "pages.about.features.items": [
+    "availability",
+    "payments",
+    "access",
+    "support",
+    "quality",
+    "community"
+  ],
+  "pages.about.features.items.availability": [
+    "title",
+    "description"
+  ],
+  "pages.about.features.items.payments": [
+    "title",
+    "description"
+  ],
+  "pages.about.features.items.access": [
+    "title",
+    "description"
+  ],
+  "pages.about.features.items.support": [
+    "title",
+    "description"
+  ],
+  "pages.about.features.items.quality": [
+    "title",
+    "description"
+  ],
+  "pages.about.features.items.community": [
+    "title",
+    "description"
+  ],
+  "pages.about.journey": [
+    "title",
+    "description",
+    "timeline"
+  ],
+  "pages.about.journey.timeline": [
+    "2024",
+    "2025",
+    "2026"
+  ],
+  "pages.about.journey.timeline.2024": [
+    "title",
+    "description"
+  ],
+  "pages.about.journey.timeline.2025": [
+    "title",
+    "description"
+  ],
+  "pages.about.journey.timeline.2026": [
+    "title",
+    "description"
+  ],
+  "pages.about.commitment": [
+    "title",
+    "description",
+    "items"
+  ],
+  "pages.about.commitment.items": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
   ],
   "pages.contact": [
     "metadata"

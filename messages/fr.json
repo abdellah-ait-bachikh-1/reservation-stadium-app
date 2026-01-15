@@ -197,13 +197,128 @@
     "last": "Dernier"
   }
     },
-    "about": {
-      "metadata": {
-        "title": "À propos",
-        "description": "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
-        "keywords": "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan"
-      }
+   "about": {
+  "metadata": {
+    "title": "À propos de nous",
+    "description": "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
+    "keywords": "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan"
+  },
+  "hero": {
+    "badge": "À propos de notre plateforme",
+    "title": "Rendre la réservation de stades",
+    "highlighted": "Facile pour tous",
+    "description": "Depuis 2023, nous nous consacrons à transformer la façon dont les clubs et associations sportifs réservent des stades à Tantan. Avec notre plateforme, réserver votre lieu idéal n'a jamais été aussi simple.",
+     "cta": {
+    "exploreStadiums": "Explorer les stades",
+    "getInTouch": "Nous contacter"
+  }
+  },
+  "stats": {
+    "stadiums": {
+    
+      "label": "Stades",
+      "description": "Lieux disponibles"
     },
+    "clubs": {
+
+      "label": "Clubs",
+      "description": "Membres actifs"
+    },
+    "bookings": {
+      
+      "label": "Réservations",
+      "description": "Cette année"
+    },
+    "satisfaction": {
+      
+      "label": "Satisfaction",
+      "description": "Utilisateurs satisfaits"
+    }
+  },
+  "mission": {
+    "title": "Notre mission et valeurs",
+    "description": "Nous sommes animés par un objectif clair : autonomiser les communautés sportives grâce à la technologie.",
+    "values": {
+      "mission": {
+        "title": "Notre mission",
+        "description": "Rendre la réservation de stades simple, transparente et accessible à chaque club et association sportive de Tantan."
+      },
+      "community": {
+        "title": "Priorité à la communauté",
+        "description": "Nous croyons en la construction d'une communauté sportive florissante où les clubs peuvent se concentrer sur l'essentiel : jouer."
+      },
+      "trust": {
+        "title": "Confiance et sécurité",
+        "description": "Vos données et paiements sont protégés par une sécurité de niveau entreprise. Nous prenons votre confiance au sérieux."
+      },
+      "sustainability": {
+        "title": "Croissance durable",
+        "description": "Nous nous engageons à soutenir la culture sportive locale tout en maintenant des prix équitables pour tous."
+      }
+    }
+  },
+  "features": {
+    "badge": "Fonctionnalités clés",
+    "title": "Pourquoi choisir notre plateforme ?",
+    "description": "Conçue avec les clubs en tête, construite pour l'efficacité et la facilité d'utilisation.",
+    "items": {
+      "availability": {
+        "title": "Disponibilité en temps réel",
+        "description": "Voyez les stades disponibles instantanément et réservez vos créneaux horaires préférés sans délai."
+      },
+      "payments": {
+        "title": "Plans de paiement flexibles",
+        "description": "Choisissez entre le paiement à la séance ou les abonnements mensuels selon les besoins de votre club."
+      },
+      "access": {
+        "title": "Accès 24h/24 et 7j/7",
+        "description": "Réservez et gérez vos réservations à tout moment, n'importe où via notre plateforme mobile."
+      },
+      "support": {
+        "title": "Support expert",
+        "description": "Notre équipe dédiée est là pour vous aider avec l'assistance à la réservation et le support technique."
+      },
+      "quality": {
+        "title": "Lieux de qualité",
+        "description": "Accédez aux installations sportives les mieux entretenues et les plus fiables de la région de Tantan."
+      },
+      "community": {
+        "title": "Avantages communautaires",
+        "description": "Rejoignez un réseau de clubs, obtenez des mises à jour exclusives et participez à des événements sportifs régionaux."
+      }
+    }
+  },
+  "journey": {
+    "title": "Notre parcours",
+    "description": "De la vision à la réalité - comment nous transformons la réservation de lieux sportifs à Tantan.",
+    "timeline": {
+     "2024": {
+    "title": "Début de construction des stades",
+    "description": "Début de la construction et de la préparation des installations sportives dans la région de Tantan."
+  },
+  "2025": {
+    "title": "Ouverture des stades",
+    "description": "Ouverture des stades pour servir la communauté sportive locale avec des installations modernes."
+  },
+  "2026": {
+    "title": "Lancement de la plateforme",
+    "description": "Lancé notre système de réservation de stades pour servir la communauté sportive de Tantan."
+  }
+    }
+  },
+  "commitment": {
+    "title": "Notre engagement envers vous",
+    "description": "Nous nous engageons à l'amélioration continue et au soutien de votre succès.",
+    "items": [
+      "Tarification transparente et équitable pour tous les clubs",
+      "Mises à jour régulières de la plateforme et nouvelles fonctionnalités",
+      "Équipe de support client professionnelle disponible 24h/24 et 7j/7",
+      "Protection des données et de la vie privée",
+      "Événements communautaires et opportunités de réseautage",
+      "Maintenance et fiabilité régulières du système"
+    ]
+  }
+},
     "contact": {
       "metadata": {
         "title": "Contactez-nous",
