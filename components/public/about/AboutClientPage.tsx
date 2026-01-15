@@ -230,7 +230,7 @@ export default function AboutClientPage() {
                           <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-lg">
                             <Icon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                           </div>
-                          <div className="flex-1">
+                          <div className="flex-1 rtl:text-start">
                             <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
                               {t(`pages.about.mission.values.${value.label}.title`)}
                             </h3>
@@ -275,7 +275,7 @@ export default function AboutClientPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Card className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all h-full">
-                    <CardBody className="gap-3 p-6">
+                    <CardBody className="gap-3 p-6 rtl:text-right">
                       <div className="text-4xl">{feature.icon}</div>
                       <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
                         {t(`pages.about.features.items.${feature.lable}.title`)}
