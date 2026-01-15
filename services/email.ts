@@ -1,4 +1,4 @@
-// utils/email.ts
+// services/email.ts
 import nodemailer from "nodemailer";
 
 export const SMTP_CONFIG = {

@@ -1,12 +1,17 @@
 "use client"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import type React from "react"
 
 import { Input } from "@heroui/input"
 import { Textarea } from "@heroui/input"
 import { Button } from "@heroui/button"
 import { Card, CardBody } from "@heroui/card"
+import { useTypedTranslations } from "@/utils/i18n"
 import { useLocale } from "next-intl"
+import { LocaleEnumType } from "@/types"
+import { useFormValidation } from "@/hooks/useFormValidation"
+import { validateContactFormData } from "@/lib/validations/contact"
+import { BsFillSendFill } from "react-icons/bs";
 
 interface ContactFormData {
   name: string
@@ -17,7 +22,8 @@ interface ContactFormData {
 }
 
 const ContactForm = () => {
-  const locale = useLocale()
+  const t = useTypedTranslations()
+  const locale = useLocale() as LocaleEnumType
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -26,43 +32,56 @@ const ContactForm = () => {
     message: "",
   })
   const [isPending, setIsPending] = useState(false)
-  const [touched, setTouched] = useState<Record<string, boolean>>({})
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof ContactFormData) => {
+  const {
+    hasError,
+    getErrorMessages,
+    validateField,
+    markAsTouched,
+    validateForm,
+    setErrorsState,
+    touched,
+    resetValidation,
+  } = useFormValidation(validateContactFormData, locale)
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: keyof ContactFormData
+  ) => {
     const value = e.target.value
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+    const updatedFormData = { ...formData, [field]: value }
+
+    setFormData(updatedFormData)
+    validateField(field, value, updatedFormData)
+
+    if (!touched[field]) {
+      markAsTouched(field)
+    }
   }
 
   const handleBlur = (field: keyof ContactFormData) => {
-    setTouched((prev) => ({
-      ...prev,
-      [field]: true,
-    }))
+    markAsTouched(field)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Mark all fields as touched
-    Object.keys(formData).forEach((field) => {
-      setTouched((prev) => ({
-        ...prev,
-        [field]: true,
-      }))
-    })
+    const isValid = validateForm(formData)
+    if (!isValid) {
+      Object.keys(formData).forEach((field) => markAsTouched(field))
+      return
+    }
 
     setIsPending(true)
 
+    // Log the form data (no backend submission)
     console.log("[Contact Form] Form Data Submitted:", {
       timestamp: new Date().toISOString(),
       locale,
       ...formData,
     })
 
-    // Simulate API call
+    // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Reset form
@@ -73,36 +92,28 @@ const ContactForm = () => {
       subject: "",
       message: "",
     })
-    setTouched({})
+    resetValidation()
     setIsPending(false)
 
     // Show success feedback
-    alert("Thank you for your message! We will get back to you soon. (Form data logged to console)")
+    alert(t('pages.contact.form.successMessage'))
   }
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
+  const ErrorMessages = ({ field }: { field: keyof ContactFormData }) => {
+    const errorMessages = getErrorMessages(field)
+
+    if (!errorMessages || errorMessages.length === 0) return null
+
+    return (
+      <div className="flex flex-col gap-0.5 mt-1">
+        {errorMessages.map((message, index) => (
+          <p key={`${field}-error-${index}`} className="text-tiny text-danger">
+            • {message}
+          </p>
+        ))}
+      </div>
+    )
   }
-
-  const hasError = (field: keyof ContactFormData): boolean => {
-    if (!touched[field]) return false
-
-    if (!formData[field]) return true
-
-    if (field === "email") {
-      return !isValidEmail(formData[field])
-    }
-
-    if (field === "phoneNumber") {
-      const phoneRegex = /^[\d\s\-+$$$$]{7,}$/
-      return !phoneRegex.test(formData[field])
-    }
-
-    return false
-  }
-
-  const isFormValid = Object.keys(formData).every((field) => formData[field as keyof ContactFormData].trim() !== "")
 
   return (
     <Card className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 shadow-lg">
@@ -113,25 +124,26 @@ const ContactForm = () => {
             <Input
               variant="flat"
               color={hasError("name") ? "danger" : "default"}
-              label="Full Name"
-              placeholder="Your full name"
+              label={t('pages.contact.form.labels.fullName')}
+              placeholder={t('pages.contact.form.placeholders.fullName')}
               size="lg"
               fullWidth
               value={formData.name}
               onChange={(e) => handleChange(e, "name")}
               onBlur={() => handleBlur("name")}
               isInvalid={hasError("name")}
-              errorMessage={hasError("name") && touched["name"] ? "Name is required" : undefined}
+              errorMessage={<ErrorMessages field="name" />}
               classNames={{
-                input: "text-base",
+                input: "text-base", 
               }}
+              className="rtl:text-right"
             />
 
             <Input
               variant="flat"
               color={hasError("email") ? "danger" : "default"}
-              label="Email Address"
-              placeholder="your.email@example.com"
+              label={t('pages.contact.form.labels.email')}
+              placeholder={t('pages.contact.form.placeholders.email')}
               type="email"
               size="lg"
               fullWidth
@@ -139,10 +151,12 @@ const ContactForm = () => {
               onChange={(e) => handleChange(e, "email")}
               onBlur={() => handleBlur("email")}
               isInvalid={hasError("email")}
-              errorMessage={hasError("email") && touched["email"] ? "Please enter a valid email address" : undefined}
+              errorMessage={<ErrorMessages field="email" />}
               classNames={{
                 input: "text-base",
               }}
+                            className="rtl:text-right"
+
             />
           </div>
 
@@ -150,8 +164,8 @@ const ContactForm = () => {
           <Input
             variant="flat"
             color={hasError("phoneNumber") ? "danger" : "default"}
-            label="Phone Number"
-            placeholder="+1 (555) 123-4567"
+            label={t('pages.contact.form.labels.phone')}
+            placeholder={t('pages.contact.form.placeholders.phone')}
             type="tel"
             size="lg"
             fullWidth
@@ -159,38 +173,40 @@ const ContactForm = () => {
             onChange={(e) => handleChange(e, "phoneNumber")}
             onBlur={() => handleBlur("phoneNumber")}
             isInvalid={hasError("phoneNumber")}
-            errorMessage={
-              hasError("phoneNumber") && touched["phoneNumber"] ? "Please enter a valid phone number" : undefined
-            }
+            errorMessage={<ErrorMessages field="phoneNumber" />}
             classNames={{
               input: "text-base",
             }}
+                          className="rtl:text-right"
+
           />
 
           {/* Subject */}
           <Input
             variant="flat"
             color={hasError("subject") ? "danger" : "default"}
-            label="Subject"
-            placeholder="What is this about?"
+            label={t('pages.contact.form.labels.subject')}
+            placeholder={t('pages.contact.form.placeholders.subject')}
             size="lg"
             fullWidth
             value={formData.subject}
             onChange={(e) => handleChange(e, "subject")}
             onBlur={() => handleBlur("subject")}
             isInvalid={hasError("subject")}
-            errorMessage={hasError("subject") && touched["subject"] ? "Subject is required" : undefined}
+            errorMessage={<ErrorMessages field="subject" />}
             classNames={{
               input: "text-base",
             }}
+                          className="rtl:text-right"
+
           />
 
           {/* Message */}
           <Textarea
             variant="flat"
             color={hasError("message") ? "danger" : "default"}
-            label="Message"
-            placeholder="Tell us more about your inquiry..."
+            label={t('pages.contact.form.labels.message')}
+            placeholder={t('pages.contact.form.placeholders.message')}
             size="lg"
             fullWidth
             minRows={6}
@@ -198,11 +214,13 @@ const ContactForm = () => {
             onChange={(e) => handleChange(e, "message")}
             onBlur={() => handleBlur("message")}
             isInvalid={hasError("message")}
-            errorMessage={hasError("message") && touched["message"] ? "Message is required" : undefined}
+            errorMessage={<ErrorMessages field="message" />}
             classNames={{
               input: "text-base",
               inputWrapper: "min-h-[200px]",
             }}
+                          className="rtl:text-right"
+
           />
 
           {/* Submit Button */}
@@ -213,14 +231,15 @@ const ContactForm = () => {
             size="lg"
             type="submit"
             isLoading={isPending}
-            isDisabled={!isFormValid || isPending}
+            isDisabled={Object.keys(formData).some((field) => hasError(field))}
             className="mt-2 font-semibold text-white"
+            startContent={<BsFillSendFill/>}
           >
-            Send Message
+            {t('pages.contact.form.submitButton')}
           </Button>
 
           <p className="text-xs text-zinc-600 dark:text-zinc-400 text-center">
-            We will respond to your inquiry as soon as possible, typically within 24 hours.
+            {t('pages.contact.form.note')}
           </p>
         </form>
       </CardBody>

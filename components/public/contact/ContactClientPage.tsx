@@ -1,10 +1,12 @@
 "use client"
 import ContactForm from "@/components/public/contact/ContactForm"
 import ContactInfo from "@/components/public/contact/ContactInfo"
+import { useTypedTranslations } from "@/utils/i18n"
 import { Chip } from "@heroui/chip"
 import { motion } from "framer-motion"
 
 export default function ContactClientPage() {
+  const t = useTypedTranslations()
   return (
     <main className="min-h-screen ">
       {/* Hero Section */}
@@ -20,7 +22,7 @@ export default function ContactClientPage() {
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm font-medium">
                 <span className="w-2 h-2 rounded-full bg-amber-500" />
-                Get In Touch
+                {t('pages.contact.hero.badge')}
               </span>
             </motion.div>
 
@@ -31,7 +33,7 @@ export default function ContactClientPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl md:text-6xl lg:text-7xl font-bold text-zinc-900 dark:text-white mb-6 text-balance leading-tight"
             >
-              Contact Our Team
+              {t('pages.contact.hero.title')}
             </motion.h1>
 
             {/* Description */}
@@ -41,8 +43,7 @@ export default function ContactClientPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto text-pretty"
             >
-              Have questions about stadium reservations or partnership opportunities? We're here to help. Reach out to
-              us and we'll get back to you as soon as possible.
+              {t('pages.contact.hero.description')}
             </motion.p>
           </div>
         </div>
@@ -68,13 +69,13 @@ export default function ContactClientPage() {
               className="mb-12 text-center"
             >
               <Chip className="mb-4" variant="flat" color="warning">
-                Send us a Message
+                {t('pages.contact.form.badge')}
               </Chip>
               <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
-                We'd love to hear from you
+                {t('pages.contact.form.title')}
               </h2>
               <p className="text-lg text-zinc-600 dark:text-zinc-400">
-                Fill out the form below and our team will get back to you shortly.
+                {t('pages.contact.form.description')}
               </p>
             </motion.div>
 
@@ -95,36 +96,17 @@ export default function ContactClientPage() {
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
-                Frequently Asked Questions
+                {t('pages.contact.faq.title')}
+
               </h2>
               <p className="text-lg text-zinc-600 dark:text-zinc-400">
-                Find answers to common questions about our platform
+                {t('pages.contact.faq.description')}
               </p>
             </div>
 
             <div className="space-y-6">
-              {[
-                {
-                  question: "How long does it take to get a response?",
-                  answer:
-                    "We aim to respond to all inquiries within 24 business hours. For urgent matters, please call us directly.",
-                },
-                {
-                  question: "Can I book multiple stadiums at once?",
-                  answer:
-                    "Yes! Our platform allows you to manage multiple stadium reservations through a single account. Contact our team for bulk booking information.",
-                },
-                {
-                  question: "What payment methods do you accept?",
-                  answer:
-                    "We accept bank transfers, credit cards, and mobile payment options. Please contact us for specific details about your region.",
-                },
-                {
-                  question: "Is there a cancellation policy?",
-                  answer:
-                    "Our cancellation policy varies depending on the stadium and booking type. Please contact us or check our terms for detailed information.",
-                },
-              ].map((faq, index) => (
+              {(["responseTime", "multipleBookings", "paymentMethods", "cancellationPolicy"
+              ] as const).map((faq, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
@@ -132,8 +114,8 @@ export default function ContactClientPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="p-6 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-lg backdrop-blur-sm"
                 >
-                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">{faq.question}</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400">{faq.answer}</p>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">{t(`pages.contact.faq.questions.${faq}.question`)}</h3>
+                  <p className="text-zinc-600 dark:text-zinc-400">{t(`pages.contact.faq.questions.${faq}.answer`)}</p>
                 </motion.div>
               ))}
             </div>

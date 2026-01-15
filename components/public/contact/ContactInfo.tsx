@@ -4,39 +4,31 @@ import type React from "react"
 
 import { FiMail, FiPhone, FiMapPin, FiClock } from "react-icons/fi"
 import { motion } from "framer-motion"
+import { useTypedTranslations } from "@/utils/i18n"
 
 interface ContactInfoItem {
   icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-  details: string[]
+  label: "email" | "phone" | "location" | "hours"
 }
 
 const ContactInfo = () => {
+  const t = useTypedTranslations()
   const contactInfo: ContactInfoItem[] = [
     {
       icon: FiMail,
-      title: "Email",
-      description: "Send us an email and we'll respond within 24 hours",
-      details: ["support@stadiums-tantan.ma", "info@stadiums-tantan.ma"],
+      label: "email"
     },
     {
       icon: FiPhone,
-      title: "Phone",
-      description: "Call us during business hours",
-      details: ["+212 5XX XXX XXX", "+212 5XX XXX XXX"],
+      label: "phone"
     },
     {
       icon: FiMapPin,
-      title: "Location",
-      description: "Visit us in Tantan, Morocco",
-      details: ["Tantan, Morocco", "Sports Center"],
+      label: "location"
     },
     {
       icon: FiClock,
-      title: "Hours",
-      description: "We're available Monday to Friday",
-      details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 10:00 AM - 2:00 PM"],
+      label: "hours"
     },
   ]
 
@@ -46,26 +38,28 @@ const ContactInfo = () => {
         const Icon = item.icon
         return (
           <motion.div
-            key={item.title}
+            key={item.label}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Card className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all h-full">
-              <CardBody className="gap-4 p-6">
+              <CardBody className="gap-4 p-6 rtl:text-right">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-lg flex-shrink-0">
                     <Icon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">{item.title}</h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">{item.description}</p>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">{t(`pages.contact.contactInfo.${item.label}.title`)}</h3>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">{t(`pages.contact.contactInfo.${item.label}.description`)}</p>
                     <div className="space-y-1">
-                      {item.details.map((detail, i) => (
-                        <p key={i} className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                          {detail}
-                        </p>
-                      ))}
+
+                      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+
+                        {t(`pages.contact.contactInfo.${item.label}.details.0`)}
+                        {t(`pages.contact.contactInfo.${item.label}.details.1`)}
+                      </p>
+
                     </div>
                   </div>
                 </div>

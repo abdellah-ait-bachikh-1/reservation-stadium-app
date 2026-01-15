@@ -282,6 +282,54 @@ export type TranslationKey =
     | 'pages.auth.register.metadata.keywords'
     | 'pages.auth.register.metadata.title'
     | 'pages.auth.register.title'
+    | 'pages.contact.contactInfo.email.description'
+    | 'pages.contact.contactInfo.email.details.0'
+    | 'pages.contact.contactInfo.email.details.1'
+    | 'pages.contact.contactInfo.email.title'
+    | 'pages.contact.contactInfo.hours.description'
+    | 'pages.contact.contactInfo.hours.details.0'
+    | 'pages.contact.contactInfo.hours.details.1'
+    | 'pages.contact.contactInfo.hours.title'
+    | 'pages.contact.contactInfo.location.description'
+    | 'pages.contact.contactInfo.location.details.0'
+    | 'pages.contact.contactInfo.location.details.1'
+    | 'pages.contact.contactInfo.location.title'
+    | 'pages.contact.contactInfo.phone.description'
+    | 'pages.contact.contactInfo.phone.details.0'
+    | 'pages.contact.contactInfo.phone.details.1'
+    | 'pages.contact.contactInfo.phone.title'
+    | 'pages.contact.faq.description'
+    | 'pages.contact.faq.questions.cancellationPolicy.answer'
+    | 'pages.contact.faq.questions.cancellationPolicy.question'
+    | 'pages.contact.faq.questions.multipleBookings.answer'
+    | 'pages.contact.faq.questions.multipleBookings.question'
+    | 'pages.contact.faq.questions.paymentMethods.answer'
+    | 'pages.contact.faq.questions.paymentMethods.question'
+    | 'pages.contact.faq.questions.responseTime.answer'
+    | 'pages.contact.faq.questions.responseTime.question'
+    | 'pages.contact.faq.title'
+    | 'pages.contact.form.badge'
+    | 'pages.contact.form.description'
+    | 'pages.contact.form.errors.invalidEmail'
+    | 'pages.contact.form.errors.invalidPhone'
+    | 'pages.contact.form.errors.required'
+    | 'pages.contact.form.labels.email'
+    | 'pages.contact.form.labels.fullName'
+    | 'pages.contact.form.labels.message'
+    | 'pages.contact.form.labels.phone'
+    | 'pages.contact.form.labels.subject'
+    | 'pages.contact.form.note'
+    | 'pages.contact.form.placeholders.email'
+    | 'pages.contact.form.placeholders.fullName'
+    | 'pages.contact.form.placeholders.message'
+    | 'pages.contact.form.placeholders.phone'
+    | 'pages.contact.form.placeholders.subject'
+    | 'pages.contact.form.submitButton'
+    | 'pages.contact.form.successMessage'
+    | 'pages.contact.form.title'
+    | 'pages.contact.hero.badge'
+    | 'pages.contact.hero.description'
+    | 'pages.contact.hero.title'
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
     | 'pages.contact.metadata.title'
@@ -804,12 +852,120 @@ export const _TranslationNamespaces = {
     "5"
   ],
   "pages.contact": [
-    "metadata"
+    "metadata",
+    "hero",
+    "contactInfo",
+    "form",
+    "faq"
   ],
   "pages.contact.metadata": [
     "title",
     "description",
     "keywords"
+  ],
+  "pages.contact.hero": [
+    "badge",
+    "title",
+    "description"
+  ],
+  "pages.contact.contactInfo": [
+    "email",
+    "phone",
+    "location",
+    "hours"
+  ],
+  "pages.contact.contactInfo.email": [
+    "title",
+    "description",
+    "details"
+  ],
+  "pages.contact.contactInfo.email.details": [
+    "0",
+    "1"
+  ],
+  "pages.contact.contactInfo.phone": [
+    "title",
+    "description",
+    "details"
+  ],
+  "pages.contact.contactInfo.phone.details": [
+    "0",
+    "1"
+  ],
+  "pages.contact.contactInfo.location": [
+    "title",
+    "description",
+    "details"
+  ],
+  "pages.contact.contactInfo.location.details": [
+    "0",
+    "1"
+  ],
+  "pages.contact.contactInfo.hours": [
+    "title",
+    "description",
+    "details"
+  ],
+  "pages.contact.contactInfo.hours.details": [
+    "0",
+    "1"
+  ],
+  "pages.contact.form": [
+    "badge",
+    "title",
+    "description",
+    "labels",
+    "placeholders",
+    "errors",
+    "submitButton",
+    "successMessage",
+    "note"
+  ],
+  "pages.contact.form.labels": [
+    "fullName",
+    "email",
+    "phone",
+    "subject",
+    "message"
+  ],
+  "pages.contact.form.placeholders": [
+    "fullName",
+    "email",
+    "phone",
+    "subject",
+    "message"
+  ],
+  "pages.contact.form.errors": [
+    "required",
+    "invalidEmail",
+    "invalidPhone"
+  ],
+  "pages.contact.faq": [
+    "title",
+    "description",
+    "questions"
+  ],
+  "pages.contact.faq.questions": [
+    "responseTime",
+    "multipleBookings",
+    "paymentMethods",
+    "cancellationPolicy"
+  ],
+  "pages.contact.faq.questions.responseTime": [
+    "question",
+    "answer"
+  ],
+  "pages.contact.faq.questions.multipleBookings": [
+    "question",
+    "answer"
+  ],
+  "pages.contact.faq.questions.paymentMethods": [
+    "question",
+    "answer"
+  ],
+  "pages.contact.faq.questions.cancellationPolicy": [
+    "question",
+    "answer"
   ],
   "pages.auth": [
     "register",

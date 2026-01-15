@@ -33,7 +33,20 @@ export const validationMessages = {
       match: "Passwords do not match",
     },
     auth: {
-invalidCredentials: "Email or password is incorrect, or your email is not verified, or your account is not approved by admin, or has been deleted",    },
+      invalidCredentials:
+        "Email or password is incorrect, or your email is not verified, or your account is not approved by admin, or has been deleted",
+    },subject: {
+      string: "Subject must be a string",
+      required: "Subject is required",
+      min: "Subject must be at least 3 characters",
+      max: "Subject cannot exceed 255 characters",
+    },
+    message: {
+      string: "Message must be a string",
+      required: "Message is required",
+      min: "Message must be at least 10 characters",
+      max: "Message cannot exceed 5000 characters",
+    },
   },
   fr: {
     name: {
@@ -70,7 +83,20 @@ invalidCredentials: "Email or password is incorrect, or your email is not verifi
       match: "Les mots de passe ne correspondent pas",
     },
     auth: {
-invalidCredentials: "Email ou mot de passe incorrect, ou votre email n'est pas vérifié, ou votre compte n'est pas approuvé par l'administrateur, ou a été supprimé",    },
+      invalidCredentials:
+        "Email ou mot de passe incorrect, ou votre email n'est pas vérifié, ou votre compte n'est pas approuvé par l'administrateur, ou a été supprimé",
+    },   subject: {
+      string: "Le sujet doit être une chaîne de caractères",
+      required: "Le sujet est requis",
+      min: "Le sujet doit comporter au moins 3 caractères",
+      max: "Le sujet ne peut pas dépasser 255 caractères",
+    },
+    message: {
+      string: "Le message doit être une chaîne de caractères",
+      required: "Le message est requis",
+      min: "Le message doit comporter au moins 10 caractères",
+      max: "Le message ne peut pas dépasser 5000 caractères",
+    },
   },
   ar: {
     name: {
@@ -104,7 +130,20 @@ invalidCredentials: "Email ou mot de passe incorrect, ou votre email n'est pas v
       match: "كلمات المرور غير متطابقة",
     },
     auth: {
-invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة، أو بريدك الإلكتروني غير مفعل، أو حسابك غير معتمد من قبل المسؤول، أو تم حذفه",    },
+      invalidCredentials:
+        "البريد الإلكتروني أو كلمة المرور غير صحيحة، أو بريدك الإلكتروني غير مفعل، أو حسابك غير معتمد من قبل المسؤول، أو تم حذفه",
+    },  subject: {
+      string: "الموضوع يجب أن يكون نصًا",
+      required: "الموضوع مطلوب",
+      min: "الموضوع يجب أن يكون على الأقل 3 أحرف",
+      max: "الموضوع لا يمكن أن يتجاوز 255 حرفًا",
+    },
+    message: {
+      string: "الرسالة يجب أن تكون نصًا",
+      required: "الرسالة مطلوبة",
+      min: "الرسالة يجب أن تكون على الأقل 10 أحرف",
+      max: "الرسالة لا يمكن أن تتجاوز 5000 حرفًا",
+    },
   },
 } as const;
 

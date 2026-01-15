@@ -324,7 +324,82 @@
         "title": "Contactez-nous",
         "description": "Contactez notre équipe pour les réservations de stades, le support ou les demandes concernant les installations sportives à Tantan, Maroc. Contactez-nous pour assistance à la réservation et opportunités de partenariat.",
         "keywords": "contact stades Tantan, support réservation stade, demandes d'installations sportives Tan-Tan, service client réservation stade, opportunités de partenariat Tantan, assistance réservation Maroc"
+      },"hero": {
+    "badge": "Contactez-nous",
+    "title": "Contactez notre équipe",
+    "description": "Des questions sur les réservations de stades ou les opportunités de partenariat ? Nous sommes là pour vous aider. Contactez-nous et nous vous répondrons dès que possible."
+  },
+  "contactInfo": {
+    "email": {
+      "title": "Email",
+      "description": "Envoyez-nous un email et nous répondrons dans les 24 heures",
+      "details": ["support@stadiums-tantan.ma", "info@stadiums-tantan.ma"]
+    },
+    "phone": {
+      "title": "Téléphone",
+      "description": "Appelez-nous pendant les heures de bureau",
+      "details": ["+212 5XX XXX XXX", "+212 5XX XXX XXX"]
+    },
+    "location": {
+      "title": "Localisation",
+      "description": "Visitez-nous à Tantan, Maroc",
+      "details": ["Tantan, Maroc", "Centre Sportif"]
+    },
+    "hours": {
+      "title": "Horaires",
+      "description": "Nous sommes disponibles du lundi au vendredi",
+      "details": ["Lundi - Vendredi : 9h00 - 18h00", "Samedi : 10h00 - 14h00"]
+    }
+  },
+  "form": {
+    "badge": "Envoyez-nous un message",
+    "title": "Nous aimerions avoir de vos nouvelles",
+    "description": "Remplissez le formulaire ci-dessous et notre équipe vous répondra sous peu.",
+    "labels": {
+      "fullName": "Nom complet",
+      "email": "Adresse email",
+      "phone": "Numéro de téléphone",
+      "subject": "Sujet",
+      "message": "Message"
+    },
+    "placeholders": {
+      "fullName": "Votre nom complet",
+      "email": "votre.email@exemple.com",
+      "phone": "+1 (555) 123-4567",
+      "subject": "De quoi s'agit-il ?",
+      "message": "Dites-nous en plus sur votre demande..."
+    },
+    "errors": {
+      "required": "est requis",
+      "invalidEmail": "Veuillez entrer une adresse email valide",
+      "invalidPhone": "Veuillez entrer un numéro de téléphone valide"
+    },
+    "submitButton": "Envoyer le message",
+    "successMessage": "Merci pour votre message ! Nous vous répondrons bientôt.",
+    "note": "Nous répondrons à votre demande dès que possible, généralement dans les 24 heures."
+  },
+  "faq": {
+    "title": "Questions fréquemment posées",
+    "description": "Trouvez des réponses aux questions courantes sur notre plateforme",
+    "questions": {
+      "responseTime": {
+        "question": "Combien de temps faut-il pour obtenir une réponse ?",
+        "answer": "Nous nous efforçons de répondre à toutes les demandes dans les 24 heures ouvrables. Pour les questions urgentes, veuillez nous appeler directement."
+      },
+      "multipleBookings": {
+        "question": "Puis-je réserver plusieurs stades à la fois ?",
+        "answer": "Oui ! Notre plateforme vous permet de gérer plusieurs réservations de stades via un seul compte. Contactez notre équipe pour plus d'informations sur les réservations groupées."
+      },
+      "paymentMethods": {
+        "question": "Quels modes de paiement acceptez-vous ?",
+        "answer": "Nous acceptons les virements bancaires, les cartes de crédit et les options de paiement mobile. Veuillez nous contacter pour plus de détails spécifiques à votre région."
+      },
+      "cancellationPolicy": {
+        "question": "Y a-t-il une politique d'annulation ?",
+        "answer": "Notre politique d'annulation varie en fonction du stade et du type de réservation. Veuillez nous contacter ou consulter nos conditions pour plus d'informations détaillées."
       }
+    }
+  }
     },
     "auth": {
       "register": {
