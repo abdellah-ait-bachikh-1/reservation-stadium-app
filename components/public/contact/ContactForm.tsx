@@ -12,6 +12,8 @@ import { LocaleEnumType } from "@/types"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { validateContactFormData } from "@/lib/validations/contact"
 import { BsFillSendFill } from "react-icons/bs";
+import { addToast } from "@heroui/toast"
+import { sendContacEmail } from "@/app/actions/public/contact"
 
 interface ContactFormData {
   name: string
@@ -81,10 +83,52 @@ const ContactForm = () => {
       ...formData,
     })
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+     try {
+      const result = await sendContacEmail(formData, locale)
 
-    // Reset form
+      if (result.success) {
+        // Reset form on success
+        setFormData({
+          name: "",
+          email: "",
+          phoneNumber: "",
+          subject: "",
+          message: "",
+        })
+        resetValidation()
+        
+        // Show success toast
+        addToast({
+          color: "success",
+          title: t('pages.contact.metadata.title'),
+          description: result.message,
+          timeout: 5000,
+        })
+      } else {
+        // Show validation errors
+        if (result.validationErrors) {
+          setErrorsState(result.validationErrors)
+        }
+        
+        // Show error toast
+        addToast({
+          color: "danger",
+          title:t('pages.contact.metadata.title'),
+          description: result.message,
+          timeout: 5000,
+        })
+      }
+    } catch (error: any) {
+      console.error("Contact form submission error:", error)
+      addToast({
+        color: "danger",
+        title: t('pages.contact.metadata.title'),
+        description: error?.message || "An unexpected error occurred",
+        timeout: 5000,
+      })
+    } finally {
+    
+      
     setFormData({
       name: "",
       email: "",
@@ -94,9 +138,10 @@ const ContactForm = () => {
     })
     resetValidation()
     setIsPending(false)
+    }
 
-    // Show success feedback
-    alert(t('pages.contact.form.successMessage'))
+   
+
   }
 
   const ErrorMessages = ({ field }: { field: keyof ContactFormData }) => {
