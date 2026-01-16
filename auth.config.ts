@@ -16,7 +16,12 @@ export const authConfig: AuthOptions = {
           return null;
         }
         const user = await getUserByEmailForAuth(credentials.email);
-        if (!user || !user.isApproved || user.emailVerifiedAt === null || user?.deletedAt !== null) {
+        if (
+          !user ||
+          !user.isApproved ||
+          user.emailVerifiedAt === null ||
+          user?.deletedAt !== null
+        ) {
           return null;
         }
         const validPassword = await compare(
@@ -43,17 +48,18 @@ export const authConfig: AuthOptions = {
   },
   jwt: {
     maxAge: 60 * 60 * 24 * 7,
-  }, cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/', 
-        secure: process.env.NODE_ENV === 'production',
-      },
-    },
   },
+  // cookies: {
+  //   sessionToken: {
+  //     name: `next-auth.session-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       path: "/",
+  //       secure: process.env.NODE_ENV === "production",
+  //     },
+  //   },
+  // },
   pages: { signIn: "/auth/login" },
   callbacks: {
     async jwt({ token, user }) {
