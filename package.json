@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build":"next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "generate-i18n": "tsx scripts/generate-i18n.ts",
-    "db:test-conection":"tsx scripts/test-connection-simple.ts",
-    "db:seed":"tsx scripts/seed.ts"
+    "db:test-conection": "tsx scripts/test-connection-simple.ts",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.26",
@@ -42,6 +42,8 @@
     "@heroui/theme": "^2.4.25",
     "@heroui/toast": "^2.0.19",
     "@heroui/tooltip": "^2.2.26",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",

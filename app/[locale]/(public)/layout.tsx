@@ -4,6 +4,7 @@ import { getAppName } from "@/utils";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { routing } from "@/i18n/routing";
+import { Sparkles } from "@/components/sparkles";
 
 export const dynamic = "force-static";
 
@@ -34,14 +35,23 @@ export default async function PublicRoutesLocaleLayout({
   params
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{locale:string}>
+  params: Promise<{ locale: string }>
 }>) {
   await params
   return (
     <>
       <Header />
-      <main className="flex-1 pt-20 z-99994">{children}</main>
+      <main className="flex-1 pt-20 z-99994">
+        <Sparkles
+          density={3000}
+          speed={1.2}
+          color='#ffae18'
+          direction='top'
+          className='absolute inset-x-0 bottom-0 h-full w-full ' 
+        />
+        {children}</main>
       <Footer />
+
     </>
   );
 }
