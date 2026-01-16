@@ -52,7 +52,7 @@ export default async function AuthLayout({
       {children}
  
  <Sparkles
-          density={600}
+          density={400}
           speed={1.2}
           color='#ff9819'
           direction='top'
