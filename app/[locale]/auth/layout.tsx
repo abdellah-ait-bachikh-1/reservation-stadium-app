@@ -1,5 +1,6 @@
 import { logoutUser } from "@/app/actions/auth/logout";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { Sparkles } from "@/components/sparkles";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -49,6 +50,14 @@ export default async function AuthLayout({
         <LanguageSwitcher placement="bottom" showArrow />
       </header>
       {children}
+  <Sparkles
+          density={3000}
+          speed={1.2}
+          color='#ff9819'
+          direction='top'
+          className='absolute inset-x-0 bottom-0 h-full w-full -z-1' 
+        />
+
     </div>
   );
 }

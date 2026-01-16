@@ -584,7 +584,7 @@ const NotificationBell = () => {
                             <Button
                               size="sm"
                               variant="flat"
-                              className="text-xs absolute top-3 right-3"
+                              className="text-xs absolute top-3 ltr:right-3 rtl:left-3"
                               radius="lg"
                               onPress={() => markAsRead(notification.id)}
                               isIconOnly

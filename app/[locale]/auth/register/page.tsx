@@ -34,7 +34,7 @@ const RegisterPage = async ({
 }) => {
   const {locale} =  await params;
   const t = await getTypedTranslations();
-   await wait(3333)
+  //  await wait(3333)
 
   const authenticatedUser = await isAuthenticatedUserExistsInDB()
   if (authenticatedUser) {
