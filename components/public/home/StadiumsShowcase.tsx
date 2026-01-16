@@ -384,7 +384,7 @@ export function StadiumsShowcase() {
                     {stadiums && stadiums.slice(0, 6).map((stadium) => (
                       <SwiperSlide key={stadium.id} className="!w-auto !h-auto">
                         <div className="w-full h-full flex items-center justify-center p-2">
-                          <div className="w-[350px] h-[500px]">
+                          <div className="w-[320px] h-[500px]">
                             <StadiumCard stadium={stadium} locale={locale} />
                           </div>
                         </div>
