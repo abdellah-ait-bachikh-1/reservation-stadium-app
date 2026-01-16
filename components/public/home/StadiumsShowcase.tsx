@@ -50,7 +50,7 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
   };
 
   return (
-    <AnimatedOnView >
+    <div >
       <Card
         className="w-full h-full max-w-md mx-auto overflow-hidden bg-white dark:bg-zinc-900 
         shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl
@@ -180,7 +180,7 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
           </div>
         </CardFooter>
       </Card>
-    </AnimatedOnView>
+    </div>
   );
 };
 

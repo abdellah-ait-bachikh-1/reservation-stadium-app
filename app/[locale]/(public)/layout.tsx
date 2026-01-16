@@ -45,7 +45,7 @@ export default async function PublicRoutesLocaleLayout({
         <Sparkles
           density={3000}
           speed={1.2}
-          color='#ffae18'
+          color='#ff9819'
           direction='top'
           className='absolute inset-x-0 bottom-0 h-full w-full ' 
         />

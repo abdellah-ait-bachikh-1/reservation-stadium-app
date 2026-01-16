@@ -4,6 +4,8 @@ import { useEffect, useId, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import { useTheme } from 'next-themes';
+import type { Container, Engine, RecursivePartial, IOptions } from "@tsparticles/engine";
+import { CollisionMode } from "@tsparticles/engine";
 
 interface SparklesProps {
   className?: string;
@@ -20,7 +22,7 @@ interface SparklesProps {
   mousemove?: boolean;
   hover?: boolean;
   background?: string;
-  options?: Record<string, any>; // Adjust type as needed based on `options` structure
+  options?: RecursivePartial<IOptions>;
 }
 
 export function Sparkles({
@@ -41,7 +43,8 @@ export function Sparkles({
   options = {},
 }: SparklesProps) {
   const [isReady, setIsReady] = useState(false);
-  const  {theme} = useTheme()
+  const { theme } = useTheme();
+
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -51,7 +54,8 @@ export function Sparkles({
   }, []);
 
   const id = useId();
-  const defaultOptions = {
+  
+  const defaultOptions: RecursivePartial<IOptions> = {
     background: {
       color: {
         value: background,
@@ -78,7 +82,9 @@ export function Sparkles({
             smooth: 10,
           },
         },
-        resize: true as any,
+        resize: {
+          enable: true,
+        },
       },
       modes: {
         push: {
@@ -96,7 +102,7 @@ export function Sparkles({
       },
       move: {
         enable: true,
-        direction,
+        direction: direction as any,
         speed: {
           min: minSpeed || speed / 130,
           max: speed,
@@ -117,7 +123,7 @@ export function Sparkles({
         },
         enable: false,
         maxSpeed: 50,
-        mode: 'bounce',
+        mode: "bounce" as CollisionMode | "bounce", // Fixed: Use proper type
         overlap: {
           enable: true,
           retries: 0,
@@ -146,11 +152,14 @@ export function Sparkles({
     },
     detectRetina: true,
   };
+
   return (
     isReady && (
-      <Particles id={id} 
-      // @ts-nocheck
-      options={defaultOptions} className={className} />
+      <Particles 
+        id={id} 
+        options={defaultOptions} 
+        className={className} 
+      />
     )
   );
 }
