@@ -42,13 +42,13 @@ export default async function PublicRoutesLocaleLayout({
     <>
       <Header />
       <main className="flex-1 pt-20 z-99994">
-        <Sparkles
+        {/* <Sparkles
           density={3000}
           speed={1.2}
           color='#ff9819'
           direction='top'
           className='absolute inset-x-0 bottom-0 h-full w-full ' 
-        />
+        /> */}
         {children}</main>
       <Footer />
 
