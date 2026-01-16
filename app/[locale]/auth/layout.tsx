@@ -50,14 +50,14 @@ export default async function AuthLayout({
         <LanguageSwitcher placement="bottom" showArrow />
       </header>
       {children}
-  <Sparkles
-          density={3000}
+ 
+ <Sparkles
+          density={600}
           speed={1.2}
           color='#ff9819'
           direction='top'
           className='absolute inset-x-0 bottom-0 h-full w-full -z-1' 
         />
-
     </div>
   );
 }
