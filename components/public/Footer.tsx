@@ -5,12 +5,13 @@ import { Link } from "@/i18n/navigation";
 import { getTypedTranslations } from "@/utils/i18n";
 import { getAppName } from "@/utils";
 import { LocaleEnumType } from "@/types";
+import { APP_EMAIL } from "@/const";
 
 const Footer = async () => {
   const locale = await getLocale()
   const t = await getTypedTranslations();
   const isRTL = locale === "ar";
-  
+
   // Get app name from your utility function
   const appName = getAppName(locale as LocaleEnumType);
 
@@ -19,7 +20,7 @@ const Footer = async () => {
       icon: <FiMail className="w-6 h-6" />,
       title: t("common.footer.emailTitle"),
       description: t("common.footer.emailDescription"),
-      content: t("common.footer.email"),
+      content: true ? "communetantan@gmail.com" : APP_EMAIL,
       href: "/contact",
       isInternal: true,
       isLink: true,
@@ -29,7 +30,7 @@ const Footer = async () => {
       title: t("common.footer.officeTitle"),
       description: t("common.footer.officeDescription"),
       content: t("common.footer.address"),
-      href: t("common.footer.mapsUrl"),
+      href: "https://maps.app.goo.gl/vF2fQUvrkXD9Hx3w5",
       isInternal: false,
       isLink: true,
     },
@@ -87,9 +88,10 @@ const Footer = async () => {
               );
             } else {
               return (
-                <a
+                <Link
                   key={index}
                   href={section.href}
+                  hrefLang={locale}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-col items-center text-center p-6 rounded-xl bg-white/70 dark:bg-zinc-800/70 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
@@ -106,7 +108,7 @@ const Footer = async () => {
                   <p className="font-medium text-zinc-700 dark:text-zinc-200">
                     {section.content}
                   </p>
-                </a>
+                </Link>
               );
             }
           })}
@@ -139,7 +141,7 @@ const Footer = async () => {
             {/* Copyright */}
             <div className="text-center md:text-right">
               <p className="text-zinc-500 dark:text-zinc-400">
-                © {new Date().getFullYear()} {appName}.{" "}
+                © 2026 {appName}.
                 {t("common.footer.allRightsReserved")}
               </p>
               <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1">

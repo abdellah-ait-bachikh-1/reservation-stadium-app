@@ -365,7 +365,7 @@ export function StadiumsShowcase() {
                   hrefLang={locale}
                   color="warning"
                   size="lg"
-                  endContent={<HiArrowRight className="w-5 h-5" />}
+                  endContent={<HiArrowRight className="w-5 h-5 rtl:rotate-180" />}
                   className="min-w-50"
                 >
                   {t('pages.home.stadiumsShowcase.bookNow')}
