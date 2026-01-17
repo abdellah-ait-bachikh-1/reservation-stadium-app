@@ -61,7 +61,7 @@ const StatsCards = () => {
             {/* VALUE skeleton */}
             <Skeleton
               className="
-                h-[2.25rem] md:h-[2.75rem]
+                h-9 md:h-11
                 w-16 mx-auto mb-2
                 rounded-xl
                 bg-amber-500/20 dark:bg-amber-400/20
@@ -84,13 +84,10 @@ const StatsCards = () => {
   );
 }
 
-    // Show error message but still render the cards with fallback data
     if (error && !data) {
-        // Note: We'll still show data (fallback) even with error
         console.error('Stats loading error:', error)
     }
 
-    // Render the actual data or fallback - keeping your exact JSX structure
     return (
         <> {
             (data || staticData).map((stat, index) => (

@@ -68,14 +68,14 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
                 loading="lazy"
               />
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
             </>
           ) : (
             <>
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <MdSportsSoccer className="w-20 h-20 text-white/50" />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
             </>
           )}
 
@@ -95,7 +95,7 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
             </h3>
 
             <div className={`flex items-start gap-2 text-gray-600 dark:text-gray-300 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-              <FaMapMarkerAlt className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <FaMapMarkerAlt className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
               <p className="text-sm line-clamp-2">
                 {stadium.address}
               </p>
@@ -189,7 +189,6 @@ export function StadiumsShowcase() {
   const locale = useLocale()
   const [stadiums, setStadiums] = useState<Stadium[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   const progressCircle = useRef<SVGCircleElement>(null);
   const progressContent = useRef<HTMLSpanElement>(null);
@@ -295,7 +294,7 @@ export function StadiumsShowcase() {
           color: #fbbf24;
         }
       `}</style>
-      
+
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Content */}
@@ -320,7 +319,7 @@ export function StadiumsShowcase() {
                   color="warning"
                   size="lg"
                   endContent={<HiArrowRight className="w-5 h-5" />}
-                  className="min-w-[200px]"
+                  className="min-w-50"
                 >
                   {t('pages.home.stadiumsShowcase.bookNow')}
                 </Button>
@@ -330,7 +329,7 @@ export function StadiumsShowcase() {
                   hrefLang={locale}
                   variant="flat"
                   size="lg"
-                  className="min-w-[200px]"
+                  className="min-w-50"
                 >
                   {t('pages.home.stadiumsShowcase.viewAll')}
                 </Button>
@@ -340,16 +339,12 @@ export function StadiumsShowcase() {
 
           {/* Right Content - Swiper */}
           <AnimatedOnView >
-            <div className="w-full h-[600px] lg:h-[700px] flex items-center justify-center relative">
+            <div className="w-full h-150 lg:h-175 flex items-center justify-center relative">
               {loading ? (
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="animate-pulse">
-                    <div className="bg-gray-200 dark:bg-gray-800 rounded-2xl w-full h-[500px]"></div>
+                    <div className="bg-gray-200 dark:bg-gray-800 rounded-2xl w-full h-125"></div>
                   </div>
-                </div>
-              ) : error ? (
-                <div className="text-center p-4 mb-4 text-red-500">
-                  {error}
                 </div>
               ) : (
                 <div className="w-full h-full relative">
@@ -367,7 +362,7 @@ export function StadiumsShowcase() {
                       modifier: 1,
                       slideShadows: false,
                     }}
-                    pagination={{ 
+                    pagination={{
                       clickable: true,
                       dynamicBullets: true
                     }}
@@ -382,22 +377,22 @@ export function StadiumsShowcase() {
                     onAutoplayTimeLeft={onAutoplayTimeLeft}
                   >
                     {stadiums && stadiums.slice(0, 6).map((stadium) => (
-                      <SwiperSlide key={stadium.id} className="!w-auto !h-auto">
+                      <SwiperSlide key={stadium.id} className="w-auto! h-auto!">
                         <div className="w-full h-full flex items-center justify-center p-2">
-                          <div className="w-[320px] h-[500px]">
+                          <div className="w-[320px] h-125">
                             <StadiumCard stadium={stadium} locale={locale} />
                           </div>
                         </div>
                       </SwiperSlide>
                     ))}
-                    
+
                     {/* Timer element */}
                     <div className="autoplay-progress" slot="container-end">
                       <svg viewBox="0 0 48 48">
-                        <circle 
+                        <circle
                           ref={progressCircle}
-                          cx="24" 
-                          cy="24" 
+                          cx="24"
+                          cy="24"
                           r="20"
                         />
                       </svg>

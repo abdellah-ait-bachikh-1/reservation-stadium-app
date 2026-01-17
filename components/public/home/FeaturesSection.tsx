@@ -49,15 +49,15 @@ export async function FeaturesSection() {
           </div>
         </AnimatedOnView>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3  gap-6 md:gap-8">
           {features.map((feature, index) => (
             <AnimatedOnView 
               key={feature.label}
-              
               delay={index * 100}
+              className="h-full"
             >
-              <div className="group relative bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+              <div className="group relative h-full bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4 group-hover:bg-amber-500 group-hover:text-white dark:group-hover:text-white transition-colors">
                   <feature.icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-2">

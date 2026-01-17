@@ -31,7 +31,6 @@ const page = async ({ params }: { params: Promise<{ locale: string }> }) => {
   return (
     <div>
       <HeroSection />
-      <StatsSection />
       <FeaturesSection />
       <StadiumsShowcase />
       <HowItWorks />
