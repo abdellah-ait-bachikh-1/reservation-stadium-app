@@ -7,7 +7,6 @@ import { StatsSection } from "@/components/public/home/StatsSection";
 import { Metadata } from "next";
 
 
-
 export async function generateMetadata({
   params,
 }: {

@@ -1,4 +1,4 @@
-// StatsSection.tsx
+
 import { getTypedTranslations } from "@/utils/i18n";
 import { HiBuildingOffice2, HiUserGroup, HiCalendarDays, HiTrophy } from "react-icons/hi2"
 import AnimatedOnView from "@/components/AnimatedOnView"

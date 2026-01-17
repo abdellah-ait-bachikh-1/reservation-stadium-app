@@ -2,11 +2,10 @@ import { Link } from "@/i18n/navigation";
 import { getTypedTranslations } from "@/utils/i18n";
 import { button, cn } from "@heroui/theme";
 import { getLocale } from "next-intl/server";
-import { HiArrowRight, HiOutlineUserPlus, HiPlay } from "react-icons/hi2";
+import { HiArrowRight} from "react-icons/hi2";
 import AnimatedOnView from "@/components/AnimatedOnView";
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
-import { RiDashboardFill } from "react-icons/ri";
 import HeroAuthButton from "./HeroAuthButton";
+import StatsCards from "./StatsCards";
 
 
 export async function HeroSection() {
@@ -62,7 +61,7 @@ export async function HeroSection() {
                 )}
               >
                 <span>{t("pages.home.hero.exploreStadiums")}</span>
-                <HiArrowRight className="rtl:rotate-180 transition-transform group-hover:translate-x-1" size={20} />
+                <HiArrowRight className="rtl:rotate-180 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" size={20} />
               </Link>
             </AnimatedOnView>
           </div>
@@ -70,23 +69,7 @@ export async function HeroSection() {
 
         {/* Stats Cards - Very strong bounce with stagger */}
         <div className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          {[
-            { value: "50+", label: "stadiums" as const },
-            { value: "200+", label: "clubs" as const },
-            { value: "5000+", label: "reservations" as const },
-            { value: "98%", label: "satisfaction" as const },
-          ].map((stat, index) => (
-            <AnimatedOnView key={stat.label} delay={1000 + index * 200}>
-              <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 md:p-6 text-center transition-all hover:scale-105 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/20">
-                <div className="text-2xl md:text-3xl font-bold text-amber-600 dark:text-amber-400 mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t(`pages.home.hero.stats.${stat.label}`)}
-                </div>
-              </div>
-            </AnimatedOnView>
-          ))}
+          <StatsCards/>
         </div>
       </div>
     </section>

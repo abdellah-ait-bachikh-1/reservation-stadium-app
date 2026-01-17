@@ -53,7 +53,7 @@ const HeroAuthButton = () => {
                 )}
             >
                 <span>{t("pages.home.hero.goToDashboard")}</span>
-                <RiDashboardFill className="rtl:rotate-180 transition-transform group-hover:translate-x-1" size={20} />
+                <RiDashboardFill className="transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" size={20} />
             </Link>
         ) : (
             <Link
