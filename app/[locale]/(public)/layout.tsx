@@ -4,7 +4,6 @@ import { getAppName } from "@/utils";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { routing } from "@/i18n/routing";
-import { Sparkles } from "@/components/sparkles";
 
 export const dynamic = "force-static";
 

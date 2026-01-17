@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { getUserByEmailForAuth } from "./lib/queries/user";
 import { AUTH_SECRET } from "./const";
+import { revalidatePath } from "next/cache";
 export const authConfig: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -32,6 +33,7 @@ export const authConfig: AuthOptions = {
         if (!validPassword) {
           return null;
         }
+
         const { id, name, email, role } = user;
         return {
           id,

@@ -3,9 +3,37 @@ import { HeroUIProvider } from "@heroui/system";
 import { NextIntlClientProvider } from "next-intl";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { i18nConfig } from "@/i18n/config";
+
+// Create a client-only wrapper for HeroUIProvider
+function ClientHeroUIProvider({ 
+  children, 
+  locale, 
+  className 
+}: { 
+  children: React.ReactNode;
+  locale: string;
+  className: string;
+}) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // During SSR/hydration, render children without HeroUIProvider
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
+  // Only after hydration, render with HeroUIProvider
+  return (
+    <HeroUIProvider locale={locale} className={className}>
+      {children}
+    </HeroUIProvider>
+  );
+}
 
 const Providers = ({
   children,
@@ -30,12 +58,13 @@ const Providers = ({
           messages={messages}
           timeZone={i18nConfig.timeZone}
         >
-          <HeroUIProvider
+          {/* Replace HeroUIProvider with ClientHeroUIProvider */}
+          <ClientHeroUIProvider
             locale={locale}
             className="w-full h-full z-99997 overflow-x-hidden"
           >
             {children}
-          </HeroUIProvider>
+          </ClientHeroUIProvider>
         </NextIntlClientProvider>
       </SessionProvider>
     </ThemeProvider>

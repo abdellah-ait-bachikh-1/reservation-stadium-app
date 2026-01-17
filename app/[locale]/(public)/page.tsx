@@ -4,10 +4,9 @@ import { HeroSection } from "@/components/public/home/HeroSection";
 import { HowItWorks } from "@/components/public/home/HowItWorks";
 import { StadiumsShowcase } from "@/components/public/home/StadiumsShowcase";
 import { StatsSection } from "@/components/public/home/StatsSection";
-import TestToast from "@/components/TestToast";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
-
 import { Metadata } from "next";
+
+
 
 export async function generateMetadata({
   params,

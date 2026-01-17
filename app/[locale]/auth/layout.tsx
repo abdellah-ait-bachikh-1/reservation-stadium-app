@@ -8,7 +8,7 @@ import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
 import { LocaleEnumType } from "@/types";
 import { getAppName } from "@/utils";
 import { Metadata } from "next";
-export const dynamic = 'force-dynamic'; 
+export const dynamic = 'force-dynamic';
 
 // export function generateStaticParams() {
 //   return routing.locales.map((locale) => ({ locale }));
@@ -21,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const messages = (await import(`../../../messages/${locale}.json`)).default;
- const authenticatedUser = await isAuthenticatedUserExistsInDB()
+  const authenticatedUser = await isAuthenticatedUserExistsInDB()
   if (authenticatedUser) {
     redirect({ locale: locale, href: "/" })
   }
@@ -42,7 +42,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-   await params;
+  await params;
   return (
     <div className="w-full min-h-screen flex items-center justify-center flex-col gap-6 p-5">
       <header className="flex items-center justif-center gap-4">
@@ -50,14 +50,14 @@ export default async function AuthLayout({
         <LanguageSwitcher placement="bottom" showArrow />
       </header>
       {children}
- 
- <Sparkles
-          density={400}
-          speed={1.2}
-          color='#ff9819'
-          direction='top'
-          className='absolute inset-x-0 bottom-0 h-full w-full -z-1' 
-        />
+
+      <Sparkles
+        density={400}
+        speed={1.2}
+        color='#ff9819'
+        direction='top'
+        className='absolute inset-x-0 bottom-0 h-full w-full -z-1'
+      />
     </div>
   );
 }

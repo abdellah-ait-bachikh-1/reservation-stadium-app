@@ -24,7 +24,9 @@
         },
         "description": "Designed specifically for clubs and associations in Tantan city. Access the best stadiums in the region. Simple booking, flexible payments, and quality facilities for your club.",
         "exploreStadiums": "Explore Stadiums",
-        "howItWorks": "How it works",
+        "goToDashboard": "Go to Dashboard",
+        "createAccount": "Create Account",
+        "goToMyProfile": "Go to My Profile",
         "stats": {
           "stadiums": "Stadiums",
           "clubs": "Clubs",

@@ -24,7 +24,9 @@
         },
         "description": "Conçu spécialement pour les clubs et associations de la ville de Tantan. Accédez aux meilleurs stades de la région. Réservation simple, paiements flexibles et installations de qualité pour votre club.",
         "exploreStadiums": "Explorer les stades",
-        "howItWorks": "Comment ça marche",
+        "goToDashboard": "Tableau de Bord",
+        "createAccount": "Créer un Compte",
+        "goToMyProfile": "Aller à Mon Profil",
         "stats": {
           "stadiums": "Stades",
           "clubs": "Clubs",
@@ -85,15 +87,14 @@
           }
         }
       },
-     "stadiumsShowcase": {
-  "badge": "Stades populaires",
-  "title": "Découvrez nos installations",
-  "viewAll": "Voir tous les stades",
-  "priceSuffix": "/session",
-  "currency": "DH",
- 
-  "bookNow": "Réserver maintenant"
-},
+      "stadiumsShowcase": {
+        "badge": "Stades populaires",
+        "title": "Découvrez nos installations",
+        "viewAll": "Voir tous les stades",
+        "priceSuffix": "/session",
+        "currency": "DH",
+        "bookNow": "Réserver maintenant"
+      },
       "howItWorks": {
         "badge": "Comment ça marche",
         "title": "Simple comme 1, 2, 3, 4",
@@ -137,269 +138,280 @@
         "title": "Stades",
         "description": "Parcourez et réservez les stades et installations sportives disponibles à Tantan, Maroc. Trouvez des terrains de football, courts de basket, courts de tennis et autres équipements sportifs à louer dans la région de Tan-Tan.",
         "keywords": "stades Tantan, installations sportives Tantan, terrains de football Tan-Tan, location courts de basket Tantan, courts de tennis Tantan, réservation d'équipements sportifs Tan-Tan, système de réservation de stade, stades disponibles Tantan, réservation de complexe sportif"
-      }, "hero": {
-      "badge": "Trouvez Votre Lieu Idéal",
-      "title": "Explorer Tous les",
-      "highlighted": "Stades",
-      "description": "Découvrez les meilleures installations sportives de votre région. Filtrez par nom ou par sport pour trouver votre lieu idéal."
-    },
-    "filters": {
-      "searchPlaceholder": "Rechercher un stade...",
-      "filterBySport": "Filtrer par Sport",
-      "hideSports": "Cacher Sports",
-      "sportsSelected": "sélectionné(s)",
-      "selectSports": "Sélectionnez un ou plusieurs sports",
-      "sportSearch": "Rechercher un sport...",
-      "noSportsFound": "Aucun sport trouvé",
-      "clearAll": "Tout effacer"
-    },
-    "results": {
-      "title": "Stades disponibles",
-      "found": "trouvé(s)",
-      "clearFilters": "Effacer tous les filtres",
-      "noResults": {
-        "title": "Aucun stade trouvé",
-        "description": "Essayez de modifier vos critères de recherche ou de supprimer certains filtres.",
-        "resetFilters": "Réinitialiser les filtres"
       },
-      "error": {
-        "message": "Échec du chargement des stades. Veuillez réessayer.",
-        "retry": "Réessayer"
+      "hero": {
+        "badge": "Trouvez Votre Lieu Idéal",
+        "title": "Explorer Tous les",
+        "highlighted": "Stades",
+        "description": "Découvrez les meilleures installations sportives de votre région. Filtrez par nom ou par sport pour trouver votre lieu idéal."
+      },
+      "filters": {
+        "searchPlaceholder": "Rechercher un stade...",
+        "filterBySport": "Filtrer par Sport",
+        "hideSports": "Cacher Sports",
+        "sportsSelected": "sélectionné(s)",
+        "selectSports": "Sélectionnez un ou plusieurs sports",
+        "sportSearch": "Rechercher un sport...",
+        "noSportsFound": "Aucun sport trouvé",
+        "clearAll": "Tout effacer"
+      },
+      "results": {
+        "title": "Stades disponibles",
+        "found": "trouvé(s)",
+        "clearFilters": "Effacer tous les filtres",
+        "noResults": {
+          "title": "Aucun stade trouvé",
+          "description": "Essayez de modifier vos critères de recherche ou de supprimer certains filtres.",
+          "resetFilters": "Réinitialiser les filtres"
+        },
+        "error": {
+          "message": "Échec du chargement des stades. Veuillez réessayer.",
+          "retry": "Réessayer"
+        }
+      },
+      "card": {
+        "monthlyTooltip": "Prix mensuel pour l'abonnement complet",
+        "sessionTooltip": "Prix pour une seule session",
+        "imageTooltip": "Image non disponible - Photo par défaut",
+        "addressTooltip": "Adresse du stade",
+        "sportsTooltip": "Sports pratiqués dans ce stade",
+        "totalSports": "Total : {count} sports",
+        "monthlyPriceTooltip": "Prix pour un abonnement mensuel complet",
+        "sessionPriceTooltip": "Prix pour une seule session (réservation unique)",
+        "pricingTooltip": "Options de tarification",
+        "pricingDescription": "Choisissez entre l'abonnement mensuel pour un accès régulier ou le paiement à la session pour une utilisation occasionnelle.",
+        "twoOptions": "Deux options de paiement disponibles",
+        "reserveTooltip": "Réserver ce stade pour votre activité sportive",
+        "mapTooltip": "Voir l'emplacement sur Google Maps",
+        "monthly": "Abonnement mensuel",
+        "perSession": "Prix par session",
+        "reserve": "Réserver",
+        "otherSports": "Autres sports :",
+        "availableSports": "Sports disponibles:"
+      },
+      "pagination": {
+        "showing": "Affichage",
+        "of": "sur",
+        "stadiums": "stades",
+        "page": "Page",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "first": "Premier",
+        "last": "Dernier"
       }
     },
-    "card": {
-    "monthlyTooltip": "Prix mensuel pour l'abonnement complet",
-    "sessionTooltip": "Prix pour une seule session",
-    "imageTooltip": "Image non disponible - Photo par défaut",
-    "addressTooltip": "Adresse du stade",
-    "sportsTooltip": "Sports pratiqués dans ce stade",
-    "totalSports": "Total : {count} sports",
-    "monthlyPriceTooltip": "Prix pour un abonnement mensuel complet",
-    "sessionPriceTooltip": "Prix pour une seule session (réservation unique)",
-    "pricingTooltip": "Options de tarification",
-    "pricingDescription": "Choisissez entre l'abonnement mensuel pour un accès régulier ou le paiement à la session pour une utilisation occasionnelle.",
-    "twoOptions": "Deux options de paiement disponibles",
-    "reserveTooltip": "Réserver ce stade pour votre activité sportive",
-    "mapTooltip": "Voir l'emplacement sur Google Maps",
-    "monthly": "Abonnement mensuel",
-    "perSession": "Prix par session",
-    "reserve": "Réserver",
-    "otherSports": "Autres sports :",
-    "availableSports": "Sports disponibles:"
-  }, "pagination": {
-    "showing": "Affichage",
-    "of": "sur",
-    "stadiums": "stades",
-    "page": "Page",
-    "next": "Suivant",
-    "previous": "Précédent",
-    "first": "Premier",
-    "last": "Dernier"
-  }
-    },
-   "about": {
-  "metadata": {
-    "title": "À propos de nous",
-    "description": "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
-    "keywords": "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan"
-  },
-  "hero": {
-    "badge": "À propos de notre plateforme",
-    "title": "Rendre la réservation de stades",
-    "highlighted": "Facile pour tous",
-    "description": "Depuis 2023, nous nous consacrons à transformer la façon dont les clubs et associations sportifs réservent des stades à Tantan. Avec notre plateforme, réserver votre lieu idéal n'a jamais été aussi simple.",
-     "cta": {
-    "exploreStadiums": "Explorer les stades",
-    "getInTouch": "Nous contacter"
-  }
-  },
-  "stats": {
-    "stadiums": {
-    
-      "label": "Stades",
-      "description": "Lieux disponibles"
-    },
-    "clubs": {
-
-      "label": "Clubs",
-      "description": "Membres actifs"
-    },
-    "bookings": {
-      
-      "label": "Réservations",
-      "description": "Cette année"
-    },
-    "satisfaction": {
-      
-      "label": "Satisfaction",
-      "description": "Utilisateurs satisfaits"
-    }
-  },
-  "mission": {
-    "title": "Notre mission et valeurs",
-    "description": "Nous sommes animés par un objectif clair : autonomiser les communautés sportives grâce à la technologie.",
-    "values": {
+    "about": {
+      "metadata": {
+        "title": "À propos de nous",
+        "description": "Découvrez notre plateforme de réservation de stades à Tantan, Maroc. Notre mission est de rendre la réservation d'installations sportives facile et accessible à tous dans la région de Tan-Tan.",
+        "keywords": "à propos des stades Tantan, plateforme de réservation de stade, service de réservation sportive Tan-Tan, notre mission, notre entreprise, système de réservation de stade Maroc, communauté sportive Tan-Tan"
+      },
+      "hero": {
+        "badge": "À propos de notre plateforme",
+        "title": "Rendre la réservation de stades",
+        "highlighted": "Facile pour tous",
+        "description": "Depuis 2023, nous nous consacrons à transformer la façon dont les clubs et associations sportifs réservent des stades à Tantan. Avec notre plateforme, réserver votre lieu idéal n'a jamais été aussi simple.",
+        "cta": {
+          "exploreStadiums": "Explorer les stades",
+          "getInTouch": "Nous contacter"
+        }
+      },
+      "stats": {
+        "stadiums": {
+          "label": "Stades",
+          "description": "Lieux disponibles"
+        },
+        "clubs": {
+          "label": "Clubs",
+          "description": "Membres actifs"
+        },
+        "bookings": {
+          "label": "Réservations",
+          "description": "Cette année"
+        },
+        "satisfaction": {
+          "label": "Satisfaction",
+          "description": "Utilisateurs satisfaits"
+        }
+      },
       "mission": {
-        "title": "Notre mission",
-        "description": "Rendre la réservation de stades simple, transparente et accessible à chaque club et association sportive de Tantan."
+        "title": "Notre mission et valeurs",
+        "description": "Nous sommes animés par un objectif clair : autonomiser les communautés sportives grâce à la technologie.",
+        "values": {
+          "mission": {
+            "title": "Notre mission",
+            "description": "Rendre la réservation de stades simple, transparente et accessible à chaque club et association sportive de Tantan."
+          },
+          "community": {
+            "title": "Priorité à la communauté",
+            "description": "Nous croyons en la construction d'une communauté sportive florissante où les clubs peuvent se concentrer sur l'essentiel : jouer."
+          },
+          "trust": {
+            "title": "Confiance et sécurité",
+            "description": "Vos données et paiements sont protégés par une sécurité de niveau entreprise. Nous prenons votre confiance au sérieux."
+          },
+          "sustainability": {
+            "title": "Croissance durable",
+            "description": "Nous nous engageons à soutenir la culture sportive locale tout en maintenant des prix équitables pour tous."
+          }
+        }
       },
-      "community": {
-        "title": "Priorité à la communauté",
-        "description": "Nous croyons en la construction d'une communauté sportive florissante où les clubs peuvent se concentrer sur l'essentiel : jouer."
+      "features": {
+        "badge": "Fonctionnalités clés",
+        "title": "Pourquoi choisir notre plateforme ?",
+        "description": "Conçue avec les clubs en tête, construite pour l'efficacité et la facilité d'utilisation.",
+        "items": {
+          "availability": {
+            "title": "Disponibilité en temps réel",
+            "description": "Voyez les stades disponibles instantanément et réservez vos créneaux horaires préférés sans délai."
+          },
+          "payments": {
+            "title": "Plans de paiement flexibles",
+            "description": "Choisissez entre le paiement à la séance ou les abonnements mensuels selon les besoins de votre club."
+          },
+          "access": {
+            "title": "Accès 24h/24 et 7j/7",
+            "description": "Réservez et gérez vos réservations à tout moment, n'importe où via notre plateforme mobile."
+          },
+          "support": {
+            "title": "Support expert",
+            "description": "Notre équipe dédiée est là pour vous aider avec l'assistance à la réservation et le support technique."
+          },
+          "quality": {
+            "title": "Lieux de qualité",
+            "description": "Accédez aux installations sportives les mieux entretenues et les plus fiables de la région de Tantan."
+          },
+          "community": {
+            "title": "Avantages communautaires",
+            "description": "Rejoignez un réseau de clubs, obtenez des mises à jour exclusives et participez à des événements sportifs régionaux."
+          }
+        }
       },
-      "trust": {
-        "title": "Confiance et sécurité",
-        "description": "Vos données et paiements sont protégés par une sécurité de niveau entreprise. Nous prenons votre confiance au sérieux."
+      "journey": {
+        "title": "Notre parcours",
+        "description": "De la vision à la réalité - comment nous transformons la réservation de lieux sportifs à Tantan.",
+        "timeline": {
+          "2024": {
+            "title": "Début de construction des stades",
+            "description": "Début de la construction et de la préparation des installations sportives dans la région de Tantan."
+          },
+          "2025": {
+            "title": "Ouverture des stades",
+            "description": "Ouverture des stades pour servir la communauté sportive locale avec des installations modernes."
+          },
+          "2026": {
+            "title": "Lancement de la plateforme",
+            "description": "Lancé notre système de réservation de stades pour servir la communauté sportive de Tantan."
+          }
+        }
       },
-      "sustainability": {
-        "title": "Croissance durable",
-        "description": "Nous nous engageons à soutenir la culture sportive locale tout en maintenant des prix équitables pour tous."
+      "commitment": {
+        "title": "Notre engagement envers vous",
+        "description": "Nous nous engageons à l'amélioration continue et au soutien de votre succès.",
+        "items": [
+          "Tarification transparente et équitable pour tous les clubs",
+          "Mises à jour régulières de la plateforme et nouvelles fonctionnalités",
+          "Équipe de support client professionnelle disponible 24h/24 et 7j/7",
+          "Protection des données et de la vie privée",
+          "Événements communautaires et opportunités de réseautage",
+          "Maintenance et fiabilité régulières du système"
+        ]
       }
-    }
-  },
-  "features": {
-    "badge": "Fonctionnalités clés",
-    "title": "Pourquoi choisir notre plateforme ?",
-    "description": "Conçue avec les clubs en tête, construite pour l'efficacité et la facilité d'utilisation.",
-    "items": {
-      "availability": {
-        "title": "Disponibilité en temps réel",
-        "description": "Voyez les stades disponibles instantanément et réservez vos créneaux horaires préférés sans délai."
-      },
-      "payments": {
-        "title": "Plans de paiement flexibles",
-        "description": "Choisissez entre le paiement à la séance ou les abonnements mensuels selon les besoins de votre club."
-      },
-      "access": {
-        "title": "Accès 24h/24 et 7j/7",
-        "description": "Réservez et gérez vos réservations à tout moment, n'importe où via notre plateforme mobile."
-      },
-      "support": {
-        "title": "Support expert",
-        "description": "Notre équipe dédiée est là pour vous aider avec l'assistance à la réservation et le support technique."
-      },
-      "quality": {
-        "title": "Lieux de qualité",
-        "description": "Accédez aux installations sportives les mieux entretenues et les plus fiables de la région de Tantan."
-      },
-      "community": {
-        "title": "Avantages communautaires",
-        "description": "Rejoignez un réseau de clubs, obtenez des mises à jour exclusives et participez à des événements sportifs régionaux."
-      }
-    }
-  },
-  "journey": {
-    "title": "Notre parcours",
-    "description": "De la vision à la réalité - comment nous transformons la réservation de lieux sportifs à Tantan.",
-    "timeline": {
-     "2024": {
-    "title": "Début de construction des stades",
-    "description": "Début de la construction et de la préparation des installations sportives dans la région de Tantan."
-  },
-  "2025": {
-    "title": "Ouverture des stades",
-    "description": "Ouverture des stades pour servir la communauté sportive locale avec des installations modernes."
-  },
-  "2026": {
-    "title": "Lancement de la plateforme",
-    "description": "Lancé notre système de réservation de stades pour servir la communauté sportive de Tantan."
-  }
-    }
-  },
-  "commitment": {
-    "title": "Notre engagement envers vous",
-    "description": "Nous nous engageons à l'amélioration continue et au soutien de votre succès.",
-    "items": [
-      "Tarification transparente et équitable pour tous les clubs",
-      "Mises à jour régulières de la plateforme et nouvelles fonctionnalités",
-      "Équipe de support client professionnelle disponible 24h/24 et 7j/7",
-      "Protection des données et de la vie privée",
-      "Événements communautaires et opportunités de réseautage",
-      "Maintenance et fiabilité régulières du système"
-    ]
-  }
-},
+    },
     "contact": {
       "metadata": {
         "title": "Contactez-nous",
         "description": "Contactez notre équipe pour les réservations de stades, le support ou les demandes concernant les installations sportives à Tantan, Maroc. Contactez-nous pour assistance à la réservation et opportunités de partenariat.",
         "keywords": "contact stades Tantan, support réservation stade, demandes d'installations sportives Tan-Tan, service client réservation stade, opportunités de partenariat Tantan, assistance réservation Maroc"
-      },"hero": {
-    "badge": "Contactez-nous",
-    "title": "Contactez notre équipe",
-    "description": "Des questions sur les réservations de stades ou les opportunités de partenariat ? Nous sommes là pour vous aider. Contactez-nous et nous vous répondrons dès que possible."
-  },
-  "contactInfo": {
-    "email": {
-      "title": "Email",
-      "description": "Envoyez-nous un email et nous répondrons dans les 24 heures",
-      "details": ["support@stadiums-tantan.ma", "info@stadiums-tantan.ma"]
-    },
-    "phone": {
-      "title": "Téléphone",
-      "description": "Appelez-nous pendant les heures de bureau",
-      "details": ["+212 5XX XXX XXX", "+212 5XX XXX XXX"]
-    },
-    "location": {
-      "title": "Localisation",
-      "description": "Visitez-nous à Tantan, Maroc",
-      "details": ["Tantan, Maroc", "Centre Sportif"]
-    },
-    "hours": {
-      "title": "Horaires",
-      "description": "Nous sommes disponibles du lundi au vendredi",
-      "details": ["Lundi - Vendredi : 9h00 - 18h00", "Samedi : 10h00 - 14h00"]
-    }
-  },
-  "form": {
-    "badge": "Envoyez-nous un message",
-    "title": "Nous aimerions avoir de vos nouvelles",
-    "description": "Remplissez le formulaire ci-dessous et notre équipe vous répondra sous peu.",
-    "labels": {
-      "fullName": "Nom complet",
-      "email": "Adresse email",
-      "phone": "Numéro de téléphone",
-      "subject": "Sujet",
-      "message": "Message"
-    },
-    "placeholders": {
-      "fullName": "Votre nom complet",
-      "email": "votre.email@exemple.com",
-      "phone": "+1 (555) 123-4567",
-      "subject": "De quoi s'agit-il ?",
-      "message": "Dites-nous en plus sur votre demande..."
-    },
-    "errors": {
-      "required": "est requis",
-      "invalidEmail": "Veuillez entrer une adresse email valide",
-      "invalidPhone": "Veuillez entrer un numéro de téléphone valide"
-    },
-    "submitButton": "Envoyer le message",
-    "successMessage": "Merci pour votre message ! Nous vous répondrons bientôt.",
-    "note": "Nous répondrons à votre demande dès que possible, généralement dans les 24 heures."
-  },
-  "faq": {
-    "title": "Questions fréquemment posées",
-    "description": "Trouvez des réponses aux questions courantes sur notre plateforme",
-    "questions": {
-      "responseTime": {
-        "question": "Combien de temps faut-il pour obtenir une réponse ?",
-        "answer": "Nous nous efforçons de répondre à toutes les demandes dans les 24 heures ouvrables. Pour les questions urgentes, veuillez nous appeler directement."
       },
-      "multipleBookings": {
-        "question": "Puis-je réserver plusieurs stades à la fois ?",
-        "answer": "Oui ! Notre plateforme vous permet de gérer plusieurs réservations de stades via un seul compte. Contactez notre équipe pour plus d'informations sur les réservations groupées."
+      "hero": {
+        "badge": "Contactez-nous",
+        "title": "Contactez notre équipe",
+        "description": "Des questions sur les réservations de stades ou les opportunités de partenariat ? Nous sommes là pour vous aider. Contactez-nous et nous vous répondrons dès que possible."
       },
-      "paymentMethods": {
-        "question": "Quels modes de paiement acceptez-vous ?",
-        "answer": "Nous acceptons les virements bancaires, les cartes de crédit et les options de paiement mobile. Veuillez nous contacter pour plus de détails spécifiques à votre région."
+      "contactInfo": {
+        "email": {
+          "title": "Email",
+          "description": "Envoyez-nous un email et nous répondrons dans les 24 heures",
+          "details": [
+            "support@stadiums-tantan.ma",
+            "info@stadiums-tantan.ma"
+          ]
+        },
+        "phone": {
+          "title": "Téléphone",
+          "description": "Appelez-nous pendant les heures de bureau",
+          "details": [
+            "+212 5XX XXX XXX",
+            "+212 5XX XXX XXX"
+          ]
+        },
+        "location": {
+          "title": "Localisation",
+          "description": "Visitez-nous à Tantan, Maroc",
+          "details": [
+            "Tantan, Maroc",
+            "Centre Sportif"
+          ]
+        },
+        "hours": {
+          "title": "Horaires",
+          "description": "Nous sommes disponibles du lundi au vendredi",
+          "details": [
+            "Lundi - Vendredi : 9h00 - 18h00",
+            "Samedi : 10h00 - 14h00"
+          ]
+        }
       },
-      "cancellationPolicy": {
-        "question": "Y a-t-il une politique d'annulation ?",
-        "answer": "Notre politique d'annulation varie en fonction du stade et du type de réservation. Veuillez nous contacter ou consulter nos conditions pour plus d'informations détaillées."
+      "form": {
+        "badge": "Envoyez-nous un message",
+        "title": "Nous aimerions avoir de vos nouvelles",
+        "description": "Remplissez le formulaire ci-dessous et notre équipe vous répondra sous peu.",
+        "labels": {
+          "fullName": "Nom complet",
+          "email": "Adresse email",
+          "phone": "Numéro de téléphone",
+          "subject": "Sujet",
+          "message": "Message"
+        },
+        "placeholders": {
+          "fullName": "Votre nom complet",
+          "email": "votre.email@exemple.com",
+          "phone": "+1 (555) 123-4567",
+          "subject": "De quoi s'agit-il ?",
+          "message": "Dites-nous en plus sur votre demande..."
+        },
+        "errors": {
+          "required": "est requis",
+          "invalidEmail": "Veuillez entrer une adresse email valide",
+          "invalidPhone": "Veuillez entrer un numéro de téléphone valide"
+        },
+        "submitButton": "Envoyer le message",
+        "successMessage": "Merci pour votre message ! Nous vous répondrons bientôt.",
+        "note": "Nous répondrons à votre demande dès que possible, généralement dans les 24 heures."
+      },
+      "faq": {
+        "title": "Questions fréquemment posées",
+        "description": "Trouvez des réponses aux questions courantes sur notre plateforme",
+        "questions": {
+          "responseTime": {
+            "question": "Combien de temps faut-il pour obtenir une réponse ?",
+            "answer": "Nous nous efforçons de répondre à toutes les demandes dans les 24 heures ouvrables. Pour les questions urgentes, veuillez nous appeler directement."
+          },
+          "multipleBookings": {
+            "question": "Puis-je réserver plusieurs stades à la fois ?",
+            "answer": "Oui ! Notre plateforme vous permet de gérer plusieurs réservations de stades via un seul compte. Contactez notre équipe pour plus d'informations sur les réservations groupées."
+          },
+          "paymentMethods": {
+            "question": "Quels modes de paiement acceptez-vous ?",
+            "answer": "Nous acceptons les virements bancaires, les cartes de crédit et les options de paiement mobile. Veuillez nous contacter pour plus de détails spécifiques à votre région."
+          },
+          "cancellationPolicy": {
+            "question": "Y a-t-il une politique d'annulation ?",
+            "answer": "Notre politique d'annulation varie en fonction du stade et du type de réservation. Veuillez nous contacter ou consulter nos conditions pour plus d'informations détaillées."
+          }
+        }
       }
-    }
-  }
     },
     "auth": {
       "register": {
@@ -428,7 +440,8 @@
         "dont_have_account": "Vous n’avez pas de compte ?",
         "forgot_password": "Mot de passe oublié ?"
       },
-      "emailVerification": {"ready": {
+      "emailVerification": {
+        "ready": {
           "title": "Prêt à vérifier votre email ?",
           "message": "Cliquez sur le bouton ci-dessous pour vérifier votre adresse e-mail et terminer votre inscription.",
           "verifyButton": "Vérifier l'email",
@@ -670,25 +683,26 @@
         "unsavedChanges": "Vous avez des modifications non enregistrées",
         "confirmationRequired": "Confirmation requise"
       }
-    },"footer": {
-    "emailTitle": "Email",
-    "emailDescription": "Pour les demandes générales et le support",
-    "email": "contact@example.com",
-    "officeTitle": "Emplacement du bureau",
-    "officeDescription": "Visitez notre siège principal",
-    "address": "123 Rue des Sports, Tantan, Maroc",
-    "mapsUrl": "https://maps.google.com/?q=123+Rue+des+Sports+Tantan+Maroc",
-    "phoneTitle": "Téléphone",
-    "phoneDescription": "Appelez-nous pendant les heures de bureau",
-    "phone": "+212 5XX-XXXXXX",
-    "contactUs": "Contactez-nous",
-    "getInTouch": "Entrer en contact avec nous",
-    "teamAlwaysHere": "Notre équipe est toujours là pour vous aider à réussir",
-    "contactPageLink": "Aller à la page de contact",
-    "allRightsReserved": "Tous droits réservés",
-    "designedFor": "Conçu pour les clubs et équipes sportives",
-    "appName": "Réservation de stades Tantan",
-    "appSubName": "Votre plateforme de réservation d'installations sportives"
-  }
+    },
+    "footer": {
+      "emailTitle": "Email",
+      "emailDescription": "Pour les demandes générales et le support",
+      "email": "contact@example.com",
+      "officeTitle": "Emplacement du bureau",
+      "officeDescription": "Visitez notre siège principal",
+      "address": "123 Rue des Sports, Tantan, Maroc",
+      "mapsUrl": "https://maps.google.com/?q=123+Rue+des+Sports+Tantan+Maroc",
+      "phoneTitle": "Téléphone",
+      "phoneDescription": "Appelez-nous pendant les heures de bureau",
+      "phone": "+212 5XX-XXXXXX",
+      "contactUs": "Contactez-nous",
+      "getInTouch": "Entrer en contact avec nous",
+      "teamAlwaysHere": "Notre équipe est toujours là pour vous aider à réussir",
+      "contactPageLink": "Aller à la page de contact",
+      "allRightsReserved": "Tous droits réservés",
+      "designedFor": "Conçu pour les clubs et équipes sportives",
+      "appName": "Réservation de stades Tantan",
+      "appSubName": "Votre plateforme de réservation d'installations sportives"
+    }
   }
 }

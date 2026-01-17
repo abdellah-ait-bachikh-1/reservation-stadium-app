@@ -362,8 +362,11 @@ export type TranslationKey =
     | 'pages.home.featuresSection.features.security.title'
     | 'pages.home.featuresSection.title'
     | 'pages.home.hero.badge'
+    | 'pages.home.hero.createAccount'
     | 'pages.home.hero.description'
     | 'pages.home.hero.exploreStadiums'
+    | 'pages.home.hero.goToDashboard'
+    | 'pages.home.hero.goToMyProfile'
     | 'pages.home.hero.howItWorks'
     | 'pages.home.hero.mainTitle.first'
     | 'pages.home.hero.mainTitle.seconde'
@@ -500,6 +503,9 @@ export const _TranslationNamespaces = {
     "description",
     "exploreStadiums",
     "howItWorks",
+    "goToDashboard",
+    "createAccount",
+    "goToMyProfile",
     "stats"
   ],
   "pages.home.hero.mainTitle": [
