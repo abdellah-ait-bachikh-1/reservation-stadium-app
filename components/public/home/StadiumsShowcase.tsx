@@ -21,6 +21,8 @@ import { FaMapMarkedAlt, FaMapMarkerAlt } from "react-icons/fa"
 import { Chip } from "@heroui/chip"
 import { Tooltip } from "@heroui/tooltip"
 import AnimatedOnView from "@/components/AnimatedOnView"
+import { Skeleton } from "@heroui/skeleton"
+import { wait } from "@/utils"
 
 interface Sport {
   id: string;
@@ -39,7 +41,51 @@ interface Stadium {
   image: string | null;
   sports: Sport[];
 }
+const StadiumCardSkeleton = ({ locale }: { locale: string }) => {
+  return (
+    <div>
+      <Card className="w-full h-full max-w-md mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800">
+        {/* Image skeleton */}
+        <Skeleton className="h-56 w-full rounded-none" />
 
+        <CardBody className="p-6">
+          {/* Name skeleton */}
+          <div className="mb-4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+            <Skeleton className="h-7 w-3/4 mb-3 rounded-lg" />
+
+            {/* Location skeleton */}
+            <div className={`flex items-start gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+              <Skeleton className="w-5 h-5 rounded-full" />
+              <Skeleton className="h-4 grow rounded-md" />
+            </div>
+          </div>
+
+          {/* Sports tags skeleton */}
+          <div className="mb-4">
+            <div className={`flex items-center gap-2 mb-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+              <Skeleton className="w-5 h-5 rounded-full" />
+              <Skeleton className="h-4 w-32 rounded-md" />
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Skeleton className="h-6 w-20 rounded-full" />
+              <Skeleton className="h-6 w-16 rounded-full" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+              <Skeleton className="h-6 w-12 rounded-full" />
+            </div>
+          </div>
+        </CardBody>
+
+        <CardFooter className="p-6 pt-0">
+          <div className="flex gap-3 w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+            <Skeleton className="h-10 grow rounded-lg" />
+            <Skeleton className="h-10 w-12 rounded-lg" />
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+};
 // Stadium Card Component without prices
 const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) => {
   const t = useTypedTranslations();
@@ -206,6 +252,7 @@ export function StadiumsShowcase() {
     const fetchStadiums = async () => {
       try {
         setLoading(true)
+        await wait(3000)
         const response = await fetch(`/api/public/stadiums?page=1&limit=10`)
 
         if (!response.ok) {
@@ -341,9 +388,11 @@ export function StadiumsShowcase() {
           <AnimatedOnView >
             <div className="w-full h-150 lg:h-175 flex items-center justify-center relative">
               {loading ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="animate-pulse">
-                    <div className="bg-gray-200 dark:bg-gray-800 rounded-2xl w-full h-125"></div>
+                <div className="w-full h-full relative">
+                  <div className="w-full h-full flex items-center justify-center p-2">
+                    <div className="w-[320px] h-125">
+                      <StadiumCardSkeleton locale={locale} />
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -376,7 +425,7 @@ export function StadiumsShowcase() {
                     className="stadiumSwiper h-full"
                     onAutoplayTimeLeft={onAutoplayTimeLeft}
                   >
-                    {stadiums && stadiums.slice(0, 6).map((stadium) => (
+                    {stadiums && stadiums.map((stadium) => (
                       <SwiperSlide key={stadium.id} className="w-auto! h-auto!">
                         <div className="w-full h-full flex items-center justify-center p-2">
                           <div className="w-[320px] h-125">
@@ -403,9 +452,9 @@ export function StadiumsShowcase() {
               )}
 
               {/* Floating Elements for Decoration */}
-              <div className="absolute -top-6 -left-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl" />
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl" />
-              <div className="absolute top-1/2 -right-8 w-16 h-16 bg-emerald-500/10 rounded-full blur-2xl" />
+              
+              <div className="absolute -bottom-6 -right-8 w-32 h-32 bg-amber-500/30 rounded-full blur-2xl" />
+           
             </div>
           </AnimatedOnView>
         </div>
