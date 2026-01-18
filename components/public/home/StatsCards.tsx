@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 type StatsData = { value: string, label: "stadiums" | "clubs" | "reservations" | "satisfaction" }[];
 const staticData: StatsData = [
-    { value: "50 +", label: "stadiums" },
+    { value: "5 +", label: "stadiums" },
     { value: "200 +", label: "clubs" },
     { value: "5000 +", label: "reservations" },
     { value: "100 %", label: "satisfaction" },

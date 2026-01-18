@@ -9,6 +9,7 @@ import { FiTarget } from "react-icons/fi";
 import { getTypedTranslations } from "@/utils/i18n";
 import AnimatedOnView from "@/components/AnimatedOnView";
 import { button, cn } from "@heroui/theme";
+import CTASection from "@/components/public/about/CTASection";
 
 export async function generateMetadata({
   params,
@@ -84,7 +85,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="relative z-10 container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="<div>CTASection</div>max-w-4xl mx-auto text-center">
             {/* Badge */}
             <AnimatedOnView >
               <div className="mb-6">
@@ -135,67 +136,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-24 bg-white/50 dark:bg-zinc-900/30 backdrop-blur-sm border-y border-zinc-200 dark:border-zinc-800">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            <AnimatedOnView >
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-                  +50
-                </div>
-                <div className="font-semibold text-zinc-900 dark:text-white mb-1">
-                  {t("pages.about.stats.stadiums.label")}
-                </div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t("pages.about.stats.stadiums.description")}
-                </div>
-              </div>
-            </AnimatedOnView>
-
-            <AnimatedOnView >
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-                  +200
-                </div>
-                <div className="font-semibold text-zinc-900 dark:text-white mb-1">
-                  {t("pages.about.stats.clubs.label")}
-                </div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t("pages.about.stats.clubs.description")}
-                </div>
-              </div>
-            </AnimatedOnView>
-
-            <AnimatedOnView >
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-                  +5000
-                </div>
-                <div className="font-semibold text-zinc-900 dark:text-white mb-1">
-                  {t("pages.about.stats.bookings.label")}
-                </div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t("pages.about.stats.bookings.description")}
-                </div>
-              </div>
-            </AnimatedOnView>
-
-            <AnimatedOnView >
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-                  100%
-                </div>
-                <div className="font-semibold text-zinc-900 dark:text-white mb-1">
-                  {t("pages.about.stats.satisfaction.label")}
-                </div>
-                <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t("pages.about.stats.satisfaction.description")}
-                </div>
-              </div>
-            </AnimatedOnView>
-          </div>
-        </div>
-      </section>
+      <CTASection/>
 
       {/* Mission & Values */}
       <section className="py-16 md:py-24">
@@ -311,7 +252,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
                     <div className="w-12 h-12 rounded-full bg-amber-600 dark:bg-amber-500 text-white flex items-center justify-center font-bold text-lg">
                       1
                     </div>
-                    <div className="w-1 h-24 bg-gradient-to-b from-amber-600 dark:from-amber-500 to-transparent mt-4" />
+                    <div className="w-1 h-24 bg-linear-to-b from-amber-600 dark:from-amber-500 to-transparent mt-4" />
                   </div>
 
                   {/* Content */}
@@ -336,7 +277,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
                     <div className="w-12 h-12 rounded-full bg-amber-600 dark:bg-amber-500 text-white flex items-center justify-center font-bold text-lg">
                       2
                     </div>
-                    <div className="w-1 h-24 bg-gradient-to-b from-amber-600 dark:from-amber-500 to-transparent mt-4" />
+                    <div className="w-1 h-24 bg-linear-to-b from-amber-600 dark:from-amber-500 to-transparent mt-4" />
                   </div>
 
                   {/* Content */}
@@ -383,7 +324,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
       </section>
 
       {/* Commitment Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-r from-amber-50 dark:from-amber-950/30 to-amber-100/50 dark:to-amber-900/30 border-y border-amber-200 dark:border-amber-900/50">
+      <section className="py-16 md:py-24 bg-linear-to-r from-amber-50 dark:from-amber-950/30 to-amber-100/50 dark:to-amber-900/30 border-y border-amber-200 dark:border-amber-900/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <AnimatedOnView >
@@ -401,7 +342,7 @@ const AboutPage = async ({ params }: { params: Promise<{ locale: string }> }) =>
               {([0, 1, 2, 3, 4, 5] as const).map((i) => (
                 <AnimatedOnView key={i} >
                   <div className="flex items-start gap-3">
-                    <HiCheckCircle className="w-6 h-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <HiCheckCircle className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                     <span className="text-zinc-700 dark:text-zinc-300">
                       {t(`pages.about.commitment.items.${i}`)}
                     </span>

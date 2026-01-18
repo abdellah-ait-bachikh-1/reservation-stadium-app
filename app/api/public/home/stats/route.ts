@@ -66,7 +66,7 @@ export async function GET() {
     */
     
     // Static 100% as requested
-    const satisfactionRate = 98
+    const satisfactionRate = 100
 
     // Format data - show actual counts with "+" if over threshold
     const formatWithPlus = (count: number, threshold: number = 100) => {
@@ -79,7 +79,7 @@ export async function GET() {
         label: 'stadiums' as const 
       },
       { 
-        value: formatWithPlus(clubsCount + 150, 100), 
+        value: formatWithPlus(clubsCount, 100), 
         label: 'clubs' as const 
       },
       { 
@@ -87,7 +87,7 @@ export async function GET() {
         label: 'reservations' as const 
       },
       { 
-        value: `${satisfactionRate}%`, 
+        value: `${satisfactionRate} %`, 
         label: 'satisfaction' as const 
       },
     ]
@@ -107,7 +107,7 @@ export async function GET() {
     // Return fallback data if DB query fails
     return NextResponse.json({
       stats: [
-        { value: '50 +', label: 'stadiums' as const },
+        { value: '5 +', label: 'stadiums' as const },
         { value: '200 +', label: 'clubs' as const },
         { value: '5000 +', label: 'reservations' as const },
         { value: '100 %', label: 'satisfaction' as const },
