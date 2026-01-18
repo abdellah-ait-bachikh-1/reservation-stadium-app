@@ -184,10 +184,13 @@
         "reserveTooltip": "احجز هذا الملعب لنشاطك الرياضي",
         "mapTooltip": "عرض الموقع على خرائط جوجل",
         "monthly": "اشتراك شهري",
-        "perSession": "السعر لكل جلسة",
+        "perSession": "السعر لكل حصة",
         "reserve": "احجز",
         "otherSports": "رياضات أخرى:",
-        "availableSports": "الرياضات المتاحة:"
+        "availableSports": "الرياضات المتاحة:",
+        "perMonthShort": "/ شهر",
+"perSessionShort": "/ حصة"
+
       },
       "pagination": {
         "showing": "عرض",
@@ -267,7 +270,7 @@
           },
           "payments": {
             "title": "خطط دفع مرنة",
-            "description": "اختر بين الدفع لكل جلسة أو الاشتراكات الشهرية بناءً على احتياجات ناديك."
+            "description": "اختر بين الدفع لكل حصة أو الاشتراكات الشهرية بناءً على احتياجات ناديك."
           },
           "access": {
             "title": "وصول 24/7",

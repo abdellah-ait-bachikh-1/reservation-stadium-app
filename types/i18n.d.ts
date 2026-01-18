@@ -367,7 +367,6 @@ export type TranslationKey =
     | 'pages.home.hero.exploreStadiums'
     | 'pages.home.hero.goToDashboard'
     | 'pages.home.hero.goToMyProfile'
-    | 'pages.home.hero.howItWorks'
     | 'pages.home.hero.mainTitle.first'
     | 'pages.home.hero.mainTitle.seconde'
     | 'pages.home.hero.mainTitle.thirth'
@@ -417,7 +416,9 @@ export type TranslationKey =
     | 'pages.stadiums.card.monthlyPriceTooltip'
     | 'pages.stadiums.card.monthlyTooltip'
     | 'pages.stadiums.card.otherSports'
+    | 'pages.stadiums.card.perMonthShort'
     | 'pages.stadiums.card.perSession'
+    | 'pages.stadiums.card.perSessionShort'
     | 'pages.stadiums.card.pricingDescription'
     | 'pages.stadiums.card.pricingTooltip'
     | 'pages.stadiums.card.reserve'
@@ -502,7 +503,6 @@ export const _TranslationNamespaces = {
     "mainTitle",
     "description",
     "exploreStadiums",
-    "howItWorks",
     "goToDashboard",
     "createAccount",
     "goToMyProfile",
@@ -698,7 +698,9 @@ export const _TranslationNamespaces = {
     "perSession",
     "reserve",
     "otherSports",
-    "availableSports"
+    "availableSports",
+    "perMonthShort",
+    "perSessionShort"
   ],
   "pages.stadiums.pagination": [
     "showing",

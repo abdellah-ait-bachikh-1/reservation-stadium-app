@@ -187,7 +187,9 @@
         "perSession": "Prix par session",
         "reserve": "Réserver",
         "otherSports": "Autres sports :",
-        "availableSports": "Sports disponibles:"
+        "availableSports": "Sports disponibles:",
+         "perMonthShort": "/ mois",
+        "perSessionShort": "/ séance"
       },
       "pagination": {
         "showing": "Affichage",
@@ -690,7 +692,7 @@
       "email": "contact@example.com",
       "officeTitle": "Emplacement du bureau",
       "officeDescription": "Visitez notre siège principal",
-      "address": "شارع الحسن الثاني، طانطان 82000، جهة كلميم واد نون، المغرب",
+      "address": "Rue Hassan II, Tan-Tan 82000, Guelmim-Oued Noun, Maroc",
       "mapsUrl": "https://maps.google.com/?q=123+Rue+des+Sports+Tantan+Maroc",
       "phoneTitle": "Téléphone",
       "phoneDescription": "Appelez-nous pendant les heures de bureau",

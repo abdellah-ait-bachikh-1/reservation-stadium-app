@@ -187,7 +187,9 @@
         "perSession": "Price per session",
         "reserve": "Reserve",
         "otherSports": "Other sports:",
-        "availableSports": "Available sports:"
+        "availableSports": "Available sports:",
+        "perMonthShort": "/ month",
+        "perSessionShort": "/ session"
       },
       "pagination": {
         "showing": "Showing",

@@ -34,7 +34,7 @@ interface StadiumCardProps {
 const StadiumCard = ({ stadium }: StadiumCardProps) => {
   const locale = useLocale();
   const t = useTypedTranslations();
-  
+
   // Get the appropriate sport name based on locale
   const getSportName = (sport: Sport) => {
     return locale === 'ar' ? sport.nameAr : sport.nameFr;
@@ -43,9 +43,9 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
   // Format price with Moroccan currency based on locale
   const formatPrice = (price: string | null) => {
     if (!price) return null;
-    
+
     const priceNumber = Number(price);
-    
+
     // For Arabic locale
     if (locale === 'ar') {
       // Format as Moroccan Dirham in Arabic
@@ -57,7 +57,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
         maximumFractionDigits: 2,
       }).format(priceNumber);
     }
-    
+
     // For French locale
     if (locale === 'fr') {
       // Format as Moroccan Dirham in French
@@ -69,7 +69,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
         maximumFractionDigits: 2,
       }).format(priceNumber);
     }
-    
+
     // For English and other locales
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -90,7 +90,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
         className="w-full max-w-md mx-auto overflow-hidden bg-white dark:bg-zinc-900 
         shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl
         border border-gray-100 dark:border-zinc-800"
-        
+
         onPress={() => console.log('View stadium details:', stadium.id)}
       >
         {/* Image Section */}
@@ -98,14 +98,14 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
           {stadium.image ? (
             // Show actual image when available
             <>
-              <img 
-                src={stadium.image} 
+              <img
+                src={stadium.image}
                 alt={stadium.name}
                 className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
             </>
           ) : (
             // Show default image when no image available
@@ -119,15 +119,15 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 priority={false}
               />
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent" />
             </>
           )}
 
           {/* Price Badge with Tooltip */}
           {(stadium.monthlyPrice || stadium.pricePerSession) && (
-            <Tooltip 
+            <Tooltip
               content={
-                stadium.monthlyPrice 
+                stadium.monthlyPrice
                   ? t('pages.stadiums.card.monthlyTooltip')
                   : t('pages.stadiums.card.sessionTooltip')
               }
@@ -139,13 +139,13 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute top-4 right-4 bg-gradient-to-r from-amber-300 to-orange-500 
+                className="absolute top-4 right-4 bg-linear-to-r from-amber-300 to-orange-500 
                 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 cursor-help z-10"
               >
                 <span className="font-bold text-sm">
                   {stadium.monthlyPrice
-                    ? `${formatPrice(stadium.monthlyPrice)}/mois`
-                    : `${formatPrice(stadium.pricePerSession)}/session`}
+                    ? `${formatPrice(stadium.monthlyPrice)} ${t('pages.stadiums.card.perMonthShort')}`
+                    : `${formatPrice(stadium.pricePerSession)} ${t('pages.stadiums.card.perSessionShort')}`}
                 </span>
               </motion.div>
             </Tooltip>
@@ -177,7 +177,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
               color="foreground"
             >
               <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-1 cursor-default w-full">
-                {stadium.name}  
+                {stadium.name}
               </h3>
             </Tooltip>
 
@@ -189,7 +189,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                 color="primary"
               >
                 <div>
-                  <FaMapMarkerAlt className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5 cursor-help" />
+                  <FaMapMarkerAlt className="w-5 h-5 text-red-500 shrink-0 mt-0.5 cursor-help" />
                 </div>
               </Tooltip>
               <Tooltip
@@ -259,8 +259,8 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
                     color="warning"
                     className="cursor-help"
                   >
-                    {getSportName(sport).length > 12 
-                      ? getSportName(sport).substring(0, 12) + '...' 
+                    {getSportName(sport).length > 12
+                      ? getSportName(sport).substring(0, 12) + '...'
                       : getSportName(sport)}
                   </Chip>
                 </Tooltip>
@@ -302,7 +302,7 @@ const StadiumCard = ({ stadium }: StadiumCardProps) => {
           </div>
 
           {/* Pricing Details */}
-          <div className="space-y-2 mb-6 p-3 bg-gradient-to-r from-gray-50 to-gray-100 
+          <div className="space-y-2 mb-6 p-3 bg-linear-to-r from-gray-50 to-gray-100 
           dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-lg">
             {stadium.monthlyPrice && (
               <Tooltip
