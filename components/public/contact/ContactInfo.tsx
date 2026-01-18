@@ -46,7 +46,7 @@ const ContactInfo = () => {
             <Card className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all h-full">
               <CardBody className="gap-4 p-6 rtl:text-right">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-lg flex-shrink-0">
+                  <div className="p-3 bg-amber-500/10 dark:bg-amber-500/20 rounded-lg shrink-0">
                     <Icon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="flex-1">
@@ -56,8 +56,10 @@ const ContactInfo = () => {
 
                       <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
 
-                        {t(`pages.contact.contactInfo.${item.label}.details.0`)}
-                        {t(`pages.contact.contactInfo.${item.label}.details.1`)}
+                        <div>{t(`pages.contact.contactInfo.${item.label}.details.0`)} </div>
+
+                        <div> {t(`pages.contact.contactInfo.${item.label}.details.1`)}
+                        </div>
                       </p>
 
                     </div>
