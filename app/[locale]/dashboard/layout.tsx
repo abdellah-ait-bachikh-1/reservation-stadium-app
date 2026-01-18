@@ -32,17 +32,19 @@ export default async function DashboardLayout({
 }>) {
   const { locale } = await params;
   const authenticatedUser = await isAuthenticatedUserExistsInDB()
- 
-   if (!authenticatedUser) {
-     await apiLogout()
-     redirect({ locale: locale, href: "/auth/login" })
-   }
+
+  if (!authenticatedUser) {
+    await apiLogout()
+    redirect({ locale: locale, href: "/auth/login" })
+  }
   return (
     <>
       <header className="flex items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
         <NotificationBell /> <ThemeSwitcher /> <LanguageSwitcher />
       </header>
-      {children}
+      <main className="mt-5">
+        {children}
+      </main>
     </>
   );
 }
