@@ -122,7 +122,34 @@ export const users = mysqlTable(
     index("deleted_at_index").on(table.deletedAt),
   ]
 );
-
+// drizzle/schema.ts - Add this table
+export const passwordResetTokens = mysqlTable(
+  "password_reset_tokens",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+    token: varchar("token", { length: 255 }).notNull().unique(),
+    userId: char("user_id", { length: 36 }).notNull(),
+    expiresAt: timestamp("expires_at", { mode: "string" }).notNull(),
+    usedAt: timestamp("used_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_password_reset_tokens_user",
+    }).onDelete("cascade"),
+    index("token_idx").on(table.token),
+    index("user_id_idx").on(table.userId),
+    index("expires_at_idx").on(table.expiresAt),
+    index("used_at_idx").on(table.usedAt),
+  ]
+);
 export const sports = mysqlTable("sports", {
   id: char("id", { length: 36 })
     .primaryKey()

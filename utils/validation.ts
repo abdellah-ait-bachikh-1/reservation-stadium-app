@@ -40,6 +40,8 @@ export const validationMessages = {
       accountNotVerified: "Your account email is not verified yet. Please check your inbox.",
       accountNotApproved: "Your account is pending admin approval. Please contact support.",
       accountDeleted: "This account has been deleted. Please contact support.",
+      invalidToken: "Invalid or expired reset link. Please request a new password reset.",
+      expiredToken: "This password reset link has expired. Please request a new one.",
     },
     subject: {
       string: "Subject must be a string",
@@ -96,6 +98,8 @@ export const validationMessages = {
       accountNotVerified: "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte de réception.",
       accountNotApproved: "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support.",
       accountDeleted: "Ce compte a été supprimé. Veuillez contacter le support.",
+         invalidToken: "Lien de réinitialisation invalide ou expiré. Veuillez demander une nouvelle réinitialisation de mot de passe.",
+      expiredToken: "Ce lien de réinitialisation de mot de passe a expiré. Veuillez en demander un nouveau.",
     },
     subject: {
       string: "Le sujet doit être une chaîne de caractères",
@@ -149,6 +153,8 @@ export const validationMessages = {
       accountNotVerified: "حسابك الإلكتروني غير مفعل بعد. الرجاء التحقق من صندوق الوارد.",
       accountNotApproved: "حسابك في انتظار موافقة المسؤول. الرجاء الاتصال بالدعم.",
       accountDeleted: "تم حذف هذا الحساب. الرجاء الاتصال بالدعم.",
+       invalidToken: "رابط إعادة التعيين غير صالح أو منتهي الصلاحية. الرجاء طلب إعادة تعيين كلمة مرور جديدة.",
+      expiredToken: "انتهت صلاحية رابط إعادة تعيين كلمة المرور هذا. الرجاء طلب رابط جديد.",
     },
     subject: {
       string: "الموضوع يجب أن يكون نصًا",

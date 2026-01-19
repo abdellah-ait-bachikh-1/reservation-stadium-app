@@ -2,7 +2,7 @@
 "use server";
 
 import { db } from "@/drizzle/db";
-import { users } from "@/drizzle/schema";
+import { users, passwordResetTokens } from "@/drizzle/schema";
 import { validateForgotPasswordFormData } from "@/lib/validations/forgot-password";
 import { LocaleEnumType } from "@/types";
 import { getLocalizedValidationMessage } from "@/utils/validation";
@@ -47,7 +47,6 @@ export async function forgotPassword({
     // Check different account states
     if (user) {
       if (user.deletedAt) {
-        // Account is deleted
         return { 
           status: 400, 
           validationErrors: {
@@ -59,7 +58,6 @@ export async function forgotPassword({
       }
 
       if (!user.emailVerifiedAt) {
-        // Email not verified
         return { 
           status: 400, 
           validationErrors: {
@@ -71,7 +69,6 @@ export async function forgotPassword({
       }
 
       if (!user.isApproved) {
-        // Account not approved by admin
         return { 
           status: 400, 
           validationErrors: {
@@ -84,20 +81,21 @@ export async function forgotPassword({
 
       // All checks passed, generate reset token
       const resetToken = uuidv4();
-      const resetTokenExpiresAt = addHours(new Date(), 1);
-      const resetTokenExpiresAtStr = format(
-        resetTokenExpiresAt,
-        "yyyy-MM-dd HH:mm:ss"
-      );
+      const expiresAt = addHours(new Date(), 1);
+      const expiresAtStr = format(expiresAt, "yyyy-MM-dd HH:mm:ss");
 
-      // Update user with reset token
+      // Delete any existing reset tokens for this user
       await db
-        .update(users)
-        .set({
-          verificationToken: resetToken,
-          verificationTokenExpiresAt: resetTokenExpiresAtStr,
-        })
-        .where(eq(users.id, user.id));
+        .delete(passwordResetTokens)
+        .where(eq(passwordResetTokens.userId, user.id));
+
+      // Create new reset token
+      await db.insert(passwordResetTokens).values({
+        token: resetToken,
+        userId: user.id,
+        expiresAt: expiresAtStr,
+        // createdAt is auto-set to current timestamp
+      });
 
       // Send reset email
       const emailTemplate = generatePasswordResetEmail({
@@ -114,13 +112,12 @@ export async function forgotPassword({
       });
     }
 
-    // Always return success for security (even if user doesn't exist)
+    // Always return success for security
     return { status: 200, message: "passwordResetEmailSent" };
 
   } catch (error: any) {
     console.error("Forgot password error:", error);
     
-    // Don't expose error details to client
     return { 
       status: 500, 
       message: "An error occurred. Please try again later." 

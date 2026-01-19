@@ -515,6 +515,21 @@
           "description": "Réinitialisez votre mot de passe pour retrouver l'accès à votre compte.",
           "keywords": "mot de passe oublié, réinitialiser mot de passe, récupérer compte"
         }
+      },
+      "resetPassword": {
+        "title": "Réinitialiser le mot de passe",
+        "description": "Entrez votre nouveau mot de passe ci-dessous",
+        "instructions": "Créez un nouveau mot de passe fort pour votre compte.",
+        "remember_password": "Vous vous souvenez de votre mot de passe ?",
+        "success": {
+          "title": "Mot de passe réinitialisé avec succès !",
+          "description": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+        },
+        "metadata": {
+          "title": "Réinitialiser le mot de passe",
+          "description": "Réinitialisez votre mot de passe pour votre compte.",
+          "keywords": "réinitialiser mot de passe, nouveau mot de passe, changer mot de passe"
+        }
       }
     }
   },
@@ -687,7 +702,8 @@
         "passwordResetEmailSent": "Un email de réinitialisation a été envoyé",
         "accountDeleted": "Ce compte a été supprimé. Veuillez contacter le support.",
         "accountNotVerified": "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte de réception.",
-        "accountNotApproved": "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support."
+        "accountNotApproved": "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support.",
+        "passwordReset": "Le mot de passe a été réinitialisé avec succès !"
       },
       "error": {
         "creationFailed": "Erreur lors de la création, vérifiez vos identifiants et réessayez",

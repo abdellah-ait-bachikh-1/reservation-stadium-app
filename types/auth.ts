@@ -10,3 +10,8 @@ export type LoginFormData = Pick<InsertUserType, "email" | "password">;
 export interface ForgotPasswordFormData {
   email: string;
 }
+
+export interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
+}

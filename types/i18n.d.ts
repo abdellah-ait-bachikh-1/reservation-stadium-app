@@ -162,6 +162,7 @@ export type TranslationKey =
     | 'common.toast.success.deleted'
     | 'common.toast.success.loggedIn'
     | 'common.toast.success.loggedOut'
+    | 'common.toast.success.passwordReset'
     | 'common.toast.success.passwordResetEmailSent'
     | 'common.toast.success.registered'
     | 'common.toast.success.saved'
@@ -304,6 +305,15 @@ export type TranslationKey =
     | 'pages.auth.register.metadata.keywords'
     | 'pages.auth.register.metadata.title'
     | 'pages.auth.register.title'
+    | 'pages.auth.resetPassword.description'
+    | 'pages.auth.resetPassword.instructions'
+    | 'pages.auth.resetPassword.metadata.description'
+    | 'pages.auth.resetPassword.metadata.keywords'
+    | 'pages.auth.resetPassword.metadata.title'
+    | 'pages.auth.resetPassword.remember_password'
+    | 'pages.auth.resetPassword.success.description'
+    | 'pages.auth.resetPassword.success.title'
+    | 'pages.auth.resetPassword.title'
     | 'pages.contact.contactInfo.email.description'
     | 'pages.contact.contactInfo.email.details.0'
     | 'pages.contact.contactInfo.email.details.1'
@@ -1001,7 +1011,8 @@ export const _TranslationNamespaces = {
     "register",
     "login",
     "emailVerification",
-    "forgotPassword"
+    "forgotPassword",
+    "resetPassword"
   ],
   "pages.auth.register": [
     "metadata",
@@ -1110,6 +1121,23 @@ export const _TranslationNamespaces = {
     "description"
   ],
   "pages.auth.forgotPassword.metadata": [
+    "title",
+    "description",
+    "keywords"
+  ],
+  "pages.auth.resetPassword": [
+    "title",
+    "description",
+    "instructions",
+    "remember_password",
+    "success",
+    "metadata"
+  ],
+  "pages.auth.resetPassword.success": [
+    "title",
+    "description"
+  ],
+  "pages.auth.resetPassword.metadata": [
     "title",
     "description",
     "keywords"
@@ -1306,7 +1334,8 @@ export const _TranslationNamespaces = {
     "passwordResetEmailSent",
     "accountDeleted",
     "accountNotVerified",
-    "accountNotApproved"
+    "accountNotApproved",
+    "passwordReset"
   ],
   "common.toast.error": [
     "creationFailed",

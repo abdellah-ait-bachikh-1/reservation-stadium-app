@@ -77,6 +77,17 @@ CREATE TABLE `notifications` (
 	CONSTRAINT `notifications_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `password_reset_tokens` (
+	`id` char(36) NOT NULL DEFAULT (UUID()),
+	`token` varchar(255) NOT NULL,
+	`user_id` char(36) NOT NULL,
+	`expires_at` timestamp NOT NULL,
+	`used_at` timestamp,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `password_reset_tokens_id` PRIMARY KEY(`id`),
+	CONSTRAINT `password_reset_tokens_token_unique` UNIQUE(`token`)
+);
+--> statement-breakpoint
 CREATE TABLE `reservation_series` (
 	`id` char(36) NOT NULL DEFAULT (UUID()),
 	`start_time` timestamp NOT NULL,
@@ -186,6 +197,7 @@ ALTER TABLE `monthly_subscriptions` ADD CONSTRAINT `fk_subscriptions_user` FOREI
 ALTER TABLE `monthly_subscriptions` ADD CONSTRAINT `fk_subscriptions_series` FOREIGN KEY (`reservation_series_id`) REFERENCES `reservation_series`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `notifications` ADD CONSTRAINT `fk_notifications_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `notifications` ADD CONSTRAINT `fk_notifications_actor` FOREIGN KEY (`actor_user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `password_reset_tokens` ADD CONSTRAINT `fk_password_reset_tokens_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `reservation_series` ADD CONSTRAINT `fk_reservation_series_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadiums`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `reservation_series` ADD CONSTRAINT `fk_reservation_series_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `reservations` ADD CONSTRAINT `fk_reservations_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadiums`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -219,6 +231,10 @@ CREATE INDEX `is_read_idx` ON `notifications` (`is_read`);--> statement-breakpoi
 CREATE INDEX `created_at_idx` ON `notifications` (`created_at`);--> statement-breakpoint
 CREATE INDEX `type_idx` ON `notifications` (`type`);--> statement-breakpoint
 CREATE INDEX `actor_user_id_idx` ON `notifications` (`actor_user_id`);--> statement-breakpoint
+CREATE INDEX `token_idx` ON `password_reset_tokens` (`token`);--> statement-breakpoint
+CREATE INDEX `user_id_idx` ON `password_reset_tokens` (`user_id`);--> statement-breakpoint
+CREATE INDEX `expires_at_idx` ON `password_reset_tokens` (`expires_at`);--> statement-breakpoint
+CREATE INDEX `used_at_idx` ON `password_reset_tokens` (`used_at`);--> statement-breakpoint
 CREATE INDEX `user_id_index` ON `reservation_series` (`user_id`);--> statement-breakpoint
 CREATE INDEX `stadium_id_index` ON `reservation_series` (`stadium_id`);--> statement-breakpoint
 CREATE INDEX `day_of_week_index` ON `reservation_series` (`day_of_week`);--> statement-breakpoint
