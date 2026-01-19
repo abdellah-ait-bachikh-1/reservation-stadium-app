@@ -35,7 +35,13 @@ export const validationMessages = {
     auth: {
       invalidCredentials:
         "Email or password is incorrect, or your email is not verified, or your account is not approved by admin, or has been deleted",
-    },subject: {
+         emailRequired: "Email is required",
+      emailInvalid: "Invalid email format",
+      accountNotVerified: "Your account email is not verified yet. Please check your inbox.",
+      accountNotApproved: "Your account is pending admin approval. Please contact support.",
+      accountDeleted: "This account has been deleted. Please contact support.",
+    },
+    subject: {
       string: "Subject must be a string",
       required: "Subject is required",
       min: "Subject must be at least 3 characters",
@@ -85,7 +91,13 @@ export const validationMessages = {
     auth: {
       invalidCredentials:
         "Email ou mot de passe incorrect, ou votre email n'est pas vérifié, ou votre compte n'est pas approuvé par l'administrateur, ou a été supprimé",
-    },   subject: {
+          emailRequired: "L'email est requis",
+      emailInvalid: "Format d'email invalide",
+      accountNotVerified: "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte de réception.",
+      accountNotApproved: "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support.",
+      accountDeleted: "Ce compte a été supprimé. Veuillez contacter le support.",
+    },
+    subject: {
       string: "Le sujet doit être une chaîne de caractères",
       required: "Le sujet est requis",
       min: "Le sujet doit comporter au moins 3 caractères",
@@ -132,7 +144,13 @@ export const validationMessages = {
     auth: {
       invalidCredentials:
         "البريد الإلكتروني أو كلمة المرور غير صحيحة، أو بريدك الإلكتروني غير مفعل، أو حسابك غير معتمد من قبل المسؤول، أو تم حذفه",
-    },  subject: {
+          emailRequired: "البريد الإلكتروني مطلوب",
+      emailInvalid: "صيغة البريد الإلكتروني غير صالحة",
+      accountNotVerified: "حسابك الإلكتروني غير مفعل بعد. الرجاء التحقق من صندوق الوارد.",
+      accountNotApproved: "حسابك في انتظار موافقة المسؤول. الرجاء الاتصال بالدعم.",
+      accountDeleted: "تم حذف هذا الحساب. الرجاء الاتصال بالدعم.",
+    },
+    subject: {
       string: "الموضوع يجب أن يكون نصًا",
       required: "الموضوع مطلوب",
       min: "الموضوع يجب أن يكون على الأقل 3 أحرف",
@@ -159,7 +177,7 @@ export type ValidationMessageKey = `${ValidationField}.${string}`;
 
 export const getLocalizedValidationMessage = (
   key: ValidationMessageKey,
-  locale: LocaleEnumType = "en"
+  locale: LocaleEnumType = "en",
 ): string => {
   const [field, messageType] = key.split(".") as [ValidationField, string];
 

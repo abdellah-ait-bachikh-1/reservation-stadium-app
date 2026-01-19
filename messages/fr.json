@@ -499,6 +499,22 @@
           "contactSupport": "Contacter le support",
           "needHelp": "Besoin d'aide ?"
         }
+      },
+      "forgotPassword": {
+        "title": "Mot de passe oublié",
+        "description": "Entrez votre adresse email pour recevoir un lien de réinitialisation",
+        "instructions": "Nous vous enverrons un lien par email pour réinitialiser votre mot de passe.",
+        "remember_password": "Vous vous souvenez de votre mot de passe ?",
+        "no_account": "Pas encore de compte ?",
+        "success": {
+          "title": "Email envoyé !",
+          "description": "Vérifiez votre boîte de réception pour le lien de réinitialisation."
+        },
+        "metadata": {
+          "title": "Mot de passe oublié",
+          "description": "Réinitialisez votre mot de passe pour retrouver l'accès à votre compte.",
+          "keywords": "mot de passe oublié, réinitialiser mot de passe, récupérer compte"
+        }
       }
     }
   },
@@ -551,7 +567,10 @@
       "submit": "Soumettre",
       "next": "Suivant",
       "previous": "Précédent",
-      "reset": "Réinitialiser"
+      "reset": "Réinitialiser",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "backToLogin": "Retour à la connexion",
+      "tryAgain": "Réessayer"
     },
     "theme": {
       "light": "Clair",
@@ -664,7 +683,11 @@
         "registered": "Inscription réussie. Un email de vérification a été envoyé à votre adresse email. Veuillez vérifier votre email et confirmer que c'est bien vous. Après vérification, l'administrateur examinera votre compte et l'approuvera ou le refusera. Si vous ne pouvez pas vous connecter après vérification, veuillez contacter l'équipe municipale.",
         "loggedIn": "Connecté avec succès",
         "loggedOut": "Déconnecté avec succès",
-        "sent": "Envoyé avec succès"
+        "sent": "Envoyé avec succès",
+        "passwordResetEmailSent": "Un email de réinitialisation a été envoyé",
+        "accountDeleted": "Ce compte a été supprimé. Veuillez contacter le support.",
+        "accountNotVerified": "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte de réception.",
+        "accountNotApproved": "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support."
       },
       "error": {
         "creationFailed": "Erreur lors de la création, vérifiez vos identifiants et réessayez",
@@ -675,7 +698,8 @@
         "loginFailed": "Échec de la connexion, vérifiez vos identifiants",
         "generic": "Une erreur s'est produite, veuillez réessayer",
         "network": "Erreur réseau, vérifiez votre connexion",
-        "validation": "Veuillez vérifier vos informations"
+        "validation": "Veuillez vérifier vos informations",
+        "resetPasswordFailed": "Échec de l'envoi de l'email de réinitialisation"
       },
       "info": {
         "loading": "Chargement...",

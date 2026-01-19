@@ -499,6 +499,22 @@
           "contactSupport": "Contact Support",
           "needHelp": "Need help?"
         }
+      },
+      "forgotPassword": {
+        "title": "Forgot Password",
+        "description": "Enter your email address to receive a reset link",
+        "instructions": "We'll send you an email with a link to reset your password.",
+        "remember_password": "Remember your password?",
+        "no_account": "Don't have an account yet?",
+        "success": {
+          "title": "Email Sent!",
+          "description": "Check your inbox for the reset link."
+        },
+        "metadata": {
+          "title": "Forgot Password",
+          "description": "Reset your password to regain access to your account.",
+          "keywords": "forgot password, reset password, recover account"
+        }
       }
     },
     "dashboard": {
@@ -554,7 +570,10 @@
       "submit": "Submit",
       "next": "Next",
       "previous": "Previous",
-      "reset": "Reset"
+      "reset": "Reset",
+      "resetPassword": "Reset Password",
+      "backToLogin": "Back to Login",
+      "tryAgain": "Try Again"
     },
     "theme": {
       "light": "Light",
@@ -667,7 +686,8 @@
         "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
         "loggedIn": "Logged in successfully",
         "loggedOut": "Logged out successfully",
-        "sent": "Sent successfully"
+        "sent": "Sent successfully",
+        "passwordResetEmailSent": "A password reset email has been sent"
       },
       "error": {
         "creationFailed": "Error creating, check your credentials and try again",
@@ -678,7 +698,11 @@
         "loginFailed": "Login failed, check your credentials",
         "generic": "An error occurred, please try again",
         "network": "Network error, check your connection",
-        "validation": "Please check your information"
+        "validation": "Please check your information",
+        "resetPasswordFailed": "Failed to send reset email",
+        "accountDeleted": "This account has been deleted. Please contact support.",
+        "accountNotVerified": "Your account email is not verified yet. Please check your inbox.",
+        "accountNotApproved": "Your account is pending admin approval. Please contact support."
       },
       "info": {
         "loading": "Loading...",

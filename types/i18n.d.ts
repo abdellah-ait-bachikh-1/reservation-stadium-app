@@ -8,6 +8,7 @@ export type TranslationKey =
     | 'common.actions.approve'
     | 'common.actions.archive'
     | 'common.actions.back'
+    | 'common.actions.backToLogin'
     | 'common.actions.book'
     | 'common.actions.cancel'
     | 'common.actions.cancel_subscription'
@@ -40,6 +41,7 @@ export type TranslationKey =
     | 'common.actions.remove_from_cart'
     | 'common.actions.reserve'
     | 'common.actions.reset'
+    | 'common.actions.resetPassword'
     | 'common.actions.retry'
     | 'common.actions.save'
     | 'common.actions.search'
@@ -48,6 +50,7 @@ export type TranslationKey =
     | 'common.actions.share'
     | 'common.actions.sort'
     | 'common.actions.submit'
+    | 'common.actions.tryAgain'
     | 'common.actions.unarchive'
     | 'common.actions.update'
     | 'common.actions.view'
@@ -136,22 +139,30 @@ export type TranslationKey =
     | 'common.theme.light'
     | 'common.theme.select'
     | 'common.theme.system'
+    | 'common.toast.error.accountDeleted'
+    | 'common.toast.error.accountNotApproved'
+    | 'common.toast.error.accountNotVerified'
     | 'common.toast.error.creationFailed'
     | 'common.toast.error.deleteFailed'
     | 'common.toast.error.generic'
     | 'common.toast.error.loginFailed'
     | 'common.toast.error.network'
     | 'common.toast.error.registrationFailed'
+    | 'common.toast.error.resetPasswordFailed'
     | 'common.toast.error.saveFailed'
     | 'common.toast.error.updateFailed'
     | 'common.toast.error.validation'
     | 'common.toast.info.loading'
     | 'common.toast.info.processing'
     | 'common.toast.info.updating'
+    | 'common.toast.success.accountDeleted'
+    | 'common.toast.success.accountNotApproved'
+    | 'common.toast.success.accountNotVerified'
     | 'common.toast.success.created'
     | 'common.toast.success.deleted'
     | 'common.toast.success.loggedIn'
     | 'common.toast.success.loggedOut'
+    | 'common.toast.success.passwordResetEmailSent'
     | 'common.toast.success.registered'
     | 'common.toast.success.saved'
     | 'common.toast.success.sent'
@@ -267,6 +278,16 @@ export type TranslationKey =
     | 'pages.auth.emailVerification.success.waitForReview'
     | 'pages.auth.emailVerification.success.weWillContactYou'
     | 'pages.auth.emailVerification.title'
+    | 'pages.auth.forgotPassword.description'
+    | 'pages.auth.forgotPassword.instructions'
+    | 'pages.auth.forgotPassword.metadata.description'
+    | 'pages.auth.forgotPassword.metadata.keywords'
+    | 'pages.auth.forgotPassword.metadata.title'
+    | 'pages.auth.forgotPassword.no_account'
+    | 'pages.auth.forgotPassword.remember_password'
+    | 'pages.auth.forgotPassword.success.description'
+    | 'pages.auth.forgotPassword.success.title'
+    | 'pages.auth.forgotPassword.title'
     | 'pages.auth.login.dont_have_account'
     | 'pages.auth.login.forgot_password'
     | 'pages.auth.login.metadata.description'
@@ -979,7 +1000,8 @@ export const _TranslationNamespaces = {
   "pages.auth": [
     "register",
     "login",
-    "emailVerification"
+    "emailVerification",
+    "forgotPassword"
   ],
   "pages.auth.register": [
     "metadata",
@@ -1074,6 +1096,24 @@ export const _TranslationNamespaces = {
     "contactSupport",
     "needHelp"
   ],
+  "pages.auth.forgotPassword": [
+    "title",
+    "description",
+    "instructions",
+    "remember_password",
+    "no_account",
+    "success",
+    "metadata"
+  ],
+  "pages.auth.forgotPassword.success": [
+    "title",
+    "description"
+  ],
+  "pages.auth.forgotPassword.metadata": [
+    "title",
+    "description",
+    "keywords"
+  ],
   "common": [
     "actions",
     "theme",
@@ -1133,7 +1173,10 @@ export const _TranslationNamespaces = {
     "submit",
     "next",
     "previous",
-    "reset"
+    "reset",
+    "resetPassword",
+    "backToLogin",
+    "tryAgain"
   ],
   "common.theme": [
     "light",
@@ -1259,7 +1302,11 @@ export const _TranslationNamespaces = {
     "registered",
     "loggedIn",
     "loggedOut",
-    "sent"
+    "sent",
+    "passwordResetEmailSent",
+    "accountDeleted",
+    "accountNotVerified",
+    "accountNotApproved"
   ],
   "common.toast.error": [
     "creationFailed",
@@ -1270,7 +1317,8 @@ export const _TranslationNamespaces = {
     "loginFailed",
     "generic",
     "network",
-    "validation"
+    "validation",
+    "resetPasswordFailed"
   ],
   "common.toast.info": [
     "loading",

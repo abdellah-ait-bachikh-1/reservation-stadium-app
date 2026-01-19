@@ -6,3 +6,7 @@ export type RegisterFormData = Pick<
 > & { confirmPassword: string };
 
 export type LoginFormData = Pick<InsertUserType, "email" | "password">;
+
+export interface ForgotPasswordFormData {
+  email: string;
+}

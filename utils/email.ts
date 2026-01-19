@@ -679,3 +679,311 @@ export function generateContactFormEmail({
     html
   };
 }
+
+
+// utils/email-templates.ts (add this function)
+
+export function generatePasswordResetEmail({
+  name,
+  email,
+  resetToken,
+  locale
+}: {
+  name: string;
+  email: string;
+  resetToken: string;
+  locale: "EN" | "FR" | "AR";
+}): { subject: string; html: string } {
+  const translations = {
+    EN: {
+      subject: "Reset Your Password",
+      greeting: `Hello ${name},`,
+      intro: "You requested to reset your password for your StadiumReservation account.",
+      instruction: "Click the button below to reset your password:",
+      button: "Reset Password",
+      note: "If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.",
+      expiry: "This password reset link will expire in 1 hour.",
+      footer: "Thank you for using StadiumReservation!",
+      signature: "The StadiumReservation Team",
+      warning: "For security reasons, this link will expire in 1 hour."
+    },
+    FR: {
+      subject: "Réinitialiser votre mot de passe",
+      greeting: `Bonjour ${name},`,
+      intro: "Vous avez demandé à réinitialiser votre mot de passe pour votre compte StadiumReservation.",
+      instruction: "Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :",
+      button: "Réinitialiser le mot de passe",
+      note: "Si vous n'avez pas demandé de réinitialisation de mot de passe, vous pouvez ignorer cet e-mail en toute sécurité. Votre mot de passe ne sera pas modifié.",
+      expiry: "Ce lien de réinitialisation expirera dans 1 heure.",
+      footer: "Merci d'utiliser StadiumReservation !",
+      signature: "L'équipe StadiumReservation",
+      warning: "Pour des raisons de sécurité, ce lien expirera dans 1 heure."
+    },
+    AR: {
+      subject: "إعادة تعيين كلمة المرور الخاصة بك",
+      greeting: `مرحبًا ${name},`,
+      intro: "لقد طلبت إعادة تعيين كلمة المرور لحسابك في StadiumReservation.",
+      instruction: "انقر على الزر أدناه لإعادة تعيين كلمة المرور الخاصة بك:",
+      button: "إعادة تعيين كلمة المرور",
+      note: "إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد الإلكتروني بأمان. لن يتم تغيير كلمة المرور الخاصة بك.",
+      expiry: "ستنتهي صلاحية رابط إعادة التعيين هذا خلال ساعة واحدة.",
+      footer: "شكرًا لاستخدامك StadiumReservation!",
+      signature: "فريق StadiumReservation",
+      warning: "لأسباب أمنية، ستنتهي صلاحية هذا الرابط خلال ساعة واحدة."
+    }
+  };
+
+  const t = translations[locale];
+  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/${locale.toLowerCase()}/auth/reset-password?token=${resetToken}`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="${locale.toLowerCase()}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${t.subject}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #3f3f46;
+            background-color: #fafafa;
+            direction: ${locale === 'AR' ? 'rtl' : 'ltr'};
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-icon {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+        
+        .content {
+            padding: 3rem 2rem;
+        }
+        
+        .greeting {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #18181b;
+            margin-bottom: 1.5rem;
+        }
+        
+        .message {
+            color: #52525b;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .instruction {
+            color: #52525b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+        
+        .reset-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+        
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 158, 11, 0.3);
+        }
+        
+        .link-note {
+            text-align: center;
+            color: #71717a;
+            font-size: 0.875rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #fafafa;
+            border-radius: 0.75rem;
+            border: 1px solid #e4e4e7;
+            word-break: break-all;
+        }
+        
+        .expiry-note {
+            text-align: center;
+            color: #71717a;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        .warning-note {
+            background-color: #fef3c7;
+            border: 1px solid #fde047;
+            color: #92400e;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .disclaimer {
+            background-color: #fafafa;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #e4e4e7;
+            font-size: 0.875rem;
+            color: #71717a;
+        }
+        
+        .footer {
+            background-color: #09090b;
+            color: #a1a1aa;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #27272a;
+        }
+        
+        .footer-text {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .signature {
+            color: #f4f4f5;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 640px) {
+            .content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .reset-button {
+                padding: 0.875rem 2rem;
+                font-size: 0.9375rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo-icon"></div>
+            <div class="title">${locale === 'FR' ? 'Réservation des Stades' : locale === 'AR' ? 'حجز الملاعب' : 'Stadium Reservation'}</div>
+            <div class="subtitle">${t.subject}</div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">${t.greeting}</div>
+            
+            <div class="message">${t.intro}</div>
+            
+            <div class="instruction">${t.instruction}</div>
+            
+            <div class="button-container">
+                <a href="${resetLink}" class="reset-button">
+                    ${t.button}
+                </a>
+            </div>
+            
+            <div class="link-note">
+                <strong>${locale === 'FR' ? 'Lien de réinitialisation :' : locale === 'AR' ? 'رابط إعادة التعيين:' : 'Reset Link:'}</strong><br>
+                <a href="${resetLink}" style="color: #f59e0b; text-decoration: none; word-break: break-all;">
+                    ${resetLink}
+                </a>
+            </div>
+            
+            <div class="expiry-note">${t.expiry}</div>
+            
+            <div class="warning-note">
+                <strong>⚠️ ${locale === 'FR' ? 'Important :' : locale === 'AR' ? 'هام:' : 'Important:'}</strong> ${t.warning}
+            </div>
+            
+            <div class="disclaimer">
+                ${t.note}
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-text">
+                ${t.footer}
+            </div>
+            
+            <div class="signature">${t.signature}</div>
+        </div>
+    </div>
+</body>
+</html>
+  `;
+
+  return {
+    subject: t.subject,
+    html
+  };
+}
