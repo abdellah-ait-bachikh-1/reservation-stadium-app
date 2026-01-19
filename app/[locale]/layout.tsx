@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import {  Inter, Montserrat, Poppins, Rubik } from "next/font/google";
 
 import { LocaleEnumType, LocaleType } from "@/types";
 import { getAppName, getDirection } from "@/utils";
@@ -7,8 +7,8 @@ import { getAppName, getDirection } from "@/utils";
 import Providers from "@/components/providers/Providers";
 import { ToastProvider } from "@heroui/toast";
 import { setRequestLocale } from "next-intl/server";
-const cause = Figtree({
-  variable: "--font-cause",
+const inter = Poppins({
+  variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
@@ -52,7 +52,7 @@ export default async function LocaleRootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${cause.variable} relative z-99998  bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-black dark:via-neutral-700 dark:to-black min-h-screen w-full bg-fixed`}
+        className={`${inter.className} relative z-99998  bg-linear-to-br from-amber-100 via-white to-amber-100 dark:from-black dark:via-neutral-700 dark:to-black min-h-screen w-full bg-fixed`}
         suppressHydrationWarning
       >
         <Providers locale={locale} messages={messages}>

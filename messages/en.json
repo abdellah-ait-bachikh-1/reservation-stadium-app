@@ -212,7 +212,7 @@
         "badge": "About Our Platform",
         "title": "Making Stadium Booking",
         "highlighted": "Easy for Everyone",
-        "description": "Since 2023, we've been dedicated to transforming how sports clubs and associations reserve stadiums in Tantan. With our platform, booking your perfect venue has never been easier.",
+        "description": "Since 2025, we've been dedicated to transforming how sports clubs and associations reserve stadiums in Tantan. With our platform, booking your perfect venue has never been easier.",
         "cta": {
           "exploreStadiums": "Explore Stadiums",
           "getInTouch": "Get in Touch"
@@ -570,7 +570,6 @@
     "user": {
       "dashboard": "Dashboard",
       "dashboard_description": "View your dashboard and statistics",
-     
       "logout": "Logout",
       "logout_description": "Sign out from your account",
       "role": "Role",

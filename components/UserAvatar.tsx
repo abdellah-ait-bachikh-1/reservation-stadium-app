@@ -219,28 +219,28 @@ export default function UserAvatar({
               key: "user-profile",
               href: "/dashboard/profile", // Added href for user profile
               isReadOnly: false,
-startContent: <Avatar className="text-base shrink-0" showFallback />,
-children: (
-  <div className="flex items-center justify-between gap-2 w-full overflow-hidden">
-    <div className="flex flex-col items-start flex-1 min-w-0 overflow-hidden">
-      <span className="font-semibold text-foreground truncate w-full max-w-30" dir="ltr">
-        {name}
-      </span>
-      <span className="text-sm text-default-500 truncate w-full max-w-30" dir="ltr">
-        {email}
-      </span>
-    </div>
-    <Chip
-      size="sm"
-      color={role === "ADMIN" ? "success" : "warning"}
-      className="text-[10px] font-bold uppercase tracking-wide shrink-0 "
-      variant="flat"
-      radius="full"
-    >
-      {t(`common.user.roles.${convertCase(role, "lower")}`)}
-    </Chip>
-  </div>
-),
+              startContent: <Avatar className="text-base shrink-0" showFallback />,
+              children: (
+                <div className="flex items-center justify-between gap-2 w-full overflow-hidden">
+                  <div className="flex flex-col items-start flex-1 min-w-0 overflow-hidden">
+                    <span className="font-semibold text-foreground truncate w-full max-w-30" dir="ltr">
+                      {name}
+                    </span>
+                    <span className="text-sm text-default-500 truncate w-full max-w-30" dir="ltr">
+                      {email}
+                    </span>
+                  </div>
+                  <Chip
+                    size="sm"
+                    color={role === "ADMIN" ? "success" : "warning"}
+                    className="text-[10px] font-bold uppercase tracking-wide shrink-0 "
+                    variant="flat"
+                    radius="full"
+                  >
+                    {t(`common.user.roles.${convertCase(role, "lower")}`)}
+                  </Chip>
+                </div>
+              ),
             },
             // Divider as a special item
             {

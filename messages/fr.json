@@ -212,7 +212,7 @@
         "badge": "À propos de notre plateforme",
         "title": "Rendre la réservation de stades",
         "highlighted": "Facile pour tous",
-        "description": "Depuis 2023, nous nous consacrons à transformer la façon dont les clubs et associations sportifs réservent des stades à Tantan. Avec notre plateforme, réserver votre lieu idéal n'a jamais été aussi simple.",
+        "description": "Depuis 2025, nous nous consacrons à transformer la façon dont les clubs et associations sportifs réservent des stades à Tantan. Avec notre plateforme, réserver votre lieu idéal n'a jamais été aussi simple.",
         "cta": {
           "exploreStadiums": "Explorer les stades",
           "getInTouch": "Nous contacter"
@@ -567,7 +567,6 @@
     "user": {
       "dashboard": "Tableau de bord",
       "dashboard_description": "Consultez votre tableau de bord et vos statistiques",
- 
       "logout": "Déconnexion",
       "logout_description": "Se déconnecter de votre compte",
       "role": "Rôle",

@@ -34,7 +34,7 @@ const StadiumsPage = async ({ params }: { params: Promise<{ locale: string }> })
             <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 text-sm font-medium mb-4">
               {t('pages.stadiums.hero.badge')}
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4 text-balance">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-zinc-900 dark:text-white mb-4 text-balance">
               {t('pages.stadiums.hero.title')}
               <span className="text-amber-600 dark:text-amber-400"> {t('pages.stadiums.hero.highlighted')}
               </span>
