@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {  Inter, Montserrat, Poppins, Rubik } from "next/font/google";
+import {   Rubik } from "next/font/google";
 
 import { LocaleEnumType, LocaleType } from "@/types";
 import { getAppName, getDirection } from "@/utils";
@@ -7,7 +7,7 @@ import { getAppName, getDirection } from "@/utils";
 import Providers from "@/components/providers/Providers";
 import { ToastProvider } from "@heroui/toast";
 import { setRequestLocale } from "next-intl/server";
-const inter = Poppins({
+const inter = Rubik({
   variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
