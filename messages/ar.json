@@ -189,8 +189,7 @@
         "otherSports": "رياضات أخرى:",
         "availableSports": "الرياضات المتاحة:",
         "perMonthShort": "/ شهر",
-"perSessionShort": "/ حصة"
-
+        "perSessionShort": "/ حصة"
       },
       "pagination": {
         "showing": "عرض",
@@ -337,7 +336,7 @@
           "title": "البريد الإلكتروني",
           "description": "أرسل لنا بريدًا إلكترونيًا وسنرد خلال 24 ساعة",
           "details": [
-          "communetantan@gmail.com",
+            "communetantan@gmail.com",
             "communetantan@gmail.com"
           ]
         },
@@ -353,8 +352,8 @@
           "title": "الموقع",
           "description": "زرنا في طانطان، المغرب",
           "details": [
-"القصر البلدي",
-    "بلدية طانطان"
+            "القصر البلدي",
+            "بلدية طانطان"
           ]
         },
         "hours": {
@@ -567,8 +566,10 @@
     },
     "user": {
       "dashboard": "لوحة التحكم",
-      "profile": "الملف الشخصي",
+      "dashboard_description": "عرض لوحة التحكم والإحصائيات الخاصة بك",
+
       "logout": "تسجيل الخروج",
+      "logout_description": "الخروج من حسابك",
       "role": "الدور",
       "roles": {
         "admin": "مدير النظام",

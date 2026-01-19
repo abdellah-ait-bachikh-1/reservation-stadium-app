@@ -73,28 +73,28 @@ export default function UserAvatar({
 
   useEffect(() => {
     setMounted(true);
-    
+
   }, []);
 
-  useEffect(()=>{
-    async function fetchUser (){
+  useEffect(() => {
+    async function fetchUser() {
       try {
         const res = await fetch('/api/public/current-user')
         const data = await res.json()
         console.log(res)
       } catch (error) {
         if (isErrorHasMessage(error)) throw new Error(error.message);
-    throw new Error("Unexpected registration error");
+        throw new Error("Unexpected registration error");
       }
     }
     fetchUser()
-  },[])
+  }, [])
   const handleLogout = () => {
     setIsLoggingOut(true);
     signOut({
       redirect: false,
     });
-    
+
     setShowLogoutModal(false);
     window.location.reload();
   };
@@ -118,20 +118,20 @@ export default function UserAvatar({
       key: "dashboard",
       label: t("common.user.dashboard"),
       icon: LuLayoutDashboard,
-      description: t("common.user.dashboard"),
+      description: t("common.user.dashboard_description"),
       href: "/dashboard"
     },
     {
       key: "logout",
       label: t("common.user.logout"),
       icon: FiLogOut,
-      description: t("common.user.logout"),
+      description: t("common.user.logout_description"),
       className: "text-danger",
     },
   ];
 
   const modalContent = showLogoutModal ? (
-    <div className="fixed inset-0 z-[99999]">
+    <div className="fixed inset-0 z-99999">
       {/* Full screen blurred backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -150,17 +150,15 @@ export default function UserAvatar({
           <div className="p-6">
             {/* Modal Header */}
             <div
-              className={`flex items-center gap-4 mb-5 ${
-                isRtl(locale) ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex items-center gap-4 mb-5 ${isRtl(locale) ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30">
                 <FaSignOutAlt className="w-6 h-6 text-red-600" />
               </div>
               <div
-                className={`flex-1 ${
-                  isRtl(locale) ? "text-right" : "text-left"
-                }`}
+                className={`flex-1 ${isRtl(locale) ? "text-right" : "text-left"
+                  }`}
               >
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t("common.modals.logout.title")}
@@ -173,9 +171,8 @@ export default function UserAvatar({
 
             {/* Modal Actions */}
             <div
-              className={`flex gap-3 mt-6 ${
-                isRtl(locale) ? "flex-row-reverse" : "flex-row"
-              }`}
+              className={`flex gap-3 mt-6 ${isRtl(locale) ? "flex-row-reverse" : "flex-row"
+                }`}
             >
               <button
                 onClick={() => !isLoggingOut && setShowLogoutModal(false)}
@@ -216,30 +213,34 @@ export default function UserAvatar({
         <DropdownMenu
           variant="flat"
           onAction={(key) => handleAction(key as string)}
-          className="min-w-64"
+          className="min-w-64 max-w-76"
           items={[
             {
               key: "user-profile",
               href: "/dashboard/profile", // Added href for user profile
               isReadOnly: false,
-              startContent: <Avatar className="text-base" showFallback />,
-              children: (
-                <div className="flex flex-col items-start gap-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-foreground">{name}</span>
-                    <Chip
-                      size="sm"
-                      color={role === "ADMIN" ? "success" : "warning"}
-                      className="text-[10px] font-bold uppercase tracking-wide"
-                      variant="flat"
-                      radius="full"
-                    >
-                      {t(`common.user.roles.${convertCase(role, "lower")}`)}
-                    </Chip>
-                  </div>
-                  <span className="text-sm text-default-500">{email}</span>
-                </div>
-              ),
+startContent: <Avatar className="text-base shrink-0" showFallback />,
+children: (
+  <div className="flex items-center justify-between gap-2 w-full overflow-hidden">
+    <div className="flex flex-col items-start flex-1 min-w-0 overflow-hidden">
+      <span className="font-semibold text-foreground truncate w-full max-w-30" dir="ltr">
+        {name}
+      </span>
+      <span className="text-sm text-default-500 truncate w-full max-w-30" dir="ltr">
+        {email}
+      </span>
+    </div>
+    <Chip
+      size="sm"
+      color={role === "ADMIN" ? "success" : "warning"}
+      className="text-[10px] font-bold uppercase tracking-wide shrink-0 "
+      variant="flat"
+      radius="full"
+    >
+      {t(`common.user.roles.${convertCase(role, "lower")}`)}
+    </Chip>
+  </div>
+),
             },
             // Divider as a special item
             {

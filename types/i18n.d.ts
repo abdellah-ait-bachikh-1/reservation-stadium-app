@@ -159,8 +159,9 @@ export type TranslationKey =
     | 'common.toast.warning.confirmationRequired'
     | 'common.toast.warning.unsavedChanges'
     | 'common.user.dashboard'
+    | 'common.user.dashboard_description'
     | 'common.user.logout'
-    | 'common.user.profile'
+    | 'common.user.logout_description'
     | 'common.user.role'
     | 'common.user.roles.admin'
     | 'common.user.roles.club'
@@ -1148,8 +1149,9 @@ export const _TranslationNamespaces = {
   ],
   "common.user": [
     "dashboard",
-    "profile",
+    "dashboard_description",
     "logout",
+    "logout_description",
     "role",
     "roles"
   ],
@@ -1298,6 +1300,9 @@ export const _TranslationNamespaces = {
     "designedFor",
     "appName",
     "appSubName"
+  ],
+  "pages.dashboard": [
+    "notifications"
   ]
 } as const;
 

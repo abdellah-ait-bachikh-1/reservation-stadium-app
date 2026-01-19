@@ -352,8 +352,8 @@
           "title": "Location",
           "description": "Visit us in Tantan, Morocco",
           "details": [
-           "Municipal Palace",
-    "Tan-Tan Municipality"
+            "Municipal Palace",
+            "Tan-Tan Municipality"
           ]
         },
         "hours": {
@@ -500,6 +500,9 @@
           "needHelp": "Need help?"
         }
       }
+    },
+    "dashboard": {
+      "notifications": {}
     }
   },
   "common": {
@@ -566,8 +569,10 @@
     },
     "user": {
       "dashboard": "Dashboard",
-      "profile": "Profile",
+      "dashboard_description": "View your dashboard and statistics",
+     
       "logout": "Logout",
+      "logout_description": "Sign out from your account",
       "role": "Role",
       "roles": {
         "admin": "Administrator",

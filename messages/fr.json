@@ -188,7 +188,7 @@
         "reserve": "Réserver",
         "otherSports": "Autres sports :",
         "availableSports": "Sports disponibles:",
-         "perMonthShort": "/ mois",
+        "perMonthShort": "/ mois",
         "perSessionShort": "/ séance"
       },
       "pagination": {
@@ -336,7 +336,7 @@
           "title": "Email",
           "description": "Envoyez-nous un email et nous répondrons dans les 24 heures",
           "details": [
-           "communetantan@gmail.com",
+            "communetantan@gmail.com",
             "communetantan@gmail.com"
           ]
         },
@@ -353,7 +353,7 @@
           "description": "Visitez-nous à Tantan, Maroc",
           "details": [
             "Palais Municipal",
-    "Municipalité de Tan-Tan"
+            "Municipalité de Tan-Tan"
           ]
         },
         "hours": {
@@ -566,8 +566,10 @@
     },
     "user": {
       "dashboard": "Tableau de bord",
-      "profile": "Profil",
+      "dashboard_description": "Consultez votre tableau de bord et vos statistiques",
+ 
       "logout": "Déconnexion",
+      "logout_description": "Se déconnecter de votre compte",
       "role": "Rôle",
       "roles": {
         "admin": "Administrateur",

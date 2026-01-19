@@ -39,10 +39,10 @@ export default async function DashboardLayout({
   }
   return (
     <>
-      <header className="flex items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
+      <header className="flex p-4 items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
         <NotificationBell /> <ThemeSwitcher /> <LanguageSwitcher />
       </header>
-      <main className="mt-5">
+      <main className="mt-10">
         {children}
       </main>
     </>
