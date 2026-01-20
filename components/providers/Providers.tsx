@@ -50,7 +50,7 @@ const Providers = ({
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, 
+            staleTime: 60 * 1000,
             refetchOnWindowFocus: false,
             retry: 1,
           },
@@ -78,7 +78,10 @@ const Providers = ({
           >    <QueryClientProvider client={queryClient}>
 
               {children}
-              <ReactQueryDevtools initialIsOpen={false} />
+              <div className="z-99999999">
+
+              <ReactQueryDevtools initialIsOpen={false}  />
+              </div>
 
             </QueryClientProvider>
 

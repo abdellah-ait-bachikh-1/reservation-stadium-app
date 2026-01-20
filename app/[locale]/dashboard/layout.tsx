@@ -12,6 +12,7 @@ import Header from "@/components/dashboard/Header";
 import NotificationBell from "@/components/dashboard/NotificationBell";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import AsideContextProvider from "@/context/AsideContext";
 import { redirect } from "@/i18n/navigation";
 import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
 export const dynamic = 'force-dynamic';
@@ -40,14 +41,16 @@ export default async function DashboardLayout({
     redirect({ locale: locale, href: "/auth/login" })
   }
   return (
-    <div className="w-full h-screen  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800">
-      <Aside />
-      <div className="grow flex flex-col z-99995 transition-all">
-        <Header />
-        <main className="flex-1 z-99990 pt-20 transition-all">
-          {children}
-        </main>
+    <AsideContextProvider>
+      <div className="w-full h-screen  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800">
+        <Aside />
+        <div className="grow flex flex-col z-99995 transition-all">
+          <Header />
+          <main className="flex-1 z-999 pt-20 transition-all">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AsideContextProvider>
   );
 }
