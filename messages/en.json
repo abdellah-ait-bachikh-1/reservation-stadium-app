@@ -749,6 +749,37 @@
       "designedFor": "Designed for sports clubs and teams",
       "appName": "Tantan Stadium Booking",
       "appSubName": "Your sports venue reservation platform"
+    },
+    "aside": {
+      "dashboard": "Dashboard",
+      "clubs": "Clubs",
+      "stadiums": "Stadiums",
+      "reservations": "Reservations",
+      "payments": "Payments",
+      "subscriptions": "Subscriptions",
+      "users": "Users",
+      "sports": "Sports",
+      "reports": "Reports",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "logout": "Logout",
+      "admin": "Administrator",
+      "clubManager": "Club Manager",
+      "clubAccount": "Club Account",
+      "allReservations": "All Reservations",
+      "pending": "Pending",
+      "upcoming": "Upcoming",
+      "history": "History",
+      "monthlyPayments": "Monthly Payments",
+      "sessionPayments": "Session Payments",
+      "overdue": "Overdue",
+      "receipts": "Receipts",
+      "active": "Active",
+      "expired": "Expired",
+      "renewals": "Renewals",
+      "revenue": "Revenue",
+      "utilization": "Utilization",
+      "clubPerformance": "Club Performance"
     }
   }
 }

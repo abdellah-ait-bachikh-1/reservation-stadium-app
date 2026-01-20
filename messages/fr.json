@@ -746,6 +746,37 @@
       "designedFor": "Conçu pour les clubs et équipes sportives",
       "appName": "Réservation de stades Tantan",
       "appSubName": "Votre plateforme de réservation d'installations sportives"
+    },
+    "aside": {
+      "dashboard": "Tableau de bord",
+      "clubs": "Clubs",
+      "stadiums": "Stades",
+      "reservations": "Réservations",
+      "payments": "Paiements",
+      "subscriptions": "Abonnements",
+      "users": "Utilisateurs",
+      "sports": "Sports",
+      "reports": "Rapports",
+      "notifications": "Notifications",
+      "settings": "Paramètres",
+      "logout": "Déconnexion",
+      "admin": "Administrateur",
+      "clubManager": "Gérant de club",
+      "clubAccount": "Compte Club",
+      "allReservations": "Toutes les réservations",
+      "pending": "En attente",
+      "upcoming": "À venir",
+      "history": "Historique",
+      "monthlyPayments": "Paiements mensuels",
+      "sessionPayments": "Paiements par session",
+      "overdue": "En retard",
+      "receipts": "Reçus",
+      "active": "Actif",
+      "expired": "Expiré",
+      "renewals": "Renouvellements",
+      "revenue": "Revenu",
+      "utilization": "Utilisation",
+      "clubPerformance": "Performance des clubs"
     }
   }
 }

@@ -54,6 +54,35 @@ export type TranslationKey =
     | 'common.actions.unarchive'
     | 'common.actions.update'
     | 'common.actions.view'
+    | 'common.aside.active'
+    | 'common.aside.admin'
+    | 'common.aside.allReservations'
+    | 'common.aside.clubAccount'
+    | 'common.aside.clubManager'
+    | 'common.aside.clubPerformance'
+    | 'common.aside.clubs'
+    | 'common.aside.dashboard'
+    | 'common.aside.expired'
+    | 'common.aside.history'
+    | 'common.aside.logout'
+    | 'common.aside.monthlyPayments'
+    | 'common.aside.notifications'
+    | 'common.aside.overdue'
+    | 'common.aside.payments'
+    | 'common.aside.pending'
+    | 'common.aside.receipts'
+    | 'common.aside.renewals'
+    | 'common.aside.reports'
+    | 'common.aside.reservations'
+    | 'common.aside.revenue'
+    | 'common.aside.sessionPayments'
+    | 'common.aside.settings'
+    | 'common.aside.sports'
+    | 'common.aside.stadiums'
+    | 'common.aside.subscriptions'
+    | 'common.aside.upcoming'
+    | 'common.aside.users'
+    | 'common.aside.utilization'
     | 'common.footer.address'
     | 'common.footer.allRightsReserved'
     | 'common.footer.appName'
@@ -1151,7 +1180,8 @@ export const _TranslationNamespaces = {
     "inputs",
     "notifications",
     "toast",
-    "footer"
+    "footer",
+    "aside"
   ],
   "common.actions": [
     "reserve",
@@ -1377,6 +1407,37 @@ export const _TranslationNamespaces = {
     "designedFor",
     "appName",
     "appSubName"
+  ],
+  "common.aside": [
+    "dashboard",
+    "clubs",
+    "stadiums",
+    "reservations",
+    "payments",
+    "subscriptions",
+    "users",
+    "sports",
+    "reports",
+    "notifications",
+    "settings",
+    "logout",
+    "admin",
+    "clubManager",
+    "clubAccount",
+    "allReservations",
+    "pending",
+    "upcoming",
+    "history",
+    "monthlyPayments",
+    "sessionPayments",
+    "overdue",
+    "receipts",
+    "active",
+    "expired",
+    "renewals",
+    "revenue",
+    "utilization",
+    "clubPerformance"
   ],
   "pages.dashboard": [
     "notifications"
