@@ -5,13 +5,13 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import React, { useEffect, useState } from "react";
 import { i18nConfig } from "@/i18n/config";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 // Create a client-only wrapper for HeroUIProvider
 function ClientHeroUIProvider({
   children,
   locale,
-  className
+  className,
 }: {
   children: React.ReactNode;
   locale: string;
@@ -55,8 +55,8 @@ const Providers = ({
             retry: 1,
           },
         },
-      })
-  )
+      }),
+  );
   return (
     <ThemeProvider
       attribute="class"
@@ -75,16 +75,13 @@ const Providers = ({
           <ClientHeroUIProvider
             locale={locale}
             className="w-full h-full z-99997 overflow-x-hidden"
-          >    <QueryClientProvider client={queryClient}>
-
+          >
+            <QueryClientProvider client={queryClient}>
               {children}
               <div className="z-99999999">
-
-              <ReactQueryDevtools initialIsOpen={false}  />
+                <ReactQueryDevtools />
               </div>
-
             </QueryClientProvider>
-
           </ClientHeroUIProvider>
         </NextIntlClientProvider>
       </SessionProvider>
