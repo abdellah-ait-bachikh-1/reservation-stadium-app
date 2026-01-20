@@ -2,13 +2,11 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import { LoginFormData } from "@/types/auth";
 import { useTypedTranslations } from "@/utils/i18n";
-import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { useLocale } from "next-intl";
 import { useRef, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { cn } from "@heroui/theme";
 import { validateLoginFormData } from "@/lib/validations/login";
 import { LocaleEnumType } from "@/types";
 import { useFormValidation } from "@/hooks/useFormValidation";

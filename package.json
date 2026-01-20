@@ -42,6 +42,8 @@
     "@heroui/theme": "^2.4.25",
     "@heroui/toast": "^2.0.19",
     "@heroui/tooltip": "^2.2.26",
+    "@tanstack/react-query": "^5.90.19",
+    "@tanstack/react-query-devtools": "^5.91.2",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
     "bcryptjs": "^3.0.3",

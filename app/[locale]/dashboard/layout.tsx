@@ -7,6 +7,8 @@
 //   const t = await getTypedTranslations();
 
 import { logoutUser } from "@/app/actions/auth/logout";
+import Aside from "@/components/dashboard/Aside";
+import Header from "@/components/dashboard/Header";
 import NotificationBell from "@/components/dashboard/NotificationBell";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
@@ -38,13 +40,14 @@ export default async function DashboardLayout({
     redirect({ locale: locale, href: "/auth/login" })
   }
   return (
-    <>
-      <header className="flex p-4 items-center gap-4 justify-center  fixed top-0 z-99999 w-screen">
-        <NotificationBell /> <ThemeSwitcher /> <LanguageSwitcher />
-      </header>
-      <main className="mt-10">
-        {children}
-      </main>
-    </>
+    <div className="w-full h-screen  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800">
+      <Aside />
+      <div className="grow flex flex-col z-99995 transition-all">
+        <Header />
+        <main className="flex-1 z-99990 pt-20 transition-all">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
