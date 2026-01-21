@@ -227,17 +227,16 @@ const Aside = () => {
           "fixed top-0 bottom-0 z-99997",
           // Position based on RTL
           isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
-          "bg-white dark:bg-zinc-900",
-          "shadow-xl border-gray-200 dark:border-zinc-700",
-          // Set border direction based on RTL
-          isRtl(locale as LocaleEnumType) ? "border-l" : "border-r",
+          "bg-white dark:bg-zinc-950",
+
+
           "overflow-hidden flex flex-col",
           // Set direction for content inside sidebar
           isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
         )}
       >
         {/* Logo / Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-zinc-700">
+        <div className="p-4">
           <div className="flex items-center justify-between h-10">
             <AnimatePresence mode="wait">
               {isAsideOpen ? (
@@ -312,7 +311,7 @@ const Aside = () => {
                           onMouseEnter={() => isDesktop && !isAsideOpen && handleMouseEnter(item.title)}
                           className={cn(
                             "w-full flex items-center p-3 rounded-xl transition-all duration-200 cursor-pointer",
-                           isAsideOpen && "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
+                            isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
                             active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
                             active && " text-amber-600 dark:text-amber-400",
                             "group",
@@ -324,8 +323,8 @@ const Aside = () => {
                             "p-2 rounded-xl transition-colors shrink-0",
                             active
                               ? "bg-amber-100 dark:bg-amber-800/30"
-                              : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
-                                                         
+                              : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
+
 
                           )}>
                             <Icon size={20} className={cn(
@@ -394,7 +393,7 @@ const Aside = () => {
                         onClick={() => window.innerWidth < 768 && closeAside()}
                         className={cn(
                           "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
-                          isAsideOpen && "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
+                          isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
                           active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
                           active && " text-amber-600 dark:text-amber-400",
                           // Center icon when sidebar is closed
@@ -405,7 +404,7 @@ const Aside = () => {
                           "p-2 rounded-xl transition-colors shrink-0",
                           active
                             ? "bg-amber-100 dark:bg-amber-800/30"
-                            : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
+                            : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
                         )}>
                           <Icon size={20} className={cn(
                             active

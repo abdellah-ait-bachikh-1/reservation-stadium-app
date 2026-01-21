@@ -44,10 +44,10 @@ export default async function DashboardLayout({
       <div className={cn("w-full  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800 min-h-screen ")}>
         <Aside />
         <MainContentWithMargin>
-            <Header />
-            <main className="flex-1 p-4  overflow-auto z-999 ">
-              {children}
-            </main>
+          <Header />
+          <main className="flex-1 p-4  overflow-auto z-999 ">
+            {children}
+          </main>
         </MainContentWithMargin>
       </div>
     </AsideContextProvider>

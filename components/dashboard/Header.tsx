@@ -42,7 +42,7 @@ const Header = () => {
             }}
             className={cn(
                 "fixed top-0 flex p-4 items-center justify-between",
-                "bg-white dark:bg-zinc-900 z-99994 h-20",
+                "bg-white dark:bg-zinc-950 z-99994 h-20",
                 // Set direction for header content
                 rtl ? "rtl" : "ltr"
             )}
