@@ -328,7 +328,8 @@
       },
       "hero": {
         "badge": "Contactez-nous",
-        "title": "Contactez notre équipe",
+        "title": "Contactez notre ",
+        "highligh":"équipe",
         "description": "Des questions sur les réservations de stades ou les opportunités de partenariat ? Nous sommes là pour vous aider. Contactez-nous et nous vous répondrons dès que possible."
       },
       "contactInfo": {

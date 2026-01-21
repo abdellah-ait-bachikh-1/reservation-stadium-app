@@ -390,6 +390,7 @@ export type TranslationKey =
     | 'pages.contact.form.title'
     | 'pages.contact.hero.badge'
     | 'pages.contact.hero.description'
+    | 'pages.contact.hero.highligh'
     | 'pages.contact.hero.title'
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
@@ -935,6 +936,7 @@ export const _TranslationNamespaces = {
   "pages.contact.hero": [
     "badge",
     "title",
+    "highligh",
     "description"
   ],
   "pages.contact.contactInfo": [

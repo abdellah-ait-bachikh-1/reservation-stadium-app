@@ -27,13 +27,14 @@ import { useLocale } from "next-intl"
 import { isRtl } from "@/utils"
 import { LocaleEnumType } from "@/types"
 import { APP_NAMES } from "@/const"
+import Image from "next/image"
 
 // Navigation items based on your schema
 const Aside = () => {
   const { isAsideOpen, closeAside } = useAsideContext()
   const pathname = usePathname()
   const t = useTypedTranslations()
- const  locale = useLocale()
+  const locale = useLocale()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [userRole, setUserRole] = useState<"ADMIN" | "CLUB">("CLUB") // TODO: Get from auth
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -149,22 +150,22 @@ const Aside = () => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (window.innerWidth < 768 && 
-          isAsideOpen && 
-          !target.closest('aside') && 
-          !target.closest('[data-menu-button]')) {
+      if (window.innerWidth < 768 &&
+        isAsideOpen &&
+        !target.closest('aside') &&
+        !target.closest('[data-menu-button]')) {
         closeAside()
       }
     }
-    
+
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [isAsideOpen, closeAside])
 
   // Toggle submenu expansion
   const toggleExpand = (title: string) => {
-    setExpandedItems(prev => 
-      prev.includes(title) 
+    setExpandedItems(prev =>
+      prev.includes(title)
         ? prev.filter(item => item !== title)
         : [...prev, title]
     )
@@ -183,7 +184,7 @@ const Aside = () => {
   }
 
   // Filter nav items by user role
-  const filteredNavItems = navItems.filter(item => 
+  const filteredNavItems = navItems.filter(item =>
     item.roles.includes(userRole)
   )
 
@@ -211,29 +212,29 @@ const Aside = () => {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside 
+      <motion.aside
         initial={false}
-    animate={{
-        x: isAsideOpen || window.innerWidth >= 768 ? 0 : (isRtl(locale as LocaleEnumType) ? 280 : -280),
-        width: window.innerWidth >= 768 ? (isAsideOpen ? 240 : 80) : 280
-    }}
-    transition={{ 
-        type: "spring", 
-        stiffness: 300, 
-        damping: 30 
-    }}
-    className={cn(
-        "fixed top-0 bottom-0 z-99997",
-        // Position based on RTL
-        isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
-        "bg-white dark:bg-zinc-900",
-        "shadow-xl border-gray-200 dark:border-zinc-700",
-        // Set border direction based on RTL
-        isRtl(locale as LocaleEnumType) ? "border-l" : "border-r",
-        "overflow-hidden flex flex-col",
-        // Set direction for content inside sidebar
-        isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
-    )}
+        animate={{
+          x: isAsideOpen || window.innerWidth >= 768 ? 0 : (isRtl(locale as LocaleEnumType) ? 280 : -280),
+          width: window.innerWidth >= 768 ? (isAsideOpen ? 240 : 80) : 280
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+        className={cn(
+          "fixed top-0 bottom-0 z-99997",
+          // Position based on RTL
+          isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
+          "bg-white dark:bg-zinc-900",
+          "shadow-xl border-gray-200 dark:border-zinc-700",
+          // Set border direction based on RTL
+          isRtl(locale as LocaleEnumType) ? "border-l" : "border-r",
+          "overflow-hidden flex flex-col",
+          // Set direction for content inside sidebar
+          isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
+        )}
       >
         {/* Logo / Header */}
         <div className="p-4 border-b border-gray-200 dark:border-zinc-700">
@@ -247,9 +248,13 @@ const Aside = () => {
                   exit={{ opacity: 0, x: -20 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">RS</span>
-                  </div>
+                  <Image
+                    width={52}
+                    height={52}
+                    alt={APP_NAMES[locale as LocaleEnumType]}
+                    src="/logo.png"
+                    className="w-8 h-8 md:w-13 md:h-13 "
+                  />
                   <span className="font-bold text-lg dark:text-white">
                     {APP_NAMES[locale as LocaleEnumType]}
                   </span>
@@ -260,13 +265,18 @@ const Aside = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mx-auto"
                 >
-                  <span className="text-white font-bold text-sm">RS</span>
+                  <Image
+                    width={52}
+                    height={52}
+                    alt={APP_NAMES[locale as LocaleEnumType]}
+                    src="/logo.png"
+                    className="w-6 h-6 md:w-13 md:h-13 "
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
-            
+
             {/* Close button for mobile */}
             <button
               onClick={closeAside}
@@ -286,7 +296,7 @@ const Aside = () => {
               const active = isActive(item.href)
               const hasSubItems = item.subItems && item.subItems.length > 0
               const isExpanded = expandedItems.includes(item.title)
-              
+
               return (
                 <li key={item.title}>
                   <div className="relative">
@@ -297,9 +307,9 @@ const Aside = () => {
                         onMouseLeave={() => isDesktop && !isAsideOpen && setHoveredItem(null)}
                       >
                         <button
-ref={(el) => { buttonRefs.current[item.title] = el }}
+                          ref={(el) => { buttonRefs.current[item.title] = el }}
                           onClick={() => toggleExpand(item.title)}
-                            onMouseEnter={() => isDesktop && !isAsideOpen && handleMouseEnter(item.title)}
+                          onMouseEnter={() => isDesktop && !isAsideOpen && handleMouseEnter(item.title)}
                           className={cn(
                             "w-full flex items-center p-3 rounded-xl transition-all duration-200",
                             "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
@@ -311,17 +321,17 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
                         >
                           <div className={cn(
                             "p-2 rounded-lg transition-colors shrink-0",
-                            active 
-                              ? "bg-amber-100 dark:bg-amber-800/30" 
+                            active
+                              ? "bg-amber-100 dark:bg-amber-800/30"
                               : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-50 dark:group-hover:bg-amber-800/20"
                           )}>
                             <Icon size={20} className={cn(
-                              active 
-                                ? "text-amber-600 dark:text-amber-400" 
+                              active
+                                ? "text-amber-600 dark:text-amber-400"
                                 : "text-gray-600 dark:text-gray-400"
                             )} />
                           </div>
-                          
+
                           <AnimatePresence>
                             {isAsideOpen && (
                               <motion.div
@@ -333,21 +343,21 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
                                 <span className="font-medium whitespace-nowrap truncate">
                                   {item.title}
                                 </span>
-                                <ChevronRight 
-                                  size={16} 
+                                <ChevronRight
+                                  size={16}
                                   className={cn(
                                     "transition-transform duration-200 shrink-0 ml-2",
                                     isExpanded && "rotate-90",
-                                    active 
-                                      ? "text-amber-600 dark:text-amber-400" 
+                                    active
+                                      ? "text-amber-600 dark:text-amber-400"
                                       : "text-gray-400 dark:text-gray-500"
-                                  )} 
+                                  )}
                                 />
                               </motion.div>
                             )}
                           </AnimatePresence>
 
-                        
+
                         </button>
 
                         {/* Regular submenu when sidebar is open */}
@@ -389,17 +399,17 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
                       >
                         <div className={cn(
                           "p-2 rounded-lg transition-colors shrink-0",
-                          active 
-                            ? "bg-amber-100 dark:bg-amber-800/30" 
+                          active
+                            ? "bg-amber-100 dark:bg-amber-800/30"
                             : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-50 dark:group-hover:bg-amber-800/20"
                         )}>
                           <Icon size={20} className={cn(
-                            active 
-                              ? "text-amber-600 dark:text-amber-400" 
+                            active
+                              ? "text-amber-600 dark:text-amber-400"
                               : "text-gray-600 dark:text-gray-400"
                           )} />
                         </div>
-                        
+
                         <AnimatePresence>
                           {isAsideOpen && (
                             <motion.span
@@ -413,7 +423,7 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
                           )}
                         </AnimatePresence>
 
-                     
+
 
                         {/* Active indicator - Desktop only when open */}
                         {active && isAsideOpen && (
@@ -434,7 +444,7 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
         {/* Logout Button */}
         <div className="p-3 border-t border-gray-200 dark:border-zinc-700">
           <button
-            onClick={() => {/* TODO: Logout */}}
+            onClick={() => {/* TODO: Logout */ }}
             className={cn(
               "w-full flex items-center p-3 rounded-xl transition-all duration-200",
               "hover:bg-red-50 dark:hover:bg-red-900/20",
@@ -447,7 +457,7 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
             <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
               <LogOut size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400" />
             </div>
-            
+
             {/* Text - Only shown when sidebar is open */}
             <AnimatePresence>
               {isAsideOpen && (
@@ -471,7 +481,7 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
           const item = navItems.find(i => i.title === hoveredItem)
           const rtl = isRtl(locale as LocaleEnumType)
           if (!item?.subItems) return null
-          
+
           return (
             <motion.div
               key={hoveredItem}
@@ -479,9 +489,9 @@ ref={(el) => { buttonRefs.current[item.title] = el }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className={cn("fixed w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 z-[99999] py-2", rtl ? "right-[80px]" : "left-[80px]")}
-              style={{ 
+              style={{
                 top: `${dropdownTop + 8}px`,
-                filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))" 
+                filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))"
               }}
               onMouseEnter={() => setHoveredItem(item.title)}
               onMouseLeave={() => setHoveredItem(null)}

@@ -33,7 +33,7 @@ export default function ContactClientPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl md:text-6xl lg:text-7xl font-bold text-zinc-900 dark:text-white mb-6 text-balance leading-tight"
             >
-              {t('pages.contact.hero.title')}
+              {t('pages.contact.hero.title')} <span className="text-amber-600 dark:text-amber-400">{t('pages.contact.hero.highligh')}</span>
             </motion.h1>
 
             {/* Description */}
