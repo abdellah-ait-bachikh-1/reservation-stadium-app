@@ -22,7 +22,6 @@ import { Chip } from "@heroui/chip"
 import { Tooltip } from "@heroui/tooltip"
 import AnimatedOnView from "@/components/AnimatedOnView"
 import { Skeleton } from "@heroui/skeleton"
-import { wait } from "@/utils"
 
 interface Sport {
   id: string;
@@ -101,7 +100,6 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
         className="w-full h-full max-w-md mx-auto overflow-hidden bg-white dark:bg-zinc-900 
         shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl
         border border-gray-100 dark:border-zinc-800"
-        onPress={() => console.log('View stadium details:', stadium.id)}
       >
         {/* Image Section */}
         <div className="relative h-56 overflow-hidden">
@@ -197,7 +195,6 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
                 color="warning"
                 variant="flat"
                 className="font-semibold"
-                onPress={() => console.log('Reserve clicked')}
               >
                 {locale === 'ar' ? 'احجز الآن' : 'Reserve Now'}
               </Button>
@@ -252,9 +249,7 @@ export function StadiumsShowcase() {
     const fetchStadiums = async () => {
       try {
         setLoading(true)
-        await wait(3000)
         const response = await fetch(`/api/public/stadiums?page=1&limit=10`)
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -450,9 +445,6 @@ export function StadiumsShowcase() {
                   </Swiper>
                 </div>
               )}
-
-              {/* Floating Elements for Decoration */}
-              
               <div className="absolute -bottom-6 -right-8 w-32 h-32 bg-amber-500/30 rounded-full blur-2xl" />
            
             </div>

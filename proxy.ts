@@ -30,7 +30,7 @@ export default async function middleware(request: NextRequest) {
   });
   
   let userPrefferedLocale = "FR";
-  if (token) {
+  if (token?.id) {
     userPrefferedLocale = await getUserPreferredLocale(token.id);
   }
 
@@ -79,8 +79,6 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Only match non-API routes
     "/((?!api|_next|_vercel|.*\\..*).*)",
-    // 🚨 REMOVED API ROUTES FROM MATCHER
   ],
 };

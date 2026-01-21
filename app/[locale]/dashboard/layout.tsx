@@ -12,6 +12,8 @@ import MainContentWithMargin from "@/components/dashboard/MainContentWithMargin"
 import AsideContextProvider from "@/context/AsideContext";
 import { redirect } from "@/i18n/navigation";
 import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
+
+import { cn } from "@heroui/theme";
 export const dynamic = 'force-dynamic';
 //   return {
 //     title: {
@@ -39,11 +41,11 @@ export default async function DashboardLayout({
   }
   return (
     <AsideContextProvider>
-      <div className="w-full  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800 transition-all duration-300 ">
+      <div className={cn("w-full  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800 min-h-screen ")}>
         <Aside />
         <MainContentWithMargin>
             <Header />
-            <main className="flex-1 z-999 pt-20 transition-all">
+            <main className="flex-1 p-4  overflow-auto z-999 ">
               {children}
             </main>
         </MainContentWithMargin>

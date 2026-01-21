@@ -11,8 +11,7 @@ import StatsCards from "./StatsCards";
 export async function HeroSection() {
   const locale = await getLocale();
   const t = await getTypedTranslations();
-  // const user = await isAuthenticatedUserExistsInDB();
-  // console.log({ user });
+ 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Content Container */}

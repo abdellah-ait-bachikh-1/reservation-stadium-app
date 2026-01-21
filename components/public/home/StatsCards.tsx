@@ -30,7 +30,6 @@ const StatsCards = () => {
                 }
 
                 const result = await response.json()
-                console.log('Fetched stats:', result)
 
                 if (result.stats) {
                     setData(result.stats)

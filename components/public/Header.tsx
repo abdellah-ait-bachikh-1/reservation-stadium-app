@@ -63,7 +63,6 @@ const Header = () => {
   useEffect(() => {
     async function fetchUser() {
       setUser(null);
-      // Only fetch if user is authenticated
       if (status !== "authenticated" || !session?.user?.id) {
         setUser(null);
         return;
@@ -72,7 +71,6 @@ const Header = () => {
       try {
         setIsLoading(true);
 
-        // Fetch user data from your API
         const response = await fetch(
           `${NEXT_PUBLIC_APP_URL}/api/public/current-user/${session.user.id}`, { cache: "no-store" }
         );
@@ -90,7 +88,7 @@ const Header = () => {
     }
 
     fetchUser();
-  }, [status, session?.user?.id]); // Re-fetch when auth status or user ID changes
+  }, [status, session?.user?.id]); 
 
   const navigationMenu = [
     {
@@ -114,25 +112,21 @@ const Header = () => {
       icon: HiChatBubbleBottomCenterText,
     },
   ] as const;
-  console.log({ userInHeader: user })
   const isActive = (href: string) => {
     const pathname = usePathname();
     return pathname === href;
   };
 
-  // Determine what to show for user section
   const renderUserSection = () => {
     if (status === "loading" || loading) {
       return <Skeleton className="w-10 h-10 rounded-full" />;
     }
 
     if (status === "authenticated" && session?.user && user) {
-      // Use the fetched user data if available, otherwise use basic session data
 
       return <UserAvatar user={user} />;
     }
 
-    // Not authenticated - show login/register buttons
     return (
       <div className="flex items-center gap-2">
         <Link

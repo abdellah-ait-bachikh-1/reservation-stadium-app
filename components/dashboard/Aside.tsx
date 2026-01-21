@@ -4,7 +4,7 @@
 import { useAsideContext } from "@/context/AsideContext"
 import { cn } from "@heroui/theme"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Link, usePathname } from "@/i18n/navigation"
 import { useTypedTranslations } from "@/utils/i18n"
 import {
@@ -23,16 +23,31 @@ import {
   TrendingUp,
   X
 } from "lucide-react"
+import { useLocale } from "next-intl"
+import { isRtl } from "@/utils"
+import { LocaleEnumType } from "@/types"
+import { APP_NAMES } from "@/const"
 
 // Navigation items based on your schema
 const Aside = () => {
   const { isAsideOpen, closeAside } = useAsideContext()
   const pathname = usePathname()
   const t = useTypedTranslations()
-
+ const  locale = useLocale()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [userRole, setUserRole] = useState<"ADMIN" | "CLUB">("CLUB") // TODO: Get from auth
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [dropdownTop, setDropdownTop] = useState(0)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+
+  // Check if desktop
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
 
   // Navigation items with translations
   const navItems = [
@@ -155,6 +170,18 @@ const Aside = () => {
     )
   }
 
+  // Handle hover for dropdown
+  const handleMouseEnter = (title: string) => {
+    if (isDesktop && !isAsideOpen) {
+      setHoveredItem(title)
+      const button = buttonRefs.current[title]
+      if (button) {
+        const rect = button.getBoundingClientRect()
+        setDropdownTop(rect.top + window.scrollY)
+      }
+    }
+  }
+
   // Filter nav items by user role
   const filteredNavItems = navItems.filter(item => 
     item.roles.includes(userRole)
@@ -186,21 +213,27 @@ const Aside = () => {
       {/* Sidebar */}
       <motion.aside 
         initial={false}
-        animate={{
-          x: isAsideOpen || window.innerWidth >= 768 ? 0 : -280,
-          width: window.innerWidth >= 768 ? (isAsideOpen ? 240 : 80) : 280
-        }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 300, 
-          damping: 30 
-        }}
-        className={cn(
-          "fixed top-0 left-0 bottom-0 z-99997",
-          "bg-white dark:bg-zinc-900",
-          "shadow-xl border-r border-gray-200 dark:border-zinc-700",
-          "overflow-hidden flex flex-col"
-        )}
+    animate={{
+        x: isAsideOpen || window.innerWidth >= 768 ? 0 : (isRtl(locale as LocaleEnumType) ? 280 : -280),
+        width: window.innerWidth >= 768 ? (isAsideOpen ? 240 : 80) : 280
+    }}
+    transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 30 
+    }}
+    className={cn(
+        "fixed top-0 bottom-0 z-99997",
+        // Position based on RTL
+        isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
+        "bg-white dark:bg-zinc-900",
+        "shadow-xl border-gray-200 dark:border-zinc-700",
+        // Set border direction based on RTL
+        isRtl(locale as LocaleEnumType) ? "border-l" : "border-r",
+        "overflow-hidden flex flex-col",
+        // Set direction for content inside sidebar
+        isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
+    )}
       >
         {/* Logo / Header */}
         <div className="p-4 border-b border-gray-200 dark:border-zinc-700">
@@ -218,7 +251,7 @@ const Aside = () => {
                     <span className="text-white font-bold text-sm">RS</span>
                   </div>
                   <span className="font-bold text-lg dark:text-white">
-                    StadiumRes
+                    {APP_NAMES[locale as LocaleEnumType]}
                   </span>
                 </motion.div>
               ) : (
@@ -258,137 +291,90 @@ const Aside = () => {
                 <li key={item.title}>
                   <div className="relative">
                     {hasSubItems ? (
-                        <div
-    className="relative"
-    onMouseEnter={() => window.innerWidth >= 768 && !isAsideOpen && setHoveredItem(item.title)}
-    onMouseLeave={() => window.innerWidth >= 768 && !isAsideOpen && setHoveredItem(null)}
-  >
-    <button
-      onClick={() => toggleExpand(item.title)}
-      className={cn(
-        "w-full flex items-center p-3 rounded-xl transition-all duration-200",
-        "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-        active && "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400",
-        "group",
-        // Center icon when sidebar is closed
-        isAsideOpen ? "gap-3" : "justify-center"
-      )}
-    >
-      <div className={cn(
-        "p-2 rounded-lg transition-colors shrink-0",
-        active 
-          ? "bg-amber-100 dark:bg-amber-800/30" 
-          : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-50 dark:group-hover:bg-amber-800/20"
-      )}>
-        <Icon size={20} className={cn(
-          active 
-            ? "text-amber-600 dark:text-amber-400" 
-            : "text-gray-600 dark:text-gray-400"
-        )} />
-      </div>
-      
-      <AnimatePresence>
-        {isAsideOpen && (
-          <motion.div
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "auto" }}
-            exit={{ opacity: 0, width: 0 }}
-            className="flex-1 flex items-center justify-between overflow-hidden min-w-0"
-          >
-            <span className="font-medium whitespace-nowrap truncate">
-              {item.title}
-            </span>
-            <ChevronRight 
-              size={16} 
-              className={cn(
-                "transition-transform duration-200 shrink-0 ml-2",
-                isExpanded && "rotate-90",
-                active 
-                  ? "text-amber-600 dark:text-amber-400" 
-                  : "text-gray-400 dark:text-gray-500"
-              )} 
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+                      <div
+                        className="relative"
+                        onMouseEnter={() => handleMouseEnter(item.title)}
+                        onMouseLeave={() => isDesktop && !isAsideOpen && setHoveredItem(null)}
+                      >
+                        <button
+ref={(el) => { buttonRefs.current[item.title] = el }}
+                          onClick={() => toggleExpand(item.title)}
+                            onMouseEnter={() => isDesktop && !isAsideOpen && handleMouseEnter(item.title)}
+                          className={cn(
+                            "w-full flex items-center p-3 rounded-xl transition-all duration-200",
+                            "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
+                            active && "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400",
+                            "group",
+                            // Center icon when sidebar is closed
+                            isAsideOpen ? "gap-3" : "justify-center"
+                          )}
+                        >
+                          <div className={cn(
+                            "p-2 rounded-lg transition-colors shrink-0",
+                            active 
+                              ? "bg-amber-100 dark:bg-amber-800/30" 
+                              : "bg-gray-100 dark:bg-zinc-700 group-hover:bg-amber-50 dark:group-hover:bg-amber-800/20"
+                          )}>
+                            <Icon size={20} className={cn(
+                              active 
+                                ? "text-amber-600 dark:text-amber-400" 
+                                : "text-gray-600 dark:text-gray-400"
+                            )} />
+                          </div>
+                          
+                          <AnimatePresence>
+                            {isAsideOpen && (
+                              <motion.div
+                                initial={{ opacity: 0, width: 0 }}
+                                animate={{ opacity: 1, width: "auto" }}
+                                exit={{ opacity: 0, width: 0 }}
+                                className="flex-1 flex items-center justify-between overflow-hidden min-w-0"
+                              >
+                                <span className="font-medium whitespace-nowrap truncate">
+                                  {item.title}
+                                </span>
+                                <ChevronRight 
+                                  size={16} 
+                                  className={cn(
+                                    "transition-transform duration-200 shrink-0 ml-2",
+                                    isExpanded && "rotate-90",
+                                    active 
+                                      ? "text-amber-600 dark:text-amber-400" 
+                                      : "text-gray-400 dark:text-gray-500"
+                                  )} 
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
-      {/* Badge */}
-      {item.badge && (
-        <AnimatePresence>
-          {isAsideOpen && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
-            >
-              <span className="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                {item.badge}
-              </span>
-            </motion.span>
-          )}
-        </AnimatePresence>
-      )}
-    </button>
+                        
+                        </button>
 
-    {/* Dropdown for closed sidebar on desktop */}
-    {window.innerWidth >= 768 && !isAsideOpen && hoveredItem === item.title && (
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        className="absolute left-full top-0 ml-2 w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 z-50 py-2"
-        style={{ filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))" }}
-      >
-        <div className="px-3 py-2 border-b border-gray-100 dark:border-zinc-700">
-          <p className="font-medium text-sm dark:text-white">{item.title}</p>
-        </div>
-        <div className="space-y-1">
-          {item.subItems?.map((subItem) => (
-            <Link
-              key={subItem.title}
-              href={subItem.href}
-              onClick={() => {
-                if (window.innerWidth < 768) closeAside()
-                setHoveredItem(null)
-              }}
-              className={cn(
-                "block py-2 px-4 text-sm transition-colors",
-                "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-                isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-900/20"
-              )}
-            >
-              {subItem.title}
-            </Link>
-          ))}
-        </div>
-      </motion.div>
-    )}
-
-    {/* Regular submenu when sidebar is open */}
-    {hasSubItems && isExpanded && isAsideOpen && (
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: "auto" }}
-        exit={{ opacity: 0, height: 0 }}
-        className="ml-10 mt-1 space-y-1 overflow-hidden"
-      >
-        {item.subItems?.map((subItem) => (
-          <Link
-            key={subItem.title}
-            href={subItem.href}
-            onClick={() => window.innerWidth < 768 && closeAside()}
-            className={cn(
-              "block py-2 px-3 rounded-lg text-sm transition-colors",
-              "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-              isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium"
-            )}
-          >
-            {subItem.title}
-          </Link>
-        ))}
-      </motion.div>
-    )}
-  </div>
+                        {/* Regular submenu when sidebar is open */}
+                        {hasSubItems && isExpanded && isAsideOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="ml-10 mt-1 space-y-1 overflow-hidden"
+                          >
+                            {item.subItems?.map((subItem) => (
+                              <Link
+                                key={subItem.title}
+                                href={subItem.href}
+                                onClick={() => window.innerWidth < 768 && closeAside()}
+                                className={cn(
+                                  "block py-2 px-3 rounded-lg text-sm transition-colors",
+                                  "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
+                                  isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium"
+                                )}
+                              >
+                                {subItem.title}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </div>
                     ) : (
                       <Link
                         href={item.href}
@@ -427,56 +413,16 @@ const Aside = () => {
                           )}
                         </AnimatePresence>
 
-                        {/* Badge */}
-                        {item.badge && (
-                          <AnimatePresence>
-                            {isAsideOpen && (
-                              <motion.span
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="absolute right-3 top-1/2 -translate-y-1/2"
-                              >
-                                <span className="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                                  {item.badge}
-                                </span>
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                        )}
+                     
 
                         {/* Active indicator - Desktop only when open */}
                         {active && isAsideOpen && (
                           <motion.div
                             layoutId="active-indicator"
-                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full"
+                            className="absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full"
                           />
                         )}
                       </Link>
-                    )}
-
-                    {/* Submenu */}
-                    {hasSubItems && isExpanded && isAsideOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="ml-10 mt-1 space-y-1 overflow-hidden"
-                      >
-                        {item.subItems?.map((subItem) => (
-                          <Link
-                            key={subItem.title}
-                            href={subItem.href}
-                            onClick={() => window.innerWidth < 768 && closeAside()}
-                            className={cn(
-                              "block py-2 px-3 rounded-lg text-sm transition-colors",
-                              "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-                              isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium"
-                            )}
-                          >
-                            {subItem.title}
-                          </Link>
-                        ))}
-                      </motion.div>
                     )}
                   </div>
                 </li>
@@ -485,38 +431,84 @@ const Aside = () => {
           </ul>
         </nav>
 
-<div className="p-3 border-t border-gray-200 dark:border-zinc-700">
-  <button
-    onClick={() => {/* TODO: Logout */}}
-    className={cn(
-      "w-full flex items-center p-3 rounded-xl transition-all duration-200",
-      "hover:bg-red-50 dark:hover:bg-red-900/20",
-      "group",
-      // Center icon when sidebar is closed
-      isAsideOpen ? "gap-3" : "justify-center"
-    )}
-  >
-    {/* Icon container - Danger colors */}
-    <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
-      <LogOut size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400" />
-    </div>
-    
-    {/* Text - Only shown when sidebar is open */}
-    <AnimatePresence>
-      {isAsideOpen && (
-        <motion.span
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          className="font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400"
-        >
-          {t("common.aside.logout")}
-        </motion.span>
-      )}
-    </AnimatePresence>
-  </button>
-</div>
+        {/* Logout Button */}
+        <div className="p-3 border-t border-gray-200 dark:border-zinc-700">
+          <button
+            onClick={() => {/* TODO: Logout */}}
+            className={cn(
+              "w-full flex items-center p-3 rounded-xl transition-all duration-200",
+              "hover:bg-red-50 dark:hover:bg-red-900/20",
+              "group",
+              // Center icon when sidebar is closed
+              isAsideOpen ? "gap-3" : "justify-center"
+            )}
+          >
+            {/* Icon container - Danger colors */}
+            <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
+              <LogOut size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400" />
+            </div>
+            
+            {/* Text - Only shown when sidebar is open */}
+            <AnimatePresence>
+              {isAsideOpen && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400"
+                >
+                  {t("common.aside.logout")}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
       </motion.aside>
+
+      {/* Dropdown for closed sidebar on desktop - RENDERED OUTSIDE ASIDE */}
+      <AnimatePresence>
+        {isDesktop && !isAsideOpen && hoveredItem && (() => {
+          const item = navItems.find(i => i.title === hoveredItem)
+          const rtl = isRtl(locale as LocaleEnumType)
+          if (!item?.subItems) return null
+          
+          return (
+            <motion.div
+              key={hoveredItem}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={cn("fixed w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 z-[99999] py-2", rtl ? "right-[80px]" : "left-[80px]")}
+              style={{ 
+                top: `${dropdownTop + 8}px`,
+                filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))" 
+              }}
+              onMouseEnter={() => setHoveredItem(item.title)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <div className="px-3 py-2 border-b border-gray-100 dark:border-zinc-700">
+                <p className="font-medium text-sm dark:text-white">{item.title}</p>
+              </div>
+              <div className="space-y-1">
+                {item.subItems?.map((subItem) => (
+                  <Link
+                    key={subItem.title}
+                    href={subItem.href}
+                    onClick={() => setHoveredItem(null)}
+                    className={cn(
+                      "block py-2 px-4 text-sm transition-colors",
+                      "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
+                      isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-900/20"
+                    )}
+                  >
+                    {subItem.title}
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          )
+        })()}
+      </AnimatePresence>
     </>
   )
 }

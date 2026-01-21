@@ -6,6 +6,7 @@ const page = async ({ params }: { params: Promise<{ locale: string }> }) => {
     return (
         <div className='h-[200vh]'>
             <Link href={"/dashboard/notifications"} hrefLang={locale}>Notifications</Link>
+            fdfdfd
         </div>
     )
 }
