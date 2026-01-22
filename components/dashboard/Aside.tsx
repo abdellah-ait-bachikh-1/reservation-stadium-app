@@ -3,29 +3,20 @@
 
 import { useAsideContext } from "@/context/AsideContext"
 import { cn } from "@heroui/theme"
-import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Link, usePathname } from "@/i18n/navigation"
 import { useTypedTranslations } from "@/utils/i18n"
 import {
   Home,
-  Building2,
-  Calendar,
-  CreditCard,
   Users,
   UserCircle,
   Bell,
   BarChart3,
   LogOut,
-  ChevronRight,
-  MapPin,
-  Star,
-  TrendingUp,
   X,
   CalendarDays
 } from "lucide-react"
 import { TbBuildingStadium } from "react-icons/tb";
-
 import { useLocale } from "next-intl"
 import { isRtl } from "@/utils"
 import { LocaleEnumType } from "@/types"
@@ -34,28 +25,14 @@ import Image from "next/image"
 import { MdOutlinePayments, MdSportsSoccer } from "react-icons/md"
 import { HiMiniPercentBadge } from "react-icons/hi2"
 
-// Navigation items based on your schema
 const Aside = () => {
   const { isAsideOpen, closeAside } = useAsideContext()
   const pathname = usePathname()
   const t = useTypedTranslations()
   const locale = useLocale()
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const [userRole, setUserRole] = useState<"ADMIN" | "CLUB">("CLUB")
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
-  const [dropdownTop, setDropdownTop] = useState(0)
-  const [isDesktop, setIsDesktop] = useState(false)
-  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const asideRef = useRef<HTMLDivElement>(null)
 
-  // Check if desktop
-  useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
-    checkDesktop()
-    window.addEventListener('resize', checkDesktop)
-    return () => window.removeEventListener('resize', checkDesktop)
-  }, [])
-
-  // Navigation items with translations - SIMPLIFIED WITHOUT SUBITEMS
+  // Navigation items
   const navItems = [
     {
       title: t("common.aside.dashboard"),
@@ -68,7 +45,6 @@ const Aside = () => {
       href: "/dashboard/users",
       icon: Users,
       roles: ["ADMIN"],
-
     },
     {
       title: t("common.aside.stadiums"),
@@ -81,7 +57,6 @@ const Aside = () => {
       href: "/dashboard/reservations",
       icon: CalendarDays,
       roles: ["ADMIN", "CLUB"],
-
     },
     {
       title: t("common.aside.payments"),
@@ -112,7 +87,6 @@ const Aside = () => {
       href: "/dashboard/notifications",
       icon: Bell,
       roles: ["ADMIN", "CLUB"],
-
     },
     {
       title: t("common.aside.profile"),
@@ -145,81 +119,60 @@ const Aside = () => {
     return pathname.startsWith(href)
   }
 
+  const rtl = isRtl(locale as LocaleEnumType)
+
   return (
     <>
       {/* Mobile Overlay */}
-      <AnimatePresence>
-        {isAsideOpen && window.innerWidth < 768 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-99995 md:hidden"
-            onClick={closeAside}
-          />
-        )}
-      </AnimatePresence>
+      {isAsideOpen && window.innerWidth < 768 && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-99995 md:hidden transition-opacity duration-300"
+          onClick={closeAside}
+        />
+      )}
 
       {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{
-          x: isAsideOpen || window.innerWidth >= 768 ? 0 : (isRtl(locale as LocaleEnumType) ? 280 : -280),
-          width: window.innerWidth >= 768 ? (isAsideOpen ? 240 : 80) : 280
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30
-        }}
+      <aside
+        ref={asideRef}
         className={cn(
           "fixed top-0 bottom-0 z-99997",
-          isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
+          rtl ? "right-0" : "left-0",
           "bg-white dark:bg-zinc-950",
           "overflow-hidden flex flex-col",
-          isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
+          "transition-all duration-300 ease-in-out",
+          // Mobile: slide in/out
+          "md:translate-x-0", // Always visible on desktop
+          // Mobile state
+          isAsideOpen 
+            ? "translate-x-0" 
+            : rtl 
+              ? "translate-x-full" 
+              : "-translate-x-full",
+          // Desktop width
+          "md:w-20", // Default collapsed width
+          isAsideOpen && "md:w-60" // Expanded width
         )}
       >
         {/* Logo / Header */}
         <div className="p-4">
           <div className="flex items-center justify-between h-10">
-            <AnimatePresence mode="wait">
-              {isAsideOpen ? (
-                <motion.div
-                  key="logo-full"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-3"
-                >
-                  <Image
-                    width={52}
-                    height={52}
-                    alt={APP_NAMES[locale as LocaleEnumType]}
-                    src="/logo.png"
-                    className="w-8 h-8 md:w-13 md:h-13 "
-                  />
-                  <span className="font-bold text-lg dark:text-white">
-                    {APP_NAMES[locale as LocaleEnumType]}
-                  </span>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="logo-collapsed"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                >
-                  <Image
-                    width={52}
-                    height={52}
-                    alt={APP_NAMES[locale as LocaleEnumType]}
-                    src="/logo.png"
-                    className="w-6 h-6 md:w-13 md:h-13 "
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Logo - Full when open, collapsed when closed */}
+            <div className="flex items-center gap-3 overflow-hidden">
+              <Image
+                width={52}
+                height={52}
+                alt={APP_NAMES[locale as LocaleEnumType]}
+                src="/logo.png"
+                className="w-8 h-8 md:w-10 md:h-10 shrink-0"
+              />
+              <span className={cn(
+                "font-bold text-lg dark:text-white  transition-all duration-300",
+                "opacity-0 w-0 overflow-hidden",
+                isAsideOpen && "opacity-100 w-auto md:block"
+              )}>
+                {APP_NAMES[locale as LocaleEnumType]}
+              </span>
+            </div>
 
             {/* Close button for mobile */}
             <button
@@ -232,7 +185,7 @@ const Aside = () => {
           </div>
         </div>
 
-        {/* Navigation - SIMPLIFIED WITHOUT SUBMENUS */}
+        {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3">
           <ul className="space-y-1">
             {navItems.map((item) => {
@@ -241,54 +194,43 @@ const Aside = () => {
 
               return (
                 <li key={item.title}>
-                  <div className="relative">
-                    <Link
-                      href={item.href}
-                      onClick={() => window.innerWidth < 768 && closeAside()}
-                      className={cn(
-                        "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
-                        isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
-                        active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
-                        active && " text-amber-600 dark:text-amber-400",
-                        isAsideOpen ? "gap-3" : "justify-center"
-                      )}
-                    >
-                      <div className={cn(
-                        "p-2 rounded-xl transition-colors shrink-0 relative",
+                  <Link
+                    href={item.href}
+                    onClick={() => window.innerWidth < 768 && closeAside()}
+                    className={cn(
+                      "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
+                      isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
+                      active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
+                      active && "text-amber-600 dark:text-amber-400",
+                      isAsideOpen ? "gap-3" : "justify-center"
+                    )}
+                  >
+                    <div className={cn(
+                      "p-2 rounded-xl transition-colors shrink-0",
+                      active
+                        ? "bg-amber-100 dark:bg-amber-800/30"
+                        : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
+                    )}>
+                      <Icon size={20} className={cn(
                         active
-                          ? "bg-amber-100 dark:bg-amber-800/30"
-                          : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
-                      )}>
-                        <Icon size={20} className={cn(
-                          active
-                            ? "text-amber-600 dark:text-amber-400"
-                            : "text-gray-600 dark:text-white"
-                        )} />
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-gray-600 dark:text-white"
+                      )} />
+                    </div>
 
-                      </div>
+                    <span className={cn(
+                      "font-medium whitespace-nowrap truncate transition-all duration-300",
+                      "opacity-0 w-0 overflow-hidden",
+                      isAsideOpen && "opacity-100 w-auto flex-1"
+                    )}>
+                      {item.title}
+                    </span>
 
-                      <AnimatePresence>
-                        {isAsideOpen && (
-                          <motion.span
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -10 }}
-                            className="font-medium whitespace-nowrap truncate flex-1"
-                          >
-                            {item.title}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-
-                      {/* Active indicator - Desktop only when open */}
-                      {active && isAsideOpen && (
-                        <motion.div
-                          layoutId="active-indicator"
-                          className="absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full"
-                        />
-                      )}
-                    </Link>
-                  </div>
+                    {/* Active indicator */}
+                    {active && isAsideOpen && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full" />
+                    )}
+                  </Link>
                 </li>
               )
             })}
@@ -303,31 +245,23 @@ const Aside = () => {
               "w-full flex items-center p-3 rounded-xl transition-all duration-200",
               "hover:bg-red-50 dark:hover:bg-red-900/20",
               "group",
-              // Center icon when sidebar is closed
               isAsideOpen ? "gap-3" : "justify-center"
             )}
           >
-            {/* Icon container - Danger colors */}
             <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
               <LogOut size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400" />
             </div>
 
-            {/* Text - Only shown when sidebar is open */}
-            <AnimatePresence>
-              {isAsideOpen && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400"
-                >
-                  {t("common.aside.logout")}
-                </motion.span>
-              )}
-            </AnimatePresence>
+            <span className={cn(
+              "font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400 transition-all duration-300",
+              "opacity-0 w-0 overflow-hidden",
+              isAsideOpen && "opacity-100 w-auto"
+            )}>
+              {t("common.aside.logout")}
+            </span>
           </button>
         </div>
-      </motion.aside>
+      </aside>
     </>
   )
 }

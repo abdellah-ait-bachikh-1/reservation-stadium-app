@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import {   Rubik } from "next/font/google";
+import { Rubik } from "next/font/google";
 
 import { LocaleEnumType, LocaleType } from "@/types";
-import { getAppName, getDirection } from "@/utils";
+import { getAppName, getDirection, isRtl } from "@/utils";
 
 import Providers from "@/components/providers/Providers";
 import { ToastProvider } from "@heroui/toast";
 import { setRequestLocale } from "next-intl/server";
-const inter = Rubik({
-  variable: "--font-inter",
+const rubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
@@ -48,12 +48,14 @@ export default async function LocaleRootLayout({
     <html
       lang={locale}
       dir={getDirection(locale as LocaleType)}
-      className="h-full overflow-y-auto z-99999"
+      className={`h-full ${rubik.variable} overflow-y-auto`}
       suppressHydrationWarning
     >
       <body
-        className={`${inter.className} relative z-99998  bg-linear-to-br from-amber-200/60 via-white to-amber-200/60 dark:from-black dark:via-neutral-700 dark:to-black min-h-screen w-full bg-fixed`}
+        className={`${rubik.className} relative z-99998  bg-linear-to-br from-amber-200/60 via-white to-amber-200/60 dark:from-black dark:via-neutral-700 dark:to-black min-h-screen w-full bg-fixed`}
         suppressHydrationWarning
+        style={{ direction: getDirection(locale as LocaleType) }}
+
       >
         <Providers locale={locale} messages={messages}>
           {children}

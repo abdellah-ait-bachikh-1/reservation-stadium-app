@@ -74,7 +74,7 @@ const Providers = ({
           {/* Replace HeroUIProvider with ClientHeroUIProvider */}
           <ClientHeroUIProvider
             locale={locale}
-            className="w-full h-full z-99997 overflow-x-hidden"
+            className="w-full min-h-screen z-99997 overflow-x-hidden"
           >
             <QueryClientProvider client={queryClient}>
               {children}

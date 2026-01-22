@@ -9,45 +9,42 @@ import { MenuIcon } from "lucide-react"
 import { useAsideContext } from "@/context/AsideContext"
 import { IoClose } from "react-icons/io5"
 import { cn } from "@heroui/theme"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
 import { useLocale } from "next-intl"
 import { LocaleEnumType } from "@/types"
 import { isRtl } from "@/utils"
 
 const Header = () => {
     const { isAsideOpen, toggleAside } = useAsideContext()
-    const [isDesktop, setIsDesktop] = useState(false)
     const locale = useLocale()
     const rtl = isRtl(locale as LocaleEnumType)
 
-    useEffect(() => {
-        const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
-        checkDesktop()
-        window.addEventListener('resize', checkDesktop)
-        return () => window.removeEventListener('resize', checkDesktop)
-    }, [])
-
     return (
-        <motion.header
-            animate={{
-                // Adjust width based on sidebar on desktop
-                width: isDesktop ? (rtl ? `calc(100% - ${isAsideOpen ? 240 : 80}px)` : `calc(100% - ${isAsideOpen ? 240 : 80}px)`) : "100%",
-                [rtl ? "right" : "left"]: isDesktop ? (isAsideOpen ? 240 : 80) : 0
-            }}
-            transition={{ 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 30 
-            }}
+        <header
             className={cn(
-                "fixed top-0 flex p-4 items-center justify-between",
-                "bg-white dark:bg-zinc-950 z-99994 h-20",
-                // Set direction for header content
-                rtl ? "rtl" : "ltr"
+                // Base styles
+                "fixed top-0 h-20 flex p-4 items-center justify-between",
+                "bg-white dark:bg-zinc-950 z-99994 shadow-sm",
+                "transition-all duration-300 ease-in-out",
+                
+                // MOBILE: Always full width (left:0, right:0, w-full)
+                "left-0 right-0 w-full",
+                
+                // DESKTOP LTR (English, French):
+                // When aside is CLOSED: left-20 (80px), width = 100% - 80px
+                !rtl && "md:left-20 md:w-[calc(100%-5rem)]",
+                // When aside is OPEN: left-60 (240px), width = 100% - 240px
+                !rtl && isAsideOpen && "md:left-60 md:w-[calc(100%-15rem)]",
+                
+                // DESKTOP RTL (Arabic):
+                // When aside is CLOSED: right-20 (80px), width = 100% - 80px
+                rtl && "md:right-20 md:left-auto md:w-[calc(100%-5rem)]",
+                // When aside is OPEN: right-60 (240px), width = 100% - 240px
+                rtl && isAsideOpen && "md:right-60 md:left-auto md:w-[calc(100%-15rem)]",
+                
+                
             )}
         >
-            {/* Button container - swap sides for RTL */}
+            {/* Button container - position based on RTL */}
             <div >
                 <Button 
                     isIconOnly 
@@ -55,31 +52,18 @@ const Header = () => {
                     size="md" 
                     radius="lg" 
                     variant="light"
-                    className="md:hidden"
                 >
                     {isAsideOpen ? <IoClose size={20} /> : <MenuIcon size={20} />}
                 </Button>
-                <Button 
-                    isIconOnly 
-                    onPress={toggleAside} 
-                    size="md" 
-                    radius="lg" 
-                    variant="light"
-                    className="hidden md:flex"
-                >
-                    {isAsideOpen ? <IoClose size={20} /> : <MenuIcon size={20} />}
-                </Button>
+               
             </div>
             
-            {/* Controls container - swap sides for RTL */}
-            <div className={cn(
-                "flex items-center gap-4",
-            )}>
+            <div className={"flex items-center gap-4"}>
                 <NotificationBell />
                 <ThemeSwitcher />
                 <LanguageSwitcher />
             </div>
-        </motion.header>
+        </header>
     )
 }
 

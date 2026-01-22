@@ -25,6 +25,7 @@ export const dynamic = 'force-dynamic';
 //   };
 // }
 
+// app/dashboard/layout.tsx
 export default async function DashboardLayout({
   children,
   params,
@@ -39,13 +40,14 @@ export default async function DashboardLayout({
     await apiLogout()
     redirect({ locale: locale, href: "/auth/login" })
   }
+  
   return (
     <AsideContextProvider>
-      <div className={cn("w-full  overflow-auto flex z-99997 bg-zinc-100 dark:bg-zinc-800 min-h-screen ")}>
+      <div className="relative w-full min-h-screen flex bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
         <Aside />
         <MainContentWithMargin>
           <Header />
-          <main className="flex-1 p-4  overflow-auto z-999 ">
+          <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto">
             {children}
           </main>
         </MainContentWithMargin>

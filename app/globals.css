@@ -4,7 +4,15 @@
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 /* Add to your existing animations.css or tailwind.css */
-
+/* .direction-rtl::-webkit-scrollbar {
+  right: 0;
+  right: auto;
+}
+.direction-rtl {
+  scrollbar-width: thin;
+  scrollbar-color: #959595 #f3f4f6;
+  direction: rtl;
+} */
 /* Stronger animations with cubic-bezier for more punch */
 @keyframes fadeInUp {
   from {

@@ -231,8 +231,7 @@ export default function TestNotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen  p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -701,6 +700,5 @@ export default function TestNotificationsPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
