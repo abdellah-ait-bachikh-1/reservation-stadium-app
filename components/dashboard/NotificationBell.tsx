@@ -15,6 +15,7 @@ import { isErrorHasMessage } from "@/utils";
 import { addToast } from "@heroui/toast";
 import { FaCheck, FaCheckDouble, FaEbay, FaEye } from "react-icons/fa";
 import { Tooltip } from "@heroui/tooltip"
+
 interface NotificationItem {
   id: string;
   type: NotificationType;
@@ -35,6 +36,7 @@ const NotificationBell = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
   const { data: session, status } = useSession();
+    const userId =  session?.user?.id;
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -42,8 +44,8 @@ const NotificationBell = () => {
   const [initialLoad, setInitialLoad] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<
-    "connecting" | "connected" | "disconnected"
-  >("connecting");
+    "connecting" | "connected" | "disconnected" | "idle"
+  >("idle");
   const {
     bellRef: safeBallRef,
     dropdownRef: safeDropDownRef,
@@ -53,6 +55,7 @@ const NotificationBell = () => {
   } = useSafePositionScreen(() => setIsOpen(false));
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<any>(null);
 
   // Format relative time
   const formatRelativeTime = (dateString: string): string => {
@@ -70,17 +73,13 @@ const NotificationBell = () => {
     return "just now";
   };
 
-
-
   // Transform API response to NotificationItem
-  // In your NotificationBell component
-  // Transform API response to NotificationItem (SIMPLIFIED)
   const transformNotification = (notification: any): NotificationItem => {
     return {
       id: notification.id,
       type: notification.type,
-      title: notification.title, // Already localized from API
-      message: notification.message, // Already localized from API
+      title: notification.title,
+      message: notification.message,
       time: formatRelativeTime(notification.createdAt),
       read: notification.isRead,
       model: notification.model || "USER",
@@ -88,22 +87,18 @@ const NotificationBell = () => {
       link: notification.link || undefined,
       metadata: notification.metadata || undefined,
       createdAt: new Date(notification.createdAt),
-      localizedTitle: notification.title, // Same as title
-      localizedMessage: notification.message, // Same as message
+      localizedTitle: notification.title,
+      localizedMessage: notification.message,
     };
   };
 
   // Handle new notification from Pusher
-  // Remove the getLocalizedContent function or keep it only for Pusher
-  // Handle new notification from Pusher (UPDATED)
   const handleNewNotification = useCallback((notificationData: any) => {
-    // console.log("📩 New notification received:", notificationData);
-
     const newNotification: NotificationItem = {
       id: notificationData.id,
       type: notificationData.type,
-      title: notificationData.localizedTitle || notificationData.titleEn, // Use localized if available
-      message: notificationData.localizedMessage || notificationData.messageEn, // Use localized if available
+      title: notificationData.localizedTitle || notificationData.titleEn,
+      message: notificationData.localizedMessage || notificationData.messageEn,
       time: "just now",
       read: false,
       model: notificationData.model,
@@ -117,16 +112,11 @@ const NotificationBell = () => {
         notificationData.localizedMessage || notificationData.messageEn,
     };
 
-    // console.log("📥 Adding to UI:", newNotification);
-
-    // Add new notification at the top
     setNotifications((prev) => {
       const newNotifications = [newNotification, ...prev];
-      // Keep only last 20 notifications in the bell
       return newNotifications.slice(0, 20);
     });
 
-    // Show browser notification if permission granted
     if ("Notification" in window && Notification.permission === "granted") {
       try {
         const notification = new Notification(newNotification.title, {
@@ -146,9 +136,8 @@ const NotificationBell = () => {
         console.error("Error showing desktop notification:", error);
       }
     }
-  }, []); // Remove locale dependency
+  }, []);
 
-  // Fetch notifications from API
   // Fetch notifications from API
   const fetchNotifications = async () => {
     if (!session?.user?.id) return;
@@ -166,9 +155,8 @@ const NotificationBell = () => {
       const data = await response.json();
 
       if (data.success) {
-        // API already returns localized data, no need to transform with locale
         const transformedNotifications = data.data.map(
-          (notification: any) => transformNotification(notification) // No locale parameter needed
+          (notification: any) => transformNotification(notification)
         );
 
         setNotifications(transformedNotifications);
@@ -233,13 +221,17 @@ const NotificationBell = () => {
   // Setup Pusher connection
   useEffect(() => {
     // Wait for session to be available
-    if (status === "loading" || !session?.user?.id) {
+    if (status === "loading") {
       return;
     }
 
-    const userId = session.user.id;
+    if (!session?.user?.id) {
+      setConnectionStatus("disconnected");
+      return;
+    }
 
-    // console.log("🔌 Setting up Pusher for user:", userId);
+
+    console.log("🔌 Setting up Pusher for user:", userId);
     setConnectionStatus("connecting");
 
     // Request notification permission
@@ -252,51 +244,87 @@ const NotificationBell = () => {
       fetchNotifications();
     }
 
-    // Subscribe to channel using your working pattern
-    const channel = pusherClient.subscribe(`private-user-${userId}`);
+    // Check if Pusher client is already connected
+    if (pusherClient.connection.state === "connected") {
+      console.log("✅ Pusher already connected");
+    }
 
-    // Bind events
-    channel.bind("pusher:subscription_succeeded", () => {
-      // console.log(`✅ Connected to Pusher channel for user ${userId}`);
+    // Add connection listeners first
+    const handleConnected = () => {
+      console.log("✅ Pusher client connected");
       setConnectionStatus("connected");
-    });
+    };
 
-    channel.bind("notification", (data: any) => {
-      // console.log("📩 New notification received:", data);
-      handleNewNotification(data);
-    });
+    const handleConnecting = () => {
+      console.log("🔄 Connecting to Pusher...");
+      setConnectionStatus("connecting");
+    };
 
-    channel.bind("pusher:subscription_error", (error: any) => {
-      console.error("❌ Pusher subscription error:", error);
-      setConnectionStatus("disconnected");
-    });
-
-    // Connection listeners
-    pusherClient.connection.bind("connected", () => {
-      // console.log("✅ Pusher client connected");
-    });
-
-    pusherClient.connection.bind("connecting", () => {
-      // console.log("🔄 Connecting to Pusher...");
-    });
-
-    pusherClient.connection.bind("disconnected", () => {
+    const handleDisconnected = () => {
       console.log("🔌 Pusher disconnected");
       setConnectionStatus("disconnected");
-    });
+    };
 
-    pusherClient.connection.bind("error", (error: any) => {
+    const handleError = (error: any) => {
       console.error("❌ Pusher connection error:", error);
       setConnectionStatus("disconnected");
-    });
-
-    // Cleanup
-    return () => {
-      console.log("🧹 Cleaning up Pusher connection for user:", userId);
-      channel.unbind_all();
-      channel.unsubscribe();
     };
-  }, [session, status, locale, handleNewNotification, initialLoad]);
+
+    // Bind connection events
+    pusherClient.connection.bind("connected", handleConnected);
+    pusherClient.connection.bind("connecting", handleConnecting);
+    pusherClient.connection.bind("disconnected", handleDisconnected);
+    pusherClient.connection.bind("error", handleError);
+
+    try {
+      // Subscribe to channel
+      const channel = pusherClient.subscribe(`private-user-${userId}`);
+      channelRef.current = channel;
+
+      // Bind channel events
+      channel.bind("pusher:subscription_succeeded", () => {
+        console.log(`✅ Subscribed to channel for user ${userId}`);
+        setConnectionStatus("connected");
+      });
+
+      channel.bind("notification", (data: any) => {
+        console.log("📩 New notification received:", data);
+        handleNewNotification(data);
+      });
+
+      channel.bind("pusher:subscription_error", (error: any) => {
+        console.error("❌ Pusher subscription error:", error);
+        setConnectionStatus("disconnected");
+      });
+
+    } catch (error) {
+      console.error("Error setting up Pusher:", error);
+      setConnectionStatus("disconnected");
+    }
+
+    // Cleanup function
+    return () => {
+      console.log("🧹 Cleaning up Pusher connection");
+
+      // Remove connection listeners
+      pusherClient.connection.unbind("connected", handleConnected);
+      pusherClient.connection.unbind("connecting", handleConnecting);
+      pusherClient.connection.unbind("disconnected", handleDisconnected);
+      pusherClient.connection.unbind("error", handleError);
+
+      // Unsubscribe from channel if it exists
+      if (channelRef.current) {
+        try {
+          channelRef.current.unbind_all();
+          pusherClient.unsubscribe(`private-user-${userId}`);
+          console.log("✅ Unsubscribed from Pusher channel");
+        } catch (error) {
+          console.error("Error unsubscribing from channel:", error);
+        }
+        channelRef.current = null;
+      }
+    };
+  }, [session, status, userId]); // Added userId dependency
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -308,7 +336,6 @@ const NotificationBell = () => {
   useEffect(() => {
     if (isOpen) {
       calculatePosition();
-      // Small delay to ensure the dropdown is rendered before refining
       setTimeout(() => refinePosition(), 100);
     }
   }, [isOpen, calculatePosition, refinePosition]);
@@ -419,8 +446,6 @@ const NotificationBell = () => {
 
   // Handle notification click (mark as read and navigate)
   const handleNotificationClick = (notification: NotificationItem) => {
-    // markAsRead(notification.id);
-
     if (notification.link) {
       window.location.href = notification.link;
     }
@@ -478,14 +503,18 @@ const NotificationBell = () => {
                         ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                         : connectionStatus === "connecting"
                           ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                          : connectionStatus === "idle"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                         }`}
                     >
                       {connectionStatus === "connected"
                         ? t("common.notifications.live")
                         : connectionStatus === "connecting"
                           ? t("common.notifications.connecting")
-                          : t("common.notifications.offline")}
+                          : connectionStatus === "idle"
+                            ? "Idle"
+                            : t("common.notifications.offline")}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
