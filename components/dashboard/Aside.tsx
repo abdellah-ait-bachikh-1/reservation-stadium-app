@@ -13,7 +13,7 @@ import {
   Calendar,
   CreditCard,
   Users,
-  Settings,
+  UserCircle,
   Bell,
   BarChart3,
   LogOut,
@@ -21,13 +21,18 @@ import {
   MapPin,
   Star,
   TrendingUp,
-  X
+  X,
+  CalendarDays
 } from "lucide-react"
+import { TbBuildingStadium } from "react-icons/tb";
+
 import { useLocale } from "next-intl"
 import { isRtl } from "@/utils"
 import { LocaleEnumType } from "@/types"
 import { APP_NAMES } from "@/const"
 import Image from "next/image"
+import { MdOutlinePayments, MdSportsSoccer } from "react-icons/md"
+import { HiMiniPercentBadge } from "react-icons/hi2"
 
 // Navigation items based on your schema
 const Aside = () => {
@@ -36,7 +41,7 @@ const Aside = () => {
   const t = useTypedTranslations()
   const locale = useLocale()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const [userRole, setUserRole] = useState<"ADMIN" | "CLUB">("CLUB") // TODO: Get from auth
+  const [userRole, setUserRole] = useState<"ADMIN" | "CLUB">("CLUB")
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const [dropdownTop, setDropdownTop] = useState(0)
   const [isDesktop, setIsDesktop] = useState(false)
@@ -50,7 +55,7 @@ const Aside = () => {
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
 
-  // Navigation items with translations
+  // Navigation items with translations - SIMPLIFIED WITHOUT SUBITEMS
   const navItems = [
     {
       title: t("common.aside.dashboard"),
@@ -59,89 +64,60 @@ const Aside = () => {
       roles: ["ADMIN", "CLUB"]
     },
     {
-      title: t("common.aside.clubs"),
-      href: "/dashboard/clubs",
-      icon: Building2,
-      roles: ["ADMIN", "CLUB"],
-      badge: 3 // Example: pending clubs
+      title: t("common.aside.users"),
+      href: "/dashboard/users",
+      icon: Users,
+      roles: ["ADMIN"],
+
     },
     {
       title: t("common.aside.stadiums"),
       href: "/dashboard/stadiums",
-      icon: MapPin,
+      icon: TbBuildingStadium,
       roles: ["ADMIN"]
     },
     {
       title: t("common.aside.reservations"),
       href: "/dashboard/reservations",
-      icon: Calendar,
+      icon: CalendarDays,
       roles: ["ADMIN", "CLUB"],
-      badge: 12,
-      subItems: [
-        { title: t("common.aside.allReservations"), href: "/dashboard/reservations" },
-        { title: t("common.aside.pending"), href: "/dashboard/reservations?status=pending" },
-        { title: t("common.aside.upcoming"), href: "/dashboard/reservations?status=upcoming" },
-        { title: t("common.aside.history"), href: "/dashboard/reservations?status=history" },
-      ]
+
     },
     {
       title: t("common.aside.payments"),
       href: "/dashboard/payments",
-      icon: CreditCard,
-      roles: ["ADMIN", "CLUB"],
-      subItems: [
-        { title: t("common.aside.monthlyPayments"), href: "/dashboard/payments/monthly" },
-        { title: t("common.aside.sessionPayments"), href: "/dashboard/payments/session" },
-        { title: t("common.aside.overdue"), href: "/dashboard/payments?status=overdue" },
-        { title: t("common.aside.receipts"), href: "/dashboard/payments/receipts" },
-      ]
+      icon: MdOutlinePayments,
+      roles: ["ADMIN", "CLUB"]
     },
     {
       title: t("common.aside.subscriptions"),
       href: "/dashboard/subscriptions",
-      icon: TrendingUp,
-      roles: ["ADMIN", "CLUB"],
-      subItems: [
-        { title: t("common.aside.active"), href: "/dashboard/subscriptions?status=active" },
-        { title: t("common.aside.expired"), href: "/dashboard/subscriptions?status=expired" },
-        { title: t("common.aside.renewals"), href: "/dashboard/subscriptions/renewals" },
-      ]
-    },
-    {
-      title: t("common.aside.users"),
-      href: "/dashboard/users",
-      icon: Users,
-      roles: ["ADMIN"],
-      badge: 5
+      icon: HiMiniPercentBadge,
+      roles: ["ADMIN", "CLUB"]
     },
     {
       title: t("common.aside.sports"),
       href: "/dashboard/sports",
-      icon: Star,
+      icon: MdSportsSoccer,
       roles: ["ADMIN"]
     },
     {
       title: t("common.aside.reports"),
       href: "/dashboard/reports",
       icon: BarChart3,
-      roles: ["ADMIN"],
-      subItems: [
-        { title: t("common.aside.revenue"), href: "/dashboard/reports/revenue" },
-        { title: t("common.aside.utilization"), href: "/dashboard/reports/utilization" },
-        { title: t("common.aside.clubPerformance"), href: "/dashboard/reports/clubs" },
-      ]
+      roles: ["ADMIN"]
     },
     {
       title: t("common.aside.notifications"),
       href: "/dashboard/notifications",
       icon: Bell,
       roles: ["ADMIN", "CLUB"],
-      badge: 7
+
     },
     {
-      title: t("common.aside.settings"),
-      href: "/dashboard/settings",
-      icon: Settings,
+      title: t("common.aside.profile"),
+      href: "/dashboard/profile",
+      icon: UserCircle,
       roles: ["ADMIN", "CLUB"]
     },
   ]
@@ -162,33 +138,6 @@ const Aside = () => {
     return () => document.removeEventListener('click', handleClickOutside)
   }, [isAsideOpen, closeAside])
 
-  // Toggle submenu expansion
-  const toggleExpand = (title: string) => {
-    setExpandedItems(prev =>
-      prev.includes(title)
-        ? prev.filter(item => item !== title)
-        : [...prev, title]
-    )
-  }
-
-  // Handle hover for dropdown
-  const handleMouseEnter = (title: string) => {
-    if (isDesktop && !isAsideOpen) {
-      setHoveredItem(title)
-      const button = buttonRefs.current[title]
-      if (button) {
-        const rect = button.getBoundingClientRect()
-        setDropdownTop(rect.top + window.scrollY)
-      }
-    }
-  }
-
-  // Filter nav items by user role
-  const filteredNavItems = navItems.filter(item =>
-    item.roles.includes(userRole)
-  )
-
-  // Check if item is active
   const isActive = (href: string) => {
     if (href === "/dashboard") {
       return pathname === "/dashboard"
@@ -225,13 +174,9 @@ const Aside = () => {
         }}
         className={cn(
           "fixed top-0 bottom-0 z-99997",
-          // Position based on RTL
           isRtl(locale as LocaleEnumType) ? "right-0" : "left-0",
           "bg-white dark:bg-zinc-950",
-
-
           "overflow-hidden flex flex-col",
-          // Set direction for content inside sidebar
           isRtl(locale as LocaleEnumType) ? "rtl" : "ltr"
         )}
       >
@@ -287,156 +232,62 @@ const Aside = () => {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation - SIMPLIFIED WITHOUT SUBMENUS */}
         <nav className="flex-1 overflow-y-auto py-4 px-3">
           <ul className="space-y-1">
-            {filteredNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
-              const hasSubItems = item.subItems && item.subItems.length > 0
-              const isExpanded = expandedItems.includes(item.title)
 
               return (
                 <li key={item.title}>
                   <div className="relative">
-                    {hasSubItems ? (
-                      <div
-                        className="relative"
-                        onMouseEnter={() => handleMouseEnter(item.title)}
-                        onMouseLeave={() => isDesktop && !isAsideOpen && setHoveredItem(null)}
-                      >
-                        <button
-                          ref={(el) => { buttonRefs.current[item.title] = el }}
-                          onClick={() => toggleExpand(item.title)}
-                          onMouseEnter={() => isDesktop && !isAsideOpen && handleMouseEnter(item.title)}
-                          className={cn(
-                            "w-full flex items-center p-3 rounded-xl transition-all duration-200 cursor-pointer",
-                            isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
-                            active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
-                            active && " text-amber-600 dark:text-amber-400",
-                            "group",
-                            // Center icon when sidebar is closed
-                            isAsideOpen ? "gap-3" : "justify-center"
-                          )}
-                        >
-                          <div className={cn(
-                            "p-2 rounded-xl transition-colors shrink-0",
-                            active
-                              ? "bg-amber-100 dark:bg-amber-800/30"
-                              : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
-
-
-                          )}>
-                            <Icon size={20} className={cn(
-                              active
-                                ? "text-amber-600 dark:text-amber-400"
-                                : "text-gray-600 dark:text-white"
-                            )} />
-                          </div>
-
-                          <AnimatePresence>
-                            {isAsideOpen && (
-                              <motion.div
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: "auto" }}
-                                exit={{ opacity: 0, width: 0 }}
-                                className="flex-1 flex items-center justify-between overflow-hidden min-w-0"
-                              >
-                                <span className="font-medium whitespace-nowrap truncate">
-                                  {item.title}
-                                </span>
-                                <ChevronRight
-                                  size={16}
-                                  className={cn(
-                                    "transition-transform duration-200 shrink-0 ml-2",
-                                    isExpanded && "rotate-90",
-                                    active
-                                      ? "text-amber-600 dark:text-amber-400"
-                                      : "text-gray-400 dark:text-gray-500"
-                                  )}
-                                />
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-
-
-                        </button>
-
-                        {/* Regular submenu when sidebar is open */}
-                        {hasSubItems && isExpanded && isAsideOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="ml-10 mt-1 space-y-1 overflow-hidden"
-                          >
-                            {item.subItems?.map((subItem) => (
-                              <Link
-                                key={subItem.title}
-                                href={subItem.href}
-                                onClick={() => window.innerWidth < 768 && closeAside()}
-                                className={cn(
-                                  "block py-2 px-3 rounded-lg text-sm transition-colors",
-                                  "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-                                  isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium"
-                                )}
-                              >
-                                {subItem.title}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </div>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        onClick={() => window.innerWidth < 768 && closeAside()}
-                        className={cn(
-                          "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
-                          isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
-                          active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
-                          active && " text-amber-600 dark:text-amber-400",
-                          // Center icon when sidebar is closed
-                          isAsideOpen ? "gap-3" : "justify-center"
-                        )}
-                      >
-                        <div className={cn(
-                          "p-2 rounded-xl transition-colors shrink-0",
+                    <Link
+                      href={item.href}
+                      onClick={() => window.innerWidth < 768 && closeAside()}
+                      className={cn(
+                        "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
+                        isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
+                        active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
+                        active && " text-amber-600 dark:text-amber-400",
+                        isAsideOpen ? "gap-3" : "justify-center"
+                      )}
+                    >
+                      <div className={cn(
+                        "p-2 rounded-xl transition-colors shrink-0 relative",
+                        active
+                          ? "bg-amber-100 dark:bg-amber-800/30"
+                          : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
+                      )}>
+                        <Icon size={20} className={cn(
                           active
-                            ? "bg-amber-100 dark:bg-amber-800/30"
-                            : "bg-gray-100 dark:bg-zinc-800 group-hover:bg-amber-100 dark:group-hover:bg-amber-800/20",
-                        )}>
-                          <Icon size={20} className={cn(
-                            active
-                              ? "text-amber-600 dark:text-amber-400"
-                              : "text-gray-600 dark:text-white"
-                          )} />
-                        </div>
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-gray-600 dark:text-white"
+                        )} />
 
-                        <AnimatePresence>
-                          {isAsideOpen && (
-                            <motion.span
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -10 }}
-                              className="font-medium whitespace-nowrap truncate"
-                            >
-                              {item.title}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
+                      </div>
 
-
-
-                        {/* Active indicator - Desktop only when open */}
-                        {active && isAsideOpen && (
-                          <motion.div
-                            layoutId="active-indicator"
-                            className="absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full"
-                          />
+                      <AnimatePresence>
+                        {isAsideOpen && (
+                          <motion.span
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="font-medium whitespace-nowrap truncate flex-1"
+                          >
+                            {item.title}
+                          </motion.span>
                         )}
-                      </Link>
-                    )}
+                      </AnimatePresence>
+
+                      {/* Active indicator - Desktop only when open */}
+                      {active && isAsideOpen && (
+                        <motion.div
+                          layoutId="active-indicator"
+                          className="absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-amber-500 rounded-r-full"
+                        />
+                      )}
+                    </Link>
                   </div>
                 </li>
               )
@@ -477,51 +328,6 @@ const Aside = () => {
           </button>
         </div>
       </motion.aside>
-
-      {/* Dropdown for closed sidebar on desktop - RENDERED OUTSIDE ASIDE */}
-      <AnimatePresence>
-        {isDesktop && !isAsideOpen && hoveredItem && (() => {
-          const item = navItems.find(i => i.title === hoveredItem)
-          const rtl = isRtl(locale as LocaleEnumType)
-          if (!item?.subItems) return null
-
-          return (
-            <motion.div
-              key={hoveredItem}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={cn("fixed w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 z-[99999] py-2", rtl ? "right-[80px]" : "left-[80px]")}
-              style={{
-                top: `${dropdownTop + 8}px`,
-                filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))"
-              }}
-              onMouseEnter={() => setHoveredItem(item.title)}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <div className="px-3 py-2 border-b border-gray-100 dark:border-zinc-700">
-                <p className="font-medium text-sm dark:text-white">{item.title}</p>
-              </div>
-              <div className="space-y-1">
-                {item.subItems?.map((subItem) => (
-                  <Link
-                    key={subItem.title}
-                    href={subItem.href}
-                    onClick={() => setHoveredItem(null)}
-                    className={cn(
-                      "block py-2 px-4 text-sm transition-colors",
-                      "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
-                      isActive(subItem.href) && "text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-900/20"
-                    )}
-                  >
-                    {subItem.title}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )
-        })()}
-      </AnimatePresence>
     </>
   )
 }

@@ -748,36 +748,19 @@
       "appName": "حجز ملاعب طانطان",
       "appSubName": "منصتك لحجز المنشآت الرياضية"
     },
-    "aside": {
-      "dashboard": "لوحة التحكم",
-      "clubs": "الأندية",
-      "stadiums": "الملاعب",
-      "reservations": "الحجوزات",
-      "payments": "المدفوعات",
-      "subscriptions": "الاشتراكات",
-      "users": "المستخدمين",
-      "sports": "الرياضات",
-      "reports": "التقارير",
-      "notifications": "الإشعارات",
-      "settings": "الإعدادات",
-      "logout": "تسجيل الخروج",
-      "admin": "المسؤول",
-      "clubManager": "مدير النادي",
-      "clubAccount": "حساب النادي",
-      "allReservations": "جميع الحجوزات",
-      "pending": "قيد الانتظار",
-      "upcoming": "القادمة",
-      "history": "السجل",
-      "monthlyPayments": "المدفوعات الشهرية",
-      "sessionPayments": "مدفوعات الجلسة",
-      "overdue": "متأخرة",
-      "receipts": "الإيصالات",
-      "active": "نشط",
-      "expired": "منتهي",
-      "renewals": "التجديدات",
-      "revenue": "الإيرادات",
-      "utilization": "الاستخدام",
-      "clubPerformance": "أداء الأندية"
-    }
+      "aside": {
+    "dashboard": "لوحة التحكم",
+    "clubs": "الأندية",
+    "stadiums": "الملاعب",
+    "reservations": "الحجوزات",
+    "payments": "المدفوعات",
+    "subscriptions": "الاشتراكات",
+    "users": "المستخدمين",
+    "sports": "الرياضات",
+    "reports": "التقارير",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي", 
+    "logout": "تسجيل الخروج"
+  }
   }
 }
