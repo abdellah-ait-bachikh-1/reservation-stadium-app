@@ -12,8 +12,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 100,
-  charset: "utf8mb4",  // Ensure UTF-8 MB4 for full Unicode support
-  // timezone: "+00:00",  // Set timezone if needed
+  charset: "utf8mb4",  
 });
 
 export const db = drizzle(pool, {
