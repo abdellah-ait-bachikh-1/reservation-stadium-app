@@ -14,7 +14,8 @@ import { markAllNotificationAsReadAction, markOnNotificationAsReadAction } from 
 import { isErrorHasMessage } from "@/utils";
 import { addToast } from "@heroui/toast";
 import { FaCheck, FaCheckDouble, FaEbay, FaEye } from "react-icons/fa";
-import { Tooltip } from "@heroui/tooltip"
+import { Tooltip } from "@heroui/tooltip";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface NotificationItem {
   id: string;
@@ -36,13 +37,12 @@ const NotificationBell = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
   const { data: session, status } = useSession();
-    const userId =  session?.user?.id;
+  const userId = session?.user?.id;
+  const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<
     "connecting" | "connected" | "disconnected" | "idle"
   >("idle");
@@ -56,6 +56,46 @@ const NotificationBell = () => {
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<any>(null);
+
+  // React Query for fetching notifications
+  const { data: notificationsData, isLoading, error, refetch } = useQuery({
+    queryKey: ['notifications', userId],
+    queryFn: async () => {
+      if (!userId) {
+        return [];
+      }
+
+      const response = await fetch(`/api/dashboard/notifications?limit=20`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch notifications: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        const transformedNotifications = data.data.map(
+          (notification: any) => transformNotification(notification)
+        );
+        return transformedNotifications as NotificationItem[];
+      } else {
+        throw new Error(data.error || "Failed to fetch notifications");
+      }
+    },
+    enabled: !!userId, // Only fetch if userId exists
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 1,
+    retryDelay: 1000,
+  });
+
+  // Update local notifications state when React Query data changes
+  useEffect(() => {
+    if (notificationsData) {
+      setNotifications(notificationsData);
+      setInitialLoad(true);
+    }
+  }, [notificationsData]);
 
   // Format relative time
   const formatRelativeTime = (dateString: string): string => {
@@ -117,6 +157,9 @@ const NotificationBell = () => {
       return newNotifications.slice(0, 20);
     });
 
+    // Invalidate React Query cache to refetch notifications
+    queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
+
     if ("Notification" in window && Notification.permission === "granted") {
       try {
         const notification = new Notification(newNotification.title, {
@@ -136,41 +179,7 @@ const NotificationBell = () => {
         console.error("Error showing desktop notification:", error);
       }
     }
-  }, []);
-
-  // Fetch notifications from API
-  const fetchNotifications = async () => {
-    if (!session?.user?.id) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/dashboard/notifications?limit=20`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch notifications: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        const transformedNotifications = data.data.map(
-          (notification: any) => transformNotification(notification)
-        );
-
-        setNotifications(transformedNotifications);
-        setInitialLoad(true);
-      } else {
-        throw new Error(data.error || "Failed to fetch notifications");
-      }
-    } catch (error: any) {
-      console.error("Error fetching notifications:", error);
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [queryClient, userId]);
 
   // Mark notification as read
   const markAsRead = async (id: string) => {
@@ -178,13 +187,21 @@ const NotificationBell = () => {
       const { success } = await markOnNotificationAsReadAction(id)
 
       if (success) {
+        // Update local state
         setNotifications((prev) =>
           prev.map((notif) =>
             notif.id === id ? { ...notif, read: true } : notif
           )
         );
-        addToast({ title: t('common.notifications.title'), description: t('common.notifications.markOneAsRead'), color: "primary" })
-
+        
+        // Invalidate React Query cache to refetch
+        queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
+        
+        addToast({ 
+          title: t('common.notifications.title'), 
+          description: t('common.notifications.markOneAsRead'), 
+          color: "primary" 
+        });
       }
     } catch (error) {
       console.error("Error marking notification as read:", error);
@@ -192,7 +209,6 @@ const NotificationBell = () => {
         throw new Error(error.message)
       } else {
         throw new Error("network Error")
-
       }
     }
   };
@@ -202,10 +218,19 @@ const NotificationBell = () => {
     try {
       const { success } = await markAllNotificationAsReadAction()
       if (success) {
+        // Update local state
         setNotifications((prev) =>
           prev.map((notif) => ({ ...notif, read: true }))
         );
-        addToast({ title: t('common.notifications.title'), description: t('common.notifications.markAllRead'), color: "primary" })
+        
+        // Invalidate React Query cache to refetch
+        queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
+        
+        addToast({ 
+          title: t('common.notifications.title'), 
+          description: t('common.notifications.markAllRead'), 
+          color: "primary" 
+        });
       }
     } catch (error) {
       console.error("Error marking all as read:", error);
@@ -213,7 +238,6 @@ const NotificationBell = () => {
         throw new Error(error.message)
       } else {
         throw new Error("network Error")
-
       }
     }
   };
@@ -230,18 +254,12 @@ const NotificationBell = () => {
       return;
     }
 
-
     console.log("🔌 Setting up Pusher for user:", userId);
     setConnectionStatus("connecting");
 
     // Request notification permission
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
-    }
-
-    // Load initial notifications
-    if (!initialLoad) {
-      fetchNotifications();
     }
 
     // Check if Pusher client is already connected
@@ -324,14 +342,14 @@ const NotificationBell = () => {
         channelRef.current = null;
       }
     };
-  }, [session, status, userId]); // Added userId dependency
+  }, [session, status, userId, handleNewNotification]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen && !initialLoad) {
-      fetchNotifications();
+      refetch();
     }
-  }, [isOpen, initialLoad]);
+  }, [isOpen, initialLoad, refetch]);
 
   useEffect(() => {
     if (isOpen) {
@@ -440,7 +458,7 @@ const NotificationBell = () => {
   const handleBellClick = () => {
     setIsOpen(!isOpen);
     if (!isOpen && !initialLoad) {
-      fetchNotifications();
+      refetch();
     }
   };
 
@@ -554,12 +572,12 @@ const NotificationBell = () => {
                 ) : error ? (
                   <div className="p-8 text-center">
                     <p className="text-red-500 dark:text-red-400 mb-2">
-                      {error}
+                      {error.message}
                     </p>
                     <Button
                       size="sm"
                       variant="flat"
-                      onPress={fetchNotifications}
+                      onPress={() => refetch()}
                     >
                       {t("common.notifications.retry")}
                     </Button>

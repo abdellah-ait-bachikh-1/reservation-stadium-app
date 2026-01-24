@@ -78,7 +78,7 @@ const Providers = ({
           >
             <QueryClientProvider client={queryClient}>
               {children}
-              <div className="z-99999999">
+                 <div style={{ position: 'fixed', zIndex: 99999999 }}>
                 <ReactQueryDevtools />
               </div>
             </QueryClientProvider>

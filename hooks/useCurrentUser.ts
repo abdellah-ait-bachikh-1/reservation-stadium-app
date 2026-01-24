@@ -15,21 +15,21 @@ export function useCurrentUser() {
   const { data: session, status } = useSession();
 
   return useQuery({
-    queryKey: ['current-user', status],
+    queryKey: ["current-user", status],
     queryFn: async () => {
       if (status !== "authenticated") {
         return null;
       }
 
       try {
-        const res = await fetch('/api/public/current-user');
+        const res = await fetch("/api/public/current-user");
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const resData = await res.json();
         return resData.user as SimpleUser;
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error("Error fetching user:", error);
         return null;
       }
     },
