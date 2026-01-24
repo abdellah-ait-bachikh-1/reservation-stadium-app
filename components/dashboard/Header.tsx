@@ -23,7 +23,7 @@ const Header = () => {
             className={cn(
                 // Base styles
                 "fixed top-0 h-20 flex p-4 items-center justify-between",
-                "bg-white dark:bg-zinc-950 z-99994 shadow-sm",
+                "bg-white dark:bg-zinc-900 z-99994 shadow-sm",
                 "transition-all duration-300 ease-in-out",
                 
                 // MOBILE: Always full width (left:0, right:0, w-full)

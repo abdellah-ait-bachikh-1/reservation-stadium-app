@@ -137,7 +137,7 @@ const Aside = () => {
         className={cn(
           "fixed top-0 bottom-0 z-99997",
           rtl ? "right-0" : "left-0",
-          "bg-white dark:bg-zinc-950",
+          "bg-white dark:bg-zinc-900",
           "overflow-hidden flex flex-col",
           "transition-all duration-300 ease-in-out",
           // Mobile: slide in/out
