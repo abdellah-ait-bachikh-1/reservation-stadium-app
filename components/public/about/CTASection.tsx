@@ -3,7 +3,7 @@
 import AnimatedOnView from "@/components/AnimatedOnView";
 import { useTypedTranslations } from "@/utils/i18n";
 import { Skeleton } from "@heroui/skeleton";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 type StatKey = "stadiums" | "clubs" | "reservations" | "satisfaction";
 
@@ -21,28 +21,36 @@ const staticData: StatsData = [
 
 const AboutStatsSection = () => {
     const t = useTypedTranslations();
-    const [data, setData] = useState<StatsData>(staticData);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchStats() {
-            try {
-                const res = await fetch("/api/public/home/stats");
-                if (!res.ok) throw new Error("API error");
+    // React Query for fetching stats
+    const { data: statsData, isLoading } = useQuery({
+        queryKey: ['about-stats'],
+        queryFn: async () => {
+            const res = await fetch("/api/public/home/stats");
 
-                const result = await res.json();
-                if (result?.stats) {
-                    setData(result.stats);
-                }
-            } catch {
-                setData(staticData);
-            } finally {
-                setLoading(false);
+            if (!res.ok) {
+                throw new Error("API error");
             }
-        }
 
-        fetchStats();
-    }, []);
+            const result = await res.json();
+
+            if (result?.stats) {
+                return result.stats as StatsData;
+            }
+
+            // Fallback to static data if no stats in response
+            return staticData;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes
+        retry: 2,
+        retryDelay: 1000,
+        // Use staticData as fallback during loading or error
+        placeholderData: staticData,
+    });
+
+    // Use fetched data or fallback to staticData
+    const data = statsData || staticData;
 
     const getValue = (key: StatKey) =>
         data.find((s) => s.label === key)?.value ?? "";
@@ -55,7 +63,7 @@ const AboutStatsSection = () => {
                     {/* STADIUMS */}
                     <AnimatedOnView>
                         <div className="text-center">
-                            {loading ? (
+                            {isLoading ? (
                                 <Skeleton className="h-10 md:h-12 w-20 mx-auto mb-2 rounded-xl bg-amber-500/20 dark:bg-amber-400/20" />
                             ) : (
                                 <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2" dir="ltr">
@@ -74,7 +82,7 @@ const AboutStatsSection = () => {
                     {/* CLUBS */}
                     <AnimatedOnView>
                         <div className="text-center">
-                            {loading ? (
+                            {isLoading ? (
                                 <Skeleton className="h-10 md:h-12 w-20 mx-auto mb-2 rounded-xl bg-amber-500/20 dark:bg-amber-400/20" />
                             ) : (
                                 <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2" dir="ltr">
@@ -93,7 +101,7 @@ const AboutStatsSection = () => {
                     {/* BOOKINGS */}
                     <AnimatedOnView>
                         <div className="text-center">
-                            {loading ? (
+                            {isLoading ? (
                                 <Skeleton className="h-10 md:h-12 w-24 mx-auto mb-2 rounded-xl bg-amber-500/20 dark:bg-amber-400/20" />
                             ) : (
                                 <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2" dir="ltr">
@@ -112,7 +120,7 @@ const AboutStatsSection = () => {
                     {/* SATISFACTION */}
                     <AnimatedOnView>
                         <div className="text-center">
-                            {loading ? (
+                            {isLoading ? (
                                 <Skeleton className="h-10 md:h-12 w-16 mx-auto mb-2 rounded-xl bg-amber-500/20 dark:bg-amber-400/20" />
                             ) : (
                                 <div className="text-3xl md:text-4xl font-bold text-amber-600 dark:text-amber-400 mb-2" dir="ltr">
