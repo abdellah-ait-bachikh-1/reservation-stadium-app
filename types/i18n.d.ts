@@ -66,6 +66,8 @@ export type TranslationKey =
     | 'common.aside.stadiums'
     | 'common.aside.subscriptions'
     | 'common.aside.users'
+    | 'common.currency.name'
+    | 'common.currency.symbol'
     | 'common.footer.address'
     | 'common.footer.allRightsReserved'
     | 'common.footer.appName'
@@ -125,6 +127,30 @@ export type TranslationKey =
     | 'common.inputs.placeholders.time'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
+    | 'common.months.full.april'
+    | 'common.months.full.august'
+    | 'common.months.full.december'
+    | 'common.months.full.february'
+    | 'common.months.full.january'
+    | 'common.months.full.july'
+    | 'common.months.full.june'
+    | 'common.months.full.march'
+    | 'common.months.full.may'
+    | 'common.months.full.november'
+    | 'common.months.full.october'
+    | 'common.months.full.september'
+    | 'common.months.short.apr'
+    | 'common.months.short.aug'
+    | 'common.months.short.dec'
+    | 'common.months.short.feb'
+    | 'common.months.short.jan'
+    | 'common.months.short.jul'
+    | 'common.months.short.jun'
+    | 'common.months.short.mar'
+    | 'common.months.short.may'
+    | 'common.months.short.nov'
+    | 'common.months.short.oct'
+    | 'common.months.short.sep'
     | 'common.navigation.public.links.about'
     | 'common.navigation.public.links.contact'
     | 'common.navigation.public.links.home'
@@ -151,6 +177,13 @@ export type TranslationKey =
     | 'common.theme.light'
     | 'common.theme.select'
     | 'common.theme.system'
+    | 'common.time.daysAgo'
+    | 'common.time.hoursAgo'
+    | 'common.time.justNow'
+    | 'common.time.minutesAgo'
+    | 'common.time.monthsAgo'
+    | 'common.time.weeksAgo'
+    | 'common.time.yearsAgo'
     | 'common.toast.error.accountDeleted'
     | 'common.toast.error.accountNotApproved'
     | 'common.toast.error.accountNotVerified'
@@ -378,12 +411,19 @@ export type TranslationKey =
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
     | 'pages.contact.metadata.title'
+    | 'pages.dashboard.home.charts.avgMonthly'
+    | 'pages.dashboard.home.charts.legend.high'
+    | 'pages.dashboard.home.charts.legend.low'
+    | 'pages.dashboard.home.charts.legend.medium'
+    | 'pages.dashboard.home.charts.maxRevenue'
     | 'pages.dashboard.home.charts.reservationsByMonth.description'
     | 'pages.dashboard.home.charts.reservationsByMonth.title'
+    | 'pages.dashboard.home.charts.revenue'
     | 'pages.dashboard.home.charts.revenueByMonth.description'
     | 'pages.dashboard.home.charts.revenueByMonth.title'
     | 'pages.dashboard.home.charts.stadiumUtilization.description'
     | 'pages.dashboard.home.charts.stadiumUtilization.title'
+    | 'pages.dashboard.home.charts.totalYear'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
     | 'pages.dashboard.home.quickActions.addStadium'
@@ -1331,9 +1371,19 @@ export const _TranslationNamespaces = {
     "amount"
   ],
   "pages.dashboard.home.charts": [
+    "revenue",
+    "maxRevenue",
+    "avgMonthly",
+    "totalYear",
+    "legend",
     "reservationsByMonth",
     "revenueByMonth",
     "stadiumUtilization"
+  ],
+  "pages.dashboard.home.charts.legend": [
+    "low",
+    "medium",
+    "high"
   ],
   "pages.dashboard.home.charts.reservationsByMonth": [
     "title",
@@ -1363,7 +1413,10 @@ export const _TranslationNamespaces = {
     "notifications",
     "toast",
     "footer",
-    "aside"
+    "aside",
+    "currency",
+    "months",
+    "time"
   ],
   "common.actions": [
     "reserve",
@@ -1603,6 +1656,51 @@ export const _TranslationNamespaces = {
     "notifications",
     "profile",
     "logout"
+  ],
+  "common.currency": [
+    "symbol",
+    "name"
+  ],
+  "common.months": [
+    "short",
+    "full"
+  ],
+  "common.months.short": [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec"
+  ],
+  "common.months.full": [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december"
+  ],
+  "common.time": [
+    "justNow",
+    "minutesAgo",
+    "hoursAgo",
+    "daysAgo",
+    "weeksAgo",
+    "monthsAgo",
+    "yearsAgo"
   ]
 } as const;
 

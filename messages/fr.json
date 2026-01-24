@@ -623,6 +623,15 @@
           }
         },
         "charts": {
+          "revenue": "Revenu",
+          "maxRevenue": "Revenu Max",
+          "avgMonthly": "Moyenne Mensuelle",
+          "totalYear": "Total",
+          "legend": {
+            "low": "< 50% du max",
+            "medium": "50-80% du max",
+            "high": "> 80% du max"
+          },
           "reservationsByMonth": {
             "title": "Réservations par Mois",
             "description": "Tendances mensuelles des réservations"
@@ -872,6 +881,47 @@
       "notifications": "Notifications",
       "profile": "Profil",
       "logout": "Déconnexion"
+    },  "currency": {
+    "symbol": "DH",
+    "name": "Dirham Marocain"
+  },
+  "months": {
+    "short": {
+      "jan": "Janv",
+      "feb": "Févr",
+      "mar": "Mars",
+      "apr": "Avr",
+      "may": "Mai",
+      "jun": "Juin",
+      "jul": "Juil",
+      "aug": "Août",
+      "sep": "Sept",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Déc"
+    },
+    "full": {
+      "january": "Janvier",
+      "february": "Février",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Août",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Décembre"
     }
+  },"time": {
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {count} min",
+    "hoursAgo": "Il y a {count} heures",
+    "daysAgo": "Il y a {count} jours",
+    "weeksAgo": "Il y a {count} semaines",
+    "monthsAgo": "Il y a {count} mois",
+    "yearsAgo": "Il y a {count} ans"
+  }
   }
 }

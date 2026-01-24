@@ -623,6 +623,15 @@
           }
         },
         "charts": {
+          "revenue": "الإيرادات",
+          "maxRevenue": "أقصى إيرادات",
+          "avgMonthly": "المتوسط الشهري",
+          "totalYear": "الإجمالي",
+          "legend": {
+            "low": "< 50% من الحد الأقصى",
+            "medium": "50-80% من الحد الأقصى",
+            "high": "> 80% من الحد الأقصى"
+          },
           "reservationsByMonth": {
             "title": "الحجوزات حسب الشهر",
             "description": "اتجاهات الحجز الشهرية"
@@ -872,6 +881,47 @@
       "notifications": "الإشعارات",
       "profile": "الملف الشخصي",
       "logout": "تسجيل الخروج"
-    }
+    }, "currency": {
+    "symbol": "درهم",
+    "name": "الدرهم المغربي"
+  },
+  "months": {
+    "short": {
+      "jan": "يناير",
+      "feb": "فبراير",
+      "mar": "مارس",
+      "apr": "أبريل",
+      "may": "ماي",
+      "jun": "يونيو",
+      "jul": "يوليوز",
+      "aug": "غشت",
+      "sep": "شتنبر",
+      "oct": "أكتوبر",
+      "nov": "نونبر",
+      "dec": "دجنبر"
+    },
+    "full": {
+      "january": "يناير",
+      "february": "فبراير",
+      "march": "مارس",
+      "april": "أبريل",
+      "may": "ماي",
+      "june": "يونيو",
+      "july": "يوليوز",
+      "august": "غشت",
+      "september": "شتنبر",
+      "october": "أكتوبر",
+      "november": "نونبر",
+      "december": "دجنبر"
+    }},
+   "time": {
+    "justNow": "الآن",
+    "minutesAgo": "منذ {count} دقيقة",
+    "hoursAgo": "منذ {count} ساعة",
+    "daysAgo": "منذ {count} يوم",
+    "weeksAgo": "منذ {count} أسبوع",
+    "monthsAgo": "منذ {count} شهر",
+    "yearsAgo": "منذ {count} سنة"
+  }
   }
 }

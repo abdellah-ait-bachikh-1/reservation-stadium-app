@@ -43,7 +43,7 @@ export default async function DashboardLayout({
   
   return (
     <AsideContextProvider>
-      <div className="relative w-full min-h-screen flex bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+      <div className="relative w-full min-h-screen flex bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
         <Aside />
         <MainContentWithMargin>
           <Header />
