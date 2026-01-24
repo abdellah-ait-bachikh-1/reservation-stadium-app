@@ -329,7 +329,7 @@
       "hero": {
         "badge": "Contactez-nous",
         "title": "Contactez notre ",
-        "highligh":"équipe",
+        "highligh": "équipe",
         "description": "Des questions sur les réservations de stades ou les opportunités de partenariat ? Nous sommes là pour vous aider. Contactez-nous et nous vous répondrons dès que possible."
       },
       "contactInfo": {
@@ -530,6 +530,117 @@
           "title": "Réinitialiser le mot de passe",
           "description": "Réinitialisez votre mot de passe pour votre compte.",
           "keywords": "réinitialiser mot de passe, nouveau mot de passe, changer mot de passe"
+        }
+      }
+    },
+    "dashboard": {
+      "home": {
+        "metadata": {
+          "title": "Tableau de Bord",
+          "description": "Gérez vos réservations de stades, paiements, clubs et installations sportives"
+        },
+        "welcome": "Bienvenue, {name} !",
+        "subtitle": "Voici ce qui se passe avec votre gestion de stades",
+        "yearFilter": {
+          "label": "Année",
+          "selectYear": "Sélectionner l'année",
+          "currentYear": "Année en cours"
+        },
+        "stats": {
+          "totalReservations": {
+            "title": "Réservations Totales",
+            "description": "Réservations toutes périodes"
+          },
+          "activeReservations": {
+            "title": "Réservations Actives",
+            "description": "Réservations en cours"
+          },
+          "pendingReservations": {
+            "title": "Réservations en Attente",
+            "description": "En attente d'approbation"
+          },
+          "totalClubs": {
+            "title": "Clubs Totaux",
+            "description": "Clubs enregistrés"
+          },
+          "totalStadiums": {
+            "title": "Stades Totaux",
+            "description": "Stades disponibles"
+          },
+          "totalUsers": {
+            "title": "Utilisateurs Totaux",
+            "description": "Utilisateurs de la plateforme"
+          },
+          "totalRevenue": {
+            "title": "Revenu Total",
+            "description": "Gains toutes périodes"
+          },
+          "monthlyRevenue": {
+            "title": "Revenu Mensuel",
+            "description": "Gains ce mois-ci"
+          },
+          "subscriptions": {
+            "title": "Abonnements Actifs",
+            "description": "Forfaits mensuels"
+          },
+          "overduePayments": {
+            "title": "Paiements En Retard",
+            "description": "Nécessitent attention"
+          }
+        },
+        "quickActions": {
+          "title": "Actions Rapides",
+          "createReservation": "Créer une Réservation",
+          "addStadium": "Ajouter un Stade",
+          "registerClub": "Enregistrer un Club",
+          "viewPayments": "Voir les Paiements",
+          "sendNotification": "Envoyer une Notification",
+          "generateReport": "Générer un Rapport"
+        },
+        "recentActivity": {
+          "title": "Activité Récente",
+          "viewAll": "Voir Toute l'Activité",
+          "noActivity": "Aucune activité récente",
+          "types": {
+            "reservation": "Nouvelle Réservation",
+            "payment": "Paiement Reçu",
+            "subscription": "Abonnement Créé",
+            "user": "Nouvel Utilisateur",
+            "club": "Club Enregistré"
+          }
+        },
+        "upcomingReservations": {
+          "title": "Réservations à Venir",
+          "viewAll": "Voir Toutes les Réservations",
+          "noReservations": "Aucune réservation à venir",
+          "columns": {
+            "stadium": "Stade",
+            "club": "Club",
+            "date": "Date",
+            "time": "Heure",
+            "status": "Statut",
+            "amount": "Montant"
+          }
+        },
+        "charts": {
+          "reservationsByMonth": {
+            "title": "Réservations par Mois",
+            "description": "Tendances mensuelles des réservations"
+          },
+          "revenueByMonth": {
+            "title": "Revenu par Mois",
+            "description": "Tendances mensuelles des revenus"
+          },
+          "stadiumUtilization": {
+            "title": "Utilisation des Stades",
+            "description": "Taux d'utilisation des stades"
+          }
+        },
+        "tabs": {
+          "overview": "Aperçu",
+          "reservations": "Réservations",
+          "financial": "Financier",
+          "analytics": "Analytique"
         }
       }
     }
@@ -748,19 +859,19 @@
       "appName": "Réservation de stades Tantan",
       "appSubName": "Votre plateforme de réservation d'installations sportives"
     },
-  "aside": {
-    "dashboard": "Tableau de bord",
-    "clubs": "Clubs",
-    "stadiums": "Stades",
-    "reservations": "Réservations",
-    "payments": "Paiements",
-    "subscriptions": "Abonnements",
-    "users": "Utilisateurs",
-    "sports": "Sports",
-    "reports": "Rapports",
-    "notifications": "Notifications",
-    "profile": "Profil",
-    "logout": "Déconnexion"
-  }
+    "aside": {
+      "dashboard": "Tableau de bord",
+      "clubs": "Clubs",
+      "stadiums": "Stades",
+      "reservations": "Réservations",
+      "payments": "Paiements",
+      "subscriptions": "Abonnements",
+      "users": "Utilisateurs",
+      "sports": "Sports",
+      "reports": "Rapports",
+      "notifications": "Notifications",
+      "profile": "Profil",
+      "logout": "Déconnexion"
+    }
   }
 }

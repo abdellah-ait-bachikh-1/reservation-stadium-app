@@ -378,6 +378,67 @@ export type TranslationKey =
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
     | 'pages.contact.metadata.title'
+    | 'pages.dashboard.home.charts.reservationsByMonth.description'
+    | 'pages.dashboard.home.charts.reservationsByMonth.title'
+    | 'pages.dashboard.home.charts.revenueByMonth.description'
+    | 'pages.dashboard.home.charts.revenueByMonth.title'
+    | 'pages.dashboard.home.charts.stadiumUtilization.description'
+    | 'pages.dashboard.home.charts.stadiumUtilization.title'
+    | 'pages.dashboard.home.metadata.description'
+    | 'pages.dashboard.home.metadata.title'
+    | 'pages.dashboard.home.quickActions.addStadium'
+    | 'pages.dashboard.home.quickActions.createReservation'
+    | 'pages.dashboard.home.quickActions.generateReport'
+    | 'pages.dashboard.home.quickActions.registerClub'
+    | 'pages.dashboard.home.quickActions.sendNotification'
+    | 'pages.dashboard.home.quickActions.title'
+    | 'pages.dashboard.home.quickActions.viewPayments'
+    | 'pages.dashboard.home.recentActivity.noActivity'
+    | 'pages.dashboard.home.recentActivity.title'
+    | 'pages.dashboard.home.recentActivity.types.club'
+    | 'pages.dashboard.home.recentActivity.types.payment'
+    | 'pages.dashboard.home.recentActivity.types.reservation'
+    | 'pages.dashboard.home.recentActivity.types.subscription'
+    | 'pages.dashboard.home.recentActivity.types.user'
+    | 'pages.dashboard.home.recentActivity.viewAll'
+    | 'pages.dashboard.home.stats.activeReservations.description'
+    | 'pages.dashboard.home.stats.activeReservations.title'
+    | 'pages.dashboard.home.stats.monthlyRevenue.description'
+    | 'pages.dashboard.home.stats.monthlyRevenue.title'
+    | 'pages.dashboard.home.stats.overduePayments.description'
+    | 'pages.dashboard.home.stats.overduePayments.title'
+    | 'pages.dashboard.home.stats.pendingReservations.description'
+    | 'pages.dashboard.home.stats.pendingReservations.title'
+    | 'pages.dashboard.home.stats.subscriptions.description'
+    | 'pages.dashboard.home.stats.subscriptions.title'
+    | 'pages.dashboard.home.stats.totalClubs.description'
+    | 'pages.dashboard.home.stats.totalClubs.title'
+    | 'pages.dashboard.home.stats.totalReservations.description'
+    | 'pages.dashboard.home.stats.totalReservations.title'
+    | 'pages.dashboard.home.stats.totalRevenue.description'
+    | 'pages.dashboard.home.stats.totalRevenue.title'
+    | 'pages.dashboard.home.stats.totalStadiums.description'
+    | 'pages.dashboard.home.stats.totalStadiums.title'
+    | 'pages.dashboard.home.stats.totalUsers.description'
+    | 'pages.dashboard.home.stats.totalUsers.title'
+    | 'pages.dashboard.home.subtitle'
+    | 'pages.dashboard.home.tabs.analytics'
+    | 'pages.dashboard.home.tabs.financial'
+    | 'pages.dashboard.home.tabs.overview'
+    | 'pages.dashboard.home.tabs.reservations'
+    | 'pages.dashboard.home.upcomingReservations.columns.amount'
+    | 'pages.dashboard.home.upcomingReservations.columns.club'
+    | 'pages.dashboard.home.upcomingReservations.columns.date'
+    | 'pages.dashboard.home.upcomingReservations.columns.stadium'
+    | 'pages.dashboard.home.upcomingReservations.columns.status'
+    | 'pages.dashboard.home.upcomingReservations.columns.time'
+    | 'pages.dashboard.home.upcomingReservations.noReservations'
+    | 'pages.dashboard.home.upcomingReservations.title'
+    | 'pages.dashboard.home.upcomingReservations.viewAll'
+    | 'pages.dashboard.home.welcome'
+    | 'pages.dashboard.home.yearFilter.currentYear'
+    | 'pages.dashboard.home.yearFilter.label'
+    | 'pages.dashboard.home.yearFilter.selectYear'
     | 'pages.error.errorId'
     | 'pages.error.goHome'
     | 'pages.error.noStackTrace'
@@ -518,7 +579,8 @@ export const _TranslationNamespaces = {
     "stadiums",
     "about",
     "contact",
-    "auth"
+    "auth",
+    "dashboard"
   ],
   "pages.error": [
     "title",
@@ -1156,6 +1218,141 @@ export const _TranslationNamespaces = {
     "description",
     "keywords"
   ],
+  "pages.dashboard": [
+    "home"
+  ],
+  "pages.dashboard.home": [
+    "metadata",
+    "welcome",
+    "subtitle",
+    "yearFilter",
+    "stats",
+    "quickActions",
+    "recentActivity",
+    "upcomingReservations",
+    "charts",
+    "tabs"
+  ],
+  "pages.dashboard.home.metadata": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.yearFilter": [
+    "label",
+    "selectYear",
+    "currentYear"
+  ],
+  "pages.dashboard.home.stats": [
+    "totalReservations",
+    "activeReservations",
+    "pendingReservations",
+    "totalClubs",
+    "totalStadiums",
+    "totalUsers",
+    "totalRevenue",
+    "monthlyRevenue",
+    "subscriptions",
+    "overduePayments"
+  ],
+  "pages.dashboard.home.stats.totalReservations": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.activeReservations": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.pendingReservations": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.totalClubs": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.totalStadiums": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.totalUsers": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.totalRevenue": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.monthlyRevenue": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.subscriptions": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.overduePayments": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.quickActions": [
+    "title",
+    "createReservation",
+    "addStadium",
+    "registerClub",
+    "viewPayments",
+    "sendNotification",
+    "generateReport"
+  ],
+  "pages.dashboard.home.recentActivity": [
+    "title",
+    "viewAll",
+    "noActivity",
+    "types"
+  ],
+  "pages.dashboard.home.recentActivity.types": [
+    "reservation",
+    "payment",
+    "subscription",
+    "user",
+    "club"
+  ],
+  "pages.dashboard.home.upcomingReservations": [
+    "title",
+    "viewAll",
+    "noReservations",
+    "columns"
+  ],
+  "pages.dashboard.home.upcomingReservations.columns": [
+    "stadium",
+    "club",
+    "date",
+    "time",
+    "status",
+    "amount"
+  ],
+  "pages.dashboard.home.charts": [
+    "reservationsByMonth",
+    "revenueByMonth",
+    "stadiumUtilization"
+  ],
+  "pages.dashboard.home.charts.reservationsByMonth": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.charts.revenueByMonth": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.charts.stadiumUtilization": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.tabs": [
+    "overview",
+    "reservations",
+    "financial",
+    "analytics"
+  ],
   "common": [
     "actions",
     "theme",
@@ -1406,9 +1603,6 @@ export const _TranslationNamespaces = {
     "notifications",
     "profile",
     "logout"
-  ],
-  "pages.dashboard": [
-    "notifications"
   ]
 } as const;
 

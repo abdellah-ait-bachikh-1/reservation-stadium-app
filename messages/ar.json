@@ -532,6 +532,117 @@
           "keywords": "إعادة تعيين كلمة المرور, كلمة مرور جديدة, تغيير كلمة المرور"
         }
       }
+    },
+    "dashboard": {
+      "home": {
+        "metadata": {
+          "title": "لوحة التحكم الرئيسية",
+          "description": "إدارة حجوزات الملاعب والمدفوعات والأندية والمرافق الرياضية"
+        },
+        "welcome": "مرحبًا بعودتك، {name}!",
+        "subtitle": "إليك ما يحدث في إدارة ملاعبك",
+        "yearFilter": {
+          "label": "السنة",
+          "selectYear": "اختر السنة",
+          "currentYear": "السنة الحالية"
+        },
+        "stats": {
+          "totalReservations": {
+            "title": "إجمالي الحجوزات",
+            "description": "الحجوزات عبر جميع الأوقات"
+          },
+          "activeReservations": {
+            "title": "الحجوزات النشطة",
+            "description": "الحجوزات الحالية النشطة"
+          },
+          "pendingReservations": {
+            "title": "الحجوزات المعلقة",
+            "description": "في انتظار الموافقة"
+          },
+          "totalClubs": {
+            "title": "إجمالي الأندية",
+            "description": "الأندية المسجلة"
+          },
+          "totalStadiums": {
+            "title": "إجمالي الملاعب",
+            "description": "الملاعب المتاحة"
+          },
+          "totalUsers": {
+            "title": "إجمالي المستخدمين",
+            "description": "مستخدمي المنصة"
+          },
+          "totalRevenue": {
+            "title": "إجمالي الإيرادات",
+            "description": "الأرباح عبر جميع الأوقات"
+          },
+          "monthlyRevenue": {
+            "title": "الإيرادات الشهرية",
+            "description": "أرباح هذا الشهر"
+          },
+          "subscriptions": {
+            "title": "الاشتراكات النشطة",
+            "description": "الخطط الشهرية"
+          },
+          "overduePayments": {
+            "title": "المدفوعات المتأخرة",
+            "description": "تتطلب اهتمامًا"
+          }
+        },
+        "quickActions": {
+          "title": "إجراءات سريعة",
+          "createReservation": "إنشاء حجز",
+          "addStadium": "إضافة ملعب",
+          "registerClub": "تسجيل نادي",
+          "viewPayments": "عرض المدفوعات",
+          "sendNotification": "إرسال إشعار",
+          "generateReport": "إنشاء تقرير"
+        },
+        "recentActivity": {
+          "title": "النشاط الأخير",
+          "viewAll": "عرض كل النشاط",
+          "noActivity": "لا يوجد نشاط حديث",
+          "types": {
+            "reservation": "حجز جديد",
+            "payment": "استلام دفعة",
+            "subscription": "اشتراك جديد",
+            "user": "مستخدم جديد",
+            "club": "نادي مسجل"
+          }
+        },
+        "upcomingReservations": {
+          "title": "الحجوزات القادمة",
+          "viewAll": "عرض كل الحجوزات",
+          "noReservations": "لا توجد حجوزات قادمة",
+          "columns": {
+            "stadium": "الملعب",
+            "club": "النادي",
+            "date": "التاريخ",
+            "time": "الوقت",
+            "status": "الحالة",
+            "amount": "المبلغ"
+          }
+        },
+        "charts": {
+          "reservationsByMonth": {
+            "title": "الحجوزات حسب الشهر",
+            "description": "اتجاهات الحجز الشهرية"
+          },
+          "revenueByMonth": {
+            "title": "الإيرادات حسب الشهر",
+            "description": "اتجاهات الإيرادات الشهرية"
+          },
+          "stadiumUtilization": {
+            "title": "استخدام الملاعب",
+            "description": "معدلات استخدام الملاعب"
+          }
+        },
+        "tabs": {
+          "overview": "نظرة عامة",
+          "reservations": "الحجوزات",
+          "financial": "مالي",
+          "analytics": "تحليلات"
+        }
+      }
     }
   },
   "common": {
@@ -748,19 +859,19 @@
       "appName": "حجز ملاعب طانطان",
       "appSubName": "منصتك لحجز المنشآت الرياضية"
     },
-      "aside": {
-    "dashboard": "لوحة التحكم",
-    "clubs": "الأندية",
-    "stadiums": "الملاعب",
-    "reservations": "الحجوزات",
-    "payments": "المدفوعات",
-    "subscriptions": "الاشتراكات",
-    "users": "المستخدمين",
-    "sports": "الرياضات",
-    "reports": "التقارير",
-    "notifications": "الإشعارات",
-    "profile": "الملف الشخصي", 
-    "logout": "تسجيل الخروج"
-  }
+    "aside": {
+      "dashboard": "لوحة التحكم",
+      "clubs": "الأندية",
+      "stadiums": "الملاعب",
+      "reservations": "الحجوزات",
+      "payments": "المدفوعات",
+      "subscriptions": "الاشتراكات",
+      "users": "المستخدمين",
+      "sports": "الرياضات",
+      "reports": "التقارير",
+      "notifications": "الإشعارات",
+      "profile": "الملف الشخصي",
+      "logout": "تسجيل الخروج"
+    }
   }
 }

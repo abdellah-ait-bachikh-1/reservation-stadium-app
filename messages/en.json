@@ -329,7 +329,7 @@
       "hero": {
         "badge": "Get In Touch",
         "title": "Contact Our ",
-        "highligh":"Team",
+        "highligh": "Team",
         "description": "Have questions about stadium reservations or partnership opportunities? We're here to help. Reach out to us and we'll get back to you as soon as possible."
       },
       "contactInfo": {
@@ -534,6 +534,115 @@
       }
     },
     "dashboard": {
+       "home": {
+        "metadata": {
+          "title": "Dashboard Home",
+          "description": "Manage your stadium reservations, payments, clubs and sports facilities"
+        },
+        "welcome": "Welcome back, {name}!",
+        "subtitle": "Here's what's happening with your stadium management",
+        "yearFilter": {
+          "label": "Year",
+          "selectYear": "Select Year",
+          "currentYear": "Current Year"
+        },
+        "stats": {
+          "totalReservations": {
+            "title": "Total Reservations",
+            "description": "All time bookings"
+          },
+          "activeReservations": {
+            "title": "Active Reservations",
+            "description": "Current active bookings"
+          },
+          "pendingReservations": {
+            "title": "Pending Reservations",
+            "description": "Awaiting approval"
+          },
+          "totalClubs": {
+            "title": "Total Clubs",
+            "description": "Registered clubs"
+          },
+          "totalStadiums": {
+            "title": "Total Stadiums",
+            "description": "Available venues"
+          },
+          "totalUsers": {
+            "title": "Total Users",
+            "description": "Platform users"
+          },
+          "totalRevenue": {
+            "title": "Total Revenue",
+            "description": "All time earnings"
+          },
+          "monthlyRevenue": {
+            "title": "Monthly Revenue",
+            "description": "This month's earnings"
+          },
+          "subscriptions": {
+            "title": "Active Subscriptions",
+            "description": "Monthly plans"
+          },
+          "overduePayments": {
+            "title": "Overdue Payments",
+            "description": "Require attention"
+          }
+        },
+        "quickActions": {
+          "title": "Quick Actions",
+          "createReservation": "Create Reservation",
+          "addStadium": "Add Stadium",
+          "registerClub": "Register Club",
+          "viewPayments": "View Payments",
+          "sendNotification": "Send Notification",
+          "generateReport": "Generate Report"
+        },
+        "recentActivity": {
+          "title": "Recent Activity",
+          "viewAll": "View All Activity",
+          "noActivity": "No recent activity",
+          "types": {
+            "reservation": "New Reservation",
+            "payment": "Payment Received",
+            "subscription": "Subscription Created",
+            "user": "New User",
+            "club": "Club Registered"
+          }
+        },
+        "upcomingReservations": {
+          "title": "Upcoming Reservations",
+          "viewAll": "View All Reservations",
+          "noReservations": "No upcoming reservations",
+          "columns": {
+            "stadium": "Stadium",
+            "club": "Club",
+            "date": "Date",
+            "time": "Time",
+            "status": "Status",
+            "amount": "Amount"
+          }
+        },
+        "charts": {
+          "reservationsByMonth": {
+            "title": "Reservations by Month",
+            "description": "Monthly reservation trends"
+          },
+          "revenueByMonth": {
+            "title": "Revenue by Month",
+            "description": "Monthly revenue trends"
+          },
+          "stadiumUtilization": {
+            "title": "Stadium Utilization",
+            "description": "Stadium usage rates"
+          }
+        },
+        "tabs": {
+          "overview": "Overview",
+          "reservations": "Reservations",
+          "financial": "Financial",
+          "analytics": "Analytics"
+        }
+      },
       "notifications": {}
     }
   },
@@ -752,18 +861,18 @@
       "appSubName": "Your sports venue reservation platform"
     },
     "aside": {
-    "dashboard": "Dashboard",
-    "clubs": "Clubs", 
-    "stadiums": "Stadiums",
-    "reservations": "Reservations",
-    "payments": "Payments",
-    "subscriptions": "Subscriptions",
-    "users": "Users", 
-    "sports": "Sports",
-    "reports": "Reports",
-    "notifications": "Notifications",
-    "profile": "Profile", 
-    "logout": "Logout"
-  }
+      "dashboard": "Dashboard",
+      "clubs": "Clubs",
+      "stadiums": "Stadiums",
+      "reservations": "Reservations",
+      "payments": "Payments",
+      "subscriptions": "Subscriptions",
+      "users": "Users",
+      "sports": "Sports",
+      "reports": "Reports",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "logout": "Logout"
+    }
   }
 }
