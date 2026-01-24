@@ -8,9 +8,9 @@ import {
   DropdownProps,
 } from "@heroui/dropdown";
 import { Avatar, AvatarProps } from "@heroui/avatar";
-import { FiUser, FiLogOut } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { Chip } from "@heroui/chip";
-import { convertCase, isErrorHasMessage } from "@/utils";
+import { convertCase } from "@/utils";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { useTypedTranslations } from "@/utils/i18n";
 import { signOut } from "next-auth/react";
@@ -69,26 +69,12 @@ export default function UserAvatar({
   const [mounted, setMounted] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const { email, name, role } = user;
-
   useEffect(() => {
     setMounted(true);
-
   }, []);
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch('/api/public/current-user')
-        const data = await res.json()
-        console.log(res)
-      } catch (error) {
-        if (isErrorHasMessage(error)) throw new Error(error.message);
-        throw new Error("Unexpected registration error");
-      }
-    }
-    fetchUser()
-  }, [])
+  const { email, name, role } = user;
+
   const handleLogout = () => {
     setIsLoggingOut(true);
     signOut({
@@ -100,7 +86,6 @@ export default function UserAvatar({
   };
 
   const handleAction = (key: string) => {
-
     switch (key) {
       case "dashboard":
         // Navigation is handled by as={Link} prop
@@ -217,7 +202,7 @@ export default function UserAvatar({
           items={[
             {
               key: "user-profile",
-              href: "/dashboard/profile", // Added href for user profile
+              href: "/dashboard/profile",
               isReadOnly: false,
               startContent: <Avatar className="text-base shrink-0" showFallback />,
               children: (
@@ -252,7 +237,7 @@ export default function UserAvatar({
             // Menu items
             ...menuItems.map((item) => ({
               key: item.key,
-              href: item.href, // Pass href to items
+              href: item.href,
               startContent: (
                 <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800">
                   <div className="text-gray-600 dark:text-gray-400">

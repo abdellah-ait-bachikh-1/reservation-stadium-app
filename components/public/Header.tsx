@@ -2,10 +2,10 @@
 import LanguageSwitcher from "../LanguageSwitcher";
 import ThemeSwitcher from "../ThemeSwitcher";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { LocaleEnumType } from "@/types";
 import { getAppName, isRtl } from "@/utils";
-import { Activity, useEffect, useState } from "react";
+import { useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { Button } from "@heroui/button";
 import { HiHome, HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -22,73 +22,50 @@ import {
 } from "react-icons/hi2";
 import { useTypedTranslations } from "@/utils/i18n";
 import { useSession } from "next-auth/react";
-import { NEXT_PUBLIC_APP_URL } from "@/const";
-import { PaymentDueDay } from "@/types/db";
+import { useQuery } from "@tanstack/react-query";
 
-type AuthUserSession = {
+// Simplified user type (remove unnecessary fields)
+type SimpleUser = {
   id: string;
-  role: "ADMIN" | "CLUB";
   name: string;
   email: string;
-  phoneNumber: string;
-  isApproved: boolean | null;
-  preferredLocale: "EN" | "FR" | "AR";
-  emailVerifiedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  clubs: {
-    id: string;
-    name: string;
-    address: string | null;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    monthlyFee: string | null;
-    paymentDueDay: PaymentDueDay | null;
-    userId: string;
-    sportId: string | null;
-  }[];
+  role: "ADMIN" | "CLUB";
 } | null;
 
 const Header = () => {
   const locale = useLocale() as LocaleEnumType;
   const t = useTypedTranslations();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [loading, setIsLoading] = useState(false);
   const appName = getAppName(locale as LocaleEnumType);
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<AuthUserSession>(null);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    async function fetchUser() {
-      setUser(null);
-      if (status !== "authenticated" || !session?.user?.id) {
-        setUser(null);
-        return;
+  // SINGLE SOURCE OF TRUTH: Fetch user data once using React Query
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ['current-user', status],
+    queryFn: async () => {
+      if (status !== "authenticated") {
+        return null;
       }
 
       try {
-        setIsLoading(true);
-
-        const response = await fetch(
-          `${NEXT_PUBLIC_APP_URL}/api/public/current-user/${session.user.id}`, { cache: "no-store" }
-        );
-        const result = await response.json();
-
-        if (result.success && result.user) {
-          setUser(result.user);
+        const res = await fetch('/api/public/current-user');
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
+        const resData = await res.json();
+        return resData.user as SimpleUser;
       } catch (error) {
-        console.error("Error fetching user:", error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
+        console.error('Error fetching user:', error);
+        return null;
       }
-    }
-
-    fetchUser();
-  }, [status, session?.user?.id]); 
+    },
+    enabled: status === "authenticated",
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 1,
+    retryDelay: 1000,
+  });
 
   const navigationMenu = [
     {
@@ -112,21 +89,29 @@ const Header = () => {
       icon: HiChatBubbleBottomCenterText,
     },
   ] as const;
-  const isActive = (href: string) => {
-    const pathname = usePathname();
-    return pathname === href;
-  };
+
+  const isActive = (href: string) => pathname === href;
 
   const renderUserSection = () => {
-    if (status === "loading" || loading) {
+    // Only show loading skeleton during authentication check IF we're actually authenticated
+    // Don't show skeleton for unauthenticated users at all
+    if (status === "loading") {
+      // We don't know yet if user is authenticated or not
+      return null; // Or return auth buttons immediately
+    }
+
+    // If authenticated but still loading user data
+    if (status === "authenticated" && isUserLoading) {
       return <Skeleton className="w-10 h-10 rounded-full" />;
     }
 
-    if (status === "authenticated" && session?.user && user) {
-
+    // If authenticated and user data is loaded
+    if (status === "authenticated" && user) {
       return <UserAvatar user={user} />;
     }
 
+    // If not authenticated (show auth buttons immediately)
+    // This covers both "unauthenticated" status and authenticated but no user data
     return (
       <div className="flex items-center gap-2">
         <Link
@@ -156,17 +141,31 @@ const Header = () => {
   };
 
   const renderMobileUserSection = () => {
-    if (status === "loading" || loading) {
+    // Only show loading skeleton during authentication check IF we're actually authenticated
+    if (status === "loading") {
+      // Don't show skeleton for mobile either
+      return null;
+    }
+
+    // If authenticated but still loading user data
+    if (status === "authenticated" && isUserLoading) {
       return <UserSkeleton />;
     }
 
-    if (status === "authenticated" && session?.user && user) {
-
-
-      return <User user={user} />;
+    // If authenticated and user data is loaded
+    if (status === "authenticated" && user) {
+      return (
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeSwitcher />
+            <LanguageSwitcher />
+          </div>
+          <UserAvatar size="sm" user={user} />
+        </div>
+      );
     }
 
-    // Not authenticated
+    // If not authenticated (show auth buttons immediately)
     return (
       <div className="flex flex-col items-center gap-3">
         <div className="w-full flex items-center justify-between gap-3">
@@ -346,20 +345,18 @@ const Header = () => {
         </nav>
 
         <div className="p-4 flex flex-col items-center gap-2">
-          {loading ? (
+          {status === "authenticated" && isUserLoading ? (
             <Skeleton
               className={button({
                 fullWidth: true,
                 className: "bg-transparent",
               })}
             />
-          ) : (
-            user && (
-              <LogoutBtn fullWidth color="danger" variant="flat">
-                {t("common.actions.logout")}
-              </LogoutBtn>
-            )
-          )}
+          ) : status === "authenticated" && user ? (
+            <LogoutBtn fullWidth color="danger" variant="flat">
+              {t("common.actions.logout")}
+            </LogoutBtn>
+          ) : null}
           <span className="text-sm text-gray-400" dir="ltr">
             @ {new Date().getFullYear()}
           </span>
@@ -388,29 +385,6 @@ const UserSkeleton = () => {
       <div className="flex items-center justify-end gap-3">
         <Skeleton className="w-10 h-10 rounded-full" />
       </div>
-    </div>
-  );
-};
-
-const User = ({
-  user,
-}: {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: "ADMIN" | "CLUB";
-    phoneNumber?: string;
-    preferredLocale?: "EN" | "FR" | "AR";
-  };
-}) => {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <ThemeSwitcher />
-        <LanguageSwitcher />
-      </div>
-      <UserAvatar size="sm" user={user} />
     </div>
   );
 };
