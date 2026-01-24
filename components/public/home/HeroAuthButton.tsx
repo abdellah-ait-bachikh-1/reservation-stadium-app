@@ -22,7 +22,7 @@ const HeroAuthButton = () => {
             if (status !== "authenticated") {
                 return null
             }
-            
+
             const res = await fetch('/api/public/current-user')
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`)

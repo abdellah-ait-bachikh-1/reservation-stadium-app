@@ -1,13 +1,14 @@
 "use client"
 import StadiumFilters from './StadiumFilters'
 import StadiumCard from './StadiumCard'
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import StadiumCardSkeleton from './StadiumCardSkeleton'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@heroui/button'
 import { Pagination } from '@heroui/pagination'
 import { MdSportsSoccer } from 'react-icons/md'
 import { useTypedTranslations } from '@/utils/i18n'
+import { useQuery } from '@tanstack/react-query'
 
 interface Stadium {
   id: string;
@@ -43,30 +44,11 @@ const StadiumsClientPage = () => {
   const t = useTypedTranslations()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const abortControllerRef = useRef<AbortController | null>(null)
   const filtersSectionRef = useRef<HTMLDivElement>(null)
 
-  const [stadiums, setStadiums] = useState<Stadium[]>([])
-  const [name, setName] = useState(() => {
-    return searchParams.get('name') || ''
-  })
-  const [sportsId, setSportsId] = useState<string[]>(() => {
-    const sportsParams = searchParams.get("sports")
-    return sportsParams ? sportsParams.split(',').filter(Boolean) : []
-  })
-  const [page, setPage] = useState(() => {
-    return parseInt(searchParams.get('page') || '1')
-  })
-  const [pagination, setPagination] = useState<PaginationInfo>({
-    page: 1,
-    limit: 12,
-    total: 0,
-    totalPages: 0,
-    hasNext: false,
-    hasPrev: false
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const name = searchParams.get('name') || ''
+  const sportsId = searchParams.get('sports')?.split(',').filter(Boolean) || []
+  const page = parseInt(searchParams.get('page') || '1')
 
   // Update URL without navigation
   const updateUrl = useCallback((newPage?: number) => {
@@ -87,93 +69,86 @@ const StadiumsClientPage = () => {
   }, [name, sportsId, page])
 
   // Scroll to filters section
-const scrollToFilters = useCallback(() => {
-  if (filtersSectionRef.current) {
-    const offset = 80; // 80px for header
-    
-    // Calculate position
-    const top = filtersSectionRef.current.offsetTop - offset;
-    
-    // Scroll to position
-    window.scrollTo({
-      top,
-      behavior: 'smooth'
-    });
-  }
-}, []);
-  // Fetch stadiums with pagination
-  const fetchStadiums = useCallback(async () => {
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
+  const scrollToFilters = useCallback(() => {
+    if (filtersSectionRef.current) {
+      const offset = 80; // 80px for header
+      
+      // Calculate position
+      const top = filtersSectionRef.current.offsetTop - offset;
+      
+      // Scroll to position
+      window.scrollTo({
+        top,
+        behavior: 'smooth'
+      });
     }
+  }, []);
 
-    abortControllerRef.current = new AbortController()
-
-    try {
-      setLoading(true)
-      setError(null)
-
+  // React Query for fetching stadiums
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['stadiums', name, sportsId, page],
+    queryFn: async () => {
       const params = new URLSearchParams()
       if (name) params.set('name', name)
       if (sportsId.length > 0) params.set('sports', sportsId.join(','))
       params.set('page', page.toString())
-      params.set('limit', '12') // Set items per page
+      params.set('limit', '12')
 
-      const response = await fetch(`/api/public/stadiums?${params.toString()}`, {
-        signal: abortControllerRef.current.signal
-      })
+      const response = await fetch(`/api/public/stadiums?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data: ApiResponse = await response.json()
-      setStadiums(data.stadiums)
-      setPagination(data.pagination)
-    } catch (error) {
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Error fetching stadiums:', error)
-        setError('Failed to load stadiums. Please try again.')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [name, sportsId, page])
+      return data
+    },
+    staleTime: 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+    retryDelay: 1000,
+  })
 
-  // Update URL and fetch when filters change
-  useEffect(() => {
-    // Reset to page 1 when filters change
-    setPage(1)
-    updateUrl(1)
-  }, [name, sportsId])
-
-  // Fetch stadiums when page or filters change
-  useEffect(() => {
-    fetchStadiums()
-  }, [fetchStadiums])
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
-    }
-  }, [])
+  // Handle errors if needed
+  const errorMessage = error ? 'Failed to load stadiums. Please try again.' : null
 
   const handleNameChange = (newName: string) => {
-    setName(newName)
+    const params = new URLSearchParams(searchParams.toString())
+    if (newName) {
+      params.set('name', newName)
+    } else {
+      params.delete('name')
+    }
+    params.delete('page')
+    router.push(`?${params.toString()}`)
   }
 
   const handleSportsIdChange = (newSportsId: string[]) => {
-    setSportsId(newSportsId)
+    const params = new URLSearchParams(searchParams.toString())
+    if (newSportsId.length > 0) {
+      params.set('sports', newSportsId.join(','))
+    } else {
+      params.delete('sports')
+    }
+    params.delete('page')
+    router.push(`?${params.toString()}`)
   }
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-    updateUrl(newPage)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', newPage.toString())
+    router.push(`?${params.toString()}`)
     // Scroll to filters section when page changes
+    scrollToFilters()
+  }
+
+  const handleClearFilters = () => {
+    router.push('?')
+    scrollToFilters()
+  }
+
+  const handleResetFilters = () => {
+    router.push('?')
     scrollToFilters()
   }
 
@@ -197,23 +172,17 @@ const scrollToFilters = useCallback(() => {
               <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
                 {t('pages.stadiums.results.title')}
               </h2>
-              {!loading && stadiums.length > 0 && (
+              {!isLoading && data?.stadiums && data.stadiums.length > 0 && (
                 <p className="text-gray-500 dark:text-gray-400 mt-1">
-                  {t('pages.stadiums.pagination.showing')} {((page - 1) * pagination.limit) + 1} - {Math.min(page * pagination.limit, pagination.total)} {t('pages.stadiums.pagination.of')} {pagination.total} {t('pages.stadiums.pagination.stadiums')}
+                  {t('pages.stadiums.pagination.showing')} {((page - 1) * data.pagination.limit) + 1} - {Math.min(page * data.pagination.limit, data.pagination.total)} {t('pages.stadiums.pagination.of')} {data.pagination.total} {t('pages.stadiums.pagination.stadiums')}
                 </p>
               )}
             </div>
 
-            {!loading && stadiums.length === 0 && !error && (
+            {!isLoading && data?.stadiums && data.stadiums.length === 0 && !error && (
               <Button
                 variant="light"
-                onPress={() => {
-                  setName('')
-                  setSportsId([])
-                  setPage(1)
-                  // Scroll to top after clearing filters
-                  scrollToFilters()
-                }}
+                onPress={handleClearFilters}
               >
                 {t('pages.stadiums.results.clearFilters')}
               </Button>
@@ -221,15 +190,15 @@ const scrollToFilters = useCallback(() => {
           </div>
 
           {/* Error Message */}
-          {error && (
+          {errorMessage && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 
             rounded-xl p-6 text-center mb-6">
-              <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
+              <p className="text-red-600 dark:text-red-400 font-medium">{errorMessage}</p>
               <Button
                 color="danger"
                 variant="flat"
                 className="mt-3"
-                onPress={fetchStadiums}
+                onPress={() => refetch()}
               >
                 {t('pages.stadiums.results.error.retry')}
               </Button>
@@ -237,25 +206,25 @@ const scrollToFilters = useCallback(() => {
           )}
 
           {/* Loading State */}
-          {loading ? (
+          {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 12 }).map((_, i) => (
                 <StadiumCardSkeleton key={i} />
               ))}
             </div>
-          ) : stadiums.length > 0 ? (
+          ) : data?.stadiums && data.stadiums.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {stadiums.map((stadium) => (
+                {data.stadiums.map((stadium) => (
                   <StadiumCard key={stadium.id} stadium={stadium} />
                 ))}
               </div>
               
               {/* Pagination */}
-              {pagination.totalPages > 1 && (
+              {data.pagination.totalPages > 1 && (
                 <div className="flex justify-center mt-8">
                   <Pagination
-                    total={pagination.totalPages}
+                    total={data.pagination.totalPages}
                     page={page}
                     onChange={handlePageChange}
                     showControls
@@ -271,7 +240,7 @@ const scrollToFilters = useCallback(() => {
                 </div>
               )}
             </>
-          ) : !error ? (
+          ) : !errorMessage ? (
             <div className="text-center py-16">
               <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center 
               rounded-full bg-gray-100 dark:bg-zinc-800">
@@ -286,13 +255,7 @@ const scrollToFilters = useCallback(() => {
               <Button
                 color="primary"
                 variant="flat"
-                onPress={() => {
-                  setName('')
-                  setSportsId([])
-                  setPage(1)
-                  // Scroll to top after resetting filters
-                  scrollToFilters()
-                }}
+                onPress={handleResetFilters}
               >
                 {t('pages.stadiums.results.noResults.resetFilters')}
               </Button>

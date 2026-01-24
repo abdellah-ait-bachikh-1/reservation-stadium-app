@@ -1,4 +1,3 @@
-// StadiumsShowcase.tsx
 "use client"
 
 import { Button } from "@heroui/button"
@@ -6,7 +5,7 @@ import { HiArrowRight } from "react-icons/hi2"
 import { useTypedTranslations } from "@/utils/i18n"
 import { useLocale } from "next-intl"
 import { Link } from "@/i18n/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectFlip, Pagination, Navigation, EffectCoverflow, Autoplay } from 'swiper/modules'
 // Import Swiper styles
@@ -22,6 +21,7 @@ import { Chip } from "@heroui/chip"
 import { Tooltip } from "@heroui/tooltip"
 import AnimatedOnView from "@/components/AnimatedOnView"
 import { Skeleton } from "@heroui/skeleton"
+import { useQuery } from "@tanstack/react-query"
 
 interface Sport {
   id: string;
@@ -40,6 +40,7 @@ interface Stadium {
   image: string | null;
   sports: Sport[];
 }
+
 const StadiumCardSkeleton = ({ locale }: { locale: string }) => {
   return (
     <div>
@@ -85,6 +86,7 @@ const StadiumCardSkeleton = ({ locale }: { locale: string }) => {
     </div>
   );
 };
+
 // Stadium Card Component without prices
 const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) => {
   const t = useTypedTranslations();
@@ -230,11 +232,32 @@ const StadiumCard = ({ stadium, locale }: { stadium: Stadium; locale: string }) 
 export function StadiumsShowcase() {
   const t = useTypedTranslations()
   const locale = useLocale()
-  const [stadiums, setStadiums] = useState<Stadium[]>([])
-  const [loading, setLoading] = useState(true)
-
   const progressCircle = useRef<SVGCircleElement>(null);
   const progressContent = useRef<HTMLSpanElement>(null);
+
+  // React Query for fetching stadiums
+  const { data: stadiumsData, isLoading, error } = useQuery({
+    queryKey: ['featured-stadiums'],
+    queryFn: async () => {
+      const response = await fetch(`/api/public/stadiums?page=1&limit=10`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data.stadiums || [] as Stadium[]
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    retry: 1,
+    retryDelay: 1000,
+  })
+
+  // Handle errors if needed
+  if (error) {
+    console.error('Error fetching stadiums:', error)
+  }
 
   const onAutoplayTimeLeft = (s: any, time: number, progress: number) => {
     if (progressCircle.current) {
@@ -245,26 +268,7 @@ export function StadiumsShowcase() {
     }
   };
 
-  useEffect(() => {
-    const fetchStadiums = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch(`/api/public/stadiums?page=1&limit=10`)
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-        setStadiums(data.stadiums || [])
-      } catch (err) {
-        console.error('Error fetching stadiums:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchStadiums()
-  }, [])
+  const stadiums = stadiumsData || []
 
   return (
     <section className="py-20 md:py-32 relative overflow-hidden">
@@ -382,7 +386,7 @@ export function StadiumsShowcase() {
           {/* Right Content - Swiper */}
           <AnimatedOnView >
             <div className="w-full h-150 lg:h-175 flex items-center justify-center relative">
-              {loading ? (
+              {isLoading ? (
                 <div className="w-full h-full relative">
                   <div className="w-full h-full flex items-center justify-center p-2">
                     <div className="w-[320px] h-125">
@@ -420,7 +424,7 @@ export function StadiumsShowcase() {
                     className="stadiumSwiper h-full"
                     onAutoplayTimeLeft={onAutoplayTimeLeft}
                   >
-                    {stadiums && stadiums.map((stadium) => (
+                    {stadiums.map((stadium:Stadium) => (
                       <SwiperSlide key={stadium.id} className="w-auto! h-auto!">
                         <div className="w-full h-full flex items-center justify-center p-2">
                           <div className="w-[320px] h-125">
@@ -446,7 +450,6 @@ export function StadiumsShowcase() {
                 </div>
               )}
               <div className="absolute -bottom-6 -right-8 w-32 h-32 bg-amber-500/30 rounded-full blur-2xl" />
-           
             </div>
           </AnimatedOnView>
         </div>
