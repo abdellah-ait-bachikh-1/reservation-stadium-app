@@ -96,6 +96,8 @@ export interface DashboardStats {
   totalClubs: number;
   totalStadiums: number;
   totalUsers: number;
+    newClubsThisYear: number; // Add this
+  newUsersThisYear: number; // Add this
   subscriptions: number;
   overduePayments: number;
   newClubsThisMonth: number;
@@ -161,6 +163,7 @@ export async function getDashboardData(year: number = new Date().getFullYear()) 
 
 
 // Get all dashboard statistics
+// Get all dashboard statistics
 export async function getDashboardStats(year: number): Promise<DashboardStats> {
   const currentDate = new Date();
   const startOfCurrentMonth = startOfMonth(currentDate);
@@ -173,19 +176,21 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
 
   // Execute all queries in parallel for better performance
   const [
-    // YEAR-FILTERED QUERIES (for the first 6 cards)
+    // YEAR-FILTERED QUERIES (most stats)
     totalReservationsResult,
     activeReservationsResult,
     pendingReservationsResult,
     totalClubsResult,
+    newClubsThisYearResult, // YEAR-FILTERED: New Clubs this year
+    newUsersThisYearResult, // YEAR-FILTERED: New Users this year
+    
+    // ALL-TIME QUERIES (these should NOT be year-filtered)
     totalStadiumsResult,
     totalUsersResult,
-    
-    // OTHER QUERIES (not year-filtered or differently filtered)
     subscriptionsResult,
     overduePaymentsResult,
-    newClubsThisMonthResult,
-    newUsersThisMonthResult
+    newClubsThisMonthResult, // This is current month (not year)
+    newUsersThisMonthResult  // This is current month (not year)
   ] = await Promise.all([
     // Total Reservations (FILTERED BY YEAR)
     db.select({ count: count() })
@@ -198,7 +203,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // Active Reservations (reservations happening today or in the future) - FILTERED BY YEAR
+    // Active Reservations (FILTERED BY YEAR)
     db.select({ count: count() })
       .from(reservations)
       .where(
@@ -211,7 +216,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // Pending Reservations - FILTERED BY YEAR
+    // Pending Reservations (FILTERED BY YEAR)
     db.select({ count: count() })
       .from(reservations)
       .where(
@@ -233,20 +238,37 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // Total Stadiums - ALL TIME (not year-filtered)
+    // NEW: New Clubs this year (YEAR-FILTERED - this is what you want)
     db.select({ count: count() })
-      .from(stadiums)
-      .where(isNull(stadiums.deletedAt)),
+      .from(clubs)
+      .where(
+        and(
+          isNull(clubs.deletedAt),
+          gte(clubs.createdAt, startOfYearDate.toISOString()),
+          lte(clubs.createdAt, endOfYearDate.toISOString())
+        )
+      ),
 
-    // Total Users - FILTERED BY YEAR (users created up to this year)
+    // NEW: New Users this year (YEAR-FILTERED - this is what you want)
     db.select({ count: count() })
       .from(users)
       .where(
         and(
           isNull(users.deletedAt),
+          gte(users.createdAt, startOfYearDate.toISOString()),
           lte(users.createdAt, endOfYearDate.toISOString())
         )
       ),
+
+    // Total Stadiums - ALL TIME (NOT year-filtered)
+    db.select({ count: count() })
+      .from(stadiums)
+      .where(isNull(stadiums.deletedAt)),
+
+    // Total Users - ALL TIME (NOT year-filtered)
+    db.select({ count: count() })
+      .from(users)
+      .where(isNull(users.deletedAt)),
 
     // Active Subscriptions - ALL TIME (not year-filtered)
     db.select({ count: count() })
@@ -263,7 +285,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // New Clubs this month - FILTERED BY CURRENT MONTH (not year-filtered for month)
+    // New Clubs this month - CURRENT MONTH (not year-filtered)
     db.select({ count: count() })
       .from(clubs)
       .where(
@@ -274,7 +296,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // New Users this month - FILTERED BY CURRENT MONTH (not year-filtered for month)
+    // New Users this month - CURRENT MONTH (not year-filtered)
     db.select({ count: count() })
       .from(users)
       .where(
@@ -298,11 +320,12 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     overduePayments: number;
     newClubsThisMonth: number;
     newUsersThisMonth: number;
+      newClubsThisYear: number; // Add this
+  newUsersThisYear: number; // Add this
     avgUtilization: number;
     completionRate: number;
   }> => {
     if (previousYear < 2025) {
-      // Return zeros if previous year is before 2025 (first year of data)
       return {
         totalReservations: 0,
         activeReservations: 0,
@@ -314,6 +337,8 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         overduePayments: 0,
         newClubsThisMonth: 0,
         newUsersThisMonth: 0,
+            newClubsThisYear:  0,
+    newUsersThisYear:  0,
         avgUtilization: 0,
         completionRate: 0
       };
@@ -328,7 +353,8 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
       activeReservationsPreviousResult,
       pendingReservationsPreviousResult,
       totalClubsPreviousResult,
-      totalUsersPreviousResult,
+      newClubsPreviousYearResult, // Previous year's new clubs
+      newUsersPreviousYearResult, // Previous year's new users
       overduePaymentsPreviousResult
     ] = await Promise.all([
       // Total Reservations previous year
@@ -376,12 +402,24 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
           )
         ),
       
-      // Total Users previous year
+      // New Clubs previous year (YEAR-FILTERED)
+      db.select({ count: count() })
+        .from(clubs)
+        .where(
+          and(
+            isNull(clubs.deletedAt),
+            gte(clubs.createdAt, startOfPreviousYear.toISOString()),
+            lte(clubs.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // New Users previous year (YEAR-FILTERED)
       db.select({ count: count() })
         .from(users)
         .where(
           and(
             isNull(users.deletedAt),
+            gte(users.createdAt, startOfPreviousYear.toISOString()),
             lte(users.createdAt, endOfPreviousYear.toISOString())
           )
         ),
@@ -424,13 +462,16 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
       pendingReservations: pendingReservationsPreviousResult[0]?.count || 0,
       totalClubs: totalClubsPreviousResult[0]?.count || 0,
       totalStadiums: totalStadiumsResult[0]?.count || 0, // Stadiums are all-time
-      totalUsers: totalUsersPreviousResult[0]?.count || 0,
+      totalUsers: totalUsersResult[0]?.count || 0, // Users are all-time
       subscriptions: 0, // Simplified - subscriptions are all-time
       overduePayments: overduePaymentsPreviousResult[0]?.count || 0,
       newClubsThisMonth: 0, // Simplified
       newUsersThisMonth: 0, // Simplified
       avgUtilization: avgUtilizationPrevious,
-      completionRate: completionRatePrevious
+      completionRate: completionRatePrevious,
+          newClubsThisYear: newClubsPreviousYearResult[0]?.count || 0,
+    newUsersThisYear: newUsersPreviousYearResult[0]?.count || 0,
+    // Previous year's new users
     };
   };
 
@@ -476,12 +517,14 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     activeReservations: activeReservationsResult[0]?.count || 0,
     pendingReservations: pendingReservationsResult[0]?.count || 0,
     totalClubs: totalClubsResult[0]?.count || 0,
-    totalStadiums: totalStadiums || 0,
-    totalUsers: totalUsersResult[0]?.count || 0,
+    totalStadiums: totalStadiumsResult[0]?.count || 0, // ALL TIME
+    totalUsers: totalUsersResult[0]?.count || 0, // ALL TIME
     subscriptions: subscriptionsResult[0]?.count || 0,
     overduePayments: overduePaymentsResult[0]?.count || 0,
-    newClubsThisMonth: newClubsThisMonthResult[0]?.count || 0,
-    newUsersThisMonth: newUsersThisMonthResult[0]?.count || 0,
+    newClubsThisMonth: newClubsThisMonthResult[0]?.count || 0, // Current month
+    newUsersThisMonth: newUsersThisMonthResult[0]?.count || 0, // Current month
+    newClubsThisYear: newClubsThisYearResult[0]?.count || 0, // YEAR-FILTERED
+    newUsersThisYear: newUsersThisYearResult[0]?.count || 0, // YEAR-FILTERED
     avgUtilization: avgUtilization || 0,
     completionRate: completionRate || 0,
     changes: {
@@ -495,12 +538,11 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
       overduePaymentsChange: calculateAbsoluteChange(overduePaymentsResult[0]?.count || 0, previousYearData.overduePayments),
       avgUtilizationChange: calculateChange(avgUtilization, previousYearData.avgUtilization),
       completionRateChange: calculateChange(completionRate, previousYearData.completionRate),
-      newClubsChange: calculateAbsoluteChange(newClubsThisMonthResult[0]?.count || 0, previousYearData.newClubsThisMonth),
-      newUsersChange: calculateChange(newUsersThisMonthResult[0]?.count || 0, previousYearData.newUsersThisMonth)
+      newClubsChange: calculateAbsoluteChange(newClubsThisYearResult[0]?.count || 0, previousYearData.newClubsThisYear || 0),
+      newUsersChange: calculateChange(newUsersThisYearResult[0]?.count || 0, previousYearData.newUsersThisYear || 0)
     }
   };
 }
-
 // Get recent activity from notifications and recent actions
 export async function getRecentActivity(year: number): Promise<RecentActivity[]> {
   try {

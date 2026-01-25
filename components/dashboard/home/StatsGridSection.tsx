@@ -27,6 +27,8 @@ interface Stats {
   overduePayments: number;
   newClubsThisMonth: number;
   newUsersThisMonth: number;
+  newClubsThisYear: number; // ADDED: Year-filtered new clubs
+  newUsersThisYear: number; // ADDED: Year-filtered new users
   avgUtilization: number;
   completionRate: number;
   changes?: {
@@ -50,7 +52,7 @@ interface StatsGridSectionProps {
   currentYear: number;
 }
 
-export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
+export default  function StatsGridSection({ stats, currentYear }: StatsGridSectionProps) {
   const t =  useTypedTranslations();
 
   // Prepare stat cards with dynamic changes
@@ -62,7 +64,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.totalReservationsChange || "", // Dynamic from backend
       icon: <HiCalendar className="w-5 h-5" />,
       color: "blue",
-      description: t("pages.dashboard.home.stats.totalReservations.description")
+      description: t("pages.dashboard.home.stats.totalReservations.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.activeReservations.title"),
@@ -70,7 +72,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.activeReservationsChange || "", // Dynamic from backend
       icon: <HiClock className="w-5 h-5" />,
       color: "green",
-      description: t("pages.dashboard.home.stats.activeReservations.description")
+      description: t("pages.dashboard.home.stats.activeReservations.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.pendingReservations.title"),
@@ -78,7 +80,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.pendingReservationsChange || "", // Dynamic from backend
       icon: <HiExclamation className="w-5 h-5" />,
       color: "yellow",
-      description: t("pages.dashboard.home.stats.pendingReservations.description")
+      description: t("pages.dashboard.home.stats.pendingReservations.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.totalClubs.title"),
@@ -86,7 +88,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.totalClubsChange || "", // Dynamic from backend
       icon: <HiOfficeBuilding className="w-5 h-5" />,
       color: "purple",
-      description: t("pages.dashboard.home.stats.totalClubs.description")
+      description: t("pages.dashboard.home.stats.totalClubs.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.totalStadiums.title"),
@@ -94,7 +96,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.totalStadiumsChange || "", // Dynamic from backend
       icon: <HiHome className="w-5 h-5" />,
       color: "orange",
-      description: t("pages.dashboard.home.stats.totalStadiums.description")
+      description: t("pages.dashboard.home.stats.totalStadiums.description") // ALL TIME
     },
     {
       title: t("pages.dashboard.home.stats.totalUsers.title"),
@@ -102,7 +104,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.totalUsersChange || "", // Dynamic from backend
       icon: <HiUserGroup className="w-5 h-5" />,
       color: "cyan",
-      description: t("pages.dashboard.home.stats.totalUsers.description")
+      description: t("pages.dashboard.home.stats.totalUsers.description") // ALL TIME
     },
 
     // User management and subscription stats - Now 6 cards for even distribution
@@ -120,7 +122,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.overduePaymentsChange || "", // Dynamic from backend
       icon: <HiCash className="w-5 h-5" />,
       color: "red",
-      description: t("pages.dashboard.home.stats.overduePayments.description")
+      description: t("pages.dashboard.home.stats.overduePayments.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.avgUtilization.title"),
@@ -128,7 +130,7 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.avgUtilizationChange || "", // Dynamic from backend
       icon: <HiChartBar className="w-5 h-5" />,
       color: "teal",
-      description: t("pages.dashboard.home.stats.avgUtilization.description")
+      description: t("pages.dashboard.home.stats.avgUtilization.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.completionRate.title"),
@@ -136,27 +138,28 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
       change: stats.changes?.completionRateChange || "", // Dynamic from backend
       icon: <HiCheckCircle className="w-5 h-5" />,
       color: "emerald",
-      description: t("pages.dashboard.home.stats.completionRate.description")
+      description: t("pages.dashboard.home.stats.completionRate.description", { year: currentYear })
     },
-    // Added two more cards to make it 6 per row
+    // Added two more cards to make it 6 per row - NOW YEAR-FILTERED
     {
       title: t("pages.dashboard.home.stats.newClubs.title"),
-      value: stats.newClubsThisMonth.toLocaleString(),
+      value: stats.newClubsThisYear.toLocaleString(), // CHANGED: Use year-filtered data
       change: stats.changes?.newClubsChange || "", // Dynamic from backend
       icon: <HiOfficeBuilding className="w-5 h-5" />,
       color: "pink",
-      description: t("pages.dashboard.home.stats.newClubs.description")
+      description: t("pages.dashboard.home.stats.newClubs.description", { year: currentYear })
     },
     {
       title: t("pages.dashboard.home.stats.newUsers.title"),
-      value: stats.newUsersThisMonth.toLocaleString(),
+      value: stats.newUsersThisYear.toLocaleString(), // CHANGED: Use year-filtered data
       change: stats.changes?.newUsersChange || "", // Dynamic from backend
       icon: <HiUserGroup className="w-5 h-5" />,
       color: "amber",
-      description: t("pages.dashboard.home.stats.newUsers.description")
+      description: t("pages.dashboard.home.stats.newUsers.description", { year: currentYear })
     }
   ];
 
+  // Rest of the component remains the same...
   return (
     <>
       {/* First Row - 6 cards for even distribution */}

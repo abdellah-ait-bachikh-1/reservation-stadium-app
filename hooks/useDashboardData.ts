@@ -16,8 +16,24 @@ export interface DashboardData {
     overduePayments: number;
     newClubsThisMonth: number;
     newUsersThisMonth: number;
+    newClubsThisYear: number; // ADD THIS
+    newUsersThisYear: number; // ADD THIS
     avgUtilization: number;
     completionRate: number;
+    changes?: { // ADD THIS OPTIONAL CHANGES OBJECT
+      totalReservationsChange?: string;
+      activeReservationsChange?: string;
+      pendingReservationsChange?: string;
+      totalClubsChange?: string;
+      totalStadiumsChange?: string;
+      totalUsersChange?: string;
+      subscriptionsChange?: string;
+      overduePaymentsChange?: string;
+      avgUtilizationChange?: string;
+      completionRateChange?: string;
+      newClubsChange?: string;
+      newUsersChange?: string;
+    };
   };
   recentActivity: Array<{
     id: string;
