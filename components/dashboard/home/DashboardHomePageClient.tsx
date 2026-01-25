@@ -12,15 +12,12 @@ import {
     HiCalendar,
     HiCash,
     HiChartBar,
-    HiChartPie,
-    HiCheckCircle,
     HiClock,
     HiCollection,
     HiCreditCard,
     HiCurrencyDollar,
     HiExclamation,
     HiHome,
-    HiLibrary,
     HiOfficeBuilding,
     HiPlus,
     HiTrendingUp,
@@ -30,7 +27,7 @@ import {
     HiArrowUp,
     HiArrowDown,
     HiCheck,
-    HiX
+
 } from "react-icons/hi";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";

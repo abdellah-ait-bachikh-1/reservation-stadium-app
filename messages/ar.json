@@ -586,6 +586,14 @@
           "overduePayments": {
             "title": "المدفوعات المتأخرة",
             "description": "تتطلب اهتمامًا"
+          },
+          "avgUtilization": {
+            "title": "متوسط الاستخدام",
+            "description": "معدل استخدام الملاعب"
+          },
+          "completionRate": {
+            "title": "معدل الإنجاز",
+            "description": "معدل نجاح الحجوزات"
           }
         },
         "quickActions": {
@@ -645,11 +653,23 @@
             "description": "معدلات استخدام الملاعب"
           }
         },
-        "tabs": {
-          "overview": "نظرة عامة",
-          "reservations": "الحجوزات",
-          "financial": "مالي",
-          "analytics": "تحليلات"
+        "revenueTrends": {
+          "title": "اتجاهات الإيرادات",
+          "description": "تفصيل الإيرادات الشهرية حسب النوع",
+          "totalRevenue": "إجمالي الإيرادات",
+          "subscription": "الاشتراكات",
+          "singleSession": "الجلسات الفردية",
+          "paid": "المدفوع",
+          "overdue": "المتأخر",
+          "vsLastMonth": "مقارنة بالشهر الماضي",
+          "ofTotal": "من الإجمالي",
+          "collected": "محصل",
+          "outstanding": "مستحق",
+          "legend": {
+            "toggle": "تبديل الخطوط",
+            "showAll": "عرض الكل",
+            "hideAll": "إخفاء الكل"
+          }
         }
       }
     }
@@ -881,47 +901,49 @@
       "notifications": "الإشعارات",
       "profile": "الملف الشخصي",
       "logout": "تسجيل الخروج"
-    }, "currency": {
-    "symbol": "درهم",
-    "name": "الدرهم المغربي"
-  },
-  "months": {
-    "short": {
-      "jan": "يناير",
-      "feb": "فبراير",
-      "mar": "مارس",
-      "apr": "أبريل",
-      "may": "ماي",
-      "jun": "يونيو",
-      "jul": "يوليوز",
-      "aug": "غشت",
-      "sep": "شتنبر",
-      "oct": "أكتوبر",
-      "nov": "نونبر",
-      "dec": "دجنبر"
     },
-    "full": {
-      "january": "يناير",
-      "february": "فبراير",
-      "march": "مارس",
-      "april": "أبريل",
-      "may": "ماي",
-      "june": "يونيو",
-      "july": "يوليوز",
-      "august": "غشت",
-      "september": "شتنبر",
-      "october": "أكتوبر",
-      "november": "نونبر",
-      "december": "دجنبر"
-    }},
-   "time": {
-    "justNow": "الآن",
-    "minutesAgo": "منذ {count} دقيقة",
-    "hoursAgo": "منذ {count} ساعة",
-    "daysAgo": "منذ {count} يوم",
-    "weeksAgo": "منذ {count} أسبوع",
-    "monthsAgo": "منذ {count} شهر",
-    "yearsAgo": "منذ {count} سنة"
-  }
+    "currency": {
+      "symbol": "درهم",
+      "name": "الدرهم المغربي"
+    },
+    "months": {
+      "short": {
+        "jan": "يناير",
+        "feb": "فبراير",
+        "mar": "مارس",
+        "apr": "أبريل",
+        "may": "ماي",
+        "jun": "يونيو",
+        "jul": "يوليوز",
+        "aug": "غشت",
+        "sep": "شتنبر",
+        "oct": "أكتوبر",
+        "nov": "نونبر",
+        "dec": "دجنبر"
+      },
+      "full": {
+        "january": "يناير",
+        "february": "فبراير",
+        "march": "مارس",
+        "april": "أبريل",
+        "may": "ماي",
+        "june": "يونيو",
+        "july": "يوليوز",
+        "august": "غشت",
+        "september": "شتنبر",
+        "october": "أكتوبر",
+        "november": "نونبر",
+        "december": "دجنبر"
+      }
+    },
+    "time": {
+      "justNow": "الآن",
+      "minutesAgo": "منذ {count} دقيقة",
+      "hoursAgo": "منذ {count} ساعة",
+      "daysAgo": "منذ {count} يوم",
+      "weeksAgo": "منذ {count} أسبوع",
+      "monthsAgo": "منذ {count} شهر",
+      "yearsAgo": "منذ {count} سنة"
+    }
   }
 }

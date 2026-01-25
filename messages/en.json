@@ -586,6 +586,14 @@
           "overduePayments": {
             "title": "Overdue Payments",
             "description": "Require attention"
+          },
+          "avgUtilization": {
+            "title": "Avg Utilization",
+            "description": "Stadium usage rate"
+          },
+          "completionRate": {
+            "title": "Completion Rate",
+            "description": "Reservation success rate"
           }
         },
         "quickActions": {
@@ -645,11 +653,23 @@
             "description": "Stadium usage rates"
           }
         },
-        "tabs": {
-          "overview": "Overview",
-          "reservations": "Reservations",
-          "financial": "Financial",
-          "analytics": "Analytics"
+        "revenueTrends": {
+          "title": "Revenue Trends",
+          "description": "Monthly revenue breakdown by type",
+          "totalRevenue": "Total Revenue",
+          "subscription": "Subscription",
+          "singleSession": "Single Session",
+          "paid": "Paid",
+          "overdue": "Overdue",
+          "vsLastMonth": "vs last month",
+          "ofTotal": "of total",
+          "collected": "collected",
+          "outstanding": "outstanding",
+          "legend": {
+            "toggle": "Toggle lines",
+            "showAll": "Show all",
+            "hideAll": "Hide all"
+          }
         }
       },
       "notifications": {}
@@ -917,14 +937,14 @@
         "december": "December"
       }
     },
-     "time": {
-    "justNow": "Just now",
-    "minutesAgo": "{count} min ago",
-    "hoursAgo": "{count} hours ago",
-    "daysAgo": "{count} days ago",
-    "weeksAgo": "{count} weeks ago",
-    "monthsAgo": "{count} months ago",
-    "yearsAgo": "{count} years ago"
-  }
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} hours ago",
+      "daysAgo": "{count} days ago",
+      "weeksAgo": "{count} weeks ago",
+      "monthsAgo": "{count} months ago",
+      "yearsAgo": "{count} years ago"
+    }
   }
 }

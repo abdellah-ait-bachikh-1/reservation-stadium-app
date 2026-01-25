@@ -1,8 +1,14 @@
 // app/dashboard/home/page.tsx
-import DashboardHomePageClient from "@/components/dashboard/home/DashboardHomePageClient";
+
+import ChartsSection from "@/components/dashboard/home/BarChartSection";
+import DashboardHeader from "@/components/dashboard/home/DashboardHeader";
+import QuickActionsSection from "@/components/dashboard/home/QuickActionsSection";
+import RecentActivitySection from "@/components/dashboard/home/RecentActivitySection";
+import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
+import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
+import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
 import { redirect } from "@/i18n/navigation";
 import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
-
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -31,8 +37,7 @@ const getDashboardData = () => {
       totalClubs: 89,
       totalStadiums: 15,
       totalUsers: 156,
-      totalRevenue: 245850,
-      monthlyRevenue: 38420,
+
       subscriptions: 32,
       overduePayments: 8,
     },
@@ -160,6 +165,116 @@ const getDashboardData = () => {
       { name: "Youth Center", usage: 65 },
       { name: "City Stadium", usage: 88 },
     ],
+     revenueTrends: [
+      {
+        month: "Jan",
+        totalRevenue: 28500,
+        subscriptionRevenue: 17100,
+        singleSessionRevenue: 11400,
+        paidAmount: 25000,
+        overdueAmount: 3500,
+        collectionRate: 88
+      },
+      {
+        month: "Feb",
+        totalRevenue: 31200,
+        subscriptionRevenue: 18720,
+        singleSessionRevenue: 12480,
+        paidAmount: 28000,
+        overdueAmount: 3200,
+        collectionRate: 90
+      },
+      {
+        month: "Mar",
+        totalRevenue: 27800,
+        subscriptionRevenue: 16680,
+        singleSessionRevenue: 11120,
+        paidAmount: 24000,
+        overdueAmount: 3800,
+        collectionRate: 86
+      },
+      {
+        month: "Apr",
+        totalRevenue: 35500,
+        subscriptionRevenue: 21300,
+        singleSessionRevenue: 14200,
+        paidAmount: 32000,
+        overdueAmount: 3500,
+        collectionRate: 90
+      },
+      {
+        month: "May",
+        totalRevenue: 42800,
+        subscriptionRevenue: 25680,
+        singleSessionRevenue: 17120,
+        paidAmount: 40000,
+        overdueAmount: 2800,
+        collectionRate: 93
+      },
+      {
+        month: "Jun",
+        totalRevenue: 48500,
+        subscriptionRevenue: 29100,
+        singleSessionRevenue: 19400,
+        paidAmount: 46000,
+        overdueAmount: 2500,
+        collectionRate: 95
+      },
+      {
+        month: "Jul",
+        totalRevenue: 53200,
+        subscriptionRevenue: 31920,
+        singleSessionRevenue: 21280,
+        paidAmount: 51000,
+        overdueAmount: 2200,
+        collectionRate: 96
+      },
+      {
+        month: "Aug",
+        totalRevenue: 51200,
+        subscriptionRevenue: 30720,
+        singleSessionRevenue: 20480,
+        paidAmount: 49000,
+        overdueAmount: 2200,
+        collectionRate: 96
+      },
+      {
+        month: "Sep",
+        totalRevenue: 47800,
+        subscriptionRevenue: 28680,
+        singleSessionRevenue: 19120,
+        paidAmount: 46000,
+        overdueAmount: 1800,
+        collectionRate: 96
+      },
+      {
+        month: "Oct",
+        totalRevenue: 41500,
+        subscriptionRevenue: 24900,
+        singleSessionRevenue: 16600,
+        paidAmount: 40000,
+        overdueAmount: 1500,
+        collectionRate: 96
+      },
+      {
+        month: "Nov",
+        totalRevenue: 36800,
+        subscriptionRevenue: 22080,
+        singleSessionRevenue: 14720,
+        paidAmount: 35000,
+        overdueAmount: 1800,
+        collectionRate: 95
+      },
+      {
+        month: "Dec",
+        totalRevenue: 32500,
+        subscriptionRevenue: 19500,
+        singleSessionRevenue: 13000,
+        paidAmount: 31000,
+        overdueAmount: 1500,
+        collectionRate: 95
+      },
+    ],
   };
 };
 
@@ -176,19 +291,53 @@ const DashboardPage = async ({
     redirect({ locale: locale, href: "/auth/login" });
   }
 
-  // Get static data (can be replaced with database queries)
+  // Get static data
   const dashboardData = getDashboardData();
+  const currentYear = new Date().getFullYear();
 
   return (
-    <>
-      {authenticatedUser && (
-        <DashboardHomePageClient
-          user={authenticatedUser}
-          initialData={dashboardData}
-          currentYear={new Date().getFullYear()}
+    <div className="p-4 md:p-6">
+      {/* Header with Year Filter - Client Component */}
+      {authenticatedUser && <DashboardHeader
+        user={authenticatedUser}
+        currentYear={currentYear}
+      />}
+
+      {/* Quick Actions - Server Component */}
+      <QuickActionsSection />
+
+      {/* Stats Grid - Server Component */}
+      <StatsGridSection
+        stats={dashboardData.stats}
+        currentYear={currentYear}
+      />
+
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Activity - Client Component */}
+        <RecentActivitySection
+          activities={dashboardData.recentActivity}
         />
-      )}
-    </>
+
+        {/* Upcoming Reservations - Client Component */}
+        <UpcomingReservationsSection
+          reservations={dashboardData.upcomingReservations}
+        />
+      </div>
+
+      {/* Charts Section - Client Component */}
+      <ChartsSection
+        stadiumUtilization={dashboardData.stadiumUtilization}
+        revenueByMonth={dashboardData.revenueByMonth}
+        currentYear={currentYear}
+      />
+      <div className="mt-6">
+        <RevenueTrendsChart
+          monthlyData={dashboardData.revenueTrends}
+          currentYear={currentYear}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -586,6 +586,14 @@
           "overduePayments": {
             "title": "Paiements En Retard",
             "description": "Nécessitent attention"
+          },
+          "avgUtilization": {
+            "title": "Utilisation Moyenne",
+            "description": "Taux d'utilisation des stades"
+          },
+          "completionRate": {
+            "title": "Taux de Réussite",
+            "description": "Taux de réussite des réservations"
           }
         },
         "quickActions": {
@@ -645,11 +653,23 @@
             "description": "Taux d'utilisation des stades"
           }
         },
-        "tabs": {
-          "overview": "Aperçu",
-          "reservations": "Réservations",
-          "financial": "Financier",
-          "analytics": "Analytique"
+        "revenueTrends": {
+          "title": "Tendances des Revenus",
+          "description": "Répartition mensuelle des revenus par type",
+          "totalRevenue": "Revenu Total",
+          "subscription": "Abonnements",
+          "singleSession": "Sessions Uniques",
+          "paid": "Payé",
+          "overdue": "En Retard",
+          "vsLastMonth": "par rapport au mois dernier",
+          "ofTotal": "du total",
+          "collected": "collecté",
+          "outstanding": "en attente",
+          "legend": {
+            "toggle": "Basculer les lignes",
+            "showAll": "Afficher tout",
+            "hideAll": "Masquer tout"
+          }
         }
       }
     }
@@ -881,47 +901,49 @@
       "notifications": "Notifications",
       "profile": "Profil",
       "logout": "Déconnexion"
-    },  "currency": {
-    "symbol": "DH",
-    "name": "Dirham Marocain"
-  },
-  "months": {
-    "short": {
-      "jan": "Janv",
-      "feb": "Févr",
-      "mar": "Mars",
-      "apr": "Avr",
-      "may": "Mai",
-      "jun": "Juin",
-      "jul": "Juil",
-      "aug": "Août",
-      "sep": "Sept",
-      "oct": "Oct",
-      "nov": "Nov",
-      "dec": "Déc"
     },
-    "full": {
-      "january": "Janvier",
-      "february": "Février",
-      "march": "Mars",
-      "april": "Avril",
-      "may": "Mai",
-      "june": "Juin",
-      "july": "Juillet",
-      "august": "Août",
-      "september": "Septembre",
-      "october": "Octobre",
-      "november": "Novembre",
-      "december": "Décembre"
+    "currency": {
+      "symbol": "DH",
+      "name": "Dirham Marocain"
+    },
+    "months": {
+      "short": {
+        "jan": "Janv",
+        "feb": "Févr",
+        "mar": "Mars",
+        "apr": "Avr",
+        "may": "Mai",
+        "jun": "Juin",
+        "jul": "Juil",
+        "aug": "Août",
+        "sep": "Sept",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Déc"
+      },
+      "full": {
+        "january": "Janvier",
+        "february": "Février",
+        "march": "Mars",
+        "april": "Avril",
+        "may": "Mai",
+        "june": "Juin",
+        "july": "Juillet",
+        "august": "Août",
+        "september": "Septembre",
+        "october": "Octobre",
+        "november": "Novembre",
+        "december": "Décembre"
+      }
+    },
+    "time": {
+      "justNow": "À l'instant",
+      "minutesAgo": "Il y a {count} min",
+      "hoursAgo": "Il y a {count} heures",
+      "daysAgo": "Il y a {count} jours",
+      "weeksAgo": "Il y a {count} semaines",
+      "monthsAgo": "Il y a {count} mois",
+      "yearsAgo": "Il y a {count} ans"
     }
-  },"time": {
-    "justNow": "À l'instant",
-    "minutesAgo": "Il y a {count} min",
-    "hoursAgo": "Il y a {count} heures",
-    "daysAgo": "Il y a {count} jours",
-    "weeksAgo": "Il y a {count} semaines",
-    "monthsAgo": "Il y a {count} mois",
-    "yearsAgo": "Il y a {count} ans"
-  }
   }
 }
