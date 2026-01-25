@@ -170,6 +170,12 @@ export type TranslationKey =
     | 'common.notifications.total'
     | 'common.notifications.unread'
     | 'common.notifications.viewAll'
+    | 'common.status.approved'
+    | 'common.status.cancelled'
+    | 'common.status.declined'
+    | 'common.status.paid'
+    | 'common.status.pending'
+    | 'common.status.unpaid'
     | 'common.theme.dark'
     | 'common.theme.description.dark'
     | 'common.theme.description.light'
@@ -411,19 +417,17 @@ export type TranslationKey =
     | 'pages.contact.metadata.description'
     | 'pages.contact.metadata.keywords'
     | 'pages.contact.metadata.title'
-    | 'pages.dashboard.home.charts.avgMonthly'
-    | 'pages.dashboard.home.charts.legend.high'
-    | 'pages.dashboard.home.charts.legend.low'
-    | 'pages.dashboard.home.charts.legend.medium'
-    | 'pages.dashboard.home.charts.maxRevenue'
-    | 'pages.dashboard.home.charts.reservationsByMonth.description'
-    | 'pages.dashboard.home.charts.reservationsByMonth.title'
-    | 'pages.dashboard.home.charts.revenue'
-    | 'pages.dashboard.home.charts.revenueByMonth.description'
-    | 'pages.dashboard.home.charts.revenueByMonth.title'
+    | 'pages.dashboard.home.charts.reservationsByStatus.approvalRate'
+    | 'pages.dashboard.home.charts.reservationsByStatus.count'
+    | 'pages.dashboard.home.charts.reservationsByStatus.description'
+    | 'pages.dashboard.home.charts.reservationsByStatus.noData'
+    | 'pages.dashboard.home.charts.reservationsByStatus.pending'
+    | 'pages.dashboard.home.charts.reservationsByStatus.title'
+    | 'pages.dashboard.home.charts.reservationsByStatus.total'
+    | 'pages.dashboard.home.charts.reservationsByStatus.totalReservations'
     | 'pages.dashboard.home.charts.stadiumUtilization.description'
+    | 'pages.dashboard.home.charts.stadiumUtilization.noData'
     | 'pages.dashboard.home.charts.stadiumUtilization.title'
-    | 'pages.dashboard.home.charts.totalYear'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
     | 'pages.dashboard.home.quickActions.addStadium'
@@ -435,18 +439,9 @@ export type TranslationKey =
     | 'pages.dashboard.home.quickActions.viewPayments'
     | 'pages.dashboard.home.recentActivity.noActivity'
     | 'pages.dashboard.home.recentActivity.title'
-    | 'pages.dashboard.home.recentActivity.types.club'
-    | 'pages.dashboard.home.recentActivity.types.payment'
-    | 'pages.dashboard.home.recentActivity.types.reservation'
-    | 'pages.dashboard.home.recentActivity.types.subscription'
-    | 'pages.dashboard.home.recentActivity.types.user'
     | 'pages.dashboard.home.recentActivity.viewAll'
-    | 'pages.dashboard.home.revenueTrends.collected'
     | 'pages.dashboard.home.revenueTrends.collectionRate'
     | 'pages.dashboard.home.revenueTrends.description'
-    | 'pages.dashboard.home.revenueTrends.legend.hideAll'
-    | 'pages.dashboard.home.revenueTrends.legend.showAll'
-    | 'pages.dashboard.home.revenueTrends.legend.toggle'
     | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
     | 'pages.dashboard.home.revenueTrends.monthlyChange'
     | 'pages.dashboard.home.revenueTrends.monthlyRevenue'
@@ -460,7 +455,6 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.subscription'
     | 'pages.dashboard.home.revenueTrends.title'
     | 'pages.dashboard.home.revenueTrends.totalRevenue'
-    | 'pages.dashboard.home.revenueTrends.vsLastMonth'
     | 'pages.dashboard.home.revenueTrends.vsLastYear'
     | 'pages.dashboard.home.revenueTrends.yearToDate'
     | 'pages.dashboard.home.stats.activeReservations.description'
@@ -492,12 +486,6 @@ export type TranslationKey =
     | 'pages.dashboard.home.stats.totalUsers.description'
     | 'pages.dashboard.home.stats.totalUsers.title'
     | 'pages.dashboard.home.subtitle'
-    | 'pages.dashboard.home.upcomingReservations.columns.amount'
-    | 'pages.dashboard.home.upcomingReservations.columns.club'
-    | 'pages.dashboard.home.upcomingReservations.columns.date'
-    | 'pages.dashboard.home.upcomingReservations.columns.stadium'
-    | 'pages.dashboard.home.upcomingReservations.columns.status'
-    | 'pages.dashboard.home.upcomingReservations.columns.time'
     | 'pages.dashboard.home.upcomingReservations.noReservations'
     | 'pages.dashboard.home.upcomingReservations.title'
     | 'pages.dashboard.home.upcomingReservations.viewAll'
@@ -1392,56 +1380,31 @@ export const _TranslationNamespaces = {
   "pages.dashboard.home.recentActivity": [
     "title",
     "viewAll",
-    "noActivity",
-    "types"
-  ],
-  "pages.dashboard.home.recentActivity.types": [
-    "reservation",
-    "payment",
-    "subscription",
-    "user",
-    "club"
+    "noActivity"
   ],
   "pages.dashboard.home.upcomingReservations": [
     "title",
     "viewAll",
-    "noReservations",
-    "columns"
-  ],
-  "pages.dashboard.home.upcomingReservations.columns": [
-    "stadium",
-    "club",
-    "date",
-    "time",
-    "status",
-    "amount"
+    "noReservations"
   ],
   "pages.dashboard.home.charts": [
-    "revenue",
-    "maxRevenue",
-    "avgMonthly",
-    "totalYear",
-    "legend",
-    "reservationsByMonth",
-    "revenueByMonth",
-    "stadiumUtilization"
-  ],
-  "pages.dashboard.home.charts.legend": [
-    "low",
-    "medium",
-    "high"
-  ],
-  "pages.dashboard.home.charts.reservationsByMonth": [
-    "title",
-    "description"
-  ],
-  "pages.dashboard.home.charts.revenueByMonth": [
-    "title",
-    "description"
+    "stadiumUtilization",
+    "reservationsByStatus"
   ],
   "pages.dashboard.home.charts.stadiumUtilization": [
     "title",
-    "description"
+    "description",
+    "noData"
+  ],
+  "pages.dashboard.home.charts.reservationsByStatus": [
+    "title",
+    "description",
+    "count",
+    "totalReservations",
+    "approvalRate",
+    "pending",
+    "total",
+    "noData"
   ],
   "pages.dashboard.home.revenueTrends": [
     "title",
@@ -1451,10 +1414,8 @@ export const _TranslationNamespaces = {
     "singleSession",
     "paid",
     "overdue",
-    "vsLastMonth",
     "vsLastYear",
     "ofTotal",
-    "collected",
     "outstanding",
     "yearToDate",
     "collectionRate",
@@ -1462,13 +1423,7 @@ export const _TranslationNamespaces = {
     "monthlyChange",
     "monthlyRevenue",
     "monthlySubscription",
-    "monthlySingleSession",
-    "legend"
-  ],
-  "pages.dashboard.home.revenueTrends.legend": [
-    "toggle",
-    "showAll",
-    "hideAll"
+    "monthlySingleSession"
   ],
   "common": [
     "actions",
@@ -1481,6 +1436,7 @@ export const _TranslationNamespaces = {
     "toast",
     "footer",
     "aside",
+    "status",
     "currency",
     "months",
     "time"
@@ -1723,6 +1679,14 @@ export const _TranslationNamespaces = {
     "notifications",
     "profile",
     "logout"
+  ],
+  "common.status": [
+    "pending",
+    "approved",
+    "declined",
+    "cancelled",
+    "paid",
+    "unpaid"
   ],
   "common.currency": [
     "symbol",

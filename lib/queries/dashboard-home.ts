@@ -28,6 +28,7 @@ import {
   like
 } from "drizzle-orm";
 import { startOfYear, endOfYear, startOfMonth, endOfMonth, subMonths, subYears } from "date-fns";
+import { ReservationStatusType } from "@/types/db";
 
 // Types based on your dashboard data structure
 export interface DashboardStats {
@@ -60,10 +61,9 @@ export interface UpcomingReservation {
   clubName: string;
   date: string;
   time: string;
-  status: 'confirmed' | 'pending' | 'cancelled';
+  status: 'confirmed' | 'pending' | 'cancelled'; // CHANGE: 'confirmed' not 'approved'
   amount?: number;
 }
-
 export interface ChartData {
   month: string;
   value: number;
@@ -84,16 +84,59 @@ export interface MonthlyRevenueData {
   collectionRate: number;
 }
 
+export interface ReservationStatusData {
+  status:  ReservationStatusType;
+  count: number;
+  color: string;
+}
+export interface DashboardStats {
+  totalReservations: number;
+  activeReservations: number;
+  pendingReservations: number;
+  totalClubs: number;
+  totalStadiums: number;
+  totalUsers: number;
+  subscriptions: number;
+  overduePayments: number;
+  newClubsThisMonth: number;
+  newUsersThisMonth: number;
+  avgUtilization: number;
+  completionRate: number;
+  // Add changes object
+  changes?: {
+    totalReservationsChange?: string;
+    activeReservationsChange?: string;
+    pendingReservationsChange?: string;
+    totalClubsChange?: string;
+    totalStadiumsChange?: string;
+    totalUsersChange?: string;
+    subscriptionsChange?: string;
+    overduePaymentsChange?: string;
+    avgUtilizationChange?: string;
+    completionRateChange?: string;
+    newClubsChange?: string;
+    newUsersChange?: string;
+  };
+}
 // Main dashboard data fetcher
 export async function getDashboardData(year: number = new Date().getFullYear()) {
   try {
-    const [stats, recentActivity, upcomingReservations, reservationsByMonth, revenueByMonth, stadiumUtilization] = await Promise.all([
+    const [
+      stats, 
+      recentActivity, 
+      upcomingReservations, 
+      reservationsByMonth, 
+      revenueByMonth, 
+      stadiumUtilization,
+      reservationsByStatus
+    ] = await Promise.all([
       getDashboardStats(year),
-      getRecentActivity(),
-      getUpcomingReservations(),
+      getRecentActivity(year),
+      getUpcomingReservations(year),
       getReservationsByMonth(year),
       getRevenueByMonth(year),
-      getStadiumUtilization()
+      getStadiumUtilization(year),
+      getReservationsByStatus(year)
     ]);
 
     return {
@@ -103,13 +146,19 @@ export async function getDashboardData(year: number = new Date().getFullYear()) 
       reservationsByMonth,
       revenueByMonth,
       stadiumUtilization,
-      revenueTrends: revenueByMonth // Reuse revenue data for trends chart
+      reservationsByStatus,
+      revenueTrends: revenueByMonth
     };
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
     throw error;
   }
 }
+
+// lib/queries/dashboard-home.ts - Updated getDashboardStats function
+
+// Update the DashboardStats interface to include changes
+
 
 // Get all dashboard statistics
 export async function getDashboardStats(year: number): Promise<DashboardStats> {
@@ -118,77 +167,103 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
   const endOfCurrentMonth = endOfMonth(currentDate);
   const startOfYearDate = startOfYear(new Date(year, 0, 1));
   const endOfYearDate = endOfYear(new Date(year, 11, 31));
+  
+  // Get previous year for comparison
+  const previousYear = year - 1;
 
   // Execute all queries in parallel for better performance
   const [
+    // YEAR-FILTERED QUERIES (for the first 6 cards)
     totalReservationsResult,
     activeReservationsResult,
     pendingReservationsResult,
     totalClubsResult,
     totalStadiumsResult,
     totalUsersResult,
+    
+    // OTHER QUERIES (not year-filtered or differently filtered)
     subscriptionsResult,
     overduePaymentsResult,
     newClubsThisMonthResult,
     newUsersThisMonthResult
   ] = await Promise.all([
-    // Total Reservations (all time)
+    // Total Reservations (FILTERED BY YEAR)
     db.select({ count: count() })
       .from(reservations)
-      .where(isNull(reservations.deletedAt)),
+      .where(
+        and(
+          isNull(reservations.deletedAt),
+          gte(reservations.createdAt, startOfYearDate.toISOString()),
+          lte(reservations.createdAt, endOfYearDate.toISOString())
+        )
+      ),
 
-    // Active Reservations (reservations happening today or in the future)
+    // Active Reservations (reservations happening today or in the future) - FILTERED BY YEAR
     db.select({ count: count() })
       .from(reservations)
       .where(
         and(
           isNull(reservations.deletedAt),
           gte(reservations.startDateTime, new Date().toISOString().split('T')[0]),
-          eq(reservations.status, 'APPROVED')
+          eq(reservations.status, 'APPROVED'),
+          gte(reservations.createdAt, startOfYearDate.toISOString()),
+          lte(reservations.createdAt, endOfYearDate.toISOString())
         )
       ),
 
-    // Pending Reservations
+    // Pending Reservations - FILTERED BY YEAR
     db.select({ count: count() })
       .from(reservations)
       .where(
         and(
           isNull(reservations.deletedAt),
-          eq(reservations.status, 'PENDING')
+          eq(reservations.status, 'PENDING'),
+          gte(reservations.createdAt, startOfYearDate.toISOString()),
+          lte(reservations.createdAt, endOfYearDate.toISOString())
         )
       ),
 
-    // Total Clubs
+    // Total Clubs - FILTERED BY YEAR (clubs created up to this year)
     db.select({ count: count() })
       .from(clubs)
-      .where(isNull(clubs.deletedAt)),
+      .where(
+        and(
+          isNull(clubs.deletedAt),
+          lte(clubs.createdAt, endOfYearDate.toISOString())
+        )
+      ),
 
-    // Total Stadiums
+    // Total Stadiums - ALL TIME (not year-filtered)
     db.select({ count: count() })
       .from(stadiums)
       .where(isNull(stadiums.deletedAt)),
 
-    // Total Users
+    // Total Users - FILTERED BY YEAR (users created up to this year)
     db.select({ count: count() })
       .from(users)
-      .where(isNull(users.deletedAt)),
+      .where(
+        and(
+          isNull(users.deletedAt),
+          lte(users.createdAt, endOfYearDate.toISOString())
+        )
+      ),
 
-    // Active Subscriptions
+    // Active Subscriptions - ALL TIME (not year-filtered)
     db.select({ count: count() })
       .from(monthlySubscriptions)
       .where(eq(monthlySubscriptions.status, 'ACTIVE')),
 
-    // Overdue Payments
+    // Overdue Payments - FILTERED BY YEAR
     db.select({ count: count() })
       .from(monthlyPayments)
       .where(
         and(
           eq(monthlyPayments.status, 'OVERDUE'),
-          gte(monthlyPayments.year, year)
+          eq(monthlyPayments.year, year)
         )
       ),
 
-    // New Clubs this month
+    // New Clubs this month - FILTERED BY CURRENT MONTH (not year-filtered for month)
     db.select({ count: count() })
       .from(clubs)
       .where(
@@ -199,7 +274,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         )
       ),
 
-    // New Users this month
+    // New Users this month - FILTERED BY CURRENT MONTH (not year-filtered for month)
     db.select({ count: count() })
       .from(users)
       .where(
@@ -211,9 +286,160 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
       )
   ]);
 
-  // Calculate average stadium utilization (mock calculation based on reservations)
+  // Get previous year data for comparison
+  const getPreviousYearData = async (): Promise<{
+    totalReservations: number;
+    activeReservations: number;
+    pendingReservations: number;
+    totalClubs: number;
+    totalStadiums: number;
+    totalUsers: number;
+    subscriptions: number;
+    overduePayments: number;
+    newClubsThisMonth: number;
+    newUsersThisMonth: number;
+    avgUtilization: number;
+    completionRate: number;
+  }> => {
+    if (previousYear < 2025) {
+      // Return zeros if previous year is before 2025 (first year of data)
+      return {
+        totalReservations: 0,
+        activeReservations: 0,
+        pendingReservations: 0,
+        totalClubs: 0,
+        totalStadiums: 0,
+        totalUsers: 0,
+        subscriptions: 0,
+        overduePayments: 0,
+        newClubsThisMonth: 0,
+        newUsersThisMonth: 0,
+        avgUtilization: 0,
+        completionRate: 0
+      };
+    }
+
+    const startOfPreviousYear = startOfYear(new Date(previousYear, 0, 1));
+    const endOfPreviousYear = endOfYear(new Date(previousYear, 11, 31));
+    
+    // Get previous year stats
+    const [
+      totalReservationsPreviousResult,
+      activeReservationsPreviousResult,
+      pendingReservationsPreviousResult,
+      totalClubsPreviousResult,
+      totalUsersPreviousResult,
+      overduePaymentsPreviousResult
+    ] = await Promise.all([
+      // Total Reservations previous year
+      db.select({ count: count() })
+        .from(reservations)
+        .where(
+          and(
+            isNull(reservations.deletedAt),
+            gte(reservations.createdAt, startOfPreviousYear.toISOString()),
+            lte(reservations.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // Active Reservations previous year
+      db.select({ count: count() })
+        .from(reservations)
+        .where(
+          and(
+            isNull(reservations.deletedAt),
+            eq(reservations.status, 'APPROVED'),
+            gte(reservations.createdAt, startOfPreviousYear.toISOString()),
+            lte(reservations.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // Pending Reservations previous year
+      db.select({ count: count() })
+        .from(reservations)
+        .where(
+          and(
+            isNull(reservations.deletedAt),
+            eq(reservations.status, 'PENDING'),
+            gte(reservations.createdAt, startOfPreviousYear.toISOString()),
+            lte(reservations.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // Total Clubs previous year
+      db.select({ count: count() })
+        .from(clubs)
+        .where(
+          and(
+            isNull(clubs.deletedAt),
+            lte(clubs.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // Total Users previous year
+      db.select({ count: count() })
+        .from(users)
+        .where(
+          and(
+            isNull(users.deletedAt),
+            lte(users.createdAt, endOfPreviousYear.toISOString())
+          )
+        ),
+      
+      // Overdue Payments previous year
+      db.select({ count: count() })
+        .from(monthlyPayments)
+        .where(
+          and(
+            eq(monthlyPayments.status, 'OVERDUE'),
+            eq(monthlyPayments.year, previousYear)
+          )
+        )
+    ]);
+
+    // Calculate previous year avg utilization
+    const totalStadiums = totalStadiumsResult[0]?.count || 1;
+    const totalReservationsPreviousYear = totalReservationsPreviousResult[0]?.count || 0;
+    const avgUtilizationPrevious = Math.min(100, Math.round((totalReservationsPreviousYear / (totalStadiums * 365)) * 100));
+
+    // Calculate previous year completion rate
+    const completedReservationsPrevious = await db.select({ count: count() })
+      .from(reservations)
+      .where(
+        and(
+          isNull(reservations.deletedAt),
+          gte(reservations.createdAt, startOfPreviousYear.toISOString()),
+          lte(reservations.createdAt, endOfPreviousYear.toISOString()),
+          eq(reservations.status, 'APPROVED')
+        )
+      );
+    
+    const completionRatePrevious = totalReservationsPreviousYear > 0 
+      ? Math.round((completedReservationsPrevious[0]?.count || 0) / totalReservationsPreviousYear * 100)
+      : 0;
+
+    return {
+      totalReservations: totalReservationsPreviousYear,
+      activeReservations: activeReservationsPreviousResult[0]?.count || 0,
+      pendingReservations: pendingReservationsPreviousResult[0]?.count || 0,
+      totalClubs: totalClubsPreviousResult[0]?.count || 0,
+      totalStadiums: totalStadiumsResult[0]?.count || 0, // Stadiums are all-time
+      totalUsers: totalUsersPreviousResult[0]?.count || 0,
+      subscriptions: 0, // Simplified - subscriptions are all-time
+      overduePayments: overduePaymentsPreviousResult[0]?.count || 0,
+      newClubsThisMonth: 0, // Simplified
+      newUsersThisMonth: 0, // Simplified
+      avgUtilization: avgUtilizationPrevious,
+      completionRate: completionRatePrevious
+    };
+  };
+
+  // Get previous year data
+  const previousYearData = await getPreviousYearData();
+
+  // Calculate average stadium utilization
   const totalStadiums = totalStadiumsResult[0]?.count || 1;
-  const totalReservationsThisYear = await getTotalReservationsForYear(year);
+  const totalReservationsThisYear = totalReservationsResult[0]?.count || 0;
   const avgUtilization = Math.min(100, Math.round((totalReservationsThisYear / (totalStadiums * 365)) * 100));
 
   // Calculate completion rate (approved vs total reservations this year)
@@ -232,6 +458,19 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     ? Math.round((completedReservations[0]?.count || 0) / totalReservationsThisYear * 100)
     : 0;
 
+  // Calculate changes
+  const calculateChange = (current: number, previous: number): string => {
+    if (previous === 0) return ""; // No change shown if no previous data
+    const change = ((current - previous) / previous) * 100;
+    return change >= 0 ? `+${Math.round(change)}%` : `${Math.round(change)}%`;
+  };
+
+  const calculateAbsoluteChange = (current: number, previous: number): string => {
+    if (previous === 0) return ""; // No change shown if no previous data
+    const change = current - previous;
+    return change >= 0 ? `+${change}` : `${change}`;
+  };
+
   return {
     totalReservations: totalReservationsResult[0]?.count || 0,
     activeReservations: activeReservationsResult[0]?.count || 0,
@@ -243,16 +482,37 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     overduePayments: overduePaymentsResult[0]?.count || 0,
     newClubsThisMonth: newClubsThisMonthResult[0]?.count || 0,
     newUsersThisMonth: newUsersThisMonthResult[0]?.count || 0,
-    avgUtilization: avgUtilization || 78,
-    completionRate: completionRate || 94
+    avgUtilization: avgUtilization || 0,
+    completionRate: completionRate || 0,
+    changes: {
+      totalReservationsChange: calculateChange(totalReservationsResult[0]?.count || 0, previousYearData.totalReservations),
+      activeReservationsChange: calculateChange(activeReservationsResult[0]?.count || 0, previousYearData.activeReservations),
+      pendingReservationsChange: calculateAbsoluteChange(pendingReservationsResult[0]?.count || 0, previousYearData.pendingReservations),
+      totalClubsChange: calculateChange(totalClubsResult[0]?.count || 0, previousYearData.totalClubs),
+      totalStadiumsChange: calculateAbsoluteChange(totalStadiumsResult[0]?.count || 0, previousYearData.totalStadiums),
+      totalUsersChange: calculateChange(totalUsersResult[0]?.count || 0, previousYearData.totalUsers),
+      subscriptionsChange: calculateAbsoluteChange(subscriptionsResult[0]?.count || 0, previousYearData.subscriptions),
+      overduePaymentsChange: calculateAbsoluteChange(overduePaymentsResult[0]?.count || 0, previousYearData.overduePayments),
+      avgUtilizationChange: calculateChange(avgUtilization, previousYearData.avgUtilization),
+      completionRateChange: calculateChange(completionRate, previousYearData.completionRate),
+      newClubsChange: calculateAbsoluteChange(newClubsThisMonthResult[0]?.count || 0, previousYearData.newClubsThisMonth),
+      newUsersChange: calculateChange(newUsersThisMonthResult[0]?.count || 0, previousYearData.newUsersThisMonth)
+    }
   };
 }
 
 // Get recent activity from notifications and recent actions
-export async function getRecentActivity(): Promise<RecentActivity[]> {
+export async function getRecentActivity(year: number): Promise<RecentActivity[]> {
   try {
-    // Get recent notifications
+    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
+    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
+
+    // Get recent notifications for the specific year
     const recentNotifications = await db.query.notifications.findMany({
+      where: and(
+        gte(notifications.createdAt, startDate),
+        lte(notifications.createdAt, endDate)
+      ),
       orderBy: [desc(notifications.createdAt)],
       limit: 10,
       with: {
@@ -264,6 +524,11 @@ export async function getRecentActivity(): Promise<RecentActivity[]> {
         }
       }
     });
+
+    // If no notifications, return empty array
+    if (!recentNotifications.length) {
+      return [];
+    }
 
     // Transform notifications to activity format
     return recentNotifications.map(notification => {
@@ -328,19 +593,23 @@ export async function getRecentActivity(): Promise<RecentActivity[]> {
     });
   } catch (error) {
     console.error("Error fetching recent activity:", error);
-    // Return mock data if query fails
-    return getMockRecentActivity();
+    return getMockRecentActivity(year);
   }
 }
 
 // Get upcoming reservations
-export async function getUpcomingReservations(): Promise<UpcomingReservation[]> {
+// Get upcoming reservations
+export async function getUpcomingReservations(year: number): Promise<UpcomingReservation[]> {
   try {
+    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
+    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
+    
     const upcoming = await db.query.reservations.findMany({
       where: and(
         isNull(reservations.deletedAt),
-        gte(reservations.startDateTime, new Date().toISOString()),
-        eq(reservations.status, 'APPROVED')
+        gte(reservations.startDateTime, startDate),
+        lte(reservations.startDateTime, endDate),
+        inArray(reservations.status, ['APPROVED', 'PENDING'])
       ),
       orderBy: [reservations.startDateTime],
       limit: 5,
@@ -358,19 +627,35 @@ export async function getUpcomingReservations(): Promise<UpcomingReservation[]> 
       }
     });
 
-    return upcoming.map(reservation => ({
-      id: reservation.id,
-      stadiumName: reservation.stadium?.name || 'Unknown Stadium',
-      clubName: reservation.user?.name || 'Unknown Club',
-      date: new Date(reservation.startDateTime).toISOString().split('T')[0],
-      time: `${new Date(reservation.startDateTime).getHours().toString().padStart(2, '0')}:${new Date(reservation.startDateTime).getMinutes().toString().padStart(2, '0')} - ${new Date(reservation.endDateTime).getHours().toString().padStart(2, '0')}:${new Date(reservation.endDateTime).getMinutes().toString().padStart(2, '0')}`,
-      status: 'confirmed' as const,
-      amount: Number(reservation.sessionPrice) || undefined
-    }));
+    // If no reservations, return empty array
+    if (!upcoming.length) {
+      return [];
+    }
+
+    return upcoming.map(reservation => {
+      // Map database status to interface status - USE 'confirmed' not 'approved'
+      let status: 'confirmed' | 'pending' | 'cancelled' = 'pending';
+      if (reservation.status === 'APPROVED') {
+        status = 'confirmed'; // CHANGE: 'confirmed' instead of 'approved'
+      } else if (reservation.status === 'CANCELLED') {
+        status = 'cancelled';
+      } else if (reservation.status === 'PENDING') {
+        status = 'pending';
+      }
+
+      return {
+        id: reservation.id,
+        stadiumName: reservation.stadium?.name || 'Unknown Stadium',
+        clubName: reservation.user?.name || 'Unknown Club',
+        date: new Date(reservation.startDateTime).toISOString().split('T')[0],
+        time: `${new Date(reservation.startDateTime).getHours().toString().padStart(2, '0')}:${new Date(reservation.startDateTime).getMinutes().toString().padStart(2, '0')} - ${new Date(reservation.endDateTime).getHours().toString().padStart(2, '0')}:${new Date(reservation.endDateTime).getMinutes().toString().padStart(2, '0')}`,
+        status, // Now returns 'confirmed' which matches frontend
+        amount: Number(reservation.sessionPrice) || undefined
+      };
+    });
   } catch (error) {
     console.error("Error fetching upcoming reservations:", error);
-    // Return mock data if query fails
-    return getMockUpcomingReservations();
+    return getMockUpcomingReservations(year);
   }
 }
 
@@ -503,12 +788,12 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
     return monthlyData;
   } catch (error) {
     console.error("Error fetching revenue by month:", error);
-    return getMockRevenueTrends();
+    return getMockRevenueTrends(year);
   }
 }
 
 // Get stadium utilization
-export async function getStadiumUtilization(): Promise<StadiumUtilization[]> {
+export async function getStadiumUtilization(year: number): Promise<StadiumUtilization[]> {
   try {
     // Get all stadiums
     const allStadiums = await db.query.stadiums.findMany({
@@ -519,9 +804,8 @@ export async function getStadiumUtilization(): Promise<StadiumUtilization[]> {
       }
     });
 
-    // Get reservation count for each stadium in the last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
+    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
 
     const stadiumUtilization = await Promise.all(
       allStadiums.map(async (stadium) => {
@@ -532,12 +816,13 @@ export async function getStadiumUtilization(): Promise<StadiumUtilization[]> {
             and(
               isNull(reservations.deletedAt),
               eq(reservations.stadiumId, stadium.id),
-              gte(reservations.createdAt, thirtyDaysAgo.toISOString())
+              gte(reservations.createdAt, startDate),
+              lte(reservations.createdAt, endDate)
             )
           );
 
-        // Calculate utilization percentage (max 20 reservations per stadium per month as 100%)
-        const maxCapacity = 20; // Adjust this based on your business logic
+        // Calculate utilization percentage
+        const maxCapacity = 20; // Adjust based on your logic
         const usage = Math.min(100, Math.round((reservationsCount[0]?.count || 0) / maxCapacity * 100));
 
         return {
@@ -547,7 +832,6 @@ export async function getStadiumUtilization(): Promise<StadiumUtilization[]> {
       })
     );
 
-    // Sort by usage descending and limit to top 5
     return stadiumUtilization
       .sort((a, b) => b.usage - a.usage)
       .slice(0, 5);
@@ -576,152 +860,90 @@ async function getTotalReservationsForYear(year: number): Promise<number> {
   return result[0]?.count || 0;
 }
 
-// Mock data functions (fallback in case of errors)
-function getMockRecentActivity(): RecentActivity[] {
-  return [
-    {
-      id: "1",
-      type: "reservation",
-      title: "New Stadium Reservation",
-      description: "Club Al Nasr reserved Stadium Olympique for 2 hours",
-      time: "10 minutes ago",
-      status: "success"
-    },
-    {
-      id: "2",
-      type: "payment",
-      title: "Payment Received",
-      description: "DH 1,200 received from Club Atlas for monthly subscription",
-      time: "45 minutes ago",
-      status: "success"
-    },
-    {
-      id: "3",
-      type: "subscription",
-      title: "New Subscription",
-      description: "Club Juventus Tan-Tan subscribed to monthly plan",
-      time: "2 hours ago",
-      status: "pending"
-    },
-    {
-      id: "4",
-      type: "user",
-      title: "New User Registered",
-      description: "Ahmed Benali registered as club manager",
-      time: "5 hours ago",
-      status: "success"
-    },
-    {
-      id: "5",
-      type: "club",
-      title: "Club Registration",
-      description: "FC Tan-Tan Youth registered on platform",
-      time: "1 day ago",
-      status: "pending"
+// Get reservation status distribution
+export async function getReservationsByStatus(year: number): Promise<ReservationStatusData[]> {
+  try {
+    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
+    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
+
+    const statusData = await db
+      .select({
+        status: reservations.status,
+        count: count()
+      })
+      .from(reservations)
+      .where(
+        and(
+          isNull(reservations.deletedAt),
+          gte(reservations.createdAt, startDate),
+          lte(reservations.createdAt, endDate)
+        )
+      )
+      .groupBy(reservations.status);
+
+    // If no data, return empty array
+    if (!statusData.length) {
+      return [];
     }
-  ];
+
+    // Define colors for each status
+    const statusColors: Record<ReservationStatusType, string> = {
+      "PENDING": "#f59e0b",
+      "APPROVED": "#10b981",
+      "DECLINED": "#ef4444",
+      "CANCELLED": "#6b7280",
+      "PAID": "#3b82f6",
+      "UNPAID": "#ec4899"
+    };
+
+    return statusData.map(item => ({
+      status: item.status,
+      count: item.count,
+      color: statusColors[item.status] || "#6b7280"
+    }));
+  } catch (error) {
+    console.error("Error fetching reservations by status:", error);
+    return getMockReservationsByStatus(year);
+  }
 }
 
-function getMockUpcomingReservations(): UpcomingReservation[] {
-  return [
-    {
-      id: "1",
-      stadiumName: "Stadium Olympique",
-      clubName: "Club Al Nasr",
-      date: "2024-01-15",
-      time: "14:00 - 16:00",
-      status: "confirmed",
-      amount: 800
-    },
-    {
-      id: "2",
-      stadiumName: "Municipal Stadium",
-      clubName: "FC Atlas",
-      date: "2024-01-15",
-      time: "16:00 - 18:00",
-      status: "confirmed",
-      amount: 750
-    },
-    {
-      id: "3",
-      stadiumName: "Sports Complex",
-      clubName: "Club Juventus",
-      date: "2024-01-16",
-      time: "10:00 - 12:00",
-      status: "pending"
-    },
-    {
-      id: "4",
-      stadiumName: "Youth Center",
-      clubName: "FC Tan-Tan",
-      date: "2024-01-16",
-      time: "18:00 - 20:00",
-      status: "confirmed",
-      amount: 600
-    },
-    {
-      id: "5",
-      stadiumName: "City Stadium",
-      clubName: "AS Municipale",
-      date: "2024-01-17",
-      time: "08:00 - 10:00",
-      status: "confirmed",
-      amount: 900
-    }
-  ];
+// Mock data functions (fallback in case of errors) - All return empty/zero values
+function getMockRecentActivity(year: number): RecentActivity[] {
+  return []; // Always return empty array
+}
+
+function getMockUpcomingReservations(year: number): UpcomingReservation[] {
+  return []; // Always return empty array
 }
 
 function getMockReservationsByMonth(year: number): ChartData[] {
-  // Generate realistic mock data based on year
-  const baseValues = [85, 92, 78, 105, 120, 135, 150, 142, 128, 115, 98, 87];
-  const multiplier = year === new Date().getFullYear() ? 1 : 0.8;
-  
-  return baseValues.map((value, index) => ({
-    month: new Date(2000, index, 1).toLocaleDateString('en-US', { month: 'short' }),
-    value: Math.round(value * multiplier)
+  // Return all months with value 0
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'short' }),
+    value: 0
   }));
 }
 
-function getMockRevenueTrends(): MonthlyRevenueData[] {
-  const baseRevenue = 20000;
-  const months = Array.from({ length: 12 }, (_, i) => 
-    new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'short' })
-  );
-
-  return months.map((month, index) => {
-    const totalRevenue = baseRevenue + (Math.random() * 10000) + (index * 2000);
-    const subscriptionPercentage = 0.6 + (Math.random() * 0.2);
-    const singleSessionPercentage = 1 - subscriptionPercentage;
-    const paidPercentage = 0.85 + (Math.random() * 0.1);
-    
-    const subscriptionRevenue = Math.round(totalRevenue * subscriptionPercentage);
-    const singleSessionRevenue = Math.round(totalRevenue * singleSessionPercentage);
-    const paidAmount = Math.round(totalRevenue * paidPercentage);
-    const overdueAmount = totalRevenue - paidAmount;
-
-    return {
-      month,
-      totalRevenue: Math.round(totalRevenue),
-      subscriptionRevenue,
-      singleSessionRevenue,
-      paidAmount,
-      overdueAmount,
-      collectionRate: Math.round(paidPercentage * 100)
-    };
-  });
+function getMockRevenueTrends(year: number): MonthlyRevenueData[] {
+  // Return all months with all values as 0
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'short' }),
+    totalRevenue: 0,
+    subscriptionRevenue: 0,
+    singleSessionRevenue: 0,
+    paidAmount: 0,
+    overdueAmount: 0,
+    collectionRate: 0
+  }));
 }
 
 function getMockStadiumUtilization(): StadiumUtilization[] {
-  return [
-    { name: "Stadium Olympique", usage: 85 },
-    { name: "Municipal Stadium", usage: 78 },
-    { name: "Sports Complex", usage: 92 },
-    { name: "Youth Center", usage: 65 },
-    { name: "City Stadium", usage: 88 }
-  ];
+  return []; // Always return empty array
 }
 
-// Add this function to lib/queries/dashboard-home.ts
+function getMockReservationsByStatus(year: number): ReservationStatusData[] {
+  return []; // Always return empty array
+}
 
 // Get available years with data (from 2026 to current year)
 export async function getAvailableYears(): Promise<number[]> {

@@ -616,49 +616,29 @@
         "recentActivity": {
           "title": "Recent Activity",
           "viewAll": "View All Activity",
-          "noActivity": "No recent activity",
-          "types": {
-            "reservation": "New Reservation",
-            "payment": "Payment Received",
-            "subscription": "Subscription Created",
-            "user": "New User",
-            "club": "Club Registered"
-          }
+          "noActivity": "No recent activity"
         },
         "upcomingReservations": {
           "title": "Upcoming Reservations",
           "viewAll": "View All Reservations",
-          "noReservations": "No upcoming reservations",
-          "columns": {
-            "stadium": "Stadium",
-            "club": "Club",
-            "date": "Date",
-            "time": "Time",
-            "status": "Status",
-            "amount": "Amount"
-          }
+          "noReservations": "No upcoming reservations"
         },
         "charts": {
-          "revenue": "Revenue",
-          "maxRevenue": "Max Revenue",
-          "avgMonthly": "Avg Monthly",
-          "totalYear": "Total",
-          "legend": {
-            "low": "< 50% of max",
-            "medium": "50-80% of max",
-            "high": "> 80% of max"
-          },
-          "reservationsByMonth": {
-            "title": "Reservations by Month",
-            "description": "Monthly reservation trends"
-          },
-          "revenueByMonth": {
-            "title": "Revenue by Month",
-            "description": "Monthly revenue trends"
-          },
           "stadiumUtilization": {
             "title": "Stadium Utilization",
-            "description": "Stadium usage rates"
+            "description": "Stadium usage rates",
+            "noData": "No stadium utilization data available"
+          },
+          "reservationsByStatus": {
+            "title": "Reservations by Status",
+            "description": "Reservation distribution across statuses",
+            "count": "Count",
+            "totalReservations": "Total Reservations",
+            "approvalRate": "Approval Rate",
+            "pending": "Pending",
+            "total": "Total",
+                      "noData": "No reservation status data available"
+
           }
         },
         "revenueTrends": {
@@ -669,10 +649,8 @@
           "singleSession": "Single Session",
           "paid": "Paid",
           "overdue": "Overdue",
-          "vsLastMonth": "vs last month",
           "vsLastYear": "vs last year",
           "ofTotal": "of total",
-          "collected": "collected",
           "outstanding": "outstanding",
           "yearToDate": "YTD",
           "collectionRate": "collection rate",
@@ -680,12 +658,7 @@
           "monthlyChange": "Monthly change",
           "monthlyRevenue": "Monthly Revenue",
           "monthlySubscription": "Monthly Subscription",
-          "monthlySingleSession": "Monthly Single Session",
-          "legend": {
-            "toggle": "Toggle lines",
-            "showAll": "Show all",
-            "hideAll": "Hide all"
-          }
+          "monthlySingleSession": "Monthly Single Session"
         }
       },
       "notifications": {}
@@ -918,6 +891,14 @@
       "notifications": "Notifications",
       "profile": "Profile",
       "logout": "Logout"
+    },
+    "status": {
+  "pending": "Pending",
+      "approved": "Approved",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "paid": "Paid",
+      "unpaid": "Unpaid"
     },
     "currency": {
       "symbol": "MAD",

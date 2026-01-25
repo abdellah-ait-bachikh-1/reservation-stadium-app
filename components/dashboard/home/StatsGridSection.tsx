@@ -25,6 +25,24 @@ interface Stats {
   totalUsers: number;
   subscriptions: number;
   overduePayments: number;
+  newClubsThisMonth: number;
+  newUsersThisMonth: number;
+  avgUtilization: number;
+  completionRate: number;
+  changes?: {
+    totalReservationsChange?: string;
+    activeReservationsChange?: string;
+    pendingReservationsChange?: string;
+    totalClubsChange?: string;
+    totalStadiumsChange?: string;
+    totalUsersChange?: string;
+    subscriptionsChange?: string;
+    overduePaymentsChange?: string;
+    avgUtilizationChange?: string;
+    completionRateChange?: string;
+    newClubsChange?: string;
+    newUsersChange?: string;
+  };
 }
 
 interface StatsGridSectionProps {
@@ -35,53 +53,53 @@ interface StatsGridSectionProps {
 export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
   const t =  useTypedTranslations();
 
-  // Prepare stat cards - Focus on OPERATIONAL metrics only
+  // Prepare stat cards with dynamic changes
   const statCards = [
     // Core operational stats - Now 6 cards for even distribution
     {
       title: t("pages.dashboard.home.stats.totalReservations.title"),
       value: stats.totalReservations.toLocaleString(),
-      change: "+12%",
+      change: stats.changes?.totalReservationsChange || "", // Dynamic from backend
       icon: <HiCalendar className="w-5 h-5" />,
       color: "blue",
       description: t("pages.dashboard.home.stats.totalReservations.description")
     },
     {
       title: t("pages.dashboard.home.stats.activeReservations.title"),
-      value: stats.activeReservations,
-      change: "+5%",
+      value: stats.activeReservations.toLocaleString(),
+      change: stats.changes?.activeReservationsChange || "", // Dynamic from backend
       icon: <HiClock className="w-5 h-5" />,
       color: "green",
       description: t("pages.dashboard.home.stats.activeReservations.description")
     },
     {
       title: t("pages.dashboard.home.stats.pendingReservations.title"),
-      value: stats.pendingReservations,
-      change: "-3",
+      value: stats.pendingReservations.toLocaleString(),
+      change: stats.changes?.pendingReservationsChange || "", // Dynamic from backend
       icon: <HiExclamation className="w-5 h-5" />,
       color: "yellow",
       description: t("pages.dashboard.home.stats.pendingReservations.description")
     },
     {
       title: t("pages.dashboard.home.stats.totalClubs.title"),
-      value: stats.totalClubs,
-      change: "+8%",
+      value: stats.totalClubs.toLocaleString(),
+      change: stats.changes?.totalClubsChange || "", // Dynamic from backend
       icon: <HiOfficeBuilding className="w-5 h-5" />,
       color: "purple",
       description: t("pages.dashboard.home.stats.totalClubs.description")
     },
     {
       title: t("pages.dashboard.home.stats.totalStadiums.title"),
-      value: stats.totalStadiums,
-      change: "+2",
+      value: stats.totalStadiums.toLocaleString(),
+      change: stats.changes?.totalStadiumsChange || "", // Dynamic from backend
       icon: <HiHome className="w-5 h-5" />,
       color: "orange",
       description: t("pages.dashboard.home.stats.totalStadiums.description")
     },
     {
       title: t("pages.dashboard.home.stats.totalUsers.title"),
-      value: stats.totalUsers,
-      change: "+15%",
+      value: stats.totalUsers.toLocaleString(),
+      change: stats.changes?.totalUsersChange || "", // Dynamic from backend
       icon: <HiUserGroup className="w-5 h-5" />,
       color: "cyan",
       description: t("pages.dashboard.home.stats.totalUsers.description")
@@ -90,32 +108,32 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
     // User management and subscription stats - Now 6 cards for even distribution
     {
       title: t("pages.dashboard.home.stats.subscriptions.title"),
-      value: stats.subscriptions,
-      change: "+4",
+      value: stats.subscriptions.toLocaleString(),
+      change: stats.changes?.subscriptionsChange || "", // Dynamic from backend
       icon: <HiCollection className="w-5 h-5" />,
       color: "indigo",
       description: t("pages.dashboard.home.stats.subscriptions.description")
     },
     {
       title: t("pages.dashboard.home.stats.overduePayments.title"),
-      value: stats.overduePayments,
-      change: "-2",
+      value: stats.overduePayments.toLocaleString(),
+      change: stats.changes?.overduePaymentsChange || "", // Dynamic from backend
       icon: <HiCash className="w-5 h-5" />,
       color: "red",
       description: t("pages.dashboard.home.stats.overduePayments.description")
     },
     {
       title: t("pages.dashboard.home.stats.avgUtilization.title"),
-      value: "78%",
-      change: "+5%",
+      value: `${stats.avgUtilization}%`,
+      change: stats.changes?.avgUtilizationChange || "", // Dynamic from backend
       icon: <HiChartBar className="w-5 h-5" />,
       color: "teal",
       description: t("pages.dashboard.home.stats.avgUtilization.description")
     },
     {
       title: t("pages.dashboard.home.stats.completionRate.title"),
-      value: "94%",
-      change: "+3%",
+      value: `${stats.completionRate}%`,
+      change: stats.changes?.completionRateChange || "", // Dynamic from backend
       icon: <HiCheckCircle className="w-5 h-5" />,
       color: "emerald",
       description: t("pages.dashboard.home.stats.completionRate.description")
@@ -123,16 +141,16 @@ export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
     // Added two more cards to make it 6 per row
     {
       title: t("pages.dashboard.home.stats.newClubs.title"),
-      value: "6",
-      change: "+1",
+      value: stats.newClubsThisMonth.toLocaleString(),
+      change: stats.changes?.newClubsChange || "", // Dynamic from backend
       icon: <HiOfficeBuilding className="w-5 h-5" />,
       color: "pink",
       description: t("pages.dashboard.home.stats.newClubs.description")
     },
     {
       title: t("pages.dashboard.home.stats.newUsers.title"),
-      value: "24",
-      change: "+8%",
+      value: stats.newUsersThisMonth.toLocaleString(),
+      change: stats.changes?.newUsersChange || "", // Dynamic from backend
       icon: <HiUserGroup className="w-5 h-5" />,
       color: "amber",
       description: t("pages.dashboard.home.stats.newUsers.description")

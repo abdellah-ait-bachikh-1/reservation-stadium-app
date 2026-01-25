@@ -536,7 +536,7 @@
     "dashboard": {
       "home": {
         "metadata": {
-          "title": "لوحة التحكم الرئيسية",
+          "title": "لوحة التحكم",
           "description": "إدارة حجوزات الملاعب والمدفوعات والأندية والمرافق الرياضية"
         },
         "welcome": "مرحبًا بعودتك، {name}!",
@@ -549,11 +549,11 @@
         "stats": {
           "totalReservations": {
             "title": "إجمالي الحجوزات",
-            "description": "الحجوزات عبر جميع الأوقات"
+            "description": "جميع الحجوزات عبر الزمن"
           },
           "activeReservations": {
             "title": "الحجوزات النشطة",
-            "description": "الحجوزات الحالية النشطة"
+            "description": "الحجوزات الجارية"
           },
           "pendingReservations": {
             "title": "الحجوزات المعلقة",
@@ -573,26 +573,26 @@
           },
           "totalRevenue": {
             "title": "إجمالي الإيرادات",
-            "description": "الأرباح عبر جميع الأوقات"
+            "description": "الأرباح عبر الزمن"
           },
           "monthlyRevenue": {
-            "title": "الإيرادات الشهرية",
+            "title": "الإيراد الشهري",
             "description": "أرباح هذا الشهر"
           },
           "subscriptions": {
             "title": "الاشتراكات النشطة",
-            "description": "الخطط الشهرية"
+            "description": "الباقات الشهرية"
           },
           "overduePayments": {
             "title": "المدفوعات المتأخرة",
-            "description": "تتطلب اهتمامًا"
+            "description": "تتطلب الاهتمام"
           },
           "avgUtilization": {
             "title": "متوسط الاستخدام",
             "description": "معدل استخدام الملاعب"
           },
           "completionRate": {
-            "title": "معدل الإنجاز",
+            "title": "معدل الإكمال",
             "description": "معدل نجاح الحجوزات"
           },
           "newClubs": {
@@ -600,7 +600,7 @@
             "description": "هذا الشهر"
           },
           "newUsers": {
-            "title": "مستخدمين جدد",
+            "title": "مستخدمون جدد",
             "description": "هذا الشهر"
           }
         },
@@ -616,49 +616,29 @@
         "recentActivity": {
           "title": "النشاط الأخير",
           "viewAll": "عرض كل النشاط",
-          "noActivity": "لا يوجد نشاط حديث",
-          "types": {
-            "reservation": "حجز جديد",
-            "payment": "استلام دفعة",
-            "subscription": "اشتراك جديد",
-            "user": "مستخدم جديد",
-            "club": "نادي مسجل"
-          }
+          "noActivity": "لا يوجد نشاط حديث"
         },
         "upcomingReservations": {
           "title": "الحجوزات القادمة",
           "viewAll": "عرض كل الحجوزات",
-          "noReservations": "لا توجد حجوزات قادمة",
-          "columns": {
-            "stadium": "الملعب",
-            "club": "النادي",
-            "date": "التاريخ",
-            "time": "الوقت",
-            "status": "الحالة",
-            "amount": "المبلغ"
-          }
+          "noReservations": "لا توجد حجوزات قادمة"
         },
         "charts": {
-          "revenue": "الإيرادات",
-          "maxRevenue": "أقصى إيرادات",
-          "avgMonthly": "المتوسط الشهري",
-          "totalYear": "الإجمالي",
-          "legend": {
-            "low": "< 50% من الحد الأقصى",
-            "medium": "50-80% من الحد الأقصى",
-            "high": "> 80% من الحد الأقصى"
-          },
-          "reservationsByMonth": {
-            "title": "الحجوزات حسب الشهر",
-            "description": "اتجاهات الحجز الشهرية"
-          },
-          "revenueByMonth": {
-            "title": "الإيرادات حسب الشهر",
-            "description": "اتجاهات الإيرادات الشهرية"
-          },
           "stadiumUtilization": {
             "title": "استخدام الملاعب",
-            "description": "معدلات استخدام الملاعب"
+            "description": "معدلات استخدام الملاعب",
+            "noData": "لا توجد بيانات استخدام للملاعب"
+          },
+          "reservationsByStatus": {
+            "title": "الحجوزات حسب الحالة",
+            "description": "توزيع الحجوزات حسب الحالات",
+            "count": "العدد",
+            "totalReservations": "إجمالي الحجوزات",
+            "approvalRate": "معدل الموافقة",
+            "pending": "معلقة",
+            "total": "المجموع",
+                      "noData": "لا توجد بيانات حالة الحجوزات متاحة"
+
           }
         },
         "revenueTrends": {
@@ -667,25 +647,18 @@
           "totalRevenue": "إجمالي الإيرادات",
           "subscription": "الاشتراكات",
           "singleSession": "الجلسات الفردية",
-          "paid": "المدفوع",
-          "overdue": "المتأخر",
-          "vsLastMonth": "مقارنة بالشهر الماضي",
-          "vsLastYear": "مقارنة بالسنة الماضية",
+          "paid": "مدفوع",
+          "overdue": "متأخر",
+          "vsLastYear": "مقارنة بالعام الماضي",
           "ofTotal": "من الإجمالي",
-          "collected": "محصل",
           "outstanding": "مستحق",
-          "yearToDate": "منذ بداية العام",
+          "yearToDate": "من بداية السنة",
           "collectionRate": "معدل التحصيل",
-          "monthlyBreakdown": "تفصيل شهري",
-          "monthlyChange": "التغير الشهري",
-          "monthlyRevenue": "الإيرادات الشهرية",
-          "monthlySubscription": "الاشتراكات الشهرية",
-          "monthlySingleSession": "الجلسات الفردية الشهرية",
-          "legend": {
-            "toggle": "تبديل الخطوط",
-            "showAll": "عرض الكل",
-            "hideAll": "إخفاء الكل"
-          }
+          "monthlyBreakdown": "التفصيل الشهري",
+          "monthlyChange": "التغيير الشهري",
+          "monthlyRevenue": "الإيراد الشهري",
+          "monthlySubscription": "الاشتراك الشهري",
+          "monthlySingleSession": "الجلسات الفردية الشهرية"
         }
       }
     }
@@ -917,6 +890,14 @@
       "notifications": "الإشعارات",
       "profile": "الملف الشخصي",
       "logout": "تسجيل الخروج"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "approved": "مقبول",
+      "declined": "مرفوض",
+      "cancelled": "ملغى",
+      "paid": "مدفوع",
+      "unpaid": "غير مدفوع"
     },
     "currency": {
       "symbol": "درهم",

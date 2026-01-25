@@ -12,7 +12,7 @@ import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
 import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
 import { DashboardData } from "@/hooks/useDashboardData";
 import { Card, CardBody } from "@heroui/card";
-import {Spinner} from "@heroui/spinner"
+import { Spinner } from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";
 
 interface User {
@@ -28,24 +28,25 @@ interface DashboardClientProps {
   initialData: DashboardData;
 }
 
-export default function DashboardClient({ 
-  user, 
-  currentYear, 
-  initialData 
+export default function DashboardClient({
+  user,
+  currentYear,
+  initialData
 }: DashboardClientProps) {
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
-  
+
   // Use React Query to fetch data
-  const { 
-    data: dashboardData, 
-    isLoading, 
+ const {
+    data: dashboardData,
+    isLoading,
     isError,
-    error 
-  } = useDashboardData(selectedYear);
+    error
+  } = useDashboardData(selectedYear); 
 
   // Use the data from React Query if available, otherwise use initial data
   const data = dashboardData || initialData;
-
+  
+  console.log({ dashboardData,selectedYear})
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
   };
@@ -78,7 +79,7 @@ export default function DashboardClient({
 
   return (
     <div className="p-4 md:p-6">
-      {/* Loading overlay */}
+      {/* Loading overgetDashboardDatalay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg flex flex-col items-center gap-4">
@@ -122,10 +123,9 @@ export default function DashboardClient({
       {/* Charts Section */}
       <ChartsSection
         stadiumUtilization={data.stadiumUtilization}
-        revenueByMonth={data.revenueByMonth}
-        currentYear={selectedYear}
+        reservationsByStatus={data.reservationsByStatus || []}
       />
-      
+
       {/* Revenue Trends Chart */}
       <div className="mt-6">
         <RevenueTrendsChart

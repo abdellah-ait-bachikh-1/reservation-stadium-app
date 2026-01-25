@@ -2,6 +2,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ReservationStatusType } from "@/types/db";
 
 export interface DashboardData {
   stats: {
@@ -41,11 +42,21 @@ export interface DashboardData {
   }>;
   revenueByMonth: Array<{
     month: string;
-    value: number;
+    totalRevenue: number;
+    subscriptionRevenue: number;
+    singleSessionRevenue: number;
+    paidAmount: number;
+    overdueAmount: number;
+    collectionRate: number;
   }>;
   stadiumUtilization: Array<{
     name: string;
     usage: number;
+  }>;
+  reservationsByStatus: Array<{
+    status: ReservationStatusType;
+    count: number;
+    color: string;
   }>;
   revenueTrends: Array<{
     month: string;
@@ -59,9 +70,9 @@ export interface DashboardData {
 }
 
 async function fetchDashboardData(year: number): Promise<DashboardData> {
-  // Validate year is from 2026 onward
+  // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
-  const validatedYear = Math.max(2026, Math.min(year, currentYear));
+  const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
   
   const response = await fetch(`/api/dashboard/home?year=${validatedYear}`);
   
@@ -70,7 +81,7 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
   }
   
   const result = await response.json();
-  console.log({result})
+  
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch dashboard data");
   }
@@ -79,14 +90,15 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
 }
 
 export function useDashboardData(year: number) {
-  // Validate year is from 2026 onward
+  // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
-  const validatedYear = Math.max(2026, Math.min(year, currentYear));
+  const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
   
   return useQuery({
     queryKey: ["dashboard", "home", validatedYear],
     queryFn: () => fetchDashboardData(validatedYear),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !!validatedYear, // Ensure year is valid
   });
 }

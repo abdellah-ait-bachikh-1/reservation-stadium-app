@@ -26,7 +26,7 @@ export default function DashboardHeader({
 
   // Generate years from 2026 to current year
   const currentYearNow = new Date().getFullYear();
-  const startYear = 2026;
+  const startYear = 2025;
   
   const yearOptions = Array.from(
     { length: Math.max(0, currentYearNow - startYear + 1) },

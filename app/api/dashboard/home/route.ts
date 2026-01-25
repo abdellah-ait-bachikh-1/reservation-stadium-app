@@ -12,8 +12,10 @@ export async function GET(request: NextRequest) {
     // Default to current year if not provided
     let year = yearParam ? parseInt(yearParam) : currentYear;
     
-    // Validate year is from 2026 onward
-    year = Math.max(2026, Math.min(year, currentYear));
+    // Validate year is not in the future
+    year = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
+
+    console.log(`Fetching dashboard data for year: ${year}`);
 
     // Fetch dashboard data for the specified year
     const dashboardData = await getDashboardData(year);

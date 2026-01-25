@@ -616,49 +616,29 @@
         "recentActivity": {
           "title": "Activité Récente",
           "viewAll": "Voir Toute l'Activité",
-          "noActivity": "Aucune activité récente",
-          "types": {
-            "reservation": "Nouvelle Réservation",
-            "payment": "Paiement Reçu",
-            "subscription": "Abonnement Créé",
-            "user": "Nouvel Utilisateur",
-            "club": "Club Enregistré"
-          }
+          "noActivity": "Aucune activité récente"
         },
         "upcomingReservations": {
           "title": "Réservations à Venir",
           "viewAll": "Voir Toutes les Réservations",
-          "noReservations": "Aucune réservation à venir",
-          "columns": {
-            "stadium": "Stade",
-            "club": "Club",
-            "date": "Date",
-            "time": "Heure",
-            "status": "Statut",
-            "amount": "Montant"
-          }
+          "noReservations": "Aucune réservation à venir"
         },
         "charts": {
-          "revenue": "Revenu",
-          "maxRevenue": "Revenu Max",
-          "avgMonthly": "Moyenne Mensuelle",
-          "totalYear": "Total",
-          "legend": {
-            "low": "< 50% du max",
-            "medium": "50-80% du max",
-            "high": "> 80% du max"
-          },
-          "reservationsByMonth": {
-            "title": "Réservations par Mois",
-            "description": "Tendances mensuelles des réservations"
-          },
-          "revenueByMonth": {
-            "title": "Revenu par Mois",
-            "description": "Tendances mensuelles des revenus"
-          },
           "stadiumUtilization": {
             "title": "Utilisation des Stades",
-            "description": "Taux d'utilisation des stades"
+            "description": "Taux d'utilisation des stades",
+            "noData": "Aucune donnée d'utilisation de stade disponible"
+          },
+          "reservationsByStatus": {
+            "title": "Réservations par Statut",
+            "description": "Répartition des réservations par statut",
+            "count": "Nombre",
+            "totalReservations": "Total Réservations",
+            "approvalRate": "Taux d'Approbation",
+            "pending": "En Attente",
+            "total": "Total",
+                      "noData": "Aucune donnée de statut de réservation disponible"
+
           }
         },
         "revenueTrends": {
@@ -669,10 +649,8 @@
           "singleSession": "Sessions Uniques",
           "paid": "Payé",
           "overdue": "En Retard",
-          "vsLastMonth": "par rapport au mois dernier",
           "vsLastYear": "par rapport à l'année dernière",
           "ofTotal": "du total",
-          "collected": "collecté",
           "outstanding": "en attente",
           "yearToDate": "Année à ce jour",
           "collectionRate": "taux de recouvrement",
@@ -680,12 +658,7 @@
           "monthlyChange": "Changement mensuel",
           "monthlyRevenue": "Revenu Mensuel",
           "monthlySubscription": "Abonnement Mensuel",
-          "monthlySingleSession": "Sessions Uniques Mensuelles",
-          "legend": {
-            "toggle": "Basculer les lignes",
-            "showAll": "Afficher tout",
-            "hideAll": "Masquer tout"
-          }
+          "monthlySingleSession": "Sessions Uniques Mensuelles"
         }
       }
     }
@@ -917,6 +890,14 @@
       "notifications": "Notifications",
       "profile": "Profil",
       "logout": "Déconnexion"
+    },
+    "status": {
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "declined": "Refusé",
+      "cancelled": "Annulé",
+      "paid": "Payé",
+      "unpaid": "Impayé"
     },
     "currency": {
       "symbol": "DH",
