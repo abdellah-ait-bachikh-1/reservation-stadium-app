@@ -72,7 +72,7 @@ function getStaticDashboardData(): DashboardData {
       newClubsThisMonth: 0,
       newUsersThisMonth: 0,
       avgUtilization: 0,
-      completionRate: 0
+      completionRate: 0,newClubsThisYear:0,newUsersThisYear:0,changes:{}
     },
     recentActivity: [],
     upcomingReservations: [],
