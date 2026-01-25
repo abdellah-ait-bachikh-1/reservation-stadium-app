@@ -1,14 +1,57 @@
-// scripts/comprehensive-seed.ts
+// scripts/yearly-dashboard-seed.ts
 import { db } from "@/drizzle/db";
-import { cashPaymentRecords, clubs, monthlyPayments, monthlySubscriptions, notifications, reservations, reservationSeries, sports, stadiumImages, stadiums, stadiumSports, users } from "@/drizzle/schema";
-import { InsertCashPaymentRecordType, InsertClubType, InsertMonthlyPaymentType, InsertNotificationType, InsertReservationType } from "@/types/db";
+import {
+  cashPaymentRecords,
+  clubs,
+  monthlyPayments,
+  monthlySubscriptions,
+  notifications,
+  reservations,
+  reservationSeries,
+  sports,
+  stadiumImages,
+  stadiums,
+  stadiumSports,
+  users,
+} from "@/drizzle/schema";
+import {
+  InsertCashPaymentRecordType,
+  InsertClubType,
+  InsertMonthlyPaymentType,
+  InsertMonthlySubscriptionType,
+  InsertNotificationType,
+  InsertReservationSeriesType,
+  InsertReservationType,
+  InsertStadiumSportType,
+  PaymentDueDay,
+} from "@/types/db";
 import bcrypt from "bcryptjs";
-import { addDays, addMonths, format, subDays, subMonths } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  subMonths,
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  eachMonthOfInterval,
+  eachDayOfInterval,
+  isWeekend,
+} from "date-fns";
 
-async function comprehensiveSeed() {
+async function yearlyDashboardSeed() {
   try {
-    console.log("🌱 Comprehensive Database Seed");
-    console.log("=".repeat(60));
+    console.log("🌱 Yearly Dashboard Data Seed (2025-2026)");
+    console.log("=".repeat(80));
+
+    // ===== CONFIGURATION =====
+    const SEED_YEARS = [2025, 2026];
+    const BASE_YEAR = 2025;
+    const CURRENT_YEAR = 2026;
+    
+    console.log(`📅 Seeding data for years: ${SEED_YEARS.join(", ")}`);
+    console.log(`📊 Generating realistic dashboard data for monthly analysis\n`);
 
     // ===== CLEAR ALL DATA =====
     console.log("🧹 Clearing all existing data...");
@@ -45,65 +88,115 @@ async function comprehensiveSeed() {
     const usersData = [
       // Admin users
       {
-        name: "Admin Super",
-        email: "admin@test.ma",
+        name: "Admin Dashboard",
+        email: "admin@dashboard.ma",
         password: hashedPassword,
         role: "ADMIN" as const,
-        phoneNumber: "0612345678",
+        phoneNumber: "0611111111",
         isApproved: true,
         preferredLocale: "FR" as const,
         emailVerifiedAt: currentTime,
       },
-      // Club managers
+      // Club managers - 10 clubs for better statistics
       {
-        name: "Mohammed Alami",
-        email: "mohammed@footballclub.ma",
+        name: "Football Club Elite",
+        email: "football@club.ma",
         password: hashedPassword,
         role: "CLUB" as const,
-        phoneNumber: "0622345678",
-        isApproved: true,
-        preferredLocale: "AR" as const,
-        emailVerifiedAt: currentTime,
-      },
-      {
-        name: "Jean Dupont",
-        email: "jean@basketclub.ma",
-        password: hashedPassword,
-        role: "CLUB" as const,
-        phoneNumber: "0633345678",
+        phoneNumber: "0622222222",
         isApproved: true,
         preferredLocale: "FR" as const,
         emailVerifiedAt: currentTime,
       },
       {
-        name: "Karim Benzema",
-        email: "karim@handballclub.ma",
+        name: "Basketball Champions",
+        email: "basketball@club.ma",
         password: hashedPassword,
         role: "CLUB" as const,
-        phoneNumber: "0644345678",
-        isApproved: false,
-        preferredLocale: "AR" as const,
-        emailVerifiedAt: null,
-      },
-      {
-        name: "Sarah Volley",
-        email: "sarah@volleyclub.ma",
-        password: hashedPassword,
-        role: "CLUB" as const,
-        phoneNumber: "0655345678",
+        phoneNumber: "0633333333",
         isApproved: true,
         preferredLocale: "EN" as const,
         emailVerifiedAt: currentTime,
       },
       {
-        name: "Ali Tennis",
-        email: "ali@tennisclub.ma",
+        name: "Handball Masters",
+        email: "handball@club.ma",
         password: hashedPassword,
         role: "CLUB" as const,
-        phoneNumber: "0666345678",
+        phoneNumber: "0644444444",
         isApproved: true,
         preferredLocale: "AR" as const,
         emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Volleyball Stars",
+        email: "volleyball@club.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0655555555",
+        isApproved: true,
+        preferredLocale: "FR" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Tennis Academy",
+        email: "tennis@club.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0666666666",
+        isApproved: true,
+        preferredLocale: "EN" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Swimming Dolphins",
+        email: "swimming@club.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0677777777",
+        isApproved: true,
+        preferredLocale: "AR" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Athletics Sprinters",
+        email: "athletics@club.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0688888888",
+        isApproved: true,
+        preferredLocale: "FR" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Beach Volley Team",
+        email: "beachvolley@club.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0699999999",
+        isApproved: true,
+        preferredLocale: "EN" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Youth Football Club",
+        email: "youth@football.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0600000000",
+        isApproved: true,
+        preferredLocale: "AR" as const,
+        emailVerifiedAt: currentTime,
+      },
+      {
+        name: "Women's Basketball",
+        email: "womens@basketball.ma",
+        password: hashedPassword,
+        role: "CLUB" as const,
+        phoneNumber: "0612345670",
+        isApproved: false, // Not approved for testing
+        preferredLocale: "FR" as const,
+        emailVerifiedAt: null,
       },
     ];
 
@@ -132,179 +225,75 @@ async function comprehensiveSeed() {
     console.log("🏟️ Creating stadiums...");
     const stadiumsData = [
       {
-        name: "Stade Municipal de Tantan",
-        address: "Avenue Hassan II, Tantan 89000",
+        name: "Stade Municipal Principal",
+        address: "Avenue Hassan II, Tantan",
         googleMapsUrl: "https://maps.google.com/?q=28.4312,-11.1034",
-        monthlyPrice: "2500.00",
-        pricePerSession: "300.00",
-      },
-      {
-        name: "Complexe Sportif Al Amal",
-        address: "Boulevard Mohammed V, Tantan 89000",
-        googleMapsUrl: "https://maps.google.com/?q=28.4333,-11.1000",
-        monthlyPrice: "1800.00",
-        pricePerSession: "250.00",
-      },
-      {
-        name: "Stade Olympique Tantan",
-        address: "Quartier Administratif, Tantan 89000",
-        googleMapsUrl: "https://maps.google.com/?q=28.4300,-11.1050",
         monthlyPrice: "3500.00",
         pricePerSession: "400.00",
       },
       {
-        name: "Salle Couverte El Wahda",
-        address: "Rue des Sports, Tantan 89000",
+        name: "Complexe Sportif Al Amal",
+        address: "Boulevard Mohammed V, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4333,-11.1000",
+        monthlyPrice: "2800.00",
+        pricePerSession: "320.00",
+      },
+      {
+        name: "Stade Olympique Tantan",
+        address: "Quartier Administratif, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4300,-11.1050",
+        monthlyPrice: "4200.00",
+        pricePerSession: "480.00",
+      },
+      {
+        name: "Salle Polyvalente Couverte",
+        address: "Rue des Sports, Tantan",
         googleMapsUrl: "https://maps.google.com/?q=28.4350,-11.0950",
+        monthlyPrice: "1800.00",
+        pricePerSession: "200.00",
+      },
+      {
+        name: "Piscine Olympique",
+        address: "Avenue des Nations Unies, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4280,-11.1100",
+        monthlyPrice: "2500.00",
+        pricePerSession: "280.00",
+      },
+      {
+        name: "Stade des Jeunes",
+        address: "Quartier Jeunes, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4250,-11.1150",
+        monthlyPrice: "2000.00",
+        pricePerSession: "220.00",
+      },
+      {
+        name: "Terrain de Football Oasis",
+        address: "Quartier Oasis, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4200,-11.1200",
+        monthlyPrice: "1500.00",
+        pricePerSession: "180.00",
+      },
+      {
+        name: "Complexe Handball",
+        address: "Avenue des Sportifs, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4150,-11.1250",
+        monthlyPrice: "1600.00",
+        pricePerSession: "190.00",
+      },
+      {
+        name: "Court de Tennis",
+        address: "Complexe Sportif, Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4100,-11.1300",
         monthlyPrice: "1200.00",
         pricePerSession: "150.00",
       },
       {
-        name: "Piscine Municipale",
-        address: "Avenue des Nations Unies, Tantan 89000",
-        googleMapsUrl: "https://maps.google.com/?q=28.4280,-11.1100",
-        monthlyPrice: "2000.00",
-        pricePerSession: "200.00",
-      },  {
-      name: "Terrain de Football Oasis",
-      address: "Quartier Oasis, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4250,-11.1150",
-      monthlyPrice: "1500.00",
-      pricePerSession: "200.00",
-    },
-    {
-      name: "Stade El Massira",
-      address: "Avenue El Massira, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4400,-11.0900",
-      monthlyPrice: "2800.00",
-      pricePerSession: "350.00",
-    },
-    {
-      name: "Complexe Sportif Atlas",
-      address: "Boulevard Atlas, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4200,-11.1200",
-      monthlyPrice: "2200.00",
-      pricePerSession: "280.00",
-    },
-    {
-      name: "Stade Mohammed VI",
-      address: "Avenue Mohammed VI, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4500,-11.0850",
-      monthlyPrice: "4000.00",
-      pricePerSession: "450.00",
-    },
-    {
-      name: "Salle Polyvalente Al Inbiaat",
-      address: "Rue Al Inbiaat, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4150,-11.1250",
-      monthlyPrice: "1000.00",
-      pricePerSession: "120.00",
-    },
-    {
-      name: "Stade des Jeunes",
-      address: "Quartier Jeunes, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4600,-11.0800",
-      monthlyPrice: "1200.00",
-      pricePerSession: "150.00",
-    },
-    {
-      name: "Complexe Football City",
-      address: "Zone Industrielle, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4100,-11.1300",
-      monthlyPrice: "3200.00",
-      pricePerSession: "380.00",
-    },
-    {
-      name: "Stade Al Kawkab",
-      address: "Avenue des Palmiers, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4700,-11.0750",
-      monthlyPrice: "1800.00",
-      pricePerSession: "220.00",
-    },
-    {
-      name: "Salle Omnisports",
-      address: "Rue du Stade, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4050,-11.1350",
-      monthlyPrice: "1400.00",
-      pricePerSession: "180.00",
-    },
-    {
-      name: "Stade Hassan I",
-      address: "Boulevard Hassan I, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4800,-11.0700",
-      monthlyPrice: "2600.00",
-      pricePerSession: "320.00",
-    },
-    {
-      name: "Complexe Sportif Al Fath",
-      address: "Quartier Al Fath, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4000,-11.1400",
-      monthlyPrice: "1900.00",
-      pricePerSession: "240.00",
-    },
-    {
-      name: "Stade Moulay Rachid",
-      address: "Avenue Moulay Rachid, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.4900,-11.0650",
-      monthlyPrice: "3500.00",
-      pricePerSession: "420.00",
-    },
-    {
-      name: "Terrain de Basket Al Amal",
-      address: "Rue du Sport, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.3950,-11.1450",
-      monthlyPrice: "800.00",
-      pricePerSession: "100.00",
-    },
-    {
-      name: "Stade Olympique Sud",
-      address: "Quartier Sud, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.5000,-11.0600",
-      monthlyPrice: "4200.00",
-      pricePerSession: "500.00",
-    },
-    {
-      name: "Complexe Handball",
-      address: "Avenue des Sportifs, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.3900,-11.1500",
-      monthlyPrice: "1600.00",
-      pricePerSession: "200.00",
-    },
-    {
-      name: "Stade de la Gare",
-      address: "Près de la Gare, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.5100,-11.0550",
-      monthlyPrice: "2400.00",
-      pricePerSession: "300.00",
-    },
-    {
-      name: "Salle de Tennis Couverte",
-      address: "Complexe Sportif, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.3850,-11.1550",
-      monthlyPrice: "1300.00",
-      pricePerSession: "160.00",
-    },
-    {
-      name: "Stade Al Qods",
-      address: "Avenue Al Qods, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.5200,-11.0500",
-      monthlyPrice: "2900.00",
-      pricePerSession: "350.00",
-    },
-    {
-      name: "Terrain de Volley Plage",
-      address: "Plage de Tantan, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.3800,-11.1600",
-      monthlyPrice: "900.00",
-      pricePerSession: "110.00",
-    },
-    {
-      name: "Stade du 20 Août",
-      address: "Avenue du 20 Août, Tantan 89000",
-      googleMapsUrl: "https://maps.google.com/?q=28.5300,-11.0450",
-      monthlyPrice: "3800.00",
-      pricePerSession: "450.00",
-    },
+        name: "Stade Beach Volley",
+        address: "Plage de Tantan",
+        googleMapsUrl: "https://maps.google.com/?q=28.4050,-11.1350",
+        monthlyPrice: "800.00",
+        pricePerSession: "100.00",
+      },
     ];
 
     await db.insert(stadiums).values(stadiumsData);
@@ -313,22 +302,21 @@ async function comprehensiveSeed() {
 
     // ===== 4. CREATE STADIUM IMAGES =====
     console.log("📷 Creating stadium images...");
-    const stadiumImagesData:{index:number,imageUri:string,stadiumId:string}[] = [];
+    const stadiumImagesData: { index: number; imageUri: string; stadiumId: string }[] = [];
     const imageUrls = [
       "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=800",
-      "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w-800",
+      "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=800",
       "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=800",
       "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800",
       "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
     ];
 
-    allStadiums.forEach((stadium, stadiumIndex) => {
-      // Add 3-5 images per stadium
-      const numImages = 3 + (stadiumIndex % 3);
+    allStadiums.forEach((stadium) => {
+      const numImages = 3 + Math.floor(Math.random() * 3);
       for (let i = 0; i < numImages; i++) {
         stadiumImagesData.push({
           index: i,
-          imageUri: imageUrls[(stadiumIndex + i) % imageUrls.length],
+          imageUri: imageUrls[i % imageUrls.length],
           stadiumId: stadium.id,
         });
       }
@@ -339,517 +327,504 @@ async function comprehensiveSeed() {
 
     // ===== 5. LINK STADIUMS WITH SPORTS =====
     console.log("🔗 Linking stadiums with sports...");
-    const stadiumSportsData = [];
+    const stadiumSportsData:InsertStadiumSportType[] = [];
 
-    // Stadium 1: Football, Athletics
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[0].id, sportId: allSports[0].id },
-      { stadiumId: allStadiums[0].id, sportId: allSports[6].id }
-    );
+    allStadiums.forEach((stadium, index) => {
+      const sportIndices = [
+        [0, 6], // Football, Athletics
+        [1, 2, 3], // Basketball, Handball, Volleyball
+        [0, 7], // Football, Beach Volleyball
+        [4, 3], // Tennis, Volleyball
+        [5], // Swimming
+        [0, 6], // Football, Athletics
+        [0], // Football
+        [2], // Handball
+        [4], // Tennis
+        [7], // Beach Volleyball
+      ][index % 10];
 
-    // Stadium 2: Basketball, Handball, Volleyball
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[1].id, sportId: allSports[1].id },
-      { stadiumId: allStadiums[1].id, sportId: allSports[2].id },
-      { stadiumId: allStadiums[1].id, sportId: allSports[3].id }
-    );
+      sportIndices.forEach((sportIndex) => {
+        stadiumSportsData.push({
+          stadiumId: stadium.id,
+          sportId: allSports[sportIndex].id,
+        });
+      });
+    });
 
-    // Stadium 3: Football, Beach Volleyball
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[2].id, sportId: allSports[0].id },
-      { stadiumId: allStadiums[2].id, sportId: allSports[7].id }
-    );
-
-    // Stadium 4: Tennis, Volleyball
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[3].id, sportId: allSports[4].id },
-      { stadiumId: allStadiums[3].id, sportId: allSports[3].id }
-    );
-
-    // Stadium 5: Swimming
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[4].id, sportId: allSports[5].id }
-    );
- stadiumSportsData.push(
-      { stadiumId: allStadiums[5].id, sportId: allSports[0].id },
-      { stadiumId: allStadiums[5].id, sportId: allSports[7].id }
-    );
-
-    // Stadium 7: Basketball, Athletics
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[6].id, sportId: allSports[1].id },
-      { stadiumId: allStadiums[6].id, sportId: allSports[6].id }
-    );
-
-    // Stadium 8: Football, Handball
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[7].id, sportId: allSports[0].id },
-      { stadiumId: allStadiums[7].id, sportId: allSports[2].id }
-    );
-
-    // Stadium 9: Tennis, Volleyball
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[8].id, sportId: allSports[4].id },
-      { stadiumId: allStadiums[8].id, sportId: allSports[3].id }
-    );
-
-    // Stadium 10: Football, Athletics
-    stadiumSportsData.push(
-      { stadiumId: allStadiums[9].id, sportId: allSports[0].id },
-      { stadiumId: allStadiums[9].id, sportId: allSports[6].id }
-    );
     await db.insert(stadiumSports).values(stadiumSportsData);
     console.log(`✅ Created ${stadiumSportsData.length} stadium-sport links\n`);
 
     // ===== 6. CREATE CLUBS =====
     console.log("🏢 Creating clubs...");
-    const clubsData:InsertClubType[] = [
-      {
-        name: "Tantan Football Club",
-        address: "Rue du Stade, Quartier Al Amal, Tantan",
-        monthlyFee: "800.00",
-        paymentDueDay: 10,
-        userId: allUsers[1].id,
-        sportId: allSports[0].id,
-      },
-      {
-        name: "Basketball Association Tantan",
-        address: "Complexe Sportif, Avenue Mohammed V, Tantan",
-        monthlyFee: "600.00",
-        paymentDueDay: 15,
-        userId: allUsers[2].id,
-        sportId: allSports[1].id,
-      },
-      {
-        name: "Handball Club Al Wahda",
-        address: "Salle Couverte, Rue des Sports, Tantan",
-        monthlyFee: "500.00",
-        paymentDueDay: 20,
-        userId: allUsers[3].id,
-        sportId: allSports[2].id,
-      },
-      {
-        name: "Volleyball Team Tantan",
-        address: "Stade Municipal, Avenue Hassan II, Tantan",
-        monthlyFee: "550.00",
-        paymentDueDay: 25,
-        userId: allUsers[4].id,
-        sportId: allSports[3].id,
-      },
-      {
-        name: "Tennis Club Tantan",
-        address: "Complexe Sportif, Quartier Administratif, Tantan",
-        monthlyFee: "700.00",
-        paymentDueDay: 5,
-        userId: allUsers[5].id,
-        sportId: allSports[4].id,
-      },
-    ];
+    const clubsData :InsertClubType[]  = allUsers
+      .filter(user => user.role === "CLUB")
+      .map((user, index) => ({
+        name: `${user.name} Club`,
+        address: `Address for ${user.name}, Tantan`,
+        monthlyFee: (800 + (index * 100)).toFixed(2),
+        paymentDueDay: 5 + (index * 5) % 25 as PaymentDueDay,
+        userId: user.id,
+        sportId: allSports[index % allSports.length].id,
+      } ));
 
     await db.insert(clubs).values(clubsData);
     const allClubs = await db.select().from(clubs);
     console.log(`✅ Created ${allClubs.length} clubs\n`);
 
-    // ===== 7. CREATE RESERVATION SERIES =====
-    console.log("📅 Creating reservation series...");
-    const today = new Date();
-    const nextMonth = addMonths(today, 1);
+// ===== 7. CREATE RESERVATION SERIES =====
+console.log("📅 Creating reservation series...");
+const reservationSeriesData : InsertReservationSeriesType[] = [];
 
-    const reservationSeriesData = [
-      // Monthly subscription for Football Club (Monday 18:00-20:00)
-      {
-        startTime: format(new Date().setHours(18, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        endTime: format(new Date().setHours(20, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        dayOfWeek: 1, // Monday
-        recurrenceEndDate: format(addMonths(today, 6), "yyyy-MM-dd HH:mm:ss"),
-        isFixed: true,
-        billingType: "MONTHLY_SUBSCRIPTION" as const,
-        monthlyPrice: "2500.00",
-        stadiumId: allStadiums[0].id,
-        userId: allUsers[1].id,
-      },
-      // Monthly subscription for Basketball (Wednesday 19:00-21:00)
-      {
-        startTime: format(new Date().setHours(19, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        endTime: format(new Date().setHours(21, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        dayOfWeek: 3, // Wednesday
-        recurrenceEndDate: format(addMonths(today, 12), "yyyy-MM-dd HH:mm:ss"),
-        isFixed: true,
-        billingType: "MONTHLY_SUBSCRIPTION" as const,
-        monthlyPrice: "1800.00",
-        stadiumId: allStadiums[1].id,
-        userId: allUsers[2].id,
-      },
-      // Per session for Handball (Friday 17:00-19:00)
-      {
-        startTime: format(new Date().setHours(17, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        endTime: format(new Date().setHours(19, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        dayOfWeek: 5, // Friday
-        recurrenceEndDate: format(addMonths(today, 3), "yyyy-MM-dd HH:mm:ss"),
-        isFixed: false,
-        billingType: "PER_SESSION" as const,
-        pricePerSession: "250.00",
-        stadiumId: allStadiums[1].id,
-        userId: allUsers[3].id,
-      },
-      // Monthly subscription for Volleyball (Tuesday 20:00-22:00)
-      {
-        startTime: format(new Date().setHours(20, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        endTime: format(new Date().setHours(22, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        dayOfWeek: 2, // Tuesday
-        recurrenceEndDate: format(addMonths(today, 6), "yyyy-MM-dd HH:mm:ss"),
-        isFixed: true,
-        billingType: "MONTHLY_SUBSCRIPTION" as const,
-        monthlyPrice: "1200.00",
-        stadiumId: allStadiums[3].id,
-        userId: allUsers[4].id,
-      },
-      // Per session for Tennis (Thursday 16:00-18:00)
-      {
-        startTime: format(new Date().setHours(16, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        endTime: format(new Date().setHours(18, 0, 0, 0), "yyyy-MM-dd HH:mm:ss"),
-        dayOfWeek: 4, // Thursday
-        recurrenceEndDate: format(addMonths(today, 2), "yyyy-MM-dd HH:mm:ss"),
-        isFixed: false,
-        billingType: "PER_SESSION" as const,
-        pricePerSession: "150.00",
-        stadiumId: allStadiums[3].id,
-        userId: allUsers[5].id,
-      },
-    ];
+// Create series for each club
+allClubs.forEach((club, index) => {
+  const daysOfWeek = [1, 2, 3, 4, 5]; // Monday to Friday
+  const dayOfWeek = daysOfWeek[index % daysOfWeek.length];
+  const startHour = 8 + (index * 2) % 8; // 8 AM to 4 PM
+  const isMonthly = Math.random() > 0.3; // 70% monthly, 30% per session
+  const stadiumIndex = index % allStadiums.length;
+  
+  // Create a base date for start/end times - use today's date with the specified time
+  const baseDate = new Date();
+  baseDate.setHours(startHour, 0, 0, 0);
+  
+  const startTime = format(baseDate, "yyyy-MM-dd HH:mm:ss");
+  const endTime = format(new Date(baseDate.getTime() + 2 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm:ss"); // +2 hours
+  
+  // Recurrence end date - end of 2026
+  const recurrenceEndDate = format(new Date(CURRENT_YEAR, 11, 31, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
 
-    await db.insert(reservationSeries).values(reservationSeriesData);
-    const allSeries = await db.select().from(reservationSeries);
-    console.log(`✅ Created ${allSeries.length} reservation series\n`);
+  reservationSeriesData.push({
+    startTime: startTime, // Full datetime, not just time
+    endTime: endTime, // Full datetime, not just time
+    dayOfWeek: dayOfWeek,
+    recurrenceEndDate: recurrenceEndDate,
+    isFixed: true,
+    billingType: isMonthly ? "MONTHLY_SUBSCRIPTION" : "PER_SESSION",
+    monthlyPrice: isMonthly ? (1500 + Math.random() * 2000).toFixed(2) : null,
+    pricePerSession: !isMonthly ? (150 + Math.random() * 150).toFixed(2) : null,
+    stadiumId: allStadiums[stadiumIndex].id,
+    userId: club.userId,
+  });
+});
 
+await db.insert(reservationSeries).values(reservationSeriesData);
+const allSeries = await db.select().from(reservationSeries);
+console.log(`✅ Created ${allSeries.length} reservation series\n`);
     // ===== 8. CREATE MONTHLY SUBSCRIPTIONS =====
     console.log("💰 Creating monthly subscriptions...");
-    const subscriptionsData = [
-      {
-        userId: allUsers[1].id,
-        reservationSeriesId: allSeries[0].id,
-        startDate: format(subMonths(today, 2), "yyyy-MM-dd HH:mm:ss"),
-        endDate: format(addMonths(today, 4), "yyyy-MM-dd HH:mm:ss"),
-        monthlyAmount: "2500.00",
-        status: "ACTIVE" as const,
-        autoRenew: true,
-      },
-      {
-        userId: allUsers[2].id,
-        reservationSeriesId: allSeries[1].id,
-        startDate: format(subMonths(today, 1), "yyyy-MM-dd HH:mm:ss"),
-        endDate: format(addMonths(today, 11), "yyyy-MM-dd HH:mm:ss"),
-        monthlyAmount: "1800.00",
-        status: "ACTIVE" as const,
-        autoRenew: true,
-      },
-      {
-        userId: allUsers[4].id,
-        reservationSeriesId: allSeries[3].id,
-        startDate: format(today, "yyyy-MM-dd HH:mm:ss"),
-        endDate: format(addMonths(today, 5), "yyyy-MM-dd HH:mm:ss"),
-        monthlyAmount: "1200.00",
-        status: "ACTIVE" as const,
-        autoRenew: true,
-      },
-      {
-        userId: allUsers[3].id,
-        reservationSeriesId: allSeries[2].id,
-        startDate: format(subMonths(today, 3), "yyyy-MM-dd HH:mm:ss"),
-        endDate: format(today, "yyyy-MM-dd HH:mm:ss"),
-        monthlyAmount: "1000.00",
-        status: "EXPIRED" as const,
-        autoRenew: false,
-      },
-    ];
+    const subscriptionsData:InsertMonthlySubscriptionType[] = [];
+
+    // Create subscriptions for monthly series
+    const monthlySeries = allSeries.filter(series => series.billingType === "MONTHLY_SUBSCRIPTION");
+    monthlySeries.forEach((series, index) => {
+      const user = allUsers.find(u => u.id === series.userId);
+      const isActive = Math.random() > 0.2; // 80% active
+
+      subscriptionsData.push({
+        userId: series.userId!,
+        reservationSeriesId: series.id,
+        startDate: format(new Date(BASE_YEAR, 0, 1), "yyyy-MM-dd HH:mm:ss"), // Start of 2025
+        endDate: isActive ? format(new Date(CURRENT_YEAR, 11, 31), "yyyy-MM-dd HH:mm:ss") : format(new Date(BASE_YEAR, 6, 30), "yyyy-MM-dd HH:mm:ss"),
+        monthlyAmount: series.monthlyPrice!,
+        status: isActive ? "ACTIVE" : "EXPIRED",
+        autoRenew: isActive,
+      });
+    });
 
     await db.insert(monthlySubscriptions).values(subscriptionsData);
     console.log(`✅ Created ${subscriptionsData.length} monthly subscriptions\n`);
 
-    // ===== 9. CREATE MONTHLY PAYMENTS =====
-    console.log("💳 Creating monthly payments...");
-    const monthlyPaymentsData:InsertMonthlyPaymentType[] = [];
-    const currentMonth = today.getMonth() + 1;
-    const currentYear = today.getFullYear();
+    // ===== 9. GENERATE DATA FOR EACH YEAR =====
+    console.log("📊 Generating monthly data for each year...");
+    
+    for (const year of SEED_YEARS) {
+      console.log(`\n📅 Processing year ${year}...`);
+      
+    // ===== CREATE MONTHLY PAYMENTS =====
+console.log(`  💳 Creating monthly payments for ${year}...`);
+const monthlyPaymentsData: InsertMonthlyPaymentType[] = [];
 
-    // Create payments for the past 3 months and current month
-    for (let i = 3; i >= 0; i--) {
-      const paymentMonth = currentMonth - i;
-      const paymentYear = currentYear;
-      let adjustedMonth = paymentMonth;
-      let adjustedYear = paymentYear;
+// Generate realistic monthly trends
+const monthlyTrends = {
+  reservations: [85, 92, 105, 120, 135, 150, 165, 155, 140, 125, 100, 90],
+  revenue: [28500, 31200, 35500, 42800, 48500, 53200, 58000, 55000, 49000, 41500, 36800, 32500],
+  paymentRate: [0.85, 0.88, 0.90, 0.92, 0.93, 0.94, 0.95, 0.94, 0.93, 0.92, 0.90, 0.88],
+};
 
-      if (paymentMonth <= 0) {
-        adjustedMonth = paymentMonth + 12;
-        adjustedYear = paymentYear - 1;
-      }
+// Adjust for year (2026 should be slightly better than 2025)
+const yearMultiplier = year === CURRENT_YEAR ? 1.1 : 1.0;
 
-      // Football club payments
-      monthlyPaymentsData.push({
-        month: adjustedMonth,
-        year: adjustedYear,
-        amount: "2500.00",
-        status: i === 0 ? "PENDING" : "PAID",
-        paymentDate: i === 0 ? null : format(subMonths(today, i), "yyyy-MM-dd HH:mm:ss"),
-        receiptNumber: i === 0 ? null : `REC-${adjustedYear}${adjustedMonth.toString().padStart(2, '0')}-001`,
-        userId: allUsers[1].id,
-        reservationSeriesId: allSeries[0].id,
-      });
+// Track which (month, year, series) combinations we've already created payments for
+const paymentCombinations = new Set<string>();
 
-      // Basketball club payments
-      monthlyPaymentsData.push({
-        month: adjustedMonth,
-        year: adjustedYear,
-        amount: "1800.00",
-        status: i === 0 ? "PENDING" : "PAID",
-        paymentDate: i === 0 ? null : format(subMonths(today, i), "yyyy-MM-dd HH:mm:ss"),
-        receiptNumber: i === 0 ? null : `REC-${adjustedYear}${adjustedMonth.toString().padStart(2, '0')}-002`,
-        userId: allUsers[2].id,
-        reservationSeriesId: allSeries[1].id,
-      });
-
-      // Volleyball club payments
-      if (i < 3) { // Only for past months
-        monthlyPaymentsData.push({
-          month: adjustedMonth,
-          year: adjustedYear,
-          amount: "1200.00",
-          status: "PAID",
-          paymentDate: format(subMonths(today, i), "yyyy-MM-dd HH:mm:ss"),
-          receiptNumber: `REC-${adjustedYear}${adjustedMonth.toString().padStart(2, '0')}-003`,
-          userId: allUsers[4].id,
-          reservationSeriesId: allSeries[3].id,
-        });
-      }
+// Create payments for each month
+for (let month = 1; month <= 12; month++) {
+  const monthReservations = Math.round(monthlyTrends.reservations[month - 1] * yearMultiplier);
+  const monthRevenue = Math.round(monthlyTrends.revenue[month - 1] * yearMultiplier);
+  const paymentRate = monthlyTrends.paymentRate[month - 1];
+  
+  // Create payments for each monthly series
+  monthlySeries.forEach((series, seriesIndex) => {
+    const paymentKey = `${month}-${year}-${series.id}`;
+    
+    // Skip if we already have a payment for this combination
+    if (paymentCombinations.has(paymentKey)) {
+      return;
     }
+    
+    const paymentStatus = Math.random() <= paymentRate ? "PAID" : 
+                         Math.random() <= 0.1 ? "OVERDUE" : "PENDING";
+    
+    const isPaid = paymentStatus === "PAID";
+    const paymentDate = isPaid ? 
+      format(new Date(year, month - 1, 5 + Math.floor(Math.random() * 20)), "yyyy-MM-dd HH:mm:ss") : 
+      null;
 
-    // Add some overdue payments
     monthlyPaymentsData.push({
-      month: currentMonth - 4 <= 0 ? currentMonth - 4 + 12 : currentMonth - 4,
-      year: currentMonth - 4 <= 0 ? currentYear - 1 : currentYear,
-      amount: "1000.00",
+      month: month,
+      year: year,
+      amount: series.monthlyPrice!,
+      status: paymentStatus,
+      paymentDate: paymentDate,
+      receiptNumber: isPaid ? 
+        `REC-${year}${month.toString().padStart(2, '0')}-${(seriesIndex + 1).toString().padStart(3, '0')}` : 
+        null,
+      userId: series.userId!,
+      reservationSeriesId: series.id,
+    });
+    
+    // Mark this combination as used
+    paymentCombinations.add(paymentKey);
+  });
+
+  // Add some overdue payments from previous months (only for series that don't have payments for those months)
+ // In the overdue payments section (around line 56)
+if (month > 1 && Math.random() > 0.7) {
+  const overdueSeries = monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
+  let previousMonth = month - 1;
+  let previousYear = year;
+  
+  // Handle year boundary
+  if (previousMonth === 0) {
+    previousMonth = 12;
+    previousYear = year - 1;
+  }
+  
+  const overdueKey = `${previousMonth}-${previousYear}-${overdueSeries.id}`;
+  
+  // Only add if there's no payment for this combination yet
+  if (!paymentCombinations.has(overdueKey)) {
+    monthlyPaymentsData.push({
+      month: previousMonth,
+      year: previousYear,
+      amount: overdueSeries.monthlyPrice!,
       status: "OVERDUE",
       paymentDate: null,
       receiptNumber: null,
-      userId: allUsers[3].id,
-      reservationSeriesId: allSeries[2].id,
+      userId: overdueSeries.userId!,
+      reservationSeriesId: overdueSeries.id,
     });
+    
+    paymentCombinations.add(overdueKey);
+  }
+}
+}
+      await db.insert(monthlyPayments).values(monthlyPaymentsData);
+      const yearPayments = monthlyPaymentsData.length;
+      console.log(`  ✅ Created ${yearPayments} monthly payments for ${year}`);
 
-    await db.insert(monthlyPayments).values(monthlyPaymentsData);
-    const allMonthlyPayments = await db.select().from(monthlyPayments);
-    console.log(`✅ Created ${allMonthlyPayments.length} monthly payments\n`);
+      // ===== CREATE RESERVATIONS =====
+      console.log(`  📋 Creating reservations for ${year}...`);
+      const reservationsData: InsertReservationType[] = [];
+      
+      // Get paid monthly payment IDs for this year
+      const paidMonthlyPayments = monthlyPaymentsData.filter(p => p.status === "PAID");
 
-    // ===== 10. CREATE RESERVATIONS =====
-    console.log("📋 Creating reservations...");
-    const reservationsData:InsertReservationType[] = [];
-    const paidMonthlyPaymentIds = allMonthlyPayments
-      .filter(p => p.status === "PAID")
-      .map(p => p.id);
+      // Generate reservations for each month
+      for (let month = 0; month < 12; month++) {
+        const monthDate = new Date(year, month, 1);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const monthReservations = Math.round(monthlyTrends.reservations[month] * yearMultiplier);
+        
+        // Calculate reservations per day for this month
+        const reservationsPerDay = Math.ceil(monthReservations / daysInMonth);
 
-    // Generate reservations for the next 30 days
-    for (let i = 0; i < 30; i++) {
-      const reservationDate = addDays(today, i);
-      const dayOfWeek = reservationDate.getDay();
+        // Create reservations for each day
+        for (let day = 1; day <= daysInMonth; day++) {
+          const currentDate = new Date(year, month, day);
+          const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
-      // Create some reservations from series
-      allSeries.forEach((series, index) => {
-        if (series.dayOfWeek === dayOfWeek && i % 7 === 0) {
-          const startDateTime = new Date(reservationDate);
-          const [startHours, startMinutes] = series.startTime.split(':').slice(0, 2);
-          startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
+          // More reservations on weekends
+          const isWeekendDay = dayOfWeek === 0 || dayOfWeek === 6;
+          const dayReservations = isWeekendDay ? 
+            Math.ceil(reservationsPerDay * 1.5) : 
+            Math.ceil(reservationsPerDay * 0.8);
 
-          const endDateTime = new Date(reservationDate);
-          const [endHours, endMinutes] = series.endTime.split(':').slice(0, 2);
-          endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
+          // Create reservations from series
+         allSeries.forEach((series) => {
+  if (series.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)) {
+    // Series reservation for this day
+    
+    // Parse start time - get only the time part from the datetime string
+    const startTimeParts = series.startTime!.split(' ')[1]; // Get "HH:mm:ss" part
+    const [startHours, startMinutes] = startTimeParts.split(':').map(Number);
+    
+    const startDateTime = new Date(currentDate);
+    startDateTime.setHours(startHours, startMinutes, 0, 0);
 
-          const isMonthlySeries = series.billingType === "MONTHLY_SUBSCRIPTION";
-          const correspondingPayment = paidMonthlyPaymentIds.length > index ? paidMonthlyPaymentIds[index] : null;
+    // Parse end time - get only the time part from the datetime string
+    const endTimeParts = series.endTime!.split(' ')[1]; // Get "HH:mm:ss" part
+    const [endHours, endMinutes] = endTimeParts.split(':').map(Number);
+    
+    const endDateTime = new Date(currentDate);
+    endDateTime.setHours(endHours, endMinutes, 0, 0);
+
+    const isMonthlySeries = series.billingType === "MONTHLY_SUBSCRIPTION";
+    let monthlyPaymentId = null;
+
+    if (isMonthlySeries) {
+      // Find corresponding monthly payment
+      const payment = paidMonthlyPayments.find(p => 
+        p.reservationSeriesId === series.id && 
+        p.month === month + 1 && 
+        p.year === year
+      );
+      monthlyPaymentId = payment?.id || null;
+    }
+
+    const isPaid = isMonthlySeries ? monthlyPaymentId !== null : Math.random() > 0.3;
+
+    reservationsData.push({
+      startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
+      endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
+      status: "APPROVED" as const,
+      sessionPrice: series.pricePerSession || series.monthlyPrice!,
+      isPaid: isPaid,
+      paymentType: isMonthlySeries ? "MONTHLY_SUBSCRIPTION" : "SINGLE_SESSION" as const,
+      stadiumId: series.stadiumId!,
+      userId: series.userId!,
+      monthlyPaymentId: monthlyPaymentId,
+      reservationSeriesId: series.id,
+    });
+  }
+});
+
+          // Create additional individual reservations
+          const additionalReservations = Math.max(0, dayReservations - (allSeries.filter(s => s.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)).length));
+          
+          for (let i = 0; i < additionalReservations; i++) {
+            const hour = 8 + Math.floor(Math.random() * 10); // 8 AM to 6 PM
+            const duration = 1 + Math.floor(Math.random() * 3); // 1-3 hours
+            
+            const startDateTime = new Date(currentDate);
+            startDateTime.setHours(hour, 0, 0, 0);
+            
+            const endDateTime = new Date(currentDate);
+            endDateTime.setHours(hour + duration, 0, 0, 0);
+
+            const stadiumIndex = Math.floor(Math.random() * allStadiums.length);
+            const userIndex = 1 + Math.floor(Math.random() * (allUsers.length - 1)); // Skip admin
+            
+            const statuses = ["APPROVED", "PENDING", "DECLINED", "CANCELLED"];
+            const weights = [0.7, 0.15, 0.1, 0.05]; // 70% approved, 15% pending, etc.
+            let statusIndex = 0;
+            let rand = Math.random();
+            for (let j = 0; j < weights.length; j++) {
+              rand -= weights[j];
+              if (rand <= 0) {
+                statusIndex = j;
+                break;
+              }
+            }
+
+            const isApproved = statuses[statusIndex] === "APPROVED";
+            const isPaid = isApproved ? Math.random() > 0.4 : false; // 60% of approved are paid
+
+            reservationsData.push({
+              startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
+              endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
+              status: statuses[statusIndex] as any,
+              sessionPrice: (150 + Math.random() * 250).toFixed(2),
+              isPaid: isPaid,
+              paymentType: "SINGLE_SESSION" as const,
+              stadiumId: allStadiums[stadiumIndex].id,
+              userId: allUsers[userIndex].id,
+            });
+          }
+        }
+
+        // Add some declined/cancelled reservations
+        for (let i = 0; i < monthReservations * 0.1; i++) { // 10% are declined/cancelled
+          const randomDay = Math.floor(Math.random() * daysInMonth) + 1;
+          const randomDate = new Date(year, month, randomDay);
+          const hour = 8 + Math.floor(Math.random() * 10);
+
+          const startDateTime = new Date(randomDate);
+          startDateTime.setHours(hour, 0, 0, 0);
 
           reservationsData.push({
             startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
-            endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
-            status: "APPROVED" as const,
-            sessionPrice: series.pricePerSession || series.monthlyPrice || "0.00",
-            isPaid: isMonthlySeries && correspondingPayment !== null,
-            paymentType: isMonthlySeries ? "MONTHLY_SUBSCRIPTION" : "SINGLE_SESSION" as const,
-            stadiumId: series.stadiumId,
-            userId: series.userId,
-            monthlyPaymentId: correspondingPayment,
-            reservationSeriesId: series.id,
+            endDateTime: format(startDateTime.setHours(hour + 2), "yyyy-MM-dd HH:mm:ss"),
+            status: Math.random() > 0.5 ? "DECLINED" : "CANCELLED",
+            sessionPrice: (200 + Math.random() * 200).toFixed(2),
+            isPaid: false,
+            paymentType: "SINGLE_SESSION" as const,
+            stadiumId: allStadiums[Math.floor(Math.random() * allStadiums.length)].id,
+            userId: allUsers[1 + Math.floor(Math.random() * (allUsers.length - 1))].id,
+          });
+        }
+      }
+
+      await db.insert(reservations).values(reservationsData);
+      console.log(`  ✅ Created ${reservationsData.length} reservations for ${year}`);
+
+      // ===== CREATE CASH PAYMENT RECORDS =====
+      console.log(`  💵 Creating cash payment records for ${year}...`);
+      const cashPaymentsData: InsertCashPaymentRecordType[] = [];
+
+      // Create cash payments for paid reservations without monthly payments
+      reservationsData.forEach((reservation, index) => {
+        if (reservation.isPaid && !reservation.monthlyPaymentId) {
+          const paymentDate = new Date(reservation.startDateTime);
+          paymentDate.setDate(paymentDate.getDate() - Math.floor(Math.random() * 3)); // Paid 0-2 days before
+
+          cashPaymentsData.push({
+            amount: reservation.sessionPrice,
+            paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
+            receiptNumber: `CASH-${format(new Date(reservation.startDateTime), 'yyyyMMdd')}-${(index + 1).toString().padStart(3, '0')}`,
+            notes: Math.random() > 0.5 ? "Payment received in cash" : null,
+            reservationId: reservation.id,
+            userId: reservation.userId!,
           });
         }
       });
 
-      // Create some individual reservations
-      if (i % 3 === 0) {
-        const stadiumIndex = i % allStadiums.length;
-        const userIndex = (i % (allUsers.length - 1)) + 1; // Skip admin
+      // Create cash payments for monthly payments
+      paidMonthlyPayments.forEach((payment, index) => {
+        if (payment.paymentDate) {
+          cashPaymentsData.push({
+            amount: payment.amount,
+            paymentDate: payment.paymentDate,
+            receiptNumber: payment.receiptNumber!,
+            notes: `Monthly payment for ${payment.month}/${payment.year}`,
+            monthlyPaymentId: payment.id,
+            userId: payment.userId!,
+          });
+        }
+      });
 
-        reservationsData.push({
-          startDateTime: format(new Date(reservationDate.setHours(14, 0, 0, 0)), "yyyy-MM-dd HH:mm:ss"),
-          endDateTime: format(new Date(reservationDate.setHours(16, 0, 0, 0)), "yyyy-MM-dd HH:mm:ss"),
-          status: i % 5 === 0 ? "PENDING" : "APPROVED",
-          sessionPrice: "300.00",
-          isPaid: i % 4 === 0,
-          paymentType: "SINGLE_SESSION" as const,
-          stadiumId: allStadiums[stadiumIndex].id,
-          userId: allUsers[userIndex].id,
-        });
-      }
+      await db.insert(cashPaymentRecords).values(cashPaymentsData);
+      console.log(`  ✅ Created ${cashPaymentsData.length} cash payment records for ${year}`);
 
-      // Create some declined/cancelled reservations
-      if (i % 7 === 0) {
-        reservationsData.push({
-          startDateTime: format(new Date(reservationDate.setHours(10, 0, 0, 0)), "yyyy-MM-dd HH:mm:ss"),
-          endDateTime: format(new Date(reservationDate.setHours(12, 0, 0, 0)), "yyyy-MM-dd HH:mm:ss"),
-          status: i % 2 === 0 ? "DECLINED" : "CANCELLED",
-          sessionPrice: "200.00",
-          isPaid: false,
-          paymentType: "SINGLE_SESSION" as const,
-          stadiumId: allStadiums[0].id,
-          userId: allUsers[1].id,
-        });
-      }
+      // Clear arrays for next year
+      monthlyPaymentsData.length = 0;
+      reservationsData.length = 0;
+      cashPaymentsData.length = 0;
     }
 
-    await db.insert(reservations).values(reservationsData);
-    const allReservations = await db.select().from(reservations);
-    console.log(`✅ Created ${allReservations.length} reservations\n`);
+    // ===== 10. CREATE NOTIFICATIONS =====
+    console.log("\n🔔 Creating notifications...");
+    const notificationsData: InsertNotificationType[] = [];
 
-    // ===== 11. CREATE CASH PAYMENT RECORDS =====
-    console.log("💵 Creating cash payment records...");
-    const cashPaymentsData:InsertCashPaymentRecordType[] = [];
+    // Generate notifications for the past 90 days
+    const endDate = new Date(CURRENT_YEAR, 11, 31);
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 90);
 
-    // Create cash payments for some reservations
-    allReservations.slice(0, 20).forEach((reservation, index) => {
-      if (reservation.isPaid && !reservation.monthlyPaymentId) {
-        cashPaymentsData.push({
-          amount: reservation.sessionPrice,
-          paymentDate: format(subDays(new Date(reservation.startDateTime), 1), "yyyy-MM-dd HH:mm:ss"),
-          receiptNumber: `CASH-${format(new Date(reservation.startDateTime), 'yyyyMMdd')}-${(index + 1).toString().padStart(3, '0')}`,
-          notes: index % 3 === 0 ? "Payment received in cash" : null,
-          reservationId: reservation.id,
-          userId: reservation.userId,
+    const notificationDays = eachDayOfInterval({ start: startDate, end: endDate });
+
+    notificationDays.forEach((day, dayIndex) => {
+      // System announcements (once a week)
+      if (day.getDay() === 1) { // Every Monday
+        allUsers.forEach((user) => {
+          notificationsData.push({
+            type: "SYSTEM_ANNOUNCEMENT",
+            model: "SYSTEM",
+            referenceId: user.id,
+            titleEn: "Weekly System Update",
+            titleFr: "Mise à jour hebdomadaire",
+            titleAr: "تحديث أسبوعي للنظام",
+            messageEn: "Check out the latest updates and announcements from the platform.",
+            messageFr: "Découvrez les dernières mises à jour et annonces de la plateforme.",
+            messageAr: "اطلع على آخر التحديثات والإعلانات من المنصة.",
+            isRead: dayIndex < 30, // Older notifications are read
+            userId: user.id,
+            actorUserId: allUsers[0].id,
+            createdAt: format(day, "yyyy-MM-dd HH:mm:ss"),
+          });
         });
       }
-    });
 
-    // Create cash payments for some monthly payments
-    allMonthlyPayments.slice(0, 15).forEach((payment, index) => {
-      if (payment.status === "PAID" && payment.receiptNumber) {
-        cashPaymentsData.push({
-          amount: payment.amount,
-          paymentDate: payment.paymentDate || format(subDays(today, 5), "yyyy-MM-dd HH:mm:ss"),
-          receiptNumber: payment.receiptNumber,
-          notes: `Monthly payment for ${payment.month}/${payment.year}`,
-          monthlyPaymentId: payment.id,
-          userId: payment.userId,
-        });
-      }
-    });
+      // Reservation notifications (daily)
+      const dailyReservations = Math.floor(Math.random() * 5) + 1;
+      for (let i = 0; i < dailyReservations; i++) {
+        const userIndex = 1 + Math.floor(Math.random() * (allUsers.length - 1));
+        const user = allUsers[userIndex];
+        const types = ["RESERVATION_APPROVED", "RESERVATION_REQUESTED", "RESERVATION_REMINDER"];
+        const type = types[Math.floor(Math.random() * types.length)];
 
-    await db.insert(cashPaymentRecords).values(cashPaymentsData);
-    console.log(`✅ Created ${cashPaymentsData.length} cash payment records\n`);
-
-    // ===== 12. CREATE NOTIFICATIONS =====
-    console.log("🔔 Creating notifications...");
-    const notificationsData:InsertNotificationType[] = [];
-
-    // Notifications for all users
-    allUsers.forEach((user, userIndex) => {
-      // System notifications
-      notificationsData.push({
-        type: "SYSTEM_UPDATE",
-        model: "SYSTEM",
-        referenceId: user.id,
-        titleEn: "System Update",
-        titleFr: "Mise à jour du système",
-        titleAr: "تحديث النظام",
-        messageEn: "New features have been added to the platform.",
-        messageFr: "De nouvelles fonctionnalités ont été ajoutées à la plateforme.",
-        messageAr: "تمت إضافة ميزات جديدة إلى المنصة.",
-        isRead: userIndex % 3 === 0,
-        userId: user.id,
-        actorUserId: allUsers[0].id, // Admin
-        createdAt: format(subDays(today, 10 + userIndex), "yyyy-MM-dd HH:mm:ss"),
-      });
-
-      // User approval notifications for club managers
-      if (user.role === "CLUB") {
         notificationsData.push({
-          type: user.isApproved ? "USER_APPROVED" : "USER_CREATED",
-          model: "USER",
+          type: type as any,
+          model: "RESERVATION",
           referenceId: user.id,
-          titleEn: user.isApproved ? "Account Approved" : "Account Created",
-          titleFr: user.isApproved ? "Compte approuvé" : "Compte créé",
-          titleAr: user.isApproved ? "تمت الموافقة على الحساب" : "تم إنشاء الحساب",
-          messageEn: user.isApproved 
-            ? "Your account has been approved by the administrator." 
-            : "Your account has been created and is pending approval.",
-          messageFr: user.isApproved
-            ? "Votre compte a été approuvé par l'administrateur."
-            : "Votre compte a été créé et est en attente d'approbation.",
-          messageAr: user.isApproved
-            ? "تمت الموافقة على حسابك من قبل المسؤول."
-            : "تم إنشاء حسابك وهو في انتظار الموافقة.",
-          isRead: !!user.isApproved  ,
+          titleEn: type === "RESERVATION_APPROVED" ? "Reservation Approved" : 
+                   type === "RESERVATION_REQUESTED" ? "New Reservation Request" : 
+                   "Upcoming Reservation Reminder",
+          titleFr: type === "RESERVATION_APPROVED" ? "Réservation approuvée" : 
+                   type === "RESERVATION_REQUESTED" ? "Nouvelle demande de réservation" : 
+                   "Rappel de réservation à venir",
+          titleAr: type === "RESERVATION_APPROVED" ? "تمت الموافقة على الحجز" : 
+                   type === "RESERVATION_REQUESTED" ? "طلب حجز جديد" : 
+                   "تذكير بالحجز القادم",
+          messageEn: type === "RESERVATION_APPROVED" ? 
+            "Your reservation has been approved by the administrator." : 
+            type === "RESERVATION_REQUESTED" ?
+            "A new reservation request has been submitted." :
+            "Don't forget your reservation tomorrow.",
+          messageFr: type === "RESERVATION_APPROVED" ? 
+            "Votre réservation a été approuvée par l'administrateur." : 
+            type === "RESERVATION_REQUESTED" ?
+            "Une nouvelle demande de réservation a été soumise." :
+            "N'oubliez pas votre réservation de demain.",
+          messageAr: type === "RESERVATION_APPROVED" ? 
+            "تمت الموافقة على حجزك من قبل المسؤول." : 
+            type === "RESERVATION_REQUESTED" ?
+            "تم تقديم طلب حجز جديد." :
+            "لا تنس حجزك غدًا.",
+          isRead: Math.random() > 0.3,
           userId: user.id,
           actorUserId: allUsers[0].id,
-          createdAt: format(subDays(today, 5 + userIndex), "yyyy-MM-dd HH:mm:ss"),
+          createdAt: format(day.setHours(9 + Math.floor(Math.random() * 8), Math.floor(Math.random() * 60)), "yyyy-MM-dd HH:mm:ss"),
         });
       }
-    });
 
-    // Reservation notifications
-    allReservations.slice(0, 15).forEach((reservation, index) => {
-      notificationsData.push({
-        type: "RESERVATION_APPROVED",
-        model: "RESERVATION",
-        referenceId: reservation.id,
-        titleEn: "Reservation Approved",
-        titleFr: "Réservation approuvée",
-        titleAr: "تمت الموافقة على الحجز",
-        messageEn: `Your reservation for ${format(new Date(reservation.startDateTime), 'MMMM dd, yyyy HH:mm')} has been approved.`,
-        messageFr: `Votre réservation pour le ${format(new Date(reservation.startDateTime), 'dd MMMM yyyy HH:mm')} a été approuvée.`,
-        messageAr: `تمت الموافقة على حجزك لـ ${format(new Date(reservation.startDateTime), 'dd MMMM yyyy HH:mm')}.`,
-        isRead: index % 4 === 0,
-        userId: reservation.userId,
-        link: `/reservations/${reservation.id}`,
-        createdAt: format(subDays(new Date(reservation.startDateTime), 2), "yyyy-MM-dd HH:mm:ss"),
-      });
-    });
+      // Payment notifications (occasionally)
+      if (Math.random() > 0.7) {
+        const userIndex = 1 + Math.floor(Math.random() * (allUsers.length - 1));
+        const user = allUsers[userIndex];
+        const types = ["PAYMENT_RECEIVED", "PAYMENT_OVERDUE"];
+        const type = types[Math.floor(Math.random() * types.length)];
 
-    // Payment notifications
-    allMonthlyPayments.slice(0, 10).forEach((payment, index) => {
-      if (payment.status === "PAID") {
         notificationsData.push({
-          type: "PAYMENT_RECEIVED",
+          type: type as any,
           model: "PAYMENT",
-          referenceId: payment.id,
-          titleEn: "Payment Received",
-          titleFr: "Paiement reçu",
-          titleAr: "تم استلام الدفع",
-          messageEn: `Payment of ${payment.amount} MAD for ${payment.month}/${payment.year} has been received.`,
-          messageFr: `Le paiement de ${payment.amount} MAD pour ${payment.month}/${payment.year} a été reçu.`,
-          messageAr: `تم استلام الدفع بمبلغ ${payment.amount} درهم لشهر ${payment.month}/${payment.year}.`,
-          isRead: true,
-          userId: payment.userId,
-          createdAt: payment.paymentDate || format(subDays(today, 3), "yyyy-MM-dd HH:mm:ss"),
-        });
-      } else if (payment.status === "OVERDUE") {
-        notificationsData.push({
-          type: "PAYMENT_OVERDUE",
-          model: "PAYMENT",
-          referenceId: payment.id,
-          titleEn: "Payment Overdue",
-          titleFr: "Paiement en retard",
-          titleAr: "الدفع متأخر",
-          messageEn: `Your payment for ${payment.month}/${payment.year} is overdue. Please make the payment as soon as possible.`,
-          messageFr: `Votre paiement pour ${payment.month}/${payment.year} est en retard. Veuillez effectuer le paiement dès que possible.`,
-          messageAr: `دفعك لشهر ${payment.month}/${payment.year} متأخر. يرجى سداد المبلغ في أقرب وقت ممكن.`,
-          isRead: false,
-          userId: payment.userId,
-          createdAt: format(subDays(today, 1), "yyyy-MM-dd HH:mm:ss"),
+          referenceId: user.id,
+          titleEn: type === "PAYMENT_RECEIVED" ? "Payment Received" : "Payment Overdue",
+          titleFr: type === "PAYMENT_RECEIVED" ? "Paiement reçu" : "Paiement en retard",
+          titleAr: type === "PAYMENT_RECEIVED" ? "تم استلام الدفع" : "الدفع متأخر",
+          messageEn: type === "PAYMENT_RECEIVED" ? 
+            "Your payment has been successfully processed." : 
+            "Your payment is overdue. Please make the payment as soon as possible.",
+          messageFr: type === "PAYMENT_RECEIVED" ? 
+            "Votre paiement a été traité avec succès." : 
+            "Votre paiement est en retard. Veuillez effectuer le paiement dès que possible.",
+          messageAr: type === "PAYMENT_RECEIVED" ? 
+            "تمت معالجة دفعتك بنجاح." : 
+            "دفعتك متأخرة. يرجى سداد المبلغ في أقرب وقت ممكن.",
+          isRead: type === "PAYMENT_RECEIVED",
+          userId: user.id,
+          actorUserId: allUsers[0].id,
+          createdAt: format(day.setHours(14 + Math.floor(Math.random() * 4), Math.floor(Math.random() * 60)), "yyyy-MM-dd HH:mm:ss"),
         });
       }
     });
@@ -857,10 +832,114 @@ async function comprehensiveSeed() {
     await db.insert(notifications).values(notificationsData);
     console.log(`✅ Created ${notificationsData.length} notifications\n`);
 
-    // ===== SUMMARY =====
-    console.log("=".repeat(60));
-    console.log("🎉 COMPREHENSIVE SEEDING COMPLETE!");
-    console.log("=".repeat(60));
+    // ===== 11. CALCULATE AND DISPLAY DASHBOARD METRICS =====
+    console.log("📈 CALCULATING DASHBOARD METRICS");
+    console.log("=".repeat(80));
+
+    // Fetch all data for metrics calculation
+    const allReservations = await db.select().from(reservations);
+    const allMonthlyPayments = await db.select().from(monthlyPayments);
+    const allCashPayments = await db.select().from(cashPaymentRecords);
+
+    // Calculate metrics for each year
+    for (const year of SEED_YEARS) {
+      console.log(`\n📊 ${year} DASHBOARD METRICS:`);
+      console.log("-".repeat(40));
+
+      // Yearly reservations
+      const yearReservations = allReservations.filter(r => {
+        const date = new Date(r.startDateTime);
+        return date.getFullYear() === year;
+      });
+
+      const approvedReservations = yearReservations.filter(r => r.status === "APPROVED");
+      const pendingReservations = yearReservations.filter(r => r.status === "PENDING");
+
+      // Monthly breakdown
+      const monthlyCounts = Array(12).fill(0);
+      const monthlyRevenue = Array(12).fill(0);
+
+      yearReservations.forEach(reservation => {
+        const month = new Date(reservation.startDateTime).getMonth();
+        monthlyCounts[month]++;
+        
+        if (reservation.isPaid) {
+          monthlyRevenue[month] += parseFloat(reservation.sessionPrice);
+        }
+      });
+
+      // Add monthly subscription revenue
+      allMonthlyPayments
+        .filter(p => p.year === year && p.status === "PAID")
+        .forEach(payment => {
+          const monthIndex = payment.month - 1;
+          monthlyRevenue[monthIndex] += parseFloat(payment.amount);
+        });
+
+      // Add single session cash payments
+      allCashPayments
+        .filter(cp => {
+          const date = new Date(cp.paymentDate);
+          return date.getFullYear() === year && !cp.monthlyPaymentId;
+        })
+        .forEach(payment => {
+          const monthIndex = new Date(payment.paymentDate).getMonth();
+          monthlyRevenue[monthIndex] += parseFloat(payment.amount);
+        });
+
+      console.log(`📅 Total Reservations: ${yearReservations.length}`);
+      console.log(`✅ Approved: ${approvedReservations.length}`);
+      console.log(`⏳ Pending: ${pendingReservations.length}`);
+      
+      // Calculate total revenue
+      const totalRevenue = monthlyRevenue.reduce((sum, revenue) => sum + revenue, 0);
+      console.log(`💰 Total Revenue: ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+      
+      console.log("\n📈 Monthly Breakdown:");
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      months.forEach((month, index) => {
+        console.log(`  ${month}: ${monthlyCounts[index]} reservations, ${monthlyRevenue[index].toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+      });
+
+      // Stadium utilization
+      const stadiumUtilization = new Map();
+      allStadiums.forEach(stadium => {
+        const stadiumReservations = yearReservations.filter(r => r.stadiumId === stadium.id);
+        const utilization = Math.min(100, Math.round((stadiumReservations.length / 30) * 100)); // Based on 30 days max
+        stadiumUtilization.set(stadium.name, utilization);
+      });
+
+      console.log("\n🏟️ Top Stadium Utilization:");
+      const sortedUtilization = Array.from(stadiumUtilization.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+      
+      sortedUtilization.forEach(([name, usage], index) => {
+        console.log(`  ${index + 1}. ${name}: ${usage}%`);
+      });
+
+      // Revenue sources
+      const subscriptionRevenue = allMonthlyPayments
+        .filter(p => p.year === year && p.status === "PAID")
+        .reduce((sum, p) => sum + parseFloat(p.amount), 0);
+
+      const singleSessionRevenue = allCashPayments
+        .filter(cp => {
+          const date = new Date(cp.paymentDate);
+          return date.getFullYear() === year && !cp.monthlyPaymentId;
+        })
+        .reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
+
+      console.log("\n💸 Revenue Sources:");
+      console.log(`  Subscriptions: ${subscriptionRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+      console.log(`  Single Sessions: ${singleSessionRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+      console.log(`  Total: ${(subscriptionRevenue + singleSessionRevenue).toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+    }
+
+    // ===== FINAL SUMMARY =====
+    console.log("\n" + "=".repeat(80));
+    console.log("🎉 YEARLY DASHBOARD SEEDING COMPLETE!");
+    console.log("=".repeat(80));
 
     console.log("\n📊 FINAL DATABASE COUNTS:");
     console.log(`   Users: ${allUsers.length}`);
@@ -871,29 +950,54 @@ async function comprehensiveSeed() {
     console.log(`   Clubs: ${allClubs.length}`);
     console.log(`   Reservation Series: ${allSeries.length}`);
     console.log(`   Monthly Subscriptions: ${subscriptionsData.length}`);
-    console.log(`   Monthly Payments: ${allMonthlyPayments.length}`);
-    console.log(`   Reservations: ${allReservations.length}`);
-    console.log(`   Cash Payments: ${cashPaymentsData.length}`);
-    console.log(`   Notifications: ${notificationsData.length}`);
+    
+    // Get total counts
+    const totalMonthlyPayments = await db.select().from(monthlyPayments);
+    const totalReservations = await db.select().from(reservations);
+    const totalCashPayments = await db.select().from(cashPaymentRecords);
+    const totalNotifications = await db.select().from(notifications);
+    
+    console.log(`   Monthly Payments: ${totalMonthlyPayments.length}`);
+    console.log(`   Reservations: ${totalReservations.length}`);
+    console.log(`   Cash Payments: ${totalCashPayments.length}`);
+    console.log(`   Notifications: ${totalNotifications.length}`);
 
     console.log("\n🔑 LOGIN CREDENTIALS:");
-    console.log("   Admin: admin@test.ma / password123");
-    console.log("   Football Club: mohammed@footballclub.ma / password123");
-    console.log("   Basketball Club: jean@basketclub.ma / password123");
-    console.log("   Handball Club: karim@handballclub.ma / password123");
-    console.log("   Volleyball Club: sarah@volleyclub.ma / password123");
-    console.log("   Tennis Club: ali@tennisclub.ma / password123");
+    console.log("   Admin: admin@dashboard.ma / password123");
+    console.log("   Football Club: football@club.ma / password123");
+    console.log("   Basketball Club: basketball@club.ma / password123");
+    console.log("   Handball Club: handball@club.ma / password123");
+    console.log("   Volleyball Club: volleyball@club.ma / password123");
+    console.log("   Tennis Club: tennis@club.ma / password123");
+    console.log("   Swimming Club: swimming@club.ma / password123");
+    console.log("   Athletics Club: athletics@club.ma / password123");
+    console.log("   Beach Volley: beachvolley@club.ma / password123");
+    console.log("   Youth Football: youth@football.ma / password123");
+    console.log("   Women's Basketball: womens@basketball.ma / password123 (NOT APPROVED)");
 
-    console.log("\n📌 NOTES:");
-    console.log("   • karim@handballclub.ma is NOT approved (for testing approval flow)");
-    console.log("   • All other club accounts are approved");
-    console.log("   • Created data for past, present, and future dates");
-    console.log("   • Includes various reservation statuses and payment statuses");
+    console.log("\n📌 DASHBOARD FEATURES TESTED:");
+    console.log("   • Year filtering (2025 vs 2026 comparison)");
+    console.log("   • Monthly trends with realistic seasonality");
+    console.log("   • Revenue breakdown (subscriptions vs single sessions)");
+    console.log("   • Stadium utilization statistics");
+    console.log("   • Payment status distribution (PAID, PENDING, OVERDUE)");
+    console.log("   • Reservation status distribution (APPROVED, PENDING, DECLINED, CANCELLED)");
+    console.log("   • Recent activity notifications");
+    console.log("   • Upcoming reservations");
+
+    console.log("\n📈 EXPECTED DASHBOARD BEHAVIOR:");
+    console.log("   • 2026 should show 10% growth compared to 2025");
+    console.log("   • Summer months (Jun-Aug) should show highest activity");
+    console.log("   • Winter months (Dec-Feb) should show lower activity");
+    console.log("   • Weekends should have more reservations than weekdays");
+    console.log("   • Collection rate should improve throughout the year");
 
   } catch (error: any) {
-    console.error("\n❌ Error during seeding:", error);
+    console.error("\n❌ Error during yearly seeding:", error);
     console.error("Stack:", error.stack);
+    process.exit(1);
   }
 }
 
-comprehensiveSeed();
+// Run the seed
+yearlyDashboardSeed();
