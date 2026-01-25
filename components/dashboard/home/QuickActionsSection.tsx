@@ -1,5 +1,5 @@
 // components/dashboard/home/sections/QuickActionsSection.tsx
-import { getTypedTranslations } from "@/utils/i18n";
+import { useTypedTranslations } from "@/utils/i18n";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
 import {
@@ -11,8 +11,8 @@ import {
   HiChartBar
 } from "react-icons/hi";
 
-export default async function QuickActionsSection() {
-  const t = await getTypedTranslations();
+export default  function QuickActionsSection() {
+  const t =  useTypedTranslations();
 
   const quickActions = [
     {

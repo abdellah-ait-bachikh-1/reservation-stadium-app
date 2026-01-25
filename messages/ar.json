@@ -594,6 +594,14 @@
           "completionRate": {
             "title": "معدل الإنجاز",
             "description": "معدل نجاح الحجوزات"
+          },
+          "newClubs": {
+            "title": "أندية جديدة",
+            "description": "هذا الشهر"
+          },
+          "newUsers": {
+            "title": "مستخدمين جدد",
+            "description": "هذا الشهر"
           }
         },
         "quickActions": {
@@ -662,9 +670,17 @@
           "paid": "المدفوع",
           "overdue": "المتأخر",
           "vsLastMonth": "مقارنة بالشهر الماضي",
+          "vsLastYear": "مقارنة بالسنة الماضية",
           "ofTotal": "من الإجمالي",
           "collected": "محصل",
           "outstanding": "مستحق",
+          "yearToDate": "منذ بداية العام",
+          "collectionRate": "معدل التحصيل",
+          "monthlyBreakdown": "تفصيل شهري",
+          "monthlyChange": "التغير الشهري",
+          "monthlyRevenue": "الإيرادات الشهرية",
+          "monthlySubscription": "الاشتراكات الشهرية",
+          "monthlySingleSession": "الجلسات الفردية الشهرية",
           "legend": {
             "toggle": "تبديل الخطوط",
             "showAll": "عرض الكل",

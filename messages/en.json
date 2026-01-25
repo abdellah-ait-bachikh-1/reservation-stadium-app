@@ -594,6 +594,14 @@
           "completionRate": {
             "title": "Completion Rate",
             "description": "Reservation success rate"
+          },
+          "newClubs": {
+            "title": "New Clubs",
+            "description": "This month"
+          },
+          "newUsers": {
+            "title": "New Users",
+            "description": "This month"
           }
         },
         "quickActions": {
@@ -662,9 +670,17 @@
           "paid": "Paid",
           "overdue": "Overdue",
           "vsLastMonth": "vs last month",
+          "vsLastYear": "vs last year",
           "ofTotal": "of total",
           "collected": "collected",
           "outstanding": "outstanding",
+          "yearToDate": "YTD",
+          "collectionRate": "collection rate",
+          "monthlyBreakdown": "Monthly Breakdown",
+          "monthlyChange": "Monthly change",
+          "monthlyRevenue": "Monthly Revenue",
+          "monthlySubscription": "Monthly Subscription",
+          "monthlySingleSession": "Monthly Single Session",
           "legend": {
             "toggle": "Toggle lines",
             "showAll": "Show all",

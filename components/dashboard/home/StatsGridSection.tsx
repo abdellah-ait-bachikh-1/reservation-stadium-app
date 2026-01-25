@@ -1,5 +1,5 @@
 // components/dashboard/home/sections/StatsGridSection.tsx
-import { getTypedTranslations } from "@/utils/i18n";
+import {  useTypedTranslations } from "@/utils/i18n";
 import { Card, CardBody } from "@heroui/card";
 import {
   HiCalendar,
@@ -13,8 +13,6 @@ import {
   HiArrowUp,
   HiArrowDown,
   HiCheckCircle,
-  HiUsers,
-  HiTicket,
   HiChartBar
 } from "react-icons/hi";
 
@@ -27,7 +25,6 @@ interface Stats {
   totalUsers: number;
   subscriptions: number;
   overduePayments: number;
-  // Removed: totalRevenue and monthlyRevenue
 }
 
 interface StatsGridSectionProps {
@@ -35,13 +32,12 @@ interface StatsGridSectionProps {
   currentYear: number;
 }
 
-export default async function StatsGridSection({ stats }: StatsGridSectionProps) {
-  const t = await getTypedTranslations();
+export default  function StatsGridSection({ stats }: StatsGridSectionProps) {
+  const t =  useTypedTranslations();
 
   // Prepare stat cards - Focus on OPERATIONAL metrics only
-  // Removed all revenue-related stats (they're now in RevenueTrendsChart)
   const statCards = [
-    // First row: Core operational stats
+    // Core operational stats - Now 6 cards for even distribution
     {
       title: t("pages.dashboard.home.stats.totalReservations.title"),
       value: stats.totalReservations.toLocaleString(),
@@ -82,8 +78,6 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
       color: "orange",
       description: t("pages.dashboard.home.stats.totalStadiums.description")
     },
-
-    // Second row: User management and subscription stats
     {
       title: t("pages.dashboard.home.stats.totalUsers.title"),
       value: stats.totalUsers,
@@ -92,6 +86,8 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
       color: "cyan",
       description: t("pages.dashboard.home.stats.totalUsers.description")
     },
+
+    // User management and subscription stats - Now 6 cards for even distribution
     {
       title: t("pages.dashboard.home.stats.subscriptions.title"),
       value: stats.subscriptions,
@@ -123,14 +119,31 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
       icon: <HiCheckCircle className="w-5 h-5" />,
       color: "emerald",
       description: t("pages.dashboard.home.stats.completionRate.description")
+    },
+    // Added two more cards to make it 6 per row
+    {
+      title: t("pages.dashboard.home.stats.newClubs.title"),
+      value: "6",
+      change: "+1",
+      icon: <HiOfficeBuilding className="w-5 h-5" />,
+      color: "pink",
+      description: t("pages.dashboard.home.stats.newClubs.description")
+    },
+    {
+      title: t("pages.dashboard.home.stats.newUsers.title"),
+      value: "24",
+      change: "+8%",
+      icon: <HiUserGroup className="w-5 h-5" />,
+      color: "amber",
+      description: t("pages.dashboard.home.stats.newUsers.description")
     }
   ];
 
   return (
     <>
-      {/* First Row - 5 cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        {statCards.slice(0, 5).map((stat, index) => (
+      {/* First Row - 6 cards for even distribution */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+        {statCards.slice(0, 6).map((stat, index) => (
           <Card key={index} className="h-full hover:shadow-md transition-shadow duration-300">
             <CardBody className="p-4">
               <div className="flex justify-between items-start">
@@ -156,14 +169,16 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
                 </div>
                 <div className={`p-2 rounded-lg ${stat.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
                   stat.color === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' :
-                    stat.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' :
-                      stat.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' :
-                        stat.color === 'orange' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
-                          stat.color === 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' :
-                            stat.color === 'cyan' ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600' :
-                              stat.color === 'indigo' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600' :
-                                stat.color === 'teal' ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600' :
-                                  'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                  stat.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' :
+                  stat.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' :
+                  stat.color === 'orange' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
+                  stat.color === 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' :
+                  stat.color === 'cyan' ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600' :
+                  stat.color === 'indigo' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600' :
+                  stat.color === 'teal' ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600' :
+                  stat.color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600' :
+                  stat.color === 'pink' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600' :
+                  'bg-amber-100 dark:bg-amber-900/30 text-amber-600'
                   }`}>
                   {stat.icon}
                 </div>
@@ -176,10 +191,10 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
         ))}
       </div>
 
-      {/* Second Row - 5 cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        {statCards.slice(5).map((stat, index) => (
-          <Card key={index + 5} className="h-full hover:shadow-md transition-shadow duration-300">
+      {/* Second Row - 6 cards for even distribution */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+        {statCards.slice(6).map((stat, index) => (
+          <Card key={index + 6} className="h-full hover:shadow-md transition-shadow duration-300">
             <CardBody className="p-4">
               <div className="flex justify-between items-start">
                 <div>
@@ -204,14 +219,16 @@ export default async function StatsGridSection({ stats }: StatsGridSectionProps)
                 </div>
                 <div className={`p-2 rounded-lg ${stat.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
                   stat.color === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' :
-                    stat.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' :
-                      stat.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' :
-                        stat.color === 'orange' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
-                          stat.color === 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' :
-                            stat.color === 'cyan' ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600' :
-                              stat.color === 'indigo' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600' :
-                                stat.color === 'teal' ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600' :
-                                  'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                  stat.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' :
+                  stat.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' :
+                  stat.color === 'orange' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
+                  stat.color === 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' :
+                  stat.color === 'cyan' ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600' :
+                  stat.color === 'indigo' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600' :
+                  stat.color === 'teal' ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600' :
+                  stat.color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600' :
+                  stat.color === 'pink' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600' :
+                  'bg-amber-100 dark:bg-amber-900/30 text-amber-600'
                   }`}>
                   {stat.icon}
                 </div>

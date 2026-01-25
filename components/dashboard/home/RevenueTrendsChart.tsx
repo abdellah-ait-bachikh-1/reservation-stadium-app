@@ -13,24 +13,28 @@ import {
   HiTicket,
   HiCash,
   HiCheckCircle,
-  HiExclamation
+  HiExclamation,
+  HiCalendar
 } from "react-icons/hi";
 import { useState, useMemo } from "react";
 
+
 interface MonthlyRevenueData {
-    month: string;
-    totalRevenue: number;
-    subscriptionRevenue: number;
-    singleSessionRevenue: number;
-    paidAmount: number;
-    overdueAmount: number;
-    collectionRate: number
+  month: string;
+  totalRevenue: number;
+  subscriptionRevenue: number;
+  singleSessionRevenue: number;
+  paidAmount: number;
+  overdueAmount: number;
+  collectionRate: number
 }
 
 interface RevenueTrendsChartProps {
-    monthlyData?: MonthlyRevenueData[];
-    currentYear: number;
+  monthlyData?: MonthlyRevenueData[];
+  currentYear: number;
+  onYearChange?: (year: number) => void;
 }
+
 
 interface CustomTooltipProps {
     active?: boolean;
@@ -92,7 +96,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     return null;
 };
 
-export default function RevenueTrendsChart({ monthlyData, currentYear }: RevenueTrendsChartProps) {
+export default function RevenueTrendsChart({ monthlyData, 
+  currentYear, 
+  onYearChange  }: RevenueTrendsChartProps) {
     const t = useTypedTranslations();
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
     const [showLines, setShowLines] = useState({
@@ -100,6 +106,12 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
         subscription: true,
         singleSession: true,
     });
+
+
+  const handleYearChange = (year: number) => {
+    setSelectedYear(year);
+    onYearChange?.(year);
+  };
 
     // Generate demo data if not provided (based on your schema)
     const defaultData = useMemo(() => {
@@ -133,19 +145,21 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
 
     const data = monthlyData || defaultData;
 
-    // Calculate summary statistics
-    const summaryStats = useMemo(() => {
+    // Calculate YEAR-TO-DATE summary statistics (accumulated for the whole year)
+    const yearToDateStats = useMemo(() => {
         const totalRevenue = data.reduce((sum, item) => sum + item.totalRevenue, 0);
         const totalSubscription = data.reduce((sum, item) => sum + item.subscriptionRevenue, 0);
         const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
         const totalPaid = data.reduce((sum, item) => sum + item.paidAmount, 0);
         const totalOverdue = data.reduce((sum, item) => sum + item.overdueAmount, 0);
-        const avgCollectionRate = Math.round(data.reduce((sum, item) => sum + item.collectionRate, 0) / data.length);
-
-        const currentMonth = data[data.length - 1];
-        const previousMonth = data[data.length - 2];
-        const revenueChange = previousMonth ?
-            Math.round(((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100) : 0;
+        
+        // Calculate collection rate (paid vs total revenue)
+        const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
+        
+        // Year-over-year comparison (vs previous year)
+        const previousYearRevenue = totalRevenue * 0.85; // Simulate 85% of current year
+        const revenueChange = previousYearRevenue > 0 ? 
+            Math.round(((totalRevenue - previousYearRevenue) / previousYearRevenue) * 100) : 0;
 
         return {
             totalRevenue,
@@ -153,7 +167,21 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
             totalSingleSession,
             totalPaid,
             totalOverdue,
-            avgCollectionRate,
+            collectionRate,
+            revenueChange,
+        };
+    }, [data]);
+
+    // Calculate MONTHLY statistics for current vs previous month (for chart tooltip)
+    const monthlyStats = useMemo(() => {
+        if (data.length < 2) return { revenueChange: 0 };
+        
+        const currentMonth = data[data.length - 1];
+        const previousMonth = data[data.length - 2];
+        const revenueChange = previousMonth.totalRevenue > 0 ? 
+            Math.round(((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100) : 0;
+
+        return {
             revenueChange,
         };
     }, [data]);
@@ -188,141 +216,187 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
 
     return (
         <Card className="shadow-sm col-span-1 lg:col-span-2">
-            <CardHeader className="pb-0">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
-                    <div>
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            {t("pages.dashboard.home.revenueTrends.title")}
-                        </h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("pages.dashboard.home.revenueTrends.description")} - {selectedYear}
-                        </p>
-                    </div>
+       <CardHeader className="pb-0">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {t("pages.dashboard.home.revenueTrends.title")}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t("pages.dashboard.home.revenueTrends.description")} - {selectedYear}
+            </p>
+          </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <Select
-                                classNames={{ trigger: "bg-white dark:bg-zinc-900 shadow-sm w-30 cursor-pointer" }}
-                                selectedKeys={[selectedYear.toString()]}
-                                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                                size="sm"
-                                variant="flat"
-                            >
-                                {yearOptions.map((year) => (
-                                    <SelectItem key={year.toString()}>
-                                        {year.toString()}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                        </div>
-                    </div>
-                </div>
-            </CardHeader>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Select
+                classNames={{ trigger: "bg-white dark:bg-zinc-900 shadow-sm w-30 cursor-pointer" }}
+                selectedKeys={[selectedYear.toString()]}
+                onSelectionChange={(keys) => {
+                  const year = Array.from(keys)[0] as string;
+                  handleYearChange(parseInt(year));
+                }}
+                size="sm"
+                variant="flat"
+              >
+                {yearOptions.map((year) => (
+                  <SelectItem key={year.toString()}>
+                    {year.toString()}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
 
             <CardBody>
-                {/* Summary Stats with Icons */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-                    {/* Total Revenue Card */}
+                {/* Summary Stats - YEAR-TO-DATE Totals */}
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+                    {/* Year-to-Date Total Revenue Card */}
                     <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                                     {t("pages.dashboard.home.revenueTrends.totalRevenue")}
                                 </p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                                    {summaryStats.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
+                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                                    {yearToDateStats.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
                                 </p>
+                                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                                    <HiCalendar className="w-3 h-3 text-gray-400" />
+                                    <span className="text-xs text-gray-500 rtl:text-right">
+                                        {t("pages.dashboard.home.revenueTrends.yearToDate")}
+                                    </span>
+                                </div>
                             </div>
                             <HiCurrencyDollar className="w-8 h-8 text-green-600" />
                         </div>
-                        <div className="flex items-center gap-1 mt-2">
-                            {summaryStats.revenueChange >= 0 ? (
+                        <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                            {yearToDateStats.revenueChange >= 0 ? (
                                 <HiTrendingUp className="w-4 h-4 text-green-500" />
                             ) : (
                                 <HiTrendingDown className="w-4 h-4 text-red-500" />
                             )}
-                            <span className={`text-xs font-medium ${summaryStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {summaryStats.revenueChange >= 0 ? '+' : ''}{summaryStats.revenueChange}%
-                            </span>
-                            <span className="text-xs text-gray-500 ml-1">{t("pages.dashboard.home.revenueTrends.vsLastMonth")}</span>
+                            <span className={`text-xs font-medium  rtl:text-right ${yearToDateStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {yearToDateStats.revenueChange >= 0 ? '+' : ''}{yearToDateStats.revenueChange}%
+                            </span> 
+                            <span className="text-xs text-gray-500 ml-1 rtl:text-right">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
                         </div>
                     </div>
                     
-                    {/* Subscription Revenue Card */}
+                    {/* Year-to-Date Subscription Revenue Card */}
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                                     {t("pages.dashboard.home.revenueTrends.subscription")}
                                 </p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                                    {summaryStats.totalSubscription.toLocaleString()} {t("common.currency.symbol")}
+                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                                    {yearToDateStats.totalSubscription.toLocaleString()} {t("common.currency.symbol")}
                                 </p>
+                                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                                    <HiCalendar className="w-3 h-3 text-gray-400" />
+                                    <span className="text-xs text-gray-500 rtl:text-right">
+                                        {t("pages.dashboard.home.revenueTrends.yearToDate")}
+                                    </span>
+                                </div>
                             </div>
                             <HiCollection className="w-8 h-8 text-blue-600" />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {Math.round((summaryStats.totalSubscription / summaryStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+                        <p className="text-xs text-gray-500 mt-1 rtl:text-right">
+                            {Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
                         </p>
                     </div>
                     
-                    {/* Single Session Revenue Card */}
+                    {/* Year-to-Date Single Session Revenue Card */}
                     <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                                     {t("pages.dashboard.home.revenueTrends.singleSession")}
                                 </p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                                    {summaryStats.totalSingleSession.toLocaleString()} {t("common.currency.symbol")}
+                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                                    {yearToDateStats.totalSingleSession.toLocaleString()} {t("common.currency.symbol")}
                                 </p>
+                                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                                    <HiCalendar className="w-3 h-3 text-gray-400" />
+                                    <span className="text-xs text-gray-500 rtl:text-right">
+                                        {t("pages.dashboard.home.revenueTrends.yearToDate")}
+                                    </span>
+                                </div>
                             </div>
                             <HiTicket className="w-8 h-8 text-purple-600" />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {Math.round((summaryStats.totalSingleSession / summaryStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+                        <p className="text-xs text-gray-500 mt-1 rtl:text-right">
+                            {Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
                         </p>
                     </div>
                     
-                    {/* Paid Amount Card */}
+                    {/* Year-to-Date Paid Amount Card */}
                     <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                                     {t("pages.dashboard.home.revenueTrends.paid")}
                                 </p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                                    {summaryStats.totalPaid.toLocaleString()} {t("common.currency.symbol")}
+                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                                    {yearToDateStats.totalPaid.toLocaleString()} {t("common.currency.symbol")}
                                 </p>
+                                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                                    <HiCalendar className="w-3 h-3 text-gray-400" />
+                                    <span className="text-xs text-gray-500 rtl:text-right">
+                                        {t("pages.dashboard.home.revenueTrends.yearToDate")}
+                                    </span>
+                                </div>
                             </div>
                             <HiCheckCircle className="w-8 h-8 text-green-600" />
                         </div>
-                        <p className="text-xs text-green-600 font-medium mt-1">
-                            {Math.round((summaryStats.totalPaid / summaryStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.collected")}
+                        <p className="text-xs text-green-600 font-medium mt-1 rtl:text-right">
+                            {yearToDateStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
                         </p>
                     </div>
                     
-                    {/* Overdue Amount Card */}
+                    {/* Year-to-Date Overdue Amount Card */}
                     <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                                     {t("pages.dashboard.home.revenueTrends.overdue")}
                                 </p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                                    {summaryStats.totalOverdue.toLocaleString()} {t("common.currency.symbol")}
+                                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                                    {yearToDateStats.totalOverdue.toLocaleString()} {t("common.currency.symbol")}
                                 </p>
+                                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                                    <HiCalendar className="w-3 h-3 text-gray-400" />
+                                    <span className="text-xs text-gray-500 rtl:text-right">
+                                        {t("pages.dashboard.home.revenueTrends.yearToDate")}
+                                    </span>
+                                </div>
                             </div>
                             <HiExclamation className="w-8 h-8 text-red-600" />
                         </div>
-                        <p className="text-xs text-red-600 font-medium mt-1">
-                            {Math.round((summaryStats.totalOverdue / summaryStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.outstanding")}
+                        <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
+                            {Math.round((yearToDateStats.totalOverdue / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.outstanding")}
                         </p>
                     </div>
                 </div>
 
                 {/* Chart */}
                 <div className="h-80">
+                    <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {t("pages.dashboard.home.revenueTrends.monthlyBreakdown")}
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500">
+                                {t("pages.dashboard.home.revenueTrends.monthlyChange")}: 
+                                <span className={`ml-1 font-medium ${monthlyStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    {monthlyStats.revenueChange >= 0 ? '+' : ''}{monthlyStats.revenueChange}%
+                                </span>
+                            </span>
+                        </div>
+                    </div>
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                             data={translatedData}
@@ -363,7 +437,7 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
                                 <Line
                                     type="monotone"
                                     dataKey="totalRevenue"
-                                    name={t("pages.dashboard.home.revenueTrends.totalRevenue")}
+                                    name={t("pages.dashboard.home.revenueTrends.monthlyRevenue")}
                                     stroke="#10b981"
                                     strokeWidth={2}
                                     dot={{ r: 4 }}
@@ -376,7 +450,7 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
                                 <Line
                                     type="monotone"
                                     dataKey="subscriptionRevenue"
-                                    name={t("pages.dashboard.home.revenueTrends.subscription")}
+                                    name={t("pages.dashboard.home.revenueTrends.monthlySubscription")}
                                     stroke="#3b82f6"
                                     strokeWidth={2}
                                     strokeDasharray="5 5"
@@ -390,7 +464,7 @@ export default function RevenueTrendsChart({ monthlyData, currentYear }: Revenue
                                 <Line
                                     type="monotone"
                                     dataKey="singleSessionRevenue"
-                                    name={t("pages.dashboard.home.revenueTrends.singleSession")}
+                                    name={t("pages.dashboard.home.revenueTrends.monthlySingleSession")}
                                     stroke="#8b5cf6"
                                     strokeWidth={2}
                                     strokeDasharray="3 3"

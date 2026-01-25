@@ -442,10 +442,16 @@ export type TranslationKey =
     | 'pages.dashboard.home.recentActivity.types.user'
     | 'pages.dashboard.home.recentActivity.viewAll'
     | 'pages.dashboard.home.revenueTrends.collected'
+    | 'pages.dashboard.home.revenueTrends.collectionRate'
     | 'pages.dashboard.home.revenueTrends.description'
     | 'pages.dashboard.home.revenueTrends.legend.hideAll'
     | 'pages.dashboard.home.revenueTrends.legend.showAll'
     | 'pages.dashboard.home.revenueTrends.legend.toggle'
+    | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
+    | 'pages.dashboard.home.revenueTrends.monthlyChange'
+    | 'pages.dashboard.home.revenueTrends.monthlyRevenue'
+    | 'pages.dashboard.home.revenueTrends.monthlySingleSession'
+    | 'pages.dashboard.home.revenueTrends.monthlySubscription'
     | 'pages.dashboard.home.revenueTrends.ofTotal'
     | 'pages.dashboard.home.revenueTrends.outstanding'
     | 'pages.dashboard.home.revenueTrends.overdue'
@@ -455,6 +461,8 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.title'
     | 'pages.dashboard.home.revenueTrends.totalRevenue'
     | 'pages.dashboard.home.revenueTrends.vsLastMonth'
+    | 'pages.dashboard.home.revenueTrends.vsLastYear'
+    | 'pages.dashboard.home.revenueTrends.yearToDate'
     | 'pages.dashboard.home.stats.activeReservations.description'
     | 'pages.dashboard.home.stats.activeReservations.title'
     | 'pages.dashboard.home.stats.avgUtilization.description'
@@ -463,6 +471,10 @@ export type TranslationKey =
     | 'pages.dashboard.home.stats.completionRate.title'
     | 'pages.dashboard.home.stats.monthlyRevenue.description'
     | 'pages.dashboard.home.stats.monthlyRevenue.title'
+    | 'pages.dashboard.home.stats.newClubs.description'
+    | 'pages.dashboard.home.stats.newClubs.title'
+    | 'pages.dashboard.home.stats.newUsers.description'
+    | 'pages.dashboard.home.stats.newUsers.title'
     | 'pages.dashboard.home.stats.overduePayments.description'
     | 'pages.dashboard.home.stats.overduePayments.title'
     | 'pages.dashboard.home.stats.pendingReservations.description'
@@ -1308,7 +1320,9 @@ export const _TranslationNamespaces = {
     "subscriptions",
     "overduePayments",
     "avgUtilization",
-    "completionRate"
+    "completionRate",
+    "newClubs",
+    "newUsers"
   ],
   "pages.dashboard.home.stats.totalReservations": [
     "title",
@@ -1355,6 +1369,14 @@ export const _TranslationNamespaces = {
     "description"
   ],
   "pages.dashboard.home.stats.completionRate": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.newClubs": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.home.stats.newUsers": [
     "title",
     "description"
   ],
@@ -1430,9 +1452,17 @@ export const _TranslationNamespaces = {
     "paid",
     "overdue",
     "vsLastMonth",
+    "vsLastYear",
     "ofTotal",
     "collected",
     "outstanding",
+    "yearToDate",
+    "collectionRate",
+    "monthlyBreakdown",
+    "monthlyChange",
+    "monthlyRevenue",
+    "monthlySubscription",
+    "monthlySingleSession",
     "legend"
   ],
   "pages.dashboard.home.revenueTrends.legend": [

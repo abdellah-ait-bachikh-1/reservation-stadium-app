@@ -3,7 +3,6 @@
 
 import { useTypedTranslations } from "@/utils/i18n";
 import { Select, SelectItem } from "@heroui/select";
-import { useState } from "react";
 
 interface User {
   id: string;
@@ -15,14 +14,23 @@ interface User {
 interface DashboardHeaderProps {
   user: User;
   currentYear: number;
+  onYearChange?: (year: number) => void;
 }
 
-export default function DashboardHeader({ user, currentYear }: DashboardHeaderProps) {
+export default function DashboardHeader({ 
+  user, 
+  currentYear, 
+  onYearChange 
+}: DashboardHeaderProps) {
   const t = useTypedTranslations();
-  const [selectedYear, setSelectedYear] = useState<number>(currentYear);
 
   // Generate years for dropdown
   const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
+  const handleYearChange = (year: string) => {
+    const selectedYear = parseInt(year);
+    onYearChange?.(selectedYear);
+  };
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -38,8 +46,11 @@ export default function DashboardHeader({ user, currentYear }: DashboardHeaderPr
       <div className="flex items-center gap-4">
         <Select
           classNames={{ trigger: "bg-white dark:bg-zinc-900 shadow-sm w-30 cursor-pointer" }}
-          selectedKeys={[selectedYear.toString()]}
-          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+          selectedKeys={[currentYear.toString()]}
+          onSelectionChange={(keys) => {
+            const year = Array.from(keys)[0] as string;
+            handleYearChange(year);
+          }}
           label={t("pages.dashboard.home.yearFilter.selectYear")}
           variant="flat"
           size="sm"

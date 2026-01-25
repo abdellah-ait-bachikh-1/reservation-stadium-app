@@ -594,6 +594,14 @@
           "completionRate": {
             "title": "Taux de Réussite",
             "description": "Taux de réussite des réservations"
+          },
+          "newClubs": {
+            "title": "Nouveaux Clubs",
+            "description": "Ce mois-ci"
+          },
+          "newUsers": {
+            "title": "Nouveaux Utilisateurs",
+            "description": "Ce mois-ci"
           }
         },
         "quickActions": {
@@ -662,9 +670,17 @@
           "paid": "Payé",
           "overdue": "En Retard",
           "vsLastMonth": "par rapport au mois dernier",
+          "vsLastYear": "par rapport à l'année dernière",
           "ofTotal": "du total",
           "collected": "collecté",
           "outstanding": "en attente",
+          "yearToDate": "Année à ce jour",
+          "collectionRate": "taux de recouvrement",
+          "monthlyBreakdown": "Répartition Mensuelle",
+          "monthlyChange": "Changement mensuel",
+          "monthlyRevenue": "Revenu Mensuel",
+          "monthlySubscription": "Abonnement Mensuel",
+          "monthlySingleSession": "Sessions Uniques Mensuelles",
           "legend": {
             "toggle": "Basculer les lignes",
             "showAll": "Afficher tout",

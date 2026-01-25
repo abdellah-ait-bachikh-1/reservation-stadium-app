@@ -1,15 +1,9 @@
 // app/dashboard/home/page.tsx
-
-import ChartsSection from "@/components/dashboard/home/BarChartSection";
-import DashboardHeader from "@/components/dashboard/home/DashboardHeader";
-import QuickActionsSection from "@/components/dashboard/home/QuickActionsSection";
-import RecentActivitySection from "@/components/dashboard/home/RecentActivitySection";
-import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
-import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
-import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
+import { Metadata } from "next";
 import { redirect } from "@/i18n/navigation";
 import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
-import { Metadata } from "next";
+import { getDashboardData } from "@/lib/queries/dashboard-home";
+import DashboardClient from "@/components/dashboard/home/DashboardClient";
 
 export async function generateMetadata({
   params,
@@ -17,7 +11,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-
   const messages = (await import(`../../../messages/${locale}.json`))
     .default;
 
@@ -27,8 +20,44 @@ export async function generateMetadata({
   };
 }
 
-// Static data that can later be replaced with database queries
-const getDashboardData = () => {
+const DashboardPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) => {
+  const { locale } = await params;
+  const authenticatedUser = await isAuthenticatedUserExistsInDB();
+
+  if (!authenticatedUser) {
+    await apiLogout();
+    redirect({ locale: locale, href: "/auth/login" });
+  }
+
+  // Get current year
+  const currentYear = new Date().getFullYear();
+
+  // Fetch initial data on the server for SSR
+  let initialData;
+  try {
+    initialData = await getDashboardData(currentYear);
+  } catch (error) {
+    console.error("Failed to fetch initial dashboard data:", error);
+    // Fallback to static data if database query fails
+    initialData = getStaticDashboardData();
+  }
+
+  return (
+    <>{authenticatedUser && <DashboardClient
+      user={authenticatedUser}
+      currentYear={currentYear}
+      initialData={initialData}
+    />}</>
+  );
+};
+
+export default DashboardPage;
+// Fallback static data function
+function getStaticDashboardData() {
   return {
     stats: {
       totalReservations: 1248,
@@ -37,9 +66,12 @@ const getDashboardData = () => {
       totalClubs: 89,
       totalStadiums: 15,
       totalUsers: 156,
-
       subscriptions: 32,
       overduePayments: 8,
+      newClubsThisMonth: 6,
+      newUsersThisMonth: 24,
+      avgUtilization: 78,
+      completionRate: 94
     },
     recentActivity: [
       {
@@ -54,8 +86,7 @@ const getDashboardData = () => {
         id: "2",
         type: "payment" as const,
         title: "Payment Received",
-        description:
-          "DH 1,200 received from Club Atlas for monthly subscription",
+        description: "DH 1,200 received from Club Atlas for monthly subscription",
         time: "45 minutes ago",
         status: "success" as const,
       },
@@ -82,7 +113,7 @@ const getDashboardData = () => {
         description: "FC Tan-Tan Youth registered on platform",
         time: "1 day ago",
         status: "pending" as const,
-      },
+      }
     ],
     upcomingReservations: [
       {
@@ -165,7 +196,7 @@ const getDashboardData = () => {
       { name: "Youth Center", usage: 65 },
       { name: "City Stadium", usage: 88 },
     ],
-     revenueTrends: [
+    revenueTrends: [
       {
         month: "Jan",
         totalRevenue: 28500,
@@ -276,69 +307,4 @@ const getDashboardData = () => {
       },
     ],
   };
-};
-
-const DashboardPage = async ({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) => {
-  const { locale } = await params;
-  const authenticatedUser = await isAuthenticatedUserExistsInDB();
-
-  if (!authenticatedUser) {
-    await apiLogout();
-    redirect({ locale: locale, href: "/auth/login" });
-  }
-
-  // Get static data
-  const dashboardData = getDashboardData();
-  const currentYear = new Date().getFullYear();
-
-  return (
-    <div className="p-4 md:p-6">
-      {/* Header with Year Filter - Client Component */}
-      {authenticatedUser && <DashboardHeader
-        user={authenticatedUser}
-        currentYear={currentYear}
-      />}
-
-      {/* Quick Actions - Server Component */}
-      <QuickActionsSection />
-
-      {/* Stats Grid - Server Component */}
-      <StatsGridSection
-        stats={dashboardData.stats}
-        currentYear={currentYear}
-      />
-
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity - Client Component */}
-        <RecentActivitySection
-          activities={dashboardData.recentActivity}
-        />
-
-        {/* Upcoming Reservations - Client Component */}
-        <UpcomingReservationsSection
-          reservations={dashboardData.upcomingReservations}
-        />
-      </div>
-
-      {/* Charts Section - Client Component */}
-      <ChartsSection
-        stadiumUtilization={dashboardData.stadiumUtilization}
-        revenueByMonth={dashboardData.revenueByMonth}
-        currentYear={currentYear}
-      />
-      <div className="mt-6">
-        <RevenueTrendsChart
-          monthlyData={dashboardData.revenueTrends}
-          currentYear={currentYear}
-        />
-      </div>
-    </div>
-  );
-};
-
-export default DashboardPage;
+}
