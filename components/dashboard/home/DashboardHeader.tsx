@@ -24,8 +24,14 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const t = useTypedTranslations();
 
-  // Generate years for dropdown
-  const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i);
+  // Generate years from 2026 to current year
+  const currentYearNow = new Date().getFullYear();
+  const startYear = 2026;
+  
+  const yearOptions = Array.from(
+    { length: Math.max(0, currentYearNow - startYear + 1) },
+    (_, i) => startYear + i
+  ).reverse(); // Show most recent first
 
   const handleYearChange = (year: string) => {
     const selectedYear = parseInt(year);

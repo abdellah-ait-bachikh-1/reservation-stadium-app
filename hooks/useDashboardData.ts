@@ -59,14 +59,18 @@ export interface DashboardData {
 }
 
 async function fetchDashboardData(year: number): Promise<DashboardData> {
-  const response = await fetch(`/api/dashboard/home?year=${year}`);
+  // Validate year is from 2026 onward
+  const currentYear = new Date().getFullYear();
+  const validatedYear = Math.max(2026, Math.min(year, currentYear));
+  
+  const response = await fetch(`/api/dashboard/home?year=${validatedYear}`);
   
   if (!response.ok) {
     throw new Error(`Failed to fetch dashboard data: ${response.statusText}`);
   }
   
   const result = await response.json();
-  
+  console.log({result})
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch dashboard data");
   }
@@ -75,9 +79,13 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
 }
 
 export function useDashboardData(year: number) {
+  // Validate year is from 2026 onward
+  const currentYear = new Date().getFullYear();
+  const validatedYear = Math.max(2026, Math.min(year, currentYear));
+  
   return useQuery({
-    queryKey: ["dashboard", "home", year],
-    queryFn: () => fetchDashboardData(year),
+    queryKey: ["dashboard", "home", validatedYear],
+    queryFn: () => fetchDashboardData(validatedYear),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });

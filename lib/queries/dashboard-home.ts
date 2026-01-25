@@ -720,3 +720,35 @@ function getMockStadiumUtilization(): StadiumUtilization[] {
     { name: "City Stadium", usage: 88 }
   ];
 }
+
+// Add this function to lib/queries/dashboard-home.ts
+
+// Get available years with data (from 2026 to current year)
+export async function getAvailableYears(): Promise<number[]> {
+  try {
+    // Get distinct years from monthlyPayments table
+    const yearsData = await db
+      .selectDistinct({ year: monthlyPayments.year })
+      .from(monthlyPayments)
+      .orderBy(desc(monthlyPayments.year));
+
+    const yearsFromPayments = yearsData.map(item => item.year).filter(year => year >= 2026);
+    
+    // Always include current year
+    const currentYear = new Date().getFullYear();
+    const allYears = [...new Set([...yearsFromPayments, currentYear])]
+      .filter(year => year >= 2026 && year <= currentYear)
+      .sort((a, b) => b - a); // Sort descending (most recent first)
+
+    return allYears.length > 0 ? allYears : [currentYear];
+  } catch (error) {
+    console.error("Error fetching available years:", error);
+    // Fallback: generate years from 2026 to current year
+    const currentYear = new Date().getFullYear();
+    const startYear = 2026;
+    return Array.from(
+      { length: Math.max(0, currentYear - startYear + 1) },
+      (_, i) => startYear + i
+    ).reverse();
+  }
+}

@@ -7,15 +7,13 @@ export async function GET(request: NextRequest) {
     // Get year from query parameters
     const searchParams = request.nextUrl.searchParams;
     const yearParam = searchParams.get("year");
-    const year = yearParam ? parseInt(yearParam) : new Date().getFullYear();
-
-    // Validate year
-    if (isNaN(year) || year < 2020 || year > 2100) {
-      return NextResponse.json(
-        { error: "Invalid year parameter" },
-        { status: 400 }
-      );
-    }
+    const currentYear = new Date().getFullYear();
+    
+    // Default to current year if not provided
+    let year = yearParam ? parseInt(yearParam) : currentYear;
+    
+    // Validate year is from 2026 onward
+    year = Math.max(2026, Math.min(year, currentYear));
 
     // Fetch dashboard data for the specified year
     const dashboardData = await getDashboardData(year);

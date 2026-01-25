@@ -11,7 +11,7 @@ import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
 import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
 import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
 import { DashboardData } from "@/hooks/useDashboardData";
-import { Card, CardBody,  } from "@heroui/card";
+import { Card, CardBody } from "@heroui/card";
 import {Spinner} from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";
 
