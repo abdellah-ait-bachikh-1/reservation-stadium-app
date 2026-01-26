@@ -676,7 +676,10 @@
           "monthlyChange": "Changement mensuel",
           "monthlyRevenue": "Revenu Mensuel",
           "monthlySubscription": "Abonnement Mensuel",
-          "monthlySingleSession": "Session Unique Mensuelle"
+          "monthlySingleSession": "Session Unique Mensuelle",
+           "noData": "Aucune donnée de revenu disponible",
+          "paid": "Payé",
+          "overdue": "En retard"
         }
       }
     }

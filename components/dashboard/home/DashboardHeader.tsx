@@ -19,6 +19,8 @@ interface DashboardHeaderProps {
   onYearChange?: (year: number) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
+    availableYears: number[]; // ADD THIS
+
 }
 
 export default function DashboardHeader({ 
@@ -26,18 +28,9 @@ export default function DashboardHeader({
   currentYear, 
   onYearChange,
   onRefresh,
-  isRefreshing = false
+  isRefreshing = false,availableYears
 }: DashboardHeaderProps) {
   const t = useTypedTranslations();
-
-  // Generate years from 2025 to current year
-  const currentYearNow = new Date().getFullYear();
-  const startYear = 2025;
-  
-  const yearOptions = Array.from(
-    { length: Math.max(0, currentYearNow - startYear + 1) },
-    (_, i) => startYear + i
-  ).reverse(); // Show most recent first
 
   const handleYearChange = (year: string) => {
     const selectedYear = parseInt(year);
@@ -91,7 +84,7 @@ export default function DashboardHeader({
           size="sm"
           radius="md"
         >
-          {yearOptions.map((year) => (
+          {availableYears.map((year) => (
             <SelectItem key={year.toString()}>
               {year.toString()}
             </SelectItem>

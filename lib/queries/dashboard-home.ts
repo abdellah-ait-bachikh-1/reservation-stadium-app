@@ -134,6 +134,7 @@ export interface DashboardStats {
 }
 
 // ==================== MAIN DATA FETCHER ====================
+// ==================== MAIN DATA FETCHER ====================
 export async function getDashboardData(
   year: number = new Date().getFullYear(),
 ): Promise<{
@@ -145,6 +146,7 @@ export async function getDashboardData(
   revenueByStadium: StadiumRevenue[];
   reservationsByStatus: ReservationStatusData[];
   revenueTrends: MonthlyRevenueData[];
+  availableYears: number[]; // ADD THIS
 }> {
   try {
     const [
@@ -155,6 +157,7 @@ export async function getDashboardData(
       revenueByMonth,
       revenueByStadium,
       reservationsByStatus,
+      availableYears, // ADD THIS
     ] = await Promise.all([
       getDashboardStats(year),
       getPendingUserApprovals(year),
@@ -163,6 +166,7 @@ export async function getDashboardData(
       getRevenueByMonth(year),
       getRevenueByStadium(year),
       getReservationsByStatus(year),
+      getAvailableYears(), // ADD THIS
     ]);
 
     return {
@@ -174,6 +178,7 @@ export async function getDashboardData(
       revenueByStadium,
       reservationsByStatus,
       revenueTrends: revenueByMonth,
+      availableYears, // ADD THIS
     };
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
@@ -901,8 +906,12 @@ export async function getReservationsByMonth(year: number): Promise<ChartData[]>
 }
 
 // ==================== REVENUE BY MONTH ====================
+// ==================== REVENUE BY MONTH ====================
+// ==================== REVENUE BY MONTH ====================
 export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueData[]> {
   try {
+    console.log(`Fetching revenue by month for year: ${year}`);
+
     // Create array for all 12 months
     const monthlyData: MonthlyRevenueData[] = Array.from(
       { length: 12 },
@@ -917,25 +926,27 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       }),
     );
 
-    // 1. Get subscription payments for the SPECIFIED YEAR (using the year field)
+    // 1. Get subscription payments for the SPECIFIED YEAR - use year field for subscription payments
     const monthlyPaymentsData = await db
       .select({
-        month: monthlyPayments.month, // Use the month field from monthlyPayments
+        month: monthlyPayments.month, // Use month field from table
         amount: sum(monthlyPayments.amount),
         status: monthlyPayments.status,
       })
       .from(monthlyPayments)
       .where(
         and(
-          eq(monthlyPayments.year, year), // Filter by payment year
+          eq(monthlyPayments.year, year), // Filter by year field, not created_at
         ),
       )
       .groupBy(
-        monthlyPayments.month, // Group by month field
+        monthlyPayments.month,
         monthlyPayments.status,
       );
 
-    // 2. Get single session payments for the specified year
+    console.log('Subscription payments for year:', year, monthlyPaymentsData);
+
+    // 2. Get single session payments for the specified year - use created_at
     const cashPaymentsData = await db
       .select({
         month: sql<string>`MONTH(${cashPaymentRecords.createdAt})`,
@@ -944,18 +955,21 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       .from(cashPaymentRecords)
       .where(
         and(
-          // Filter by the year of creation for cash payments
           sql`YEAR(${cashPaymentRecords.createdAt}) = ${year}`,
-          isNull(cashPaymentRecords.reservationId), // Single session payments
+          isNotNull(cashPaymentRecords.reservationId),
         ),
       )
       .groupBy(sql`MONTH(${cashPaymentRecords.createdAt})`);
 
+    console.log('Single session payments for year:', year, cashPaymentsData);
+
     // Process subscription payments
     monthlyPaymentsData.forEach((item) => {
-      const monthIndex = item.month - 1; // month is 1-12, array is 0-11
+      const monthIndex = Number(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.amount) || 0;
+        
+        // Add to subscription revenue
         monthlyData[monthIndex].subscriptionRevenue += amount;
         monthlyData[monthIndex].totalRevenue += amount;
 
@@ -972,6 +986,8 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.amount) || 0;
+        
+        // Add to single session revenue
         monthlyData[monthIndex].singleSessionRevenue += amount;
         monthlyData[monthIndex].totalRevenue += amount;
         monthlyData[monthIndex].paidAmount += amount; // Cash payments are considered paid
@@ -985,6 +1001,17 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
           ? Math.round((month.paidAmount / month.totalRevenue) * 100)
           : 0;
     });
+
+    // DEBUG: Log final results
+    console.log(`Final revenue data for ${year}:`, monthlyData.map((m, i) => ({
+      monthIndex: i,
+      month: m.month,
+      totalRevenue: m.totalRevenue,
+      subscriptionRevenue: m.subscriptionRevenue,
+      singleSessionRevenue: m.singleSessionRevenue,
+      paidAmount: m.paidAmount,
+      overdueAmount: m.overdueAmount,
+    })));
 
     return monthlyData;
   } catch (error) {
@@ -1049,27 +1076,42 @@ export async function getReservationsByStatus(
 }
 
 // ==================== AVAILABLE YEARS ====================
+// ==================== AVAILABLE YEARS ====================
 export async function getAvailableYears(): Promise<number[]> {
   try {
-    const yearsData = await db
+    // Get distinct years from monthlyPayments (subscriptions)
+    const yearsFromPayments = await db
       .selectDistinct({ year: monthlyPayments.year })
       .from(monthlyPayments)
       .orderBy(desc(monthlyPayments.year));
 
-    const yearsFromPayments = yearsData
-      .map((item) => item.year)
-      .filter((year) => year >= 2026);
+    // Get distinct years from cashPaymentRecords (single sessions)
+    const yearsFromCash = await db
+      .selectDistinct({
+        year: sql<number>`YEAR(${cashPaymentRecords.createdAt})`
+      })
+      .from(cashPaymentRecords)
+      .orderBy(desc(sql`YEAR(${cashPaymentRecords.createdAt})`));
+
+    // Combine all years
+    const allYears = [
+      ...yearsFromPayments.map(item => item.year),
+      ...yearsFromCash.map(item => item.year)
+    ];
 
     const currentYear = new Date().getFullYear();
-    const allYears = [...new Set([...yearsFromPayments, currentYear])]
-      .filter((year) => year >= 2026 && year <= currentYear)
-      .sort((a, b) => b - a);
+    const startYear = 2025; // Your app start year
+    
+    // Create a Set to remove duplicates and filter valid years
+    const uniqueYears = [...new Set([...allYears, currentYear])]
+      .filter(year => year >= startYear && year <= currentYear)
+      .sort((a, b) => b - a); // Most recent first
 
-    return allYears.length > 0 ? allYears : [currentYear];
+    return uniqueYears.length > 0 ? uniqueYears : [currentYear];
   } catch (error) {
     console.error("Error fetching available years:", error);
     const currentYear = new Date().getFullYear();
-    const startYear = 2026;
+    const startYear = 2025;
     return Array.from(
       { length: Math.max(0, currentYear - startYear + 1) },
       (_, i) => startYear + i,

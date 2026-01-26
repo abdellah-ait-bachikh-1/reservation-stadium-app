@@ -61,7 +61,11 @@ const DashboardPage = async ({
 
 export default DashboardPage;
 
+// app/dashboard/home/page.tsx
 function getStaticDashboardData(): DashboardData {
+  const currentYear = new Date().getFullYear();
+  const startYear = 2025;
+  
   return {
     stats: {
       totalReservations: 0,
@@ -80,10 +84,16 @@ function getStaticDashboardData(): DashboardData {
       newUsersThisYear: 0,
       changes: {},
     },
-   overduePayments:[],
+    overduePayments: [],
     reservationsByMonth: [],
     revenueByMonth: [],
     reservationsByStatus: [],
-    revenueTrends: [], pendingUserApprovals: [], revenueByStadium: []
+    revenueTrends: [],
+    pendingUserApprovals: [],
+    revenueByStadium: [],
+    availableYears: Array.from(
+      { length: Math.max(0, currentYear - startYear + 1) },
+      (_, i) => startYear + i,
+    ).reverse(), // ADD THIS
   };
 }

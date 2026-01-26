@@ -81,7 +81,7 @@ export default function DashboardClient({
       </div>
     );
   }
-
+console.log(data)
   return (
     <div className="p-4 md:p-6">
       {/* Loading overlay */}
@@ -102,7 +102,8 @@ export default function DashboardClient({
         currentYear={selectedYear}
         onYearChange={handleYearChange}
         onRefresh={handleRefresh}
-        isRefreshing={isRefetching} 
+        isRefreshing={isRefetching}
+        availableYears={data.availableYears || []} // PASS AVAILABLE YEARS
       />
 
       {/* Quick Actions */}
@@ -140,6 +141,8 @@ export default function DashboardClient({
           onYearChange={handleYearChange}
               onRefresh={handleRefresh}
         isRefreshing={isRefetching} 
+                  availableYears={data.availableYears || []} // PASS AVAILABLE YEARS
+
         />
       </div>
     </div>

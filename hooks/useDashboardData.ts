@@ -93,6 +93,8 @@ overduePayments: Array<{
     overdueAmount: number;
     collectionRate: number;
   }>;
+    availableYears: number[]; // ADD THIS
+
 }
 
 async function fetchDashboardData(year: number): Promise<DashboardData> {

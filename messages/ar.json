@@ -676,7 +676,10 @@
           "monthlyChange": "التغيير الشهري",
           "monthlyRevenue": "الإيراد الشهري",
           "monthlySubscription": "الاشتراك الشهري",
-          "monthlySingleSession": "الجلسة المفردة الشهرية"
+          "monthlySingleSession": "الجلسة المفردة الشهرية",
+           "noData": "لا توجد بيانات إيرادات متاحة",
+          "paid": "مدفوع",
+          "overdue": "متأخر"
         }
       }
     }
