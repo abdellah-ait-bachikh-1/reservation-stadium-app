@@ -468,6 +468,7 @@ export type TranslationKey =
     | 'pages.dashboard.home.quickActions.sendNotification'
     | 'pages.dashboard.home.quickActions.title'
     | 'pages.dashboard.home.quickActions.viewPayments'
+    | 'pages.dashboard.home.revenueTrends.annualTotal'
     | 'pages.dashboard.home.revenueTrends.collectionRate'
     | 'pages.dashboard.home.revenueTrends.description'
     | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
@@ -477,14 +478,12 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.monthlySubscription'
     | 'pages.dashboard.home.revenueTrends.ofTotal'
     | 'pages.dashboard.home.revenueTrends.outstanding'
-    | 'pages.dashboard.home.revenueTrends.overdue'
-    | 'pages.dashboard.home.revenueTrends.paid'
-    | 'pages.dashboard.home.revenueTrends.singleSession'
-    | 'pages.dashboard.home.revenueTrends.subscription'
+    | 'pages.dashboard.home.revenueTrends.overdueAnnual'
+    | 'pages.dashboard.home.revenueTrends.paidAnnual'
+    | 'pages.dashboard.home.revenueTrends.singleSessionAnnual'
+    | 'pages.dashboard.home.revenueTrends.subscriptionAnnual'
     | 'pages.dashboard.home.revenueTrends.title'
-    | 'pages.dashboard.home.revenueTrends.totalRevenue'
     | 'pages.dashboard.home.revenueTrends.vsLastYear'
-    | 'pages.dashboard.home.revenueTrends.yearToDate'
     | 'pages.dashboard.home.stats.activeReservations.description'
     | 'pages.dashboard.home.stats.activeReservations.title'
     | 'pages.dashboard.home.stats.avgUtilization.description'
@@ -1459,15 +1458,14 @@ export const _TranslationNamespaces = {
   "pages.dashboard.home.revenueTrends": [
     "title",
     "description",
-    "totalRevenue",
-    "subscription",
-    "singleSession",
-    "paid",
-    "overdue",
+    "annualTotal",
+    "subscriptionAnnual",
+    "singleSessionAnnual",
+    "paidAnnual",
+    "overdueAnnual",
     "vsLastYear",
     "ofTotal",
     "outstanding",
-    "yearToDate",
     "collectionRate",
     "monthlyBreakdown",
     "monthlyChange",

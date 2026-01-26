@@ -663,21 +663,20 @@
         "revenueTrends": {
           "title": "اتجاهات الإيرادات",
           "description": "تفصيل الإيرادات الشهرية حسب النوع",
-          "totalRevenue": "إجمالي الإيرادات",
-          "subscription": "الاشتراكات",
-          "singleSession": "الجلسات الفردية",
-          "paid": "مدفوع",
-          "overdue": "متأخر",
+          "annualTotal": "الإجمالي السنوي",
+          "subscriptionAnnual": "الاشتراك",
+          "singleSessionAnnual": "الجلسة المفردة",
+          "paidAnnual": "المدفوع",
+          "overdueAnnual": "المتأخر",
           "vsLastYear": "مقارنة بالعام الماضي",
           "ofTotal": "من الإجمالي",
-          "outstanding": "مستحق",
-          "yearToDate": "من بداية السنة",
+          "outstanding": "المتبقي",
           "collectionRate": "معدل التحصيل",
           "monthlyBreakdown": "التفصيل الشهري",
           "monthlyChange": "التغيير الشهري",
           "monthlyRevenue": "الإيراد الشهري",
           "monthlySubscription": "الاشتراك الشهري",
-          "monthlySingleSession": "الجلسات الفردية الشهرية"
+          "monthlySingleSession": "الجلسة المفردة الشهرية"
         }
       }
     }

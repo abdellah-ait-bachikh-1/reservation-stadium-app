@@ -661,23 +661,22 @@
   "description": "Paiements nécessitant une attention immédiate"
 },
         "revenueTrends": {
-          "title": "Tendances des Revenus",
+          "title": "Tendances des revenus",
           "description": "Répartition mensuelle des revenus par type",
-          "totalRevenue": "Revenu Total",
-          "subscription": "Abonnements",
-          "singleSession": "Sessions Uniques",
-          "paid": "Payé",
-          "overdue": "En Retard",
-          "vsLastYear": "par rapport à l'année dernière",
+          "annualTotal": "Total Annuel",
+          "subscriptionAnnual": "Abonnement",
+          "singleSessionAnnual": "Session Unique",
+          "paidAnnual": "Payé",
+          "overdueAnnual": "En Retard",
+          "vsLastYear": "vs l'année dernière",
           "ofTotal": "du total",
           "outstanding": "en attente",
-          "yearToDate": "Année à ce jour",
           "collectionRate": "taux de recouvrement",
           "monthlyBreakdown": "Répartition Mensuelle",
           "monthlyChange": "Changement mensuel",
           "monthlyRevenue": "Revenu Mensuel",
           "monthlySubscription": "Abonnement Mensuel",
-          "monthlySingleSession": "Sessions Uniques Mensuelles"
+          "monthlySingleSession": "Session Unique Mensuelle"
         }
       }
     }

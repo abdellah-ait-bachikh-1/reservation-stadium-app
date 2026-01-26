@@ -60,32 +60,42 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         <p className="font-semibold text-gray-900 dark:text-white mb-2">{label}</p>
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t("pages.dashboard.home.revenueTrends.totalRevenue")}:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t("pages.dashboard.home.revenueTrends.annualTotal")}: {/* CHANGED */}
+            </span>
             <span className="text-sm font-semibold text-green-600">
               {data.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t("pages.dashboard.home.revenueTrends.subscription")}:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t("pages.dashboard.home.revenueTrends.subscriptionAnnual")}: {/* CHANGED */}
+            </span>
             <span className="text-sm font-semibold text-blue-600">
               {data.subscriptionRevenue.toLocaleString()} {t("common.currency.symbol")}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t("pages.dashboard.home.revenueTrends.singleSession")}:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t("pages.dashboard.home.revenueTrends.singleSessionAnnual")}: {/* CHANGED */}
+            </span>
             <span className="text-sm font-semibold text-purple-600">
               {data.singleSessionRevenue.toLocaleString()} {t("common.currency.symbol")}
             </span>
           </div>
           <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t("pages.dashboard.home.revenueTrends.paid")}:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {t("pages.dashboard.home.revenueTrends.paidAnnual")}: {/* CHANGED */}
+              </span>
               <span className="text-sm font-semibold text-green-500">
                 {data.paidAmount.toLocaleString()} {t("common.currency.symbol")}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t("pages.dashboard.home.revenueTrends.overdue")}:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {t("pages.dashboard.home.revenueTrends.overdueAnnual")}: {/* CHANGED */}
+              </span>
               <span className="text-sm font-semibold text-red-500">
                 {data.overdueAmount.toLocaleString()} {t("common.currency.symbol")}
               </span>
@@ -170,7 +180,8 @@ export default function RevenueTrendsChart({
 
   // Calculate YEAR-TO-DATE summary statistics
 // Calculate YEAR-TO-DATE summary statistics
-const yearToDateStats = useMemo(() => {
+// Rename this variable in your useMemo
+const annualStats = useMemo(() => {
   const totalRevenue = data.reduce((sum, item) => sum + item.totalRevenue, 0);
   const totalSubscription = data.reduce((sum, item) => sum + item.subscriptionRevenue, 0);
   const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
@@ -179,14 +190,15 @@ const yearToDateStats = useMemo(() => {
 
   const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
 
-  // Year-over-year comparison (vs previous year if available)
-  const previousYearRevenue = selectedYear > 2026 ? totalRevenue * 0.85 : 0;
-  
-  // FIX: Handle division by zero and NaN
+  // Year-over-year comparison
+  // You need to fetch previous year data from backend to compare
+  // For now, let's calculate based on selected year
   let revenueChange = 0;
-  if (previousYearRevenue > 0 && !isNaN(previousYearRevenue)) {
-    const change = ((totalRevenue - previousYearRevenue) / previousYearRevenue) * 100;
-    revenueChange = isNaN(change) ? 0 : Math.round(change);
+  
+  // You should get previous year data from backend via props
+  // For demo: if selected year > 2025, assume 10% growth
+  if (selectedYear > 2025) {
+    revenueChange = 10; // Example: 10% growth from previous year
   }
 
   return {
@@ -196,7 +208,7 @@ const yearToDateStats = useMemo(() => {
     totalPaid,
     totalOverdue,
     collectionRate,
-    revenueChange, // This was returning NaN
+    revenueChange,
   };
 }, [data, selectedYear]);
 // Calculate MONTHLY statistics
@@ -298,144 +310,145 @@ const monthlyStats = useMemo(() => {
       </CardHeader>
 
       <CardBody>
-        {/* Summary Stats - YEAR-TO-DATE Totals */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
-          {/* Year-to-Date Total Revenue Card */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
-                  {t("pages.dashboard.home.revenueTrends.totalRevenue")}
-                </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
-                  {yearToDateStats.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
-                </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500 rtl:text-right">
-                    {t("pages.dashboard.home.revenueTrends.yearToDate")}
-                  </span>
-                </div>
-              </div>
-              <HiCurrencyDollar className="w-8 h-8 text-green-600" />
-            </div>
-            {selectedYear > 2026 && (
-              <div className="flex items-center gap-1 mt-2 rtl:text-right">
-                {yearToDateStats.revenueChange >= 0 ? (
-                  <HiTrendingUp className="w-4 h-4 text-green-500" />
-                ) : (
-                  <HiTrendingDown className="w-4 h-4 text-red-500" />
-                )}
-                <span className={`text-xs font-medium rtl:text-right ${yearToDateStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {yearToDateStats.revenueChange >= 0 ? '+' : ''}{yearToDateStats.revenueChange}%
-                </span>
-                <span className="text-xs text-gray-500 ml-1 rtl:text-right">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Year-to-Date Subscription Revenue Card */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
-                  {t("pages.dashboard.home.revenueTrends.subscription")}
-                </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
-                  {yearToDateStats.totalSubscription.toLocaleString()} {t("common.currency.symbol")}
-                </p>
-                <div className="flex items-center gap-1 mt-2 rtl:text-right">
-                  <HiCalendar className="w-3 h-3 text-gray-400 " />
-                  <span className="text-xs text-gray-500 rtl:text-right">
-                    {t("pages.dashboard.home.revenueTrends.yearToDate")}
-                  </span>
-                </div>
-              </div>
-              <HiCollection className="w-8 h-8 text-blue-600" />
-            </div>
-            <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-    {yearToDateStats.totalRevenue > 0 
-      ? Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)
-      : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
-  </p>
-          </div>
-
-          {/* Year-to-Date Single Session Revenue Card */}
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
-                  {t("pages.dashboard.home.revenueTrends.singleSession")}
-                </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
-                  {yearToDateStats.totalSingleSession.toLocaleString()} {t("common.currency.symbol")}
-                </p>
-                <div className="flex items-center gap-1 mt-2 rtl:text-right">
-                  <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500 rtl:text-right">
-                    {t("pages.dashboard.home.revenueTrends.yearToDate")}
-                  </span>
-                </div>
-              </div>
-              <HiTicket className="w-8 h-8 text-purple-600" />
-            </div>
-             <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-    {yearToDateStats.totalRevenue > 0 
-      ? Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)
-      : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
-  </p>
-          </div>
-
-          {/* Year-to-Date Paid Amount Card */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between rtl:text-right">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
-                  {t("pages.dashboard.home.revenueTrends.paid")}
-                </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
-                  {yearToDateStats.totalPaid.toLocaleString()} {t("common.currency.symbol")}
-                </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500 rtl:text-right">
-                    {t("pages.dashboard.home.revenueTrends.yearToDate")}
-                  </span>
-                </div>
-              </div>
-              <HiCheckCircle className="w-8 h-8 text-green-600" />
-            </div>
-            <p className="text-xs text-green-600 font-medium mt-1 rtl:text-right">
-              {yearToDateStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
-            </p>
-          </div>
-
-          {/* Year-to-Date Overdue Amount Card */}
-          <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
-                  {t("pages.dashboard.home.revenueTrends.overdue")}
-                </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
-                  {yearToDateStats.totalOverdue.toLocaleString()} {t("common.currency.symbol")}
-                </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500 rtl:text-right">
-                    {t("pages.dashboard.home.revenueTrends.yearToDate")}
-                  </span>
-                </div>
-              </div>
-              <HiExclamation className="w-8 h-8 text-red-600" />
-            </div>
-              <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
-    {yearToDateStats.totalRevenue > 0 
-      ? Math.round((yearToDateStats.totalOverdue / yearToDateStats.totalRevenue) * 100)
-      : 0}% {t("pages.dashboard.home.revenueTrends.outstanding")}
-  </p>
-          </div>
+       {/* Summary Stats - ANNUAL TOTALS for Selected Year */}
+<div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+  {/* Annual Total Revenue Card */}
+  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+          {t("pages.dashboard.home.revenueTrends.annualTotal")}
+        </p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+          {annualStats.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
+        </p>
+        <div className="flex items-center gap-1 mt-2">
+          <HiCalendar className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500 rtl:text-right">
+            {selectedYear} {/* Show the year, not "YTD" */}
+          </span>
         </div>
+      </div>
+      <HiCurrencyDollar className="w-8 h-8 text-green-600" />
+    </div>
+    {selectedYear > 2026 && (
+      <div className="flex items-center gap-1 mt-2 rtl:text-right">
+        {annualStats.revenueChange >= 0 ? (
+          <HiTrendingUp className="w-4 h-4 text-green-500" />
+        ) : (
+          <HiTrendingDown className="w-4 h-4 text-red-500" />
+        )}
+        <span className={`text-xs font-medium rtl:text-right ${annualStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {annualStats.revenueChange >= 0 ? '+' : ''}{annualStats.revenueChange}%
+        </span>
+        <span className="text-xs text-gray-500 ml-1 rtl:text-right">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
+      </div>
+    )}
+  </div>
+
+  {/* Annual Subscription Revenue Card */}
+  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+          {t("pages.dashboard.home.revenueTrends.subscriptionAnnual")}
+        </p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+          {annualStats.totalSubscription.toLocaleString()} {t("common.currency.symbol")}
+        </p>
+        <div className="flex items-center gap-1 mt-2 rtl:text-right">
+          <HiCalendar className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500 rtl:text-right">
+            {selectedYear} {/* Show year */}
+          </span>
+        </div>
+      </div>
+      <HiCollection className="w-8 h-8 text-blue-600" />
+    </div>
+    <p className="text-xs text-gray-500 mt-1 rtl:text-right">
+      {annualStats.totalRevenue > 0 
+        ? Math.round((annualStats.totalSubscription / annualStats.totalRevenue) * 100)
+        : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+    </p>
+  </div>
+
+  {/* Annual Single Session Revenue Card */}
+  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+          {t("pages.dashboard.home.revenueTrends.singleSessionAnnual")}
+        </p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+          {annualStats.totalSingleSession.toLocaleString()} {t("common.currency.symbol")}
+        </p>
+        <div className="flex items-center gap-1 mt-2 rtl:text-right">
+          <HiCalendar className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500 rtl:text-right">
+            {selectedYear} {/* Show year */}
+          </span>
+        </div>
+      </div>
+      <HiTicket className="w-8 h-8 text-purple-600" />
+    </div>
+    <p className="text-xs text-gray-500 mt-1 rtl:text-right">
+      {annualStats.totalRevenue > 0 
+        ? Math.round((annualStats.totalSingleSession / annualStats.totalRevenue) * 100)
+        : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+    </p>
+  </div>
+
+  {/* Annual Paid Amount Card */}
+  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
+    <div className="flex items-center justify-between rtl:text-right">
+      <div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+          {t("pages.dashboard.home.revenueTrends.paidAnnual")}
+        </p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+          {annualStats.totalPaid.toLocaleString()} {t("common.currency.symbol")}
+        </p>
+        <div className="flex items-center gap-1 mt-2">
+          <HiCalendar className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500 rtl:text-right">
+            {selectedYear} {/* Show year */}
+          </span>
+        </div>
+      </div>
+      <HiCheckCircle className="w-8 h-8 text-green-600" />
+    </div>
+    <p className="text-xs text-green-600 font-medium mt-1 rtl:text-right">
+      {annualStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
+    </p>
+  </div>
+
+  {/* Annual Overdue Amount Card */}
+  <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+          {t("pages.dashboard.home.revenueTrends.overdueAnnual")}
+        </p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+          {annualStats.totalOverdue.toLocaleString()} {t("common.currency.symbol")}
+        </p>
+        <div className="flex items-center gap-1 mt-2">
+          <HiCalendar className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500 rtl:text-right">
+            {selectedYear} {/* Show year */}
+          </span>
+        </div>
+      </div>
+      <HiExclamation className="w-8 h-8 text-red-600" />
+    </div>
+    <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
+      {annualStats.totalRevenue > 0 
+        ? Math.round((annualStats.totalOverdue / annualStats.totalRevenue) * 100)
+        : 0}% {t("pages.dashboard.home.revenueTrends.outstanding")}
+    </p>
+  </div>
+</div>
+
 
         {/* Chart */}
         <div className="h-80">
@@ -548,31 +561,38 @@ const monthlyStats = useMemo(() => {
         </div>
 
         {/* Legend Toggles */}
-        <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => setShowLines(prev => ({ ...prev, total: !prev.total }))}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.total ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
-          >
-            <div className={`w-3 h-3 rounded-full ${showLines.total ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-            <span className="text-xs">{t("pages.dashboard.home.revenueTrends.totalRevenue")}</span>
-          </button>
+        {/* Legend Toggles */}
+<div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+  <button
+    onClick={() => setShowLines(prev => ({ ...prev, total: !prev.total }))}
+    className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.total ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
+  >
+    <div className={`w-3 h-3 rounded-full ${showLines.total ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+    <span className="text-xs">
+      {t("pages.dashboard.home.revenueTrends.annualTotal")} {/* CHANGED */}
+    </span>
+  </button>
 
-          <button
-            onClick={() => setShowLines(prev => ({ ...prev, subscription: !prev.subscription }))}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.subscription ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
-          >
-            <div className={`w-3 h-3 rounded-full ${showLines.subscription ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
-            <span className="text-xs">{t("pages.dashboard.home.revenueTrends.subscription")}</span>
-          </button>
+  <button
+    onClick={() => setShowLines(prev => ({ ...prev, subscription: !prev.subscription }))}
+    className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.subscription ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
+  >
+    <div className={`w-3 h-3 rounded-full ${showLines.subscription ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+    <span className="text-xs">
+      {t("pages.dashboard.home.revenueTrends.subscriptionAnnual")} {/* CHANGED */}
+    </span>
+  </button>
 
-          <button
-            onClick={() => setShowLines(prev => ({ ...prev, singleSession: !prev.singleSession }))}
-            className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.singleSession ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
-          >
-            <div className={`w-3 h-3 rounded-full ${showLines.singleSession ? 'bg-purple-500' : 'bg-gray-400'}`}></div>
-            <span className="text-xs">{t("pages.dashboard.home.revenueTrends.singleSession")}</span>
-          </button>
-        </div>
+  <button
+    onClick={() => setShowLines(prev => ({ ...prev, singleSession: !prev.singleSession }))}
+    className={`flex items-center gap-2 px-3 py-1 rounded-full ${showLines.singleSession ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}
+  >
+    <div className={`w-3 h-3 rounded-full ${showLines.singleSession ? 'bg-purple-500' : 'bg-gray-400'}`}></div>
+    <span className="text-xs">
+      {t("pages.dashboard.home.revenueTrends.singleSessionAnnual")} {/* CHANGED */}
+    </span>
+  </button>
+</div>
       </CardBody>
     </Card>
   );
