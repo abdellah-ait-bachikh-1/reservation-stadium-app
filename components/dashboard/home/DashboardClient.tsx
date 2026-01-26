@@ -6,7 +6,6 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import ChartsSection from "@/components/dashboard/home/BarChartSection";
 import DashboardHeader from "@/components/dashboard/home/DashboardHeader";
 import QuickActionsSection from "@/components/dashboard/home/QuickActionsSection";
-import RecentActivitySection from "@/components/dashboard/home/RecentActivitySection";
 import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
 import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
 import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
@@ -14,6 +13,7 @@ import { DashboardData } from "@/hooks/useDashboardData";
 import { Card, CardBody } from "@heroui/card";
 import { Spinner } from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";
+import PendingUserApprovalsSection from "./PendingUserApprovalsSection";
 
 interface User {
   id: string;
@@ -36,17 +36,17 @@ export default function DashboardClient({
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
 
   // Use React Query to fetch data
- const {
+  const {
     data: dashboardData,
     isLoading,
     isError,
     error
-  } = useDashboardData(selectedYear); 
+  } = useDashboardData(selectedYear);
 
   // Use the data from React Query if available, otherwise use initial data
   const data = dashboardData || initialData;
-  
-  console.log({ dashboardData,selectedYear})
+
+  console.log({ dashboardData, selectedYear })
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
   };
@@ -108,10 +108,10 @@ export default function DashboardClient({
       />
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
         {/* Recent Activity */}
-        <RecentActivitySection
-          activities={data.recentActivity}
+        <PendingUserApprovalsSection
+          users={data.pendingUserApprovals}
         />
 
         {/* Upcoming Reservations */}

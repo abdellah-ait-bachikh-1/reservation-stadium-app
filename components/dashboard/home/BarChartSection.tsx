@@ -40,15 +40,15 @@ const StatusTooltip = ({ active, payload, label }: ChartTooltipProps) => {
 
   if (active && payload && payload.length) {
     const data = payload[0].payload;
-    
+
     // Use convertCase for all statuses - it will handle "PAID" correctly
     const statusKey = convertCase(data.status, "lower");
-    
+
     return (
       <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 mb-2">
-          <div 
-            className="w-3 h-3 rounded-full" 
+          <div
+            className="w-3 h-3 rounded-full"
             style={{ backgroundColor: data.color }}
           />
           <p className="font-semibold text-gray-900 dark:text-white">
@@ -71,23 +71,23 @@ const StatusTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   return null;
 };
 
-export default function BarChartSection({ 
-  stadiumUtilization, 
+export default function BarChartSection({
+  stadiumUtilization,
   reservationsByStatus,
 }: BarChartSectionProps) {
   const t = useTypedTranslations();
 
   // Use reservation status data from props
   const reservationStatusData = reservationsByStatus || [];
-  
+
   // Calculate totals
   const totalReservations = reservationStatusData.reduce((sum, item) => sum + item.count, 0);
   const approvedPercentage = reservationStatusData.length > 0
     ? Math.round(
-        (reservationStatusData.find(item => item.status === "APPROVED")?.count || 0) / totalReservations * 100
-      )
+      (reservationStatusData.find(item => item.status === "APPROVED")?.count || 0) / totalReservations * 100
+    )
     : 0;
-  
+
   // Filter stadium utilization to show only those with usage > 0
   const cleanStadiumData = stadiumUtilization.filter(stadium => stadium.usage > 0);
 
@@ -100,7 +100,7 @@ export default function BarChartSection({
 
   // Get status icon
   const getStatusIcon = (status: ReservationStatusType) => {
-    switch(status) {
+    switch (status) {
       case "APPROVED":
         return <HiCheckCircle className="w-4 h-4 text-green-500" />;
       case "PENDING":
@@ -121,7 +121,7 @@ export default function BarChartSection({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       {/* Stadium Utilization */}
-      <Card className="shadow-sm">
+      <Card className="shadow-sm  h-125 overflow-y-auto">
         <CardHeader className="pb-0">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             {t("pages.dashboard.home.charts.stadiumUtilization.title")}
@@ -147,7 +147,7 @@ export default function BarChartSection({
                     value={stadium.usage}
                     color={
                       stadium.usage >= 80 ? "success" :
-                      stadium.usage >= 60 ? "warning" : "danger"
+                        stadium.usage >= 60 ? "warning" : "danger"
                     }
                     size="sm"
                     className="w-full"
@@ -161,12 +161,13 @@ export default function BarChartSection({
                 </p>
               </div>
             )}
+
           </div>
         </CardBody>
       </Card>
 
       {/* Reservations by Status Bar Chart */}
-      <Card className="shadow-sm">
+      <Card className="shadow-sm  h-125 overflow-y-auto">
         <CardHeader className="pb-0">
           <div className="flex justify-between items-center">
             <div>
@@ -275,11 +276,11 @@ export default function BarChartSection({
               <div className="flex flex-wrap justify-center gap-4 mt-6">
                 {reservationStatusData.map((status) => {
                   const statusKey = convertCase(status.status, "lower");
-                  
+
                   return (
                     <div key={status.status} className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
+                      <div
+                        className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: status.color }}
                       />
                       <div className="flex items-center gap-1">

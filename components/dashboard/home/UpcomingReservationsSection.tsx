@@ -36,7 +36,7 @@ export default function UpcomingReservationsSection({ reservations }: UpcomingRe
   };
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-sm h-125 overflow-y-auto ">
       <CardHeader className="pb-0 flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           {t("pages.dashboard.home.upcomingReservations.title")}
@@ -44,7 +44,7 @@ export default function UpcomingReservationsSection({ reservations }: UpcomingRe
         <Button
           size="sm"
           variant="light"
-          endContent={<HiArrowRight className="w-4 h-4" />}
+          endContent={<HiArrowRight className="w-4 h-4 rtl:rotate-180" />}
           as="a"
           href="/dashboard/reservations"
         >
@@ -66,7 +66,7 @@ export default function UpcomingReservationsSection({ reservations }: UpcomingRe
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 ">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-sm text-gray-900 dark:text-white truncate">
                       {reservation.stadiumName}

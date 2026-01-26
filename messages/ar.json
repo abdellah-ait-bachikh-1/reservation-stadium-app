@@ -613,10 +613,12 @@
           "sendNotification": "إرسال إشعار",
           "generateReport": "إنشاء تقرير"
         },
-        "recentActivity": {
-          "title": "النشاط الأخير",
-          "viewAll": "عرض كل النشاط",
-          "noActivity": "لا يوجد نشاط حديث"
+        "pendingUserApprovals": {
+          "title": "موافقات المستخدمين المعلقة",
+          "subtitle": "المستخدمون في انتظار الموافقة",
+          "viewAll": "عرض جميع المستخدمين",
+          "noUsers": "لا توجد موافقات معلقة",
+          "noUsersDescription": "تمت الموافقة على جميع الحسابات"
         },
         "upcomingReservations": {
           "title": "الحجوزات القادمة",
@@ -637,8 +639,7 @@
             "approvalRate": "معدل الموافقة",
             "pending": "معلقة",
             "total": "المجموع",
-                      "noData": "لا توجد بيانات حالة الحجوزات متاحة"
-
+            "noData": "لا توجد بيانات حالة الحجوزات متاحة"
           }
         },
         "revenueTrends": {
@@ -715,7 +716,8 @@
       "reset": "إعادة تعيين",
       "resetPassword": "إعادة تعيين كلمة المرور",
       "backToLogin": "العودة إلى تسجيل الدخول",
-      "tryAgain": "حاول مرة أخرى"
+      "tryAgain": "حاول مرة أخرى",
+      "resendVerification": "إعادة الإرسال"
     },
     "theme": {
       "light": "فاتح",
@@ -897,7 +899,11 @@
       "declined": "مرفوض",
       "cancelled": "ملغى",
       "paid": "مدفوع",
-      "unpaid": "غير مدفوع"
+      "unpaid": "غير مدفوع",
+      "verified": "تم التحقق",
+      "unverified": "غير مُتحقَّق",
+      "notVerified": "غير مُتحقَّق",
+      "invalidDate": "تاريخ غير صالح"
     },
     "currency": {
       "symbol": "درهم",
@@ -941,6 +947,12 @@
       "weeksAgo": "منذ {count} أسبوع",
       "monthsAgo": "منذ {count} شهر",
       "yearsAgo": "منذ {count} سنة"
+    },
+    "dates": {
+      "created": "تاريخ الإنشاء",
+      "createdShort": "أنشئ",
+      "emailVerified": "تم التحقق من البريد",
+      "emailVerifiedShort": "البريد"
     }
   }
 }

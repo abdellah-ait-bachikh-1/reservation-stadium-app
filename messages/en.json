@@ -613,10 +613,12 @@
           "sendNotification": "Send Notification",
           "generateReport": "Generate Report"
         },
-        "recentActivity": {
-          "title": "Recent Activity",
-          "viewAll": "View All Activity",
-          "noActivity": "No recent activity"
+        "pendingUserApprovals": {
+          "title": "Pending User Approvals",
+          "subtitle": "Users waiting for admin approval",
+          "viewAll": "View All Pending Users",
+          "noUsers": "No pending user approvals",
+          "noUsersDescription": "All user accounts have been approved"
         },
         "upcomingReservations": {
           "title": "Upcoming Reservations",
@@ -637,8 +639,7 @@
             "approvalRate": "Approval Rate",
             "pending": "Pending",
             "total": "Total",
-                      "noData": "No reservation status data available"
-
+            "noData": "No reservation status data available"
           }
         },
         "revenueTrends": {
@@ -716,7 +717,8 @@
       "reset": "Reset",
       "resetPassword": "Reset Password",
       "backToLogin": "Back to Login",
-      "tryAgain": "Try Again"
+      "tryAgain": "Try Again",
+       "resendVerification": "Resend"
     },
     "theme": {
       "light": "Light",
@@ -893,12 +895,16 @@
       "logout": "Logout"
     },
     "status": {
-  "pending": "Pending",
+      "pending": "Pending",
       "approved": "Approved",
       "declined": "Declined",
       "cancelled": "Cancelled",
       "paid": "Paid",
-      "unpaid": "Unpaid"
+      "unpaid": "Unpaid",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "notVerified": "Not verified",
+      "invalidDate": "Invalid date"
     },
     "currency": {
       "symbol": "MAD",
@@ -942,6 +948,12 @@
       "weeksAgo": "{count} weeks ago",
       "monthsAgo": "{count} months ago",
       "yearsAgo": "{count} years ago"
+    },
+    "dates": {
+      "created": "Created",
+      "createdShort": "Created",
+      "emailVerified": "Email verified",
+      "emailVerifiedShort": "Email"
     }
   }
 }

@@ -613,10 +613,12 @@
           "sendNotification": "Envoyer une Notification",
           "generateReport": "Générer un Rapport"
         },
-        "recentActivity": {
-          "title": "Activité Récente",
-          "viewAll": "Voir Toute l'Activité",
-          "noActivity": "Aucune activité récente"
+         "pendingUserApprovals": {
+          "title": "Approbations en attente",
+          "subtitle": "Utilisateurs en attente d'approbation",
+          "viewAll": "Voir tous les utilisateurs",
+          "noUsers": "Aucune approbation en attente",
+          "noUsersDescription": "Tous les comptes ont été approuvés"
         },
         "upcomingReservations": {
           "title": "Réservations à Venir",
@@ -637,8 +639,7 @@
             "approvalRate": "Taux d'Approbation",
             "pending": "En Attente",
             "total": "Total",
-                      "noData": "Aucune donnée de statut de réservation disponible"
-
+            "noData": "Aucune donnée de statut de réservation disponible"
           }
         },
         "revenueTrends": {
@@ -715,7 +716,9 @@
       "reset": "Réinitialiser",
       "resetPassword": "Réinitialiser le mot de passe",
       "backToLogin": "Retour à la connexion",
-      "tryAgain": "Réessayer"
+      "tryAgain": "Réessayer",
+            "resendVerification": "Renvoyer"
+
     },
     "theme": {
       "light": "Clair",
@@ -897,7 +900,11 @@
       "declined": "Refusé",
       "cancelled": "Annulé",
       "paid": "Payé",
-      "unpaid": "Impayé"
+      "unpaid": "Impayé",
+       "verified": "Vérifié",
+      "unverified": "Non vérifié",
+      "notVerified": "Non vérifié",
+      "invalidDate": "Date invalide"
     },
     "currency": {
       "symbol": "DH",
@@ -941,6 +948,12 @@
       "weeksAgo": "Il y a {count} semaines",
       "monthsAgo": "Il y a {count} mois",
       "yearsAgo": "Il y a {count} ans"
+    },
+    "dates": {
+      "created": "Créé",
+      "createdShort": "Créé",
+      "emailVerified": "Email vérifié",
+      "emailVerifiedShort": "Email"
     }
   }
 }

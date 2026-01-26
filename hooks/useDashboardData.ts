@@ -20,7 +20,8 @@ export interface DashboardData {
     newUsersThisYear: number; // ADD THIS
     avgUtilization: number;
     completionRate: number;
-    changes?: { // ADD THIS OPTIONAL CHANGES OBJECT
+    changes?: {
+      // ADD THIS OPTIONAL CHANGES OBJECT
       totalReservationsChange?: string;
       activeReservationsChange?: string;
       pendingReservationsChange?: string;
@@ -35,13 +36,15 @@ export interface DashboardData {
       newUsersChange?: string;
     };
   };
-  recentActivity: Array<{
+  pendingUserApprovals: Array<{
+    // Changed from recentActivity
     id: string;
-    type: 'reservation' | 'payment' | 'subscription' | 'user' | 'club';
-    title: string;
-    description: string;
-    time: string;
-    status?: 'success' | 'pending' | 'warning';
+    name: string;
+    email: string;
+    phoneNumber: string;
+    emailVerifiedAt: string | null; 
+    createdAt: string;
+    timeAgo: string;
   }>;
   upcomingReservations: Array<{
     id: string;
@@ -49,7 +52,7 @@ export interface DashboardData {
     clubName: string;
     date: string;
     time: string;
-    status: 'confirmed' | 'pending' | 'cancelled';
+    status: "confirmed" | "pending" | "cancelled";
     amount?: number;
   }>;
   reservationsByMonth: Array<{
@@ -89,19 +92,19 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
   // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
   const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
-  
+
   const response = await fetch(`/api/dashboard/home?year=${validatedYear}`);
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch dashboard data: ${response.statusText}`);
   }
-  
+
   const result = await response.json();
-  
+
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch dashboard data");
   }
-  
+
   return result.data;
 }
 
@@ -109,7 +112,7 @@ export function useDashboardData(year: number) {
   // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
   const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
-  
+
   return useQuery({
     queryKey: ["dashboard", "home", validatedYear],
     queryFn: () => fetchDashboardData(validatedYear),

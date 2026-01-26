@@ -12,8 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const messages = (await import(`../../../messages/${locale}.json`))
-    .default;
+  const messages = (await import(`../../../messages/${locale}.json`)).default;
 
   return {
     title: `${messages.pages?.dashboard?.home?.metadata?.title || "Dashboard"} - ${messages.common?.appName || "Tantan Stadium Booking"}`,
@@ -48,11 +47,15 @@ const DashboardPage = async ({
   }
 
   return (
-    <>{authenticatedUser && <DashboardClient
-      user={authenticatedUser}
-      currentYear={currentYear}
-      initialData={initialData}
-    />}</>
+    <>
+      {authenticatedUser && (
+        <DashboardClient
+          user={authenticatedUser}
+          currentYear={currentYear}
+          initialData={initialData}
+        />
+      )}
+    </>
   );
 };
 
@@ -72,7 +75,10 @@ function getStaticDashboardData(): DashboardData {
       newClubsThisMonth: 0,
       newUsersThisMonth: 0,
       avgUtilization: 0,
-      completionRate: 0,newClubsThisYear:0,newUsersThisYear:0,changes:{}
+      completionRate: 0,
+      newClubsThisYear: 0,
+      newUsersThisYear: 0,
+      changes: {},
     },
     recentActivity: [],
     upcomingReservations: [],
@@ -80,6 +86,6 @@ function getStaticDashboardData(): DashboardData {
     revenueByMonth: [],
     stadiumUtilization: [],
     reservationsByStatus: [],
-    revenueTrends: []
+    revenueTrends: [],
   };
 }

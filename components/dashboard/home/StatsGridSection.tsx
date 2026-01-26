@@ -169,10 +169,10 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
             <CardBody className="p-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 rtl:text-right">
                     {stat.title}
                   </p>
-                  <p className="text-2xl rtl:text-right font-bold text-gray-900 dark:text-white mt-2">
+                  <p className="text-2xl  font-bold text-gray-900 dark:text-white mt-2 rtl:text-right">
                     {stat.value}
                   </p>
                   {stat.change && (
@@ -182,7 +182,7 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
                       ) : stat.change.startsWith('-') ? (
                         <HiArrowDown className="w-4 h-4 text-red-500" />
                       ) : null}
-                      <span className={`text-xs font-medium ${stat.change.startsWith('+') ? 'text-green-600' : stat.change.startsWith('-') ? 'text-red-600' : 'text-gray-500'}`}>
+                      <span className={`text-xs font-medium rtl:text-right ${stat.change.startsWith('+') ? 'text-green-600' : stat.change.startsWith('-') ? 'text-red-600' : 'text-gray-500'}`}>
                         {stat.change}
                       </span>
                     </div>
@@ -204,7 +204,7 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
                   {stat.icon}
                 </div>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 rtl:text-right">
                 {stat.description}
               </p>
             </CardBody>
@@ -219,7 +219,7 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
             <CardBody className="p-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm rtl:text-right font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm rtl:text-right font-medium text-gray-600 dark:text-gray-400rtl:text-right">
                     {stat.title}
                   </p>
                   <p className="text-2xl rtl:text-right font-bold text-gray-900 dark:text-white mt-2">
@@ -232,7 +232,7 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
                       ) : stat.change.startsWith('-') ? (
                         <HiArrowDown className="w-4 h-4 text-red-500" />
                       ) : null}
-                      <span className={`text-xs font-medium ${stat.change.startsWith('+') ? 'text-green-600' : stat.change.startsWith('-') ? 'text-red-600' : 'text-gray-500'}`}>
+                      <span className={`text-xs font-medium rtl:text-right ${stat.change.startsWith('+') ? 'text-green-600' : stat.change.startsWith('-') ? 'text-red-600' : 'text-gray-500'}`}>
                         {stat.change}
                       </span>
                     </div>
@@ -254,7 +254,7 @@ export default  function StatsGridSection({ stats, currentYear }: StatsGridSecti
                   {stat.icon}
                 </div>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 rtl:text-right">
                 {stat.description}
               </p>
             </CardBody>

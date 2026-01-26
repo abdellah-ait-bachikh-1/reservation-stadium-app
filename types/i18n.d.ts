@@ -39,6 +39,7 @@ export type TranslationKey =
     | 'common.actions.register'
     | 'common.actions.reject'
     | 'common.actions.remove_from_cart'
+    | 'common.actions.resendVerification'
     | 'common.actions.reserve'
     | 'common.actions.reset'
     | 'common.actions.resetPassword'
@@ -68,6 +69,10 @@ export type TranslationKey =
     | 'common.aside.users'
     | 'common.currency.name'
     | 'common.currency.symbol'
+    | 'common.dates.created'
+    | 'common.dates.createdShort'
+    | 'common.dates.emailVerified'
+    | 'common.dates.emailVerifiedShort'
     | 'common.footer.address'
     | 'common.footer.allRightsReserved'
     | 'common.footer.appName'
@@ -173,9 +178,13 @@ export type TranslationKey =
     | 'common.status.approved'
     | 'common.status.cancelled'
     | 'common.status.declined'
+    | 'common.status.invalidDate'
+    | 'common.status.notVerified'
     | 'common.status.paid'
     | 'common.status.pending'
     | 'common.status.unpaid'
+    | 'common.status.unverified'
+    | 'common.status.verified'
     | 'common.theme.dark'
     | 'common.theme.description.dark'
     | 'common.theme.description.light'
@@ -430,6 +439,11 @@ export type TranslationKey =
     | 'pages.dashboard.home.charts.stadiumUtilization.title'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
+    | 'pages.dashboard.home.pendingUserApprovals.noUsers'
+    | 'pages.dashboard.home.pendingUserApprovals.noUsersDescription'
+    | 'pages.dashboard.home.pendingUserApprovals.subtitle'
+    | 'pages.dashboard.home.pendingUserApprovals.title'
+    | 'pages.dashboard.home.pendingUserApprovals.viewAll'
     | 'pages.dashboard.home.quickActions.addStadium'
     | 'pages.dashboard.home.quickActions.createReservation'
     | 'pages.dashboard.home.quickActions.generateReport'
@@ -437,9 +451,6 @@ export type TranslationKey =
     | 'pages.dashboard.home.quickActions.sendNotification'
     | 'pages.dashboard.home.quickActions.title'
     | 'pages.dashboard.home.quickActions.viewPayments'
-    | 'pages.dashboard.home.recentActivity.noActivity'
-    | 'pages.dashboard.home.recentActivity.title'
-    | 'pages.dashboard.home.recentActivity.viewAll'
     | 'pages.dashboard.home.revenueTrends.collectionRate'
     | 'pages.dashboard.home.revenueTrends.description'
     | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
@@ -1282,7 +1293,7 @@ export const _TranslationNamespaces = {
     "yearFilter",
     "stats",
     "quickActions",
-    "recentActivity",
+    "pendingUserApprovals",
     "upcomingReservations",
     "charts",
     "revenueTrends"
@@ -1377,10 +1388,12 @@ export const _TranslationNamespaces = {
     "sendNotification",
     "generateReport"
   ],
-  "pages.dashboard.home.recentActivity": [
+  "pages.dashboard.home.pendingUserApprovals": [
     "title",
+    "subtitle",
     "viewAll",
-    "noActivity"
+    "noUsers",
+    "noUsersDescription"
   ],
   "pages.dashboard.home.upcomingReservations": [
     "title",
@@ -1439,7 +1452,8 @@ export const _TranslationNamespaces = {
     "status",
     "currency",
     "months",
-    "time"
+    "time",
+    "dates"
   ],
   "common.actions": [
     "reserve",
@@ -1492,7 +1506,8 @@ export const _TranslationNamespaces = {
     "reset",
     "resetPassword",
     "backToLogin",
-    "tryAgain"
+    "tryAgain",
+    "resendVerification"
   ],
   "common.theme": [
     "light",
@@ -1686,7 +1701,11 @@ export const _TranslationNamespaces = {
     "declined",
     "cancelled",
     "paid",
-    "unpaid"
+    "unpaid",
+    "verified",
+    "unverified",
+    "notVerified",
+    "invalidDate"
   ],
   "common.currency": [
     "symbol",
@@ -1732,6 +1751,12 @@ export const _TranslationNamespaces = {
     "weeksAgo",
     "monthsAgo",
     "yearsAgo"
+  ],
+  "common.dates": [
+    "created",
+    "createdShort",
+    "emailVerified",
+    "emailVerifiedShort"
   ]
 } as const;
 
