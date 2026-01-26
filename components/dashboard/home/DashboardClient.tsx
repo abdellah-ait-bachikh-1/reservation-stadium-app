@@ -40,15 +40,20 @@ export default function DashboardClient({
     data: dashboardData,
     isLoading,
     isError,
-    error
+    error,
+    refetch, // Add refetch function
+    isRefetching // Add isRefetching state
   } = useDashboardData(selectedYear);
 
   // Use the data from React Query if available, otherwise use initial data
   const data = dashboardData || initialData;
 
-  console.log({ dashboardData, selectedYear })
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
+  };
+
+  const handleRefresh = () => {
+    refetch();
   };
 
   if (isError) {
@@ -65,7 +70,7 @@ export default function DashboardClient({
                 {error instanceof Error ? error.message : "An error occurred while loading dashboard data"}
               </p>
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => refetch()}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Try Again
@@ -79,7 +84,7 @@ export default function DashboardClient({
 
   return (
     <div className="p-4 md:p-6">
-      {/* Loading overgetDashboardDatalay */}
+      {/* Loading overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg flex flex-col items-center gap-4">
@@ -91,11 +96,13 @@ export default function DashboardClient({
         </div>
       )}
 
-      {/* Header with Year Filter */}
+      {/* Header with Year Filter and Refresh Button */}
       <DashboardHeader
         user={user}
         currentYear={selectedYear}
         onYearChange={handleYearChange}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefetching} 
       />
 
       {/* Quick Actions */}
@@ -132,6 +139,8 @@ export default function DashboardClient({
           monthlyData={data.revenueTrends}
           currentYear={selectedYear}
           onYearChange={handleYearChange}
+              onRefresh={handleRefresh}
+        isRefreshing={isRefetching} 
         />
       </div>
     </div>

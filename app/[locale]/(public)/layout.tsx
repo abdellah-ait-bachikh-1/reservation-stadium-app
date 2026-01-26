@@ -40,11 +40,10 @@ export default async function PublicRoutesLocaleLayout({
   return (
     <>
       <Header />
-      <main className="flex-1 pt-20 z-99994">
+      <main className="flex-1 pt-20 z-99994 overflow-y-auto ">
         {children}
       </main>
       <Footer />
-
     </>
   );
 }

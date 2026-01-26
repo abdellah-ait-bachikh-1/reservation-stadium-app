@@ -5,9 +5,9 @@ import { useTypedTranslations } from "@/utils/i18n";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Select, SelectItem } from "@heroui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { 
-  HiCurrencyDollar, 
-  HiTrendingUp, 
+import {
+  HiCurrencyDollar,
+  HiTrendingUp,
   HiTrendingDown,
   HiCollection,
   HiTicket,
@@ -17,6 +17,8 @@ import {
   HiCalendar
 } from "react-icons/hi";
 import { useState, useMemo, useEffect } from "react";
+import { FiRefreshCcw, FiRefreshCw } from "react-icons/fi";
+import { Button } from "@heroui/button";
 
 interface MonthlyRevenueData {
   month: string;
@@ -32,6 +34,8 @@ interface RevenueTrendsChartProps {
   monthlyData?: MonthlyRevenueData[];
   currentYear: number;
   onYearChange?: (year: number) => void;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 interface CustomTooltipProps {
@@ -94,10 +98,12 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   return null;
 };
 
-export default function RevenueTrendsChart({ 
-  monthlyData, 
-  currentYear, 
-  onYearChange 
+export default function RevenueTrendsChart({
+  monthlyData,
+  currentYear,
+  onYearChange,
+  onRefresh,
+  isRefreshing = false
 }: RevenueTrendsChartProps) {
   const t = useTypedTranslations();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
@@ -116,12 +122,14 @@ export default function RevenueTrendsChart({
     setSelectedYear(year);
     onYearChange?.(year);
   };
-
+  const handleRefresh = () => {
+    onRefresh?.();
+  };
   // Generate years from 2026 to current year
   const generateYearOptions = () => {
     const currentYearNow = new Date().getFullYear();
     const startYear = 2025;
-    
+
     return Array.from(
       { length: Math.max(0, currentYearNow - startYear + 1) },
       (_, i) => startYear + i
@@ -167,12 +175,12 @@ export default function RevenueTrendsChart({
     const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
     const totalPaid = data.reduce((sum, item) => sum + item.paidAmount, 0);
     const totalOverdue = data.reduce((sum, item) => sum + item.overdueAmount, 0);
-    
+
     const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
-    
+
     // Year-over-year comparison (vs previous year if available)
     const previousYearRevenue = selectedYear > 2026 ? totalRevenue * 0.85 : 0;
-    const revenueChange = previousYearRevenue > 0 ? 
+    const revenueChange = previousYearRevenue > 0 ?
       Math.round(((totalRevenue - previousYearRevenue) / previousYearRevenue) * 100) : 0;
 
     return {
@@ -189,10 +197,10 @@ export default function RevenueTrendsChart({
   // Calculate MONTHLY statistics
   const monthlyStats = useMemo(() => {
     if (data.length < 2) return { revenueChange: 0 };
-    
+
     const currentMonth = data[data.length - 1];
     const previousMonth = data[data.length - 2];
-    const revenueChange = previousMonth.totalRevenue > 0 ? 
+    const revenueChange = previousMonth.totalRevenue > 0 ?
       Math.round(((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100) : 0;
 
     return {
@@ -238,26 +246,44 @@ export default function RevenueTrendsChart({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Select
-                classNames={{ trigger: "bg-white dark:bg-zinc-900 shadow-sm w-30 cursor-pointer" }}
-                selectedKeys={[selectedYear.toString()]}
-                onSelectionChange={(keys) => {
-                  const year = Array.from(keys)[0] as string;
-                  handleYearChange(parseInt(year));
-                }}
-                size="sm"
-                variant="flat"
-                label={t("pages.dashboard.home.yearFilter.selectYear")}
-              >
-                {generateYearOptions().map((year) => (
-                  <SelectItem key={year.toString()}>
-                    {year.toString()}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
+          <div className="flex  items-center gap-3">
+            {/* Refresh Button */}
+            <Button
+              isIconOnly
+              color="primary"
+              variant="flat"
+              size="lg"
+              onPress={handleRefresh}
+              isLoading={isRefreshing}
+              spinner={
+                <FiRefreshCw className="animate-spin" size={14} />
+              }
+              radius="md"
+            >
+              <FiRefreshCcw size={14} />
+            </Button>
+
+            {/* Year Select */}
+            <Select
+              classNames={{
+                trigger: "bg-white dark:bg-zinc-900 shadow-sm w-30 cursor-pointer",
+                label: "text-xs"
+              }}
+              selectedKeys={[selectedYear.toString()]}
+              onSelectionChange={(keys) => {
+                const year = Array.from(keys)[0] as string;
+                handleYearChange(parseInt(year));
+              }}
+              size="sm"
+              variant="flat"
+              label={t("pages.dashboard.home.yearFilter.selectYear")}
+            >
+              {generateYearOptions().map((year) => (
+                <SelectItem key={year.toString()}>
+                  {year.toString()}
+                </SelectItem>
+              ))}
+            </Select>
           </div>
         </div>
       </CardHeader>
@@ -293,12 +319,12 @@ export default function RevenueTrendsChart({
                 )}
                 <span className={`text-xs font-medium ${yearToDateStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {yearToDateStats.revenueChange >= 0 ? '+' : ''}{yearToDateStats.revenueChange}%
-                </span> 
+                </span>
                 <span className="text-xs text-gray-500 ml-1">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
               </div>
             )}
           </div>
-          
+
           {/* Year-to-Date Subscription Revenue Card */}
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -322,7 +348,7 @@ export default function RevenueTrendsChart({
               {Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
           </div>
-          
+
           {/* Year-to-Date Single Session Revenue Card */}
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -346,7 +372,7 @@ export default function RevenueTrendsChart({
               {Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
           </div>
-          
+
           {/* Year-to-Date Paid Amount Card */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -370,7 +396,7 @@ export default function RevenueTrendsChart({
               {yearToDateStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
             </p>
           </div>
-          
+
           {/* Year-to-Date Overdue Amount Card */}
           <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -404,7 +430,7 @@ export default function RevenueTrendsChart({
             </p>
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-500">
-                {t("pages.dashboard.home.revenueTrends.monthlyChange")}: 
+                {t("pages.dashboard.home.revenueTrends.monthlyChange")}:
                 <span className={`ml-1 font-medium ${monthlyStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {monthlyStats.revenueChange >= 0 ? '+' : ''}{monthlyStats.revenueChange}%
                 </span>

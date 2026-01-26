@@ -3,6 +3,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ReservationStatusType } from "@/types/db";
+import { wait } from "@/utils";
 export interface DashboardData {
   stats: {
     totalReservations: number;
@@ -96,7 +97,7 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
   // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
   const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
-
+  await wait(3000)
   const response = await fetch(`/api/dashboard/home?year=${validatedYear}`);
 
   if (!response.ok) {
@@ -120,8 +121,11 @@ export function useDashboardData(year: number) {
   return useQuery({
     queryKey: ["dashboard", "home", validatedYear],
     queryFn: () => fetchDashboardData(validatedYear),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!validatedYear, // Ensure year is valid
+    staleTime: 0, // No stale time - always fresh
+    gcTime: 0, // No garbage collection - remove immediately
+    refetchOnMount: true,
+    // refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    enabled: !!validatedYear,
   });
 }
