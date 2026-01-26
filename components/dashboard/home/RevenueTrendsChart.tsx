@@ -169,45 +169,54 @@ export default function RevenueTrendsChart({
   const data = monthlyData || defaultData;
 
   // Calculate YEAR-TO-DATE summary statistics
-  const yearToDateStats = useMemo(() => {
-    const totalRevenue = data.reduce((sum, item) => sum + item.totalRevenue, 0);
-    const totalSubscription = data.reduce((sum, item) => sum + item.subscriptionRevenue, 0);
-    const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
-    const totalPaid = data.reduce((sum, item) => sum + item.paidAmount, 0);
-    const totalOverdue = data.reduce((sum, item) => sum + item.overdueAmount, 0);
+// Calculate YEAR-TO-DATE summary statistics
+const yearToDateStats = useMemo(() => {
+  const totalRevenue = data.reduce((sum, item) => sum + item.totalRevenue, 0);
+  const totalSubscription = data.reduce((sum, item) => sum + item.subscriptionRevenue, 0);
+  const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
+  const totalPaid = data.reduce((sum, item) => sum + item.paidAmount, 0);
+  const totalOverdue = data.reduce((sum, item) => sum + item.overdueAmount, 0);
 
-    const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
+  const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
 
-    // Year-over-year comparison (vs previous year if available)
-    const previousYearRevenue = selectedYear > 2026 ? totalRevenue * 0.85 : 0;
-    const revenueChange = previousYearRevenue > 0 ?
-      Math.round(((totalRevenue - previousYearRevenue) / previousYearRevenue) * 100) : 0;
+  // Year-over-year comparison (vs previous year if available)
+  const previousYearRevenue = selectedYear > 2026 ? totalRevenue * 0.85 : 0;
+  
+  // FIX: Handle division by zero and NaN
+  let revenueChange = 0;
+  if (previousYearRevenue > 0 && !isNaN(previousYearRevenue)) {
+    const change = ((totalRevenue - previousYearRevenue) / previousYearRevenue) * 100;
+    revenueChange = isNaN(change) ? 0 : Math.round(change);
+  }
 
-    return {
-      totalRevenue,
-      totalSubscription,
-      totalSingleSession,
-      totalPaid,
-      totalOverdue,
-      collectionRate,
-      revenueChange,
-    };
-  }, [data, selectedYear]);
+  return {
+    totalRevenue,
+    totalSubscription,
+    totalSingleSession,
+    totalPaid,
+    totalOverdue,
+    collectionRate,
+    revenueChange, // This was returning NaN
+  };
+}, [data, selectedYear]);
+// Calculate MONTHLY statistics
+const monthlyStats = useMemo(() => {
+  if (data.length < 2) return { revenueChange: 0 };
 
-  // Calculate MONTHLY statistics
-  const monthlyStats = useMemo(() => {
-    if (data.length < 2) return { revenueChange: 0 };
+  const currentMonth = data[data.length - 1];
+  const previousMonth = data[data.length - 2];
+  
+  // FIX: Handle division by zero and NaN
+  let revenueChange = 0;
+  if (previousMonth.totalRevenue > 0 && !isNaN(previousMonth.totalRevenue)) {
+    const change = ((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100;
+    revenueChange = isNaN(change) ? 0 : Math.round(change);
+  }
 
-    const currentMonth = data[data.length - 1];
-    const previousMonth = data[data.length - 2];
-    const revenueChange = previousMonth.totalRevenue > 0 ?
-      Math.round(((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100) : 0;
-
-    return {
-      revenueChange,
-    };
-  }, [data]);
-
+  return {
+    revenueChange,
+  };
+}, [data]);
   // Translate month names
   const translateMonth = useMemo(() => {
     const monthMap: Record<string, string> = {
@@ -345,8 +354,10 @@ export default function RevenueTrendsChart({
               <HiCollection className="w-8 h-8 text-blue-600" />
             </div>
             <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-              {Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
-            </p>
+    {yearToDateStats.totalRevenue > 0 
+      ? Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)
+      : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+  </p>
           </div>
 
           {/* Year-to-Date Single Session Revenue Card */}
@@ -368,9 +379,11 @@ export default function RevenueTrendsChart({
               </div>
               <HiTicket className="w-8 h-8 text-purple-600" />
             </div>
-            <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-              {Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
-            </p>
+             <p className="text-xs text-gray-500 mt-1 rtl:text-right">
+    {yearToDateStats.totalRevenue > 0 
+      ? Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)
+      : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
+  </p>
           </div>
 
           {/* Year-to-Date Paid Amount Card */}
@@ -416,9 +429,11 @@ export default function RevenueTrendsChart({
               </div>
               <HiExclamation className="w-8 h-8 text-red-600" />
             </div>
-            <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
-              {Math.round((yearToDateStats.totalOverdue / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.outstanding")}
-            </p>
+              <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
+    {yearToDateStats.totalRevenue > 0 
+      ? Math.round((yearToDateStats.totalOverdue / yearToDateStats.totalRevenue) * 100)
+      : 0}% {t("pages.dashboard.home.revenueTrends.outstanding")}
+  </p>
           </div>
         </div>
 
