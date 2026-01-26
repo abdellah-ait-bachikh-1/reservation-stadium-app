@@ -46,7 +46,7 @@ export default async function DashboardLayout({
       <div className="relative w-full min-h-screen flex bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
         <Aside />
         <MainContentWithMargin>
-          <Header />
+          <Header user={authenticatedUser} />
           <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto">
             {children}
           </main>
