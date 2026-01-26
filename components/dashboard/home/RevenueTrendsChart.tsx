@@ -295,15 +295,15 @@ export default function RevenueTrendsChart({
           <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                   {t("pages.dashboard.home.revenueTrends.totalRevenue")}
                 </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
                   {yearToDateStats.totalRevenue.toLocaleString()} {t("common.currency.symbol")}
                 </p>
                 <div className="flex items-center gap-1 mt-2">
                   <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 rtl:text-right">
                     {t("pages.dashboard.home.revenueTrends.yearToDate")}
                   </span>
                 </div>
@@ -311,16 +311,16 @@ export default function RevenueTrendsChart({
               <HiCurrencyDollar className="w-8 h-8 text-green-600" />
             </div>
             {selectedYear > 2026 && (
-              <div className="flex items-center gap-1 mt-2">
+              <div className="flex items-center gap-1 mt-2 rtl:text-right">
                 {yearToDateStats.revenueChange >= 0 ? (
                   <HiTrendingUp className="w-4 h-4 text-green-500" />
                 ) : (
                   <HiTrendingDown className="w-4 h-4 text-red-500" />
                 )}
-                <span className={`text-xs font-medium ${yearToDateStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-xs font-medium rtl:text-right ${yearToDateStats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {yearToDateStats.revenueChange >= 0 ? '+' : ''}{yearToDateStats.revenueChange}%
                 </span>
-                <span className="text-xs text-gray-500 ml-1">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
+                <span className="text-xs text-gray-500 ml-1 rtl:text-right">{t("pages.dashboard.home.revenueTrends.vsLastYear")}</span>
               </div>
             )}
           </div>
@@ -329,22 +329,22 @@ export default function RevenueTrendsChart({
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                   {t("pages.dashboard.home.revenueTrends.subscription")}
                 </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
                   {yearToDateStats.totalSubscription.toLocaleString()} {t("common.currency.symbol")}
                 </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                  <HiCalendar className="w-3 h-3 text-gray-400 " />
+                  <span className="text-xs text-gray-500 rtl:text-right">
                     {t("pages.dashboard.home.revenueTrends.yearToDate")}
                   </span>
                 </div>
               </div>
               <HiCollection className="w-8 h-8 text-blue-600" />
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1 rtl:text-right">
               {Math.round((yearToDateStats.totalSubscription / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
           </div>
@@ -353,46 +353,46 @@ export default function RevenueTrendsChart({
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                   {t("pages.dashboard.home.revenueTrends.singleSession")}
                 </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
                   {yearToDateStats.totalSingleSession.toLocaleString()} {t("common.currency.symbol")}
                 </p>
-                <div className="flex items-center gap-1 mt-2">
+                <div className="flex items-center gap-1 mt-2 rtl:text-right">
                   <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 rtl:text-right">
                     {t("pages.dashboard.home.revenueTrends.yearToDate")}
                   </span>
                 </div>
               </div>
               <HiTicket className="w-8 h-8 text-purple-600" />
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1 rtl:text-right">
               {Math.round((yearToDateStats.totalSingleSession / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
           </div>
 
           {/* Year-to-Date Paid Amount Card */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between rtl:text-right">
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                   {t("pages.dashboard.home.revenueTrends.paid")}
                 </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
                   {yearToDateStats.totalPaid.toLocaleString()} {t("common.currency.symbol")}
                 </p>
                 <div className="flex items-center gap-1 mt-2">
                   <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 rtl:text-right">
                     {t("pages.dashboard.home.revenueTrends.yearToDate")}
                   </span>
                 </div>
               </div>
               <HiCheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <p className="text-xs text-green-600 font-medium mt-1">
+            <p className="text-xs text-green-600 font-medium mt-1 rtl:text-right">
               {yearToDateStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
             </p>
           </div>
@@ -401,22 +401,22 @@ export default function RevenueTrendsChart({
           <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
                   {t("pages.dashboard.home.revenueTrends.overdue")}
                 </p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
                   {yearToDateStats.totalOverdue.toLocaleString()} {t("common.currency.symbol")}
                 </p>
                 <div className="flex items-center gap-1 mt-2">
                   <HiCalendar className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 rtl:text-right">
                     {t("pages.dashboard.home.revenueTrends.yearToDate")}
                   </span>
                 </div>
               </div>
               <HiExclamation className="w-8 h-8 text-red-600" />
             </div>
-            <p className="text-xs text-red-600 font-medium mt-1">
+            <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
               {Math.round((yearToDateStats.totalOverdue / yearToDateStats.totalRevenue) * 100)}% {t("pages.dashboard.home.revenueTrends.outstanding")}
             </p>
           </div>

@@ -220,7 +220,7 @@ export default function BarChartSection({
       {/* LEFT: Revenue by Stadium - Horizontal Bar Chart */}
      <Card className="shadow-sm">
         <CardHeader className="pb-0 px-0">
-          <div className="flex justify-between items-center px-4">
+          <div className="flex justify-between items-center px-4 w-full">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t("pages.dashboard.home.charts.revenueByStadium.title")}
@@ -341,7 +341,7 @@ export default function BarChartSection({
       {/* RIGHT: Reservations by Status Bar Chart */}
       <Card className="shadow-sm">
         <CardHeader className="pb-0 px-0">
-          <div className="flex justify-between items-center px-4">
+          <div className="flex justify-between items-center px-4 w-full">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t("pages.dashboard.home.charts.reservationsByStatus.title")}

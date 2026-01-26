@@ -97,7 +97,6 @@ async function fetchDashboardData(year: number): Promise<DashboardData> {
   // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();
   const validatedYear = Math.min(year, currentYear); // REMOVE Math.max(2026, ...)
-  await wait(3000)
   const response = await fetch(`/api/dashboard/home?year=${validatedYear}`);
 
   if (!response.ok) {
