@@ -48,11 +48,11 @@ export default async function LocaleRootLayout({
     <html
       lang={locale}
       dir={getDirection(locale as LocaleType)}
-      className={`h-full ${rubik.variable} overflow-y-auto`}
+      className={`h-full overflow-hidden ${rubik.variable}  `}
       suppressHydrationWarning
     >
       <body
-        className={`${rubik.className} relative z-99998  bg-linear-to-br from-amber-200/60 via-white to-amber-200/60 dark:from-black dark:via-neutral-700 dark:to-black min-h-screen w-full bg-fixed`}
+        className={`${rubik.className} overflow-hidden relative z-99998  bg-linear-to-br from-amber-200/60 via-white to-amber-200/60 dark:from-black dark:via-neutral-700 dark:to-black  w-full bg-fixed `}
         suppressHydrationWarning
         style={{ direction: getDirection(locale as LocaleType) }}
 

@@ -119,14 +119,13 @@ const Aside = () => {
     return pathname.startsWith(href)
   }
 
-  const rtl = isRtl(locale as LocaleEnumType)
 
   return (
     <>
       {/* Mobile Overlay */}
-      {isAsideOpen && window.innerWidth < 768 && (
+      {isAsideOpen &&  (
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-99995 md:hidden transition-opacity duration-300"
+          className="fixed inset-0 md:hidden bg-black/50 backdrop-blur-sm z-99995  transition-all duration-1500 ease-in-out"
           onClick={closeAside}
         />
       )}
@@ -135,26 +134,13 @@ const Aside = () => {
       <aside
         ref={asideRef}
         className={cn(
-          "fixed top-0 bottom-0 z-99997",
-          rtl ? "right-0" : "left-0",
-          "bg-white dark:bg-zinc-900",
-          "overflow-hidden flex flex-col",
-          "transition-all duration-300 ease-in-out",
-          // Mobile: slide in/out
-          "md:translate-x-0", // Always visible on desktop
-          // Mobile state
-          isAsideOpen 
-            ? "translate-x-0" 
-            : rtl 
-              ? "translate-x-full" 
-              : "-translate-x-full",
-          // Desktop width
-          "md:w-20", // Default collapsed width
-          isAsideOpen && "md:w-60" // Expanded width
+         "bg-white dark:bg-zinc-900 fixed top-0  ltr:left-0 rtl:right-0 transition-all duration-300 ease-in-out overflow-hidden z-99996 h-screen flex flex-col",
+         isAsideOpen ? "w-70 md:w-60" : " w-0 md:w-20",
+         
         )}
       >
         {/* Logo / Header */}
-        <div className="p-4">
+        <div className="p-5">
           <div className="flex items-center justify-between h-10">
             {/* Logo - Full when open, collapsed when closed */}
             <div className="flex items-center gap-3 overflow-hidden">
@@ -167,8 +153,7 @@ const Aside = () => {
               />
               <span className={cn(
                 "font-bold text-lg dark:text-white  transition-all duration-300",
-                "opacity-0 w-0 overflow-hidden",
-                isAsideOpen && "opacity-100 w-auto md:block"
+                " overflow-hidden md:block text-nowrap",
               )}>
                 {APP_NAMES[locale as LocaleEnumType]}
               </span>
@@ -198,11 +183,11 @@ const Aside = () => {
                     href={item.href}
                     onClick={() => window.innerWidth < 768 && closeAside()}
                     className={cn(
-                      "flex items-center p-3 rounded-xl transition-all duration-200 relative group",
+                      "flex items-center p-3 gap-3 rounded-xl transition-all duration-200 relative group",
                       isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
                       active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
                       active && "text-amber-600 dark:text-amber-400",
-                      isAsideOpen ? "gap-3" : "justify-center"
+                   
                     )}
                   >
                     <div className={cn(
@@ -220,8 +205,8 @@ const Aside = () => {
 
                     <span className={cn(
                       "font-medium whitespace-nowrap truncate transition-all duration-300",
-                      "opacity-0 w-0 overflow-hidden",
-                      isAsideOpen && "opacity-100 w-auto flex-1"
+                      " overflow-hidden flex-1",
+                      // isAsideOpen && "opacity-100 w-auto flex-1"
                     )}>
                       {item.title}
                     </span>
@@ -242,10 +227,10 @@ const Aside = () => {
           <button
             onClick={() => {/* TODO: Logout */ }}
             className={cn(
-              "w-full flex items-center p-3 rounded-xl transition-all duration-200",
+              "w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200",
               "hover:bg-red-50 dark:hover:bg-red-900/20",
               "group",
-              isAsideOpen ? "gap-3" : "justify-center"
+            
             )}
           >
             <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
@@ -254,8 +239,8 @@ const Aside = () => {
 
             <span className={cn(
               "font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400 transition-all duration-300",
-              "opacity-0 w-0 overflow-hidden",
-              isAsideOpen && "opacity-100 w-auto"
+              "overflow-hidden",
+              
             )}>
               {t("common.aside.logout")}
             </span>

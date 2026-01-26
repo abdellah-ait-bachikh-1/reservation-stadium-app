@@ -151,7 +151,7 @@ export async function apiLogout() {
       .map(cookie => `${cookie.name}=${cookie.value}`)
       .join('; ');
     
-    const response = await fetch(`${NEXT_PUBLIC_APP_URL}/api/auth/logout`, {
+    const response = await fetch(`${NEXT_PUBLIC_APP_URL}/api/auth/force-logout`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

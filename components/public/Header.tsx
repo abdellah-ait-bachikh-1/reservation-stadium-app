@@ -51,7 +51,7 @@ const Header = () => {
       try {
         const res = await fetch('/api/public/current-user');
         if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+          return null
         }
         const resData = await res.json();
         return resData.user as SimpleUser;

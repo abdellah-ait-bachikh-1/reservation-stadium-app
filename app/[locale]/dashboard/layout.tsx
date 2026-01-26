@@ -43,11 +43,11 @@ export default async function DashboardLayout({
   
   return (
     <AsideContextProvider>
-      <div className="relative w-full min-h-screen flex bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
+      <div className="flex w-full h-screen bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
         <Aside />
         <MainContentWithMargin>
           <Header user={authenticatedUser} />
-          <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
         </MainContentWithMargin>
