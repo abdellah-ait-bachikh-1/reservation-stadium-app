@@ -649,7 +649,17 @@
             "total": "Total",
             "noData": "Aucune donnée de statut de réservation disponible"
           }
-        },
+        },"overduePayments": {
+  "title": "Paiements en Retard",
+  "viewAll": "Voir Tous les Paiements",
+  "noOverdue": "Aucun paiement en retard",
+  "recent": "Récent",
+  "overdue": "En Retard",
+  "longOverdue": "Très en Retard",
+  "daysOverdue": "jours de retard",
+  "resolve": "Résoudre",
+  "description": "Paiements nécessitant une attention immédiate"
+},
         "revenueTrends": {
           "title": "Tendances des Revenus",
           "description": "Répartition mensuelle des revenus par type",

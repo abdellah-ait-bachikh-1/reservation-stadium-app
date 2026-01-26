@@ -28,6 +28,7 @@ import {
   or,
   like,
   isNotNull,
+  lt,
 } from "drizzle-orm";
 import {
   startOfYear,
@@ -64,14 +65,17 @@ export interface RecentActivity {
   status?: "success" | "pending" | "warning";
 }
 
-export interface UpcomingReservation {
+export interface OverduePayment {
   id: string;
-  stadiumName: string;
   clubName: string;
-  date: string;
-  time: string;
-  status: "confirmed" | "pending" | "cancelled"; // CHANGE: 'confirmed' not 'approved'
-  amount?: number;
+  stadiumName: string;
+  amount: number;
+  dueDate: string;
+  overdueDays: number;
+  reservationSeriesId: string;
+  userId: string;
+  month: number;
+  year: number;
 }
 export interface ChartData {
   month: string;
@@ -145,33 +149,42 @@ export interface DashboardStats {
 // lib/queries/dashboard-home.ts
 export async function getDashboardData(
   year: number = new Date().getFullYear(),
-) {
+): Promise<{
+  stats: DashboardStats;
+  pendingUserApprovals: PendingUserApproval[];
+  overduePayments: OverduePayment[]; // ADD THIS
+  reservationsByMonth: ChartData[];
+  revenueByMonth: MonthlyRevenueData[];
+  revenueByStadium: StadiumRevenue[];
+  reservationsByStatus: ReservationStatusData[];
+  revenueTrends: MonthlyRevenueData[];
+}> {
   try {
     const [
       stats,
       pendingUserApprovals,
-      upcomingReservations,
+      overduePayments, // ADD THIS
       reservationsByMonth,
       revenueByMonth,
-      revenueByStadium, // ADD THIS
+      revenueByStadium, 
       reservationsByStatus,
     ] = await Promise.all([
       getDashboardStats(year),
       getPendingUserApprovals(year),
-      getUpcomingReservations(year),
+      getOverduePayments(year), // ADD THIS - Get overdue payments
       getReservationsByMonth(year),
       getRevenueByMonth(year),
-      getRevenueByStadium(year), // ADD THIS
+      getRevenueByStadium(year), 
       getReservationsByStatus(year),
     ]);
 
     return {
       stats,
       pendingUserApprovals,
-      upcomingReservations,
+      overduePayments, // ADD THIS to return object
       reservationsByMonth,
       revenueByMonth,
-      revenueByStadium, // ADD THIS
+      revenueByStadium,
       reservationsByStatus,
       revenueTrends: revenueByMonth,
     };
@@ -180,7 +193,81 @@ export async function getDashboardData(
     throw error;
   }
 }
+export async function getOverduePayments(year: number): Promise<OverduePayment[]> {
+  try {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1;
+    const currentYear = today.getFullYear();
 
+    // Validate year
+    if (!year || year < 2020 || year > currentYear) {
+      year = currentYear;
+    }
+
+    // Get overdue monthly payments with their details for the specified year
+    const overduePayments = await db
+      .select({
+        id: monthlyPayments.id,
+        amount: monthlyPayments.amount,
+        month: monthlyPayments.month,
+        year: monthlyPayments.year,
+        status: monthlyPayments.status,
+        createdAt: monthlyPayments.createdAt,
+        clubName: users.name,
+        stadiumName: stadiums.name,
+        userId: monthlyPayments.userId,
+        reservationSeriesId: monthlyPayments.reservationSeriesId,
+      })
+      .from(monthlyPayments)
+      .innerJoin(users, eq(monthlyPayments.userId, users.id))
+      .innerJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
+      .innerJoin(stadiums, eq(reservationSeries.stadiumId, stadiums.id))
+      .where(
+        and(
+          eq(monthlyPayments.status, "OVERDUE"),
+          eq(monthlyPayments.year, year), // Filter by selected year
+          isNull(users.deletedAt),
+          isNull(stadiums.deletedAt)
+        )
+      )
+      .orderBy(desc(monthlyPayments.month), desc(monthlyPayments.createdAt))
+      .limit(10);
+
+    // If no overdue payments, return empty array
+    if (!overduePayments.length) {
+      return [];
+    }
+
+    // Calculate overdue days and format data
+    return overduePayments.map((payment) => {
+      const dueDate = new Date(payment.year, payment.month - 1, 1);
+      const overdueMs = today.getTime() - dueDate.getTime();
+      const overdueDays = Math.floor(overdueMs / (1000 * 60 * 60 * 24));
+      
+      return {
+        id: payment.id,
+        clubName: payment.clubName,
+        stadiumName: payment.stadiumName,
+        amount: Number(payment.amount) || 0,
+        dueDate: dueDate.toISOString().split('T')[0],
+        overdueDays: Math.max(0, overdueDays),
+        reservationSeriesId: payment.reservationSeriesId,
+        userId: payment.userId,
+        month: payment.month,
+        year: payment.year,
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching overdue payments:", error);
+    return getMockOverduePayments();
+  }
+}
+
+
+// Mock data function
+function getMockOverduePayments(): OverduePayment[] {
+  return [];
+}
 // lib/queries/dashboard-home.ts
 // Add this function to get revenue by stadium
 // lib/queries/dashboard-home.ts
@@ -933,69 +1020,7 @@ export async function getRecentActivity(
   }
 }
 
-// Get upcoming reservations
-// Get upcoming reservations
-export async function getUpcomingReservations(
-  year: number,
-): Promise<UpcomingReservation[]> {
-  try {
-    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
-    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
 
-    const upcoming = await db.query.reservations.findMany({
-      where: and(
-        isNull(reservations.deletedAt),
-        gte(reservations.startDateTime, startDate),
-        lte(reservations.startDateTime, endDate),
-        inArray(reservations.status, ["APPROVED", "PENDING"]),
-      ),
-      orderBy: [reservations.startDateTime],
-      limit: 5,
-      with: {
-        stadium: {
-          columns: {
-            name: true,
-          },
-        },
-        user: {
-          columns: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    // If no reservations, return empty array
-    if (!upcoming.length) {
-      return [];
-    }
-
-    return upcoming.map((reservation) => {
-      // Map database status to interface status - USE 'confirmed' not 'approved'
-      let status: "confirmed" | "pending" | "cancelled" = "pending";
-      if (reservation.status === "APPROVED") {
-        status = "confirmed"; // CHANGE: 'confirmed' instead of 'approved'
-      } else if (reservation.status === "CANCELLED") {
-        status = "cancelled";
-      } else if (reservation.status === "PENDING") {
-        status = "pending";
-      }
-
-      return {
-        id: reservation.id,
-        stadiumName: reservation.stadium?.name || "Unknown Stadium",
-        clubName: reservation.user?.name || "Unknown Club",
-        date: new Date(reservation.startDateTime).toISOString().split("T")[0],
-        time: `${new Date(reservation.startDateTime).getHours().toString().padStart(2, "0")}:${new Date(reservation.startDateTime).getMinutes().toString().padStart(2, "0")} - ${new Date(reservation.endDateTime).getHours().toString().padStart(2, "0")}:${new Date(reservation.endDateTime).getMinutes().toString().padStart(2, "0")}`,
-        status, // Now returns 'confirmed' which matches frontend
-        amount: Number(reservation.sessionPrice) || undefined,
-      };
-    });
-  } catch (error) {
-    console.error("Error fetching upcoming reservations:", error);
-    return getMockUpcomingReservations(year);
-  }
-}
 
 // Get reservations by month for a specific year
 export async function getReservationsByMonth(
@@ -1200,9 +1225,7 @@ function getMockRecentActivity(year: number): RecentActivity[] {
   return []; // Always return empty array
 }
 
-function getMockUpcomingReservations(year: number): UpcomingReservation[] {
-  return []; // Always return empty array
-}
+
 
 function getMockReservationsByMonth(year: number): ChartData[] {
   // Return all months with value 0

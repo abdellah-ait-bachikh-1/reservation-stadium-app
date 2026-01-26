@@ -20,6 +20,7 @@ export interface DashboardData {
     newUsersThisYear: number; // ADD THIS
     avgUtilization: number;
     completionRate: number;
+      
     changes?: {
       // ADD THIS OPTIONAL CHANGES OBJECT
       totalReservationsChange?: string;
@@ -54,14 +55,15 @@ revenueByStadium: Array<{ // ADD THIS
     createdAt: string;
     timeAgo: string;
   }>;
-  upcomingReservations: Array<{
+overduePayments: Array<{
     id: string;
-    stadiumName: string;
     clubName: string;
-    date: string;
-    time: string;
-    status: "confirmed" | "pending" | "cancelled";
-    amount?: number;
+    stadiumName: string;
+    amount: number;
+    dueDate: string;
+    overdueDays: number;
+    reservationSeriesId: string;
+    userId: string;
   }>;
   reservationsByMonth: Array<{
     month: string;

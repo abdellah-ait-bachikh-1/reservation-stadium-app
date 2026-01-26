@@ -49,9 +49,11 @@ async function yearlyDashboardSeed() {
     const SEED_YEARS = [2025, 2026];
     const BASE_YEAR = 2025;
     const CURRENT_YEAR = 2026;
-    
+
     console.log(`📅 Seeding data for years: ${SEED_YEARS.join(", ")}`);
-    console.log(`📊 Generating realistic dashboard data for monthly analysis\n`);
+    console.log(
+      `📊 Generating realistic dashboard data for monthly analysis\n`,
+    );
 
     // ===== CLEAR ALL DATA =====
     console.log("🧹 Clearing all existing data...");
@@ -214,7 +216,11 @@ async function yearlyDashboardSeed() {
       { nameAr: "التنس", nameFr: "Tennis", icon: "🎾" },
       { nameAr: "السباحة", nameFr: "Swimming", icon: "🏊" },
       { nameAr: "ألعاب القوى", nameFr: "Athletics", icon: "🏃" },
-      { nameAr: "الكرة الطائرة الشاطئية", nameFr: "Beach Volleyball", icon: "🏖️" },
+      {
+        nameAr: "الكرة الطائرة الشاطئية",
+        nameFr: "Beach Volleyball",
+        icon: "🏖️",
+      },
     ];
 
     await db.insert(sports).values(sportsData);
@@ -302,7 +308,11 @@ async function yearlyDashboardSeed() {
 
     // ===== 4. CREATE STADIUM IMAGES =====
     console.log("📷 Creating stadium images...");
-    const stadiumImagesData: { index: number; imageUri: string; stadiumId: string }[] = [];
+    const stadiumImagesData: {
+      index: number;
+      imageUri: string;
+      stadiumId: string;
+    }[] = [];
     const imageUrls = [
       "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=800",
       "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=800",
@@ -327,7 +337,7 @@ async function yearlyDashboardSeed() {
 
     // ===== 5. LINK STADIUMS WITH SPORTS =====
     console.log("🔗 Linking stadiums with sports...");
-    const stadiumSportsData:InsertStadiumSportType[] = [];
+    const stadiumSportsData: InsertStadiumSportType[] = [];
 
     allStadiums.forEach((stadium, index) => {
       const sportIndices = [
@@ -356,75 +366,89 @@ async function yearlyDashboardSeed() {
 
     // ===== 6. CREATE CLUBS =====
     console.log("🏢 Creating clubs...");
-    const clubsData :InsertClubType[]  = allUsers
-      .filter(user => user.role === "CLUB")
+    const clubsData: InsertClubType[] = allUsers
+      .filter((user) => user.role === "CLUB")
       .map((user, index) => ({
         name: `${user.name} Club`,
         address: `Address for ${user.name}, Tantan`,
-        monthlyFee: (800 + (index * 100)).toFixed(2),
-        paymentDueDay: 5 + (index * 5) % 25 as PaymentDueDay,
+        monthlyFee: (800 + index * 100).toFixed(2),
+        paymentDueDay: (5 + ((index * 5) % 25)) as PaymentDueDay,
         userId: user.id,
         sportId: allSports[index % allSports.length].id,
-      } ));
+      }));
 
     await db.insert(clubs).values(clubsData);
     const allClubs = await db.select().from(clubs);
     console.log(`✅ Created ${allClubs.length} clubs\n`);
 
-// ===== 7. CREATE RESERVATION SERIES =====
-console.log("📅 Creating reservation series...");
-const reservationSeriesData : InsertReservationSeriesType[] = [];
+    // ===== 7. CREATE RESERVATION SERIES =====
+    console.log("📅 Creating reservation series...");
+    const reservationSeriesData: InsertReservationSeriesType[] = [];
 
-// Create series for each club
-allClubs.forEach((club, index) => {
-  const daysOfWeek = [1, 2, 3, 4, 5]; // Monday to Friday
-  const dayOfWeek = daysOfWeek[index % daysOfWeek.length];
-  const startHour = 8 + (index * 2) % 8; // 8 AM to 4 PM
-  const isMonthly = Math.random() > 0.3; // 70% monthly, 30% per session
-  const stadiumIndex = index % allStadiums.length;
-  
-  // Create a base date for start/end times - use today's date with the specified time
-  const baseDate = new Date();
-  baseDate.setHours(startHour, 0, 0, 0);
-  
-  const startTime = format(baseDate, "yyyy-MM-dd HH:mm:ss");
-  const endTime = format(new Date(baseDate.getTime() + 2 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm:ss"); // +2 hours
-  
-  // Recurrence end date - end of 2026
-  const recurrenceEndDate = format(new Date(CURRENT_YEAR, 11, 31, 23, 59, 59), "yyyy-MM-dd HH:mm:ss");
+    // Create series for each club
+    allClubs.forEach((club, index) => {
+      const daysOfWeek = [1, 2, 3, 4, 5]; // Monday to Friday
+      const dayOfWeek = daysOfWeek[index % daysOfWeek.length];
+      const startHour = 8 + ((index * 2) % 8); // 8 AM to 4 PM
+      const isMonthly = Math.random() > 0.3; // 70% monthly, 30% per session
+      const stadiumIndex = index % allStadiums.length;
 
-  reservationSeriesData.push({
-    startTime: startTime, // Full datetime, not just time
-    endTime: endTime, // Full datetime, not just time
-    dayOfWeek: dayOfWeek,
-    recurrenceEndDate: recurrenceEndDate,
-    isFixed: true,
-    billingType: isMonthly ? "MONTHLY_SUBSCRIPTION" : "PER_SESSION",
-    monthlyPrice: isMonthly ? (1500 + Math.random() * 2000).toFixed(2) : null,
-    pricePerSession: !isMonthly ? (150 + Math.random() * 150).toFixed(2) : null,
-    stadiumId: allStadiums[stadiumIndex].id,
-    userId: club.userId,
-  });
-});
+      // Create a base date for start/end times - use today's date with the specified time
+      const baseDate = new Date();
+      baseDate.setHours(startHour, 0, 0, 0);
 
-await db.insert(reservationSeries).values(reservationSeriesData);
-const allSeries = await db.select().from(reservationSeries);
-console.log(`✅ Created ${allSeries.length} reservation series\n`);
+      const startTime = format(baseDate, "yyyy-MM-dd HH:mm:ss");
+      const endTime = format(
+        new Date(baseDate.getTime() + 2 * 60 * 60 * 1000),
+        "yyyy-MM-dd HH:mm:ss",
+      ); // +2 hours
+
+      // Recurrence end date - end of 2026
+      const recurrenceEndDate = format(
+        new Date(CURRENT_YEAR, 11, 31, 23, 59, 59),
+        "yyyy-MM-dd HH:mm:ss",
+      );
+
+      reservationSeriesData.push({
+        startTime: startTime, // Full datetime, not just time
+        endTime: endTime, // Full datetime, not just time
+        dayOfWeek: dayOfWeek,
+        recurrenceEndDate: recurrenceEndDate,
+        isFixed: true,
+        billingType: isMonthly ? "MONTHLY_SUBSCRIPTION" : "PER_SESSION",
+        monthlyPrice: isMonthly
+          ? (1500 + Math.random() * 2000).toFixed(2)
+          : null,
+        pricePerSession: !isMonthly
+          ? (150 + Math.random() * 150).toFixed(2)
+          : null,
+        stadiumId: allStadiums[stadiumIndex].id,
+        userId: club.userId,
+      });
+    });
+
+    await db.insert(reservationSeries).values(reservationSeriesData);
+    const allSeries = await db.select().from(reservationSeries);
+    console.log(`✅ Created ${allSeries.length} reservation series\n`);
     // ===== 8. CREATE MONTHLY SUBSCRIPTIONS =====
     console.log("💰 Creating monthly subscriptions...");
-    const subscriptionsData:InsertMonthlySubscriptionType[] = [];
+    const subscriptionsData: InsertMonthlySubscriptionType[] = [];
 
     // Create subscriptions for monthly series
-    const monthlySeries = allSeries.filter(series => series.billingType === "MONTHLY_SUBSCRIPTION");
+    const monthlySeries = allSeries.filter(
+      (series) => series.billingType === "MONTHLY_SUBSCRIPTION",
+    );
     monthlySeries.forEach((series, index) => {
-      const user = allUsers.find(u => u.id === series.userId);
+      const user = allUsers.find((u) => u.id === series.userId);
       const isActive = Math.random() > 0.2; // 80% active
 
       subscriptionsData.push({
         userId: series.userId!,
         reservationSeriesId: series.id,
         startDate: format(new Date(BASE_YEAR, 0, 1), "yyyy-MM-dd HH:mm:ss"), // Start of 2025
-        endDate: isActive ? format(new Date(CURRENT_YEAR, 11, 31), "yyyy-MM-dd HH:mm:ss") : format(new Date(BASE_YEAR, 6, 30), "yyyy-MM-dd HH:mm:ss"),
+        endDate: isActive
+          ? format(new Date(CURRENT_YEAR, 11, 31), "yyyy-MM-dd HH:mm:ss")
+          : format(new Date(BASE_YEAR, 6, 30), "yyyy-MM-dd HH:mm:ss"),
         monthlyAmount: series.monthlyPrice!,
         status: isActive ? "ACTIVE" : "EXPIRED",
         autoRenew: isActive,
@@ -432,103 +456,122 @@ console.log(`✅ Created ${allSeries.length} reservation series\n`);
     });
 
     await db.insert(monthlySubscriptions).values(subscriptionsData);
-    console.log(`✅ Created ${subscriptionsData.length} monthly subscriptions\n`);
+    console.log(
+      `✅ Created ${subscriptionsData.length} monthly subscriptions\n`,
+    );
 
     // ===== 9. GENERATE DATA FOR EACH YEAR =====
     console.log("📊 Generating monthly data for each year...");
-    
+
     for (const year of SEED_YEARS) {
       console.log(`\n📅 Processing year ${year}...`);
-      
-    // ===== CREATE MONTHLY PAYMENTS =====
-console.log(`  💳 Creating monthly payments for ${year}...`);
-const monthlyPaymentsData: InsertMonthlyPaymentType[] = [];
 
-// Generate realistic monthly trends
-const monthlyTrends = {
-  reservations: [85, 92, 105, 120, 135, 150, 165, 155, 140, 125, 100, 90],
-  revenue: [28500, 31200, 35500, 42800, 48500, 53200, 58000, 55000, 49000, 41500, 36800, 32500],
-  paymentRate: [0.85, 0.88, 0.90, 0.92, 0.93, 0.94, 0.95, 0.94, 0.93, 0.92, 0.90, 0.88],
-};
+      // ===== CREATE MONTHLY PAYMENTS =====
+      console.log(`  💳 Creating monthly payments for ${year}...`);
+      const monthlyPaymentsData: InsertMonthlyPaymentType[] = [];
 
-// Adjust for year (2026 should be slightly better than 2025)
-const yearMultiplier = year === CURRENT_YEAR ? 1.1 : 1.0;
+      // Generate realistic monthly trends
+      const monthlyTrends = {
+        reservations: [85, 92, 105, 120, 135, 150, 165, 155, 140, 125, 100, 90],
+        revenue: [
+          28500, 31200, 35500, 42800, 48500, 53200, 58000, 55000, 49000, 41500,
+          36800, 32500,
+        ],
+        paymentRate: [
+          0.85, 0.88, 0.9, 0.92, 0.93, 0.94, 0.95, 0.94, 0.93, 0.92, 0.9, 0.88,
+        ],
+      };
 
-// Track which (month, year, series) combinations we've already created payments for
-const paymentCombinations = new Set<string>();
+      // Adjust for year (2026 should be slightly better than 2025)
+      const yearMultiplier = year === CURRENT_YEAR ? 1.1 : 1.0;
 
-// Create payments for each month
-for (let month = 1; month <= 12; month++) {
-  const monthReservations = Math.round(monthlyTrends.reservations[month - 1] * yearMultiplier);
-  const monthRevenue = Math.round(monthlyTrends.revenue[month - 1] * yearMultiplier);
-  const paymentRate = monthlyTrends.paymentRate[month - 1];
-  
-  // Create payments for each monthly series
-  monthlySeries.forEach((series, seriesIndex) => {
-    const paymentKey = `${month}-${year}-${series.id}`;
-    
-    // Skip if we already have a payment for this combination
-    if (paymentCombinations.has(paymentKey)) {
-      return;
-    }
-    
-    const paymentStatus = Math.random() <= paymentRate ? "PAID" : 
-                         Math.random() <= 0.1 ? "OVERDUE" : "PENDING";
-    
-    const isPaid = paymentStatus === "PAID";
-    const paymentDate = isPaid ? 
-      format(new Date(year, month - 1, 5 + Math.floor(Math.random() * 20)), "yyyy-MM-dd HH:mm:ss") : 
-      null;
+      // Track which (month, year, series) combinations we've already created payments for
+      const paymentCombinations = new Set<string>();
 
-    monthlyPaymentsData.push({
-      month: month,
-      year: year,
-      amount: series.monthlyPrice!,
-      status: paymentStatus,
-      paymentDate: paymentDate,
-      receiptNumber: isPaid ? 
-        `REC-${year}${month.toString().padStart(2, '0')}-${(seriesIndex + 1).toString().padStart(3, '0')}` : 
-        null,
-      userId: series.userId!,
-      reservationSeriesId: series.id,
-    });
-    
-    // Mark this combination as used
-    paymentCombinations.add(paymentKey);
-  });
+      // Create payments for each month
+      for (let month = 1; month <= 12; month++) {
+        const monthReservations = Math.round(
+          monthlyTrends.reservations[month - 1] * yearMultiplier,
+        );
+        const monthRevenue = Math.round(
+          monthlyTrends.revenue[month - 1] * yearMultiplier,
+        );
+        const paymentRate = monthlyTrends.paymentRate[month - 1];
 
-  // Add some overdue payments from previous months (only for series that don't have payments for those months)
- // In the overdue payments section (around line 56)
-if (month > 1 && Math.random() > 0.7) {
-  const overdueSeries = monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
-  let previousMonth = month - 1;
-  let previousYear = year;
-  
-  // Handle year boundary
-  if (previousMonth === 0) {
-    previousMonth = 12;
-    previousYear = year - 1;
-  }
-  
-  const overdueKey = `${previousMonth}-${previousYear}-${overdueSeries.id}`;
-  
-  // Only add if there's no payment for this combination yet
-  if (!paymentCombinations.has(overdueKey)) {
-    monthlyPaymentsData.push({
-      month: previousMonth,
-      year: previousYear,
-      amount: overdueSeries.monthlyPrice!,
-      status: "OVERDUE",
-      paymentDate: null,
-      receiptNumber: null,
-      userId: overdueSeries.userId!,
-      reservationSeriesId: overdueSeries.id,
-    });
-    
-    paymentCombinations.add(overdueKey);
-  }
-}
-}
+        // Create payments for each monthly series
+        monthlySeries.forEach((series, seriesIndex) => {
+          const paymentKey = `${month}-${year}-${series.id}`;
+
+          // Skip if we already have a payment for this combination
+          if (paymentCombinations.has(paymentKey)) {
+            return;
+          }
+
+          const paymentStatus =
+            Math.random() <= paymentRate
+              ? "PAID"
+              : Math.random() <= 0.1
+                ? "OVERDUE"
+                : "PENDING";
+
+          const isPaid = paymentStatus === "PAID";
+          const paymentDate = isPaid
+            ? format(
+                new Date(year, month - 1, 5 + Math.floor(Math.random() * 20)),
+                "yyyy-MM-dd HH:mm:ss",
+              )
+            : null;
+
+          monthlyPaymentsData.push({
+            month: month,
+            year: year,
+            amount: series.monthlyPrice!,
+            status: paymentStatus,
+            paymentDate: paymentDate,
+            receiptNumber: isPaid
+              ? `REC-${year}${month.toString().padStart(2, "0")}-${(seriesIndex + 1).toString().padStart(3, "0")}`
+              : null,
+            userId: series.userId!,
+            reservationSeriesId: series.id,
+          });
+
+          // Mark this combination as used
+          paymentCombinations.add(paymentKey);
+        });
+
+        // Add some overdue payments from previous months (only for series that don't have payments for those months)
+        // In the overdue payments section (around line 56)
+        if (month > 1 && Math.random() > 0.7) {
+          const overdueSeries =
+            monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
+          let previousMonth = month - 1;
+          let previousYear = year;
+
+          // Handle year boundary
+          if (previousMonth === 0) {
+            previousMonth = 12;
+            previousYear = year - 1;
+          }
+
+          const overdueKey = `${previousMonth}-${previousYear}-${overdueSeries.id}`;
+
+          // Only add if there's no payment for this combination yet
+          if (!paymentCombinations.has(overdueKey)) {
+            monthlyPaymentsData.push({
+              month: previousMonth,
+              year: previousYear,
+              amount: overdueSeries.monthlyPrice!,
+              status: "OVERDUE",
+              paymentDate: null,
+              receiptNumber: null,
+              userId: overdueSeries.userId!,
+              reservationSeriesId: overdueSeries.id,
+            });
+
+            paymentCombinations.add(overdueKey);
+          }
+        }
+      }
       await db.insert(monthlyPayments).values(monthlyPaymentsData);
       const yearPayments = monthlyPaymentsData.length;
       console.log(`  ✅ Created ${yearPayments} monthly payments for ${year}`);
@@ -536,16 +579,20 @@ if (month > 1 && Math.random() > 0.7) {
       // ===== CREATE RESERVATIONS =====
       console.log(`  📋 Creating reservations for ${year}...`);
       const reservationsData: InsertReservationType[] = [];
-      
+
       // Get paid monthly payment IDs for this year
-      const paidMonthlyPayments = monthlyPaymentsData.filter(p => p.status === "PAID");
+      const paidMonthlyPayments = monthlyPaymentsData.filter(
+        (p) => p.status === "PAID",
+      );
 
       // Generate reservations for each month
       for (let month = 0; month < 12; month++) {
         const monthDate = new Date(year, month, 1);
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const monthReservations = Math.round(monthlyTrends.reservations[month] * yearMultiplier);
-        
+        const monthReservations = Math.round(
+          monthlyTrends.reservations[month] * yearMultiplier,
+        );
+
         // Calculate reservations per day for this month
         const reservationsPerDay = Math.ceil(monthReservations / daysInMonth);
 
@@ -556,75 +603,92 @@ if (month > 1 && Math.random() > 0.7) {
 
           // More reservations on weekends
           const isWeekendDay = dayOfWeek === 0 || dayOfWeek === 6;
-          const dayReservations = isWeekendDay ? 
-            Math.ceil(reservationsPerDay * 1.5) : 
-            Math.ceil(reservationsPerDay * 0.8);
+          const dayReservations = isWeekendDay
+            ? Math.ceil(reservationsPerDay * 1.5)
+            : Math.ceil(reservationsPerDay * 0.8);
 
           // Create reservations from series
-         allSeries.forEach((series) => {
-  if (series.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)) {
-    // Series reservation for this day
-    
-    // Parse start time - get only the time part from the datetime string
-    const startTimeParts = series.startTime!.split(' ')[1]; // Get "HH:mm:ss" part
-    const [startHours, startMinutes] = startTimeParts.split(':').map(Number);
-    
-    const startDateTime = new Date(currentDate);
-    startDateTime.setHours(startHours, startMinutes, 0, 0);
+          allSeries.forEach((series) => {
+            if (series.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)) {
+              // Series reservation for this day
 
-    // Parse end time - get only the time part from the datetime string
-    const endTimeParts = series.endTime!.split(' ')[1]; // Get "HH:mm:ss" part
-    const [endHours, endMinutes] = endTimeParts.split(':').map(Number);
-    
-    const endDateTime = new Date(currentDate);
-    endDateTime.setHours(endHours, endMinutes, 0, 0);
+              // Parse start time - get only the time part from the datetime string
+              const startTimeParts = series.startTime!.split(" ")[1]; // Get "HH:mm:ss" part
+              const [startHours, startMinutes] = startTimeParts
+                .split(":")
+                .map(Number);
 
-    const isMonthlySeries = series.billingType === "MONTHLY_SUBSCRIPTION";
-    let monthlyPaymentId = null;
+              const startDateTime = new Date(currentDate);
+              startDateTime.setHours(startHours, startMinutes, 0, 0);
 
-    if (isMonthlySeries) {
-      // Find corresponding monthly payment
-      const payment = paidMonthlyPayments.find(p => 
-        p.reservationSeriesId === series.id && 
-        p.month === month + 1 && 
-        p.year === year
-      );
-      monthlyPaymentId = payment?.id || null;
-    }
+              // Parse end time - get only the time part from the datetime string
+              const endTimeParts = series.endTime!.split(" ")[1]; // Get "HH:mm:ss" part
+              const [endHours, endMinutes] = endTimeParts
+                .split(":")
+                .map(Number);
 
-    const isPaid = isMonthlySeries ? monthlyPaymentId !== null : Math.random() > 0.3;
+              const endDateTime = new Date(currentDate);
+              endDateTime.setHours(endHours, endMinutes, 0, 0);
 
-    reservationsData.push({
-      startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
-      endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
-      status: "APPROVED" as const,
-      sessionPrice: series.pricePerSession || series.monthlyPrice!,
-      isPaid: isPaid,
-      paymentType: isMonthlySeries ? "MONTHLY_SUBSCRIPTION" : "SINGLE_SESSION" as const,
-      stadiumId: series.stadiumId!,
-      userId: series.userId!,
-      monthlyPaymentId: monthlyPaymentId,
-      reservationSeriesId: series.id,
-    });
-  }
-});
+              const isMonthlySeries =
+                series.billingType === "MONTHLY_SUBSCRIPTION";
+              let monthlyPaymentId = null;
+
+              if (isMonthlySeries) {
+                // Find corresponding monthly payment
+                const payment = paidMonthlyPayments.find(
+                  (p) =>
+                    p.reservationSeriesId === series.id &&
+                    p.month === month + 1 &&
+                    p.year === year,
+                );
+                monthlyPaymentId = payment?.id || null;
+              }
+
+              const isPaid = isMonthlySeries
+                ? monthlyPaymentId !== null
+                : Math.random() > 0.3;
+
+              reservationsData.push({
+                startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
+                endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
+                status: "APPROVED" as const,
+                sessionPrice: series.pricePerSession || series.monthlyPrice!,
+                isPaid: isPaid,
+                paymentType: isMonthlySeries
+                  ? "MONTHLY_SUBSCRIPTION"
+                  : ("SINGLE_SESSION" as const),
+                stadiumId: series.stadiumId!,
+                userId: series.userId!,
+                monthlyPaymentId: monthlyPaymentId,
+                reservationSeriesId: series.id,
+              });
+            }
+          });
 
           // Create additional individual reservations
-          const additionalReservations = Math.max(0, dayReservations - (allSeries.filter(s => s.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)).length));
-          
+          const additionalReservations = Math.max(
+            0,
+            dayReservations -
+              allSeries.filter(
+                (s) => s.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek),
+              ).length,
+          );
+
           for (let i = 0; i < additionalReservations; i++) {
             const hour = 8 + Math.floor(Math.random() * 10); // 8 AM to 6 PM
             const duration = 1 + Math.floor(Math.random() * 3); // 1-3 hours
-            
+
             const startDateTime = new Date(currentDate);
             startDateTime.setHours(hour, 0, 0, 0);
-            
+
             const endDateTime = new Date(currentDate);
             endDateTime.setHours(hour + duration, 0, 0, 0);
 
             const stadiumIndex = Math.floor(Math.random() * allStadiums.length);
-            const userIndex = 1 + Math.floor(Math.random() * (allUsers.length - 1)); // Skip admin
-            
+            const userIndex =
+              1 + Math.floor(Math.random() * (allUsers.length - 1)); // Skip admin
+
             const statuses = ["APPROVED", "PENDING", "DECLINED", "CANCELLED"];
             const weights = [0.7, 0.15, 0.1, 0.05]; // 70% approved, 15% pending, etc.
             let statusIndex = 0;
@@ -654,7 +718,8 @@ if (month > 1 && Math.random() > 0.7) {
         }
 
         // Add some declined/cancelled reservations
-        for (let i = 0; i < monthReservations * 0.1; i++) { // 10% are declined/cancelled
+        for (let i = 0; i < monthReservations * 0.1; i++) {
+          // 10% are declined/cancelled
           const randomDay = Math.floor(Math.random() * daysInMonth) + 1;
           const randomDate = new Date(year, month, randomDay);
           const hour = 8 + Math.floor(Math.random() * 10);
@@ -664,19 +729,27 @@ if (month > 1 && Math.random() > 0.7) {
 
           reservationsData.push({
             startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
-            endDateTime: format(startDateTime.setHours(hour + 2), "yyyy-MM-dd HH:mm:ss"),
+            endDateTime: format(
+              startDateTime.setHours(hour + 2),
+              "yyyy-MM-dd HH:mm:ss",
+            ),
             status: Math.random() > 0.5 ? "DECLINED" : "CANCELLED",
             sessionPrice: (200 + Math.random() * 200).toFixed(2),
             isPaid: false,
             paymentType: "SINGLE_SESSION" as const,
-            stadiumId: allStadiums[Math.floor(Math.random() * allStadiums.length)].id,
-            userId: allUsers[1 + Math.floor(Math.random() * (allUsers.length - 1))].id,
+            stadiumId:
+              allStadiums[Math.floor(Math.random() * allStadiums.length)].id,
+            userId:
+              allUsers[1 + Math.floor(Math.random() * (allUsers.length - 1))]
+                .id,
           });
         }
       }
 
       await db.insert(reservations).values(reservationsData);
-      console.log(`  ✅ Created ${reservationsData.length} reservations for ${year}`);
+      console.log(
+        `  ✅ Created ${reservationsData.length} reservations for ${year}`,
+      );
 
       // ===== CREATE CASH PAYMENT RECORDS =====
       console.log(`  💵 Creating cash payment records for ${year}...`);
@@ -686,12 +759,14 @@ if (month > 1 && Math.random() > 0.7) {
       reservationsData.forEach((reservation, index) => {
         if (reservation.isPaid && !reservation.monthlyPaymentId) {
           const paymentDate = new Date(reservation.startDateTime);
-          paymentDate.setDate(paymentDate.getDate() - Math.floor(Math.random() * 3)); // Paid 0-2 days before
+          paymentDate.setDate(
+            paymentDate.getDate() - Math.floor(Math.random() * 3),
+          ); // Paid 0-2 days before
 
           cashPaymentsData.push({
             amount: reservation.sessionPrice,
             paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
-            receiptNumber: `CASH-${format(new Date(reservation.startDateTime), 'yyyyMMdd')}-${(index + 1).toString().padStart(3, '0')}`,
+            receiptNumber: `CASH-${format(new Date(reservation.startDateTime), "yyyyMMdd")}-${(index + 1).toString().padStart(3, "0")}`,
             notes: Math.random() > 0.5 ? "Payment received in cash" : null,
             reservationId: reservation.id,
             userId: reservation.userId!,
@@ -714,7 +789,9 @@ if (month > 1 && Math.random() > 0.7) {
       });
 
       await db.insert(cashPaymentRecords).values(cashPaymentsData);
-      console.log(`  ✅ Created ${cashPaymentsData.length} cash payment records for ${year}`);
+      console.log(
+        `  ✅ Created ${cashPaymentsData.length} cash payment records for ${year}`,
+      );
 
       // Clear arrays for next year
       monthlyPaymentsData.length = 0;
@@ -731,11 +808,15 @@ if (month > 1 && Math.random() > 0.7) {
     const startDate = new Date(endDate);
     startDate.setDate(startDate.getDate() - 90);
 
-    const notificationDays = eachDayOfInterval({ start: startDate, end: endDate });
+    const notificationDays = eachDayOfInterval({
+      start: startDate,
+      end: endDate,
+    });
 
     notificationDays.forEach((day, dayIndex) => {
       // System announcements (once a week)
-      if (day.getDay() === 1) { // Every Monday
+      if (day.getDay() === 1) {
+        // Every Monday
         allUsers.forEach((user) => {
           notificationsData.push({
             type: "SYSTEM_ANNOUNCEMENT",
@@ -744,8 +825,10 @@ if (month > 1 && Math.random() > 0.7) {
             titleEn: "Weekly System Update",
             titleFr: "Mise à jour hebdomadaire",
             titleAr: "تحديث أسبوعي للنظام",
-            messageEn: "Check out the latest updates and announcements from the platform.",
-            messageFr: "Découvrez les dernières mises à jour et annonces de la plateforme.",
+            messageEn:
+              "Check out the latest updates and announcements from the platform.",
+            messageFr:
+              "Découvrez les dernières mises à jour et annonces de la plateforme.",
             messageAr: "اطلع على آخر التحديثات والإعلانات من المنصة.",
             isRead: dayIndex < 30, // Older notifications are read
             userId: user.id,
@@ -760,41 +843,63 @@ if (month > 1 && Math.random() > 0.7) {
       for (let i = 0; i < dailyReservations; i++) {
         const userIndex = 1 + Math.floor(Math.random() * (allUsers.length - 1));
         const user = allUsers[userIndex];
-        const types = ["RESERVATION_APPROVED", "RESERVATION_REQUESTED", "RESERVATION_REMINDER"];
+        const types = [
+          "RESERVATION_APPROVED",
+          "RESERVATION_REQUESTED",
+          "RESERVATION_REMINDER",
+        ];
         const type = types[Math.floor(Math.random() * types.length)];
 
         notificationsData.push({
           type: type as any,
           model: "RESERVATION",
           referenceId: user.id,
-          titleEn: type === "RESERVATION_APPROVED" ? "Reservation Approved" : 
-                   type === "RESERVATION_REQUESTED" ? "New Reservation Request" : 
-                   "Upcoming Reservation Reminder",
-          titleFr: type === "RESERVATION_APPROVED" ? "Réservation approuvée" : 
-                   type === "RESERVATION_REQUESTED" ? "Nouvelle demande de réservation" : 
-                   "Rappel de réservation à venir",
-          titleAr: type === "RESERVATION_APPROVED" ? "تمت الموافقة على الحجز" : 
-                   type === "RESERVATION_REQUESTED" ? "طلب حجز جديد" : 
-                   "تذكير بالحجز القادم",
-          messageEn: type === "RESERVATION_APPROVED" ? 
-            "Your reservation has been approved by the administrator." : 
-            type === "RESERVATION_REQUESTED" ?
-            "A new reservation request has been submitted." :
-            "Don't forget your reservation tomorrow.",
-          messageFr: type === "RESERVATION_APPROVED" ? 
-            "Votre réservation a été approuvée par l'administrateur." : 
-            type === "RESERVATION_REQUESTED" ?
-            "Une nouvelle demande de réservation a été soumise." :
-            "N'oubliez pas votre réservation de demain.",
-          messageAr: type === "RESERVATION_APPROVED" ? 
-            "تمت الموافقة على حجزك من قبل المسؤول." : 
-            type === "RESERVATION_REQUESTED" ?
-            "تم تقديم طلب حجز جديد." :
-            "لا تنس حجزك غدًا.",
+          titleEn:
+            type === "RESERVATION_APPROVED"
+              ? "Reservation Approved"
+              : type === "RESERVATION_REQUESTED"
+                ? "New Reservation Request"
+                : "Upcoming Reservation Reminder",
+          titleFr:
+            type === "RESERVATION_APPROVED"
+              ? "Réservation approuvée"
+              : type === "RESERVATION_REQUESTED"
+                ? "Nouvelle demande de réservation"
+                : "Rappel de réservation à venir",
+          titleAr:
+            type === "RESERVATION_APPROVED"
+              ? "تمت الموافقة على الحجز"
+              : type === "RESERVATION_REQUESTED"
+                ? "طلب حجز جديد"
+                : "تذكير بالحجز القادم",
+          messageEn:
+            type === "RESERVATION_APPROVED"
+              ? "Your reservation has been approved by the administrator."
+              : type === "RESERVATION_REQUESTED"
+                ? "A new reservation request has been submitted."
+                : "Don't forget your reservation tomorrow.",
+          messageFr:
+            type === "RESERVATION_APPROVED"
+              ? "Votre réservation a été approuvée par l'administrateur."
+              : type === "RESERVATION_REQUESTED"
+                ? "Une nouvelle demande de réservation a été soumise."
+                : "N'oubliez pas votre réservation de demain.",
+          messageAr:
+            type === "RESERVATION_APPROVED"
+              ? "تمت الموافقة على حجزك من قبل المسؤول."
+              : type === "RESERVATION_REQUESTED"
+                ? "تم تقديم طلب حجز جديد."
+                : "لا تنس حجزك غدًا.",
           isRead: Math.random() > 0.3,
           userId: user.id,
           actorUserId: allUsers[0].id,
-          createdAt: format(day.setHours(9 + Math.floor(Math.random() * 8), Math.floor(Math.random() * 60)), "yyyy-MM-dd HH:mm:ss"),
+          createdAt: format(
+            day.setHours(
+              9 + Math.floor(Math.random() * 8),
+              Math.floor(Math.random() * 60),
+            ),
+            "yyyy-MM-dd HH:mm:ss",
+          ),
         });
       }
 
@@ -809,22 +914,38 @@ if (month > 1 && Math.random() > 0.7) {
           type: type as any,
           model: "PAYMENT",
           referenceId: user.id,
-          titleEn: type === "PAYMENT_RECEIVED" ? "Payment Received" : "Payment Overdue",
-          titleFr: type === "PAYMENT_RECEIVED" ? "Paiement reçu" : "Paiement en retard",
-          titleAr: type === "PAYMENT_RECEIVED" ? "تم استلام الدفع" : "الدفع متأخر",
-          messageEn: type === "PAYMENT_RECEIVED" ? 
-            "Your payment has been successfully processed." : 
-            "Your payment is overdue. Please make the payment as soon as possible.",
-          messageFr: type === "PAYMENT_RECEIVED" ? 
-            "Votre paiement a été traité avec succès." : 
-            "Votre paiement est en retard. Veuillez effectuer le paiement dès que possible.",
-          messageAr: type === "PAYMENT_RECEIVED" ? 
-            "تمت معالجة دفعتك بنجاح." : 
-            "دفعتك متأخرة. يرجى سداد المبلغ في أقرب وقت ممكن.",
+          titleEn:
+            type === "PAYMENT_RECEIVED"
+              ? "Payment Received"
+              : "Payment Overdue",
+          titleFr:
+            type === "PAYMENT_RECEIVED"
+              ? "Paiement reçu"
+              : "Paiement en retard",
+          titleAr:
+            type === "PAYMENT_RECEIVED" ? "تم استلام الدفع" : "الدفع متأخر",
+          messageEn:
+            type === "PAYMENT_RECEIVED"
+              ? "Your payment has been successfully processed."
+              : "Your payment is overdue. Please make the payment as soon as possible.",
+          messageFr:
+            type === "PAYMENT_RECEIVED"
+              ? "Votre paiement a été traité avec succès."
+              : "Votre paiement est en retard. Veuillez effectuer le paiement dès que possible.",
+          messageAr:
+            type === "PAYMENT_RECEIVED"
+              ? "تمت معالجة دفعتك بنجاح."
+              : "دفعتك متأخرة. يرجى سداد المبلغ في أقرب وقت ممكن.",
           isRead: type === "PAYMENT_RECEIVED",
           userId: user.id,
           actorUserId: allUsers[0].id,
-          createdAt: format(day.setHours(14 + Math.floor(Math.random() * 4), Math.floor(Math.random() * 60)), "yyyy-MM-dd HH:mm:ss"),
+          createdAt: format(
+            day.setHours(
+              14 + Math.floor(Math.random() * 4),
+              Math.floor(Math.random() * 60),
+            ),
+            "yyyy-MM-dd HH:mm:ss",
+          ),
         });
       }
     });
@@ -847,22 +968,26 @@ if (month > 1 && Math.random() > 0.7) {
       console.log("-".repeat(40));
 
       // Yearly reservations
-      const yearReservations = allReservations.filter(r => {
+      const yearReservations = allReservations.filter((r) => {
         const date = new Date(r.startDateTime);
         return date.getFullYear() === year;
       });
 
-      const approvedReservations = yearReservations.filter(r => r.status === "APPROVED");
-      const pendingReservations = yearReservations.filter(r => r.status === "PENDING");
+      const approvedReservations = yearReservations.filter(
+        (r) => r.status === "APPROVED",
+      );
+      const pendingReservations = yearReservations.filter(
+        (r) => r.status === "PENDING",
+      );
 
       // Monthly breakdown
       const monthlyCounts = Array(12).fill(0);
       const monthlyRevenue = Array(12).fill(0);
 
-      yearReservations.forEach(reservation => {
+      yearReservations.forEach((reservation) => {
         const month = new Date(reservation.startDateTime).getMonth();
         monthlyCounts[month]++;
-        
+
         if (reservation.isPaid) {
           monthlyRevenue[month] += parseFloat(reservation.sessionPrice);
         }
@@ -870,19 +995,19 @@ if (month > 1 && Math.random() > 0.7) {
 
       // Add monthly subscription revenue
       allMonthlyPayments
-        .filter(p => p.year === year && p.status === "PAID")
-        .forEach(payment => {
+        .filter((p) => p.year === year && p.status === "PAID")
+        .forEach((payment) => {
           const monthIndex = payment.month - 1;
           monthlyRevenue[monthIndex] += parseFloat(payment.amount);
         });
 
       // Add single session cash payments
       allCashPayments
-        .filter(cp => {
+        .filter((cp) => {
           const date = new Date(cp.paymentDate);
           return date.getFullYear() === year && !cp.monthlyPaymentId;
         })
-        .forEach(payment => {
+        .forEach((payment) => {
           const monthIndex = new Date(payment.paymentDate).getMonth();
           monthlyRevenue[monthIndex] += parseFloat(payment.amount);
         });
@@ -890,22 +1015,47 @@ if (month > 1 && Math.random() > 0.7) {
       console.log(`📅 Total Reservations: ${yearReservations.length}`);
       console.log(`✅ Approved: ${approvedReservations.length}`);
       console.log(`⏳ Pending: ${pendingReservations.length}`);
-      
+
       // Calculate total revenue
-      const totalRevenue = monthlyRevenue.reduce((sum, revenue) => sum + revenue, 0);
-      console.log(`💰 Total Revenue: ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
-      
+      const totalRevenue = monthlyRevenue.reduce(
+        (sum, revenue) => sum + revenue,
+        0,
+      );
+      console.log(
+        `💰 Total Revenue: ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+      );
+
       console.log("\n📈 Monthly Breakdown:");
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
       months.forEach((month, index) => {
-        console.log(`  ${month}: ${monthlyCounts[index]} reservations, ${monthlyRevenue[index].toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+        console.log(
+          `  ${month}: ${monthlyCounts[index]} reservations, ${monthlyRevenue[index].toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+        );
       });
 
       // Stadium utilization
       const stadiumUtilization = new Map();
-      allStadiums.forEach(stadium => {
-        const stadiumReservations = yearReservations.filter(r => r.stadiumId === stadium.id);
-        const utilization = Math.min(100, Math.round((stadiumReservations.length / 30) * 100)); // Based on 30 days max
+      allStadiums.forEach((stadium) => {
+        const stadiumReservations = yearReservations.filter(
+          (r) => r.stadiumId === stadium.id,
+        );
+        const utilization = Math.min(
+          100,
+          Math.round((stadiumReservations.length / 30) * 100),
+        ); // Based on 30 days max
         stadiumUtilization.set(stadium.name, utilization);
       });
 
@@ -913,29 +1063,201 @@ if (month > 1 && Math.random() > 0.7) {
       const sortedUtilization = Array.from(stadiumUtilization.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
-      
+
       sortedUtilization.forEach(([name, usage], index) => {
         console.log(`  ${index + 1}. ${name}: ${usage}%`);
       });
 
       // Revenue sources
       const subscriptionRevenue = allMonthlyPayments
-        .filter(p => p.year === year && p.status === "PAID")
+        .filter((p) => p.year === year && p.status === "PAID")
         .reduce((sum, p) => sum + parseFloat(p.amount), 0);
 
       const singleSessionRevenue = allCashPayments
-        .filter(cp => {
+        .filter((cp) => {
           const date = new Date(cp.paymentDate);
           return date.getFullYear() === year && !cp.monthlyPaymentId;
         })
         .reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
 
       console.log("\n💸 Revenue Sources:");
-      console.log(`  Subscriptions: ${subscriptionRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
-      console.log(`  Single Sessions: ${singleSessionRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
-      console.log(`  Total: ${(subscriptionRevenue + singleSessionRevenue).toLocaleString('en-US', { minimumFractionDigits: 2 })} MAD`);
+      console.log(
+        `  Subscriptions: ${subscriptionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+      );
+      console.log(
+        `  Single Sessions: ${singleSessionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+      );
+      console.log(
+        `  Total: ${(subscriptionRevenue + singleSessionRevenue).toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+      );
     }
+// ===== ADD REAL OVERDUE PAYMENTS BASED ON CURRENT TIME =====
+console.log("\n⏰ Creating real overdue payments based on current time...");
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth() + 1;
 
+// Fetch existing monthly payments to avoid duplicates
+const existingMonthlyPayments = await db.select().from(monthlyPayments);
+
+// Create some overdue payments for current and previous months
+const realOverduePayments: InsertMonthlyPaymentType[] = [];
+
+// Helper function to check if payment already exists
+function paymentExists(month: number, year: number, seriesId: string) {
+  return existingMonthlyPayments.some(
+    (p) => 
+      p.month === month && 
+      p.year === year && 
+      p.reservationSeriesId === seriesId
+  );
+}
+
+// Function to get a random club (excluding admin)
+function getRandomClub() {
+  const clubUsers = allUsers.filter(
+    (user) => user.role === "CLUB" && user.isApproved,
+  );
+  return clubUsers[Math.floor(Math.random() * clubUsers.length)];
+}
+
+// Function to get a random monthly series
+function getRandomMonthlySeries() {
+  return monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
+}
+
+// 1. Create overdue payments for previous months this year
+console.log("  📅 Creating overdue payments for previous months...");
+for (let month = 1; month < currentMonth; month++) {
+  // Create 1-3 overdue payments per month
+  const numOverdue = 1 + Math.floor(Math.random() * 3);
+
+  for (let i = 0; i < numOverdue; i++) {
+    const club = getRandomClub();
+    const series = getRandomMonthlySeries();
+
+    // Check if payment already exists for this combination
+    if (!paymentExists(month, currentYear, series.id)) {
+      realOverduePayments.push({
+        month: month,
+        year: currentYear,
+        amount: series.monthlyPrice!,
+        status: "OVERDUE" as const,
+        paymentDate: null,
+        receiptNumber: null,
+        userId: club.id,
+        reservationSeriesId: series.id,
+      });
+    }
+  }
+}
+
+// 2. Create some overdue payments from last year (if we're in Jan/Feb)
+console.log("  📅 Creating overdue payments from last year...");
+if (currentMonth <= 2) {
+  const lastYear = currentYear - 1;
+
+  // Create overdue payments for Nov and Dec of last year
+  for (let month = 11; month <= 12; month++) {
+    const numOverdue = 2 + Math.floor(Math.random() * 3);
+
+    for (let i = 0; i < numOverdue; i++) {
+      const club = getRandomClub();
+      const series = getRandomMonthlySeries();
+
+      // Check if payment already exists for this combination
+      if (!paymentExists(month, lastYear, series.id)) {
+        realOverduePayments.push({
+          month: month,
+          year: lastYear,
+          amount: series.monthlyPrice!,
+          status: "OVERDUE" as const,
+          paymentDate: null,
+          receiptNumber: null,
+          userId: club.id,
+          reservationSeriesId: series.id,
+        });
+      }
+    }
+  }
+}
+
+// 3. Create severely overdue payments (more than 3 months overdue)
+console.log("  📅 Creating severely overdue payments...");
+const severelyOverdueMonths = [];
+if (currentMonth > 4) {
+  // Add some payments that are 3-6 months overdue
+  for (let i = 3; i <= Math.min(6, currentMonth - 1); i++) {
+    severelyOverdueMonths.push(currentMonth - i);
+  }
+
+  severelyOverdueMonths.forEach((month) => {
+    const numOverdue = 1 + Math.floor(Math.random() * 2);
+
+    for (let i = 0; i < numOverdue; i++) {
+      const club = getRandomClub();
+      const series = getRandomMonthlySeries();
+
+      // Check if payment already exists for this combination
+      if (!paymentExists(month, currentYear, series.id)) {
+        realOverduePayments.push({
+          month: month,
+          year: currentYear,
+          amount: series.monthlyPrice!,
+          status: "OVERDUE" as const,
+          paymentDate: null,
+          receiptNumber: null,
+          userId: club.id,
+          reservationSeriesId: series.id,
+        });
+      }
+    }
+  });
+}
+
+// 4. Create some overdue payments with notes (for specific clubs)
+console.log("  📝 Creating overdue payments with specific cases...");
+const specificClubs = allUsers
+  .filter((user) => user.role === "CLUB" && user.isApproved)
+  .slice(0, 3); // Get 3 specific clubs
+
+specificClubs.forEach((club, index) => {
+  const series = monthlySeries[index % monthlySeries.length];
+
+  // Create overdue payments for last 2 months
+  for (let monthOffset = 1; monthOffset <= 2; monthOffset++) {
+    if (currentMonth - monthOffset > 0) {
+      const month = currentMonth - monthOffset;
+
+      // Check if payment already exists for this combination
+      if (!paymentExists(month, currentYear, series.id)) {
+        realOverduePayments.push({
+          month: month,
+          year: currentYear,
+          amount: series.monthlyPrice!,
+          status: "OVERDUE" as const,
+          paymentDate: null,
+          receiptNumber: null,
+          userId: club.id,
+          reservationSeriesId: series.id,
+        });
+      }
+    }
+  }
+});
+
+// Insert all overdue payments
+if (realOverduePayments.length > 0) {
+  await db.insert(monthlyPayments).values(realOverduePayments);
+  console.log(
+    `  ✅ Created ${realOverduePayments.length} real overdue payments`,
+  );
+  // ... rest of the code ...
+} else {
+  console.log(
+    "  ⚠️ No overdue payments created (all payments are up to date or already exist)",
+  );
+}
     // ===== FINAL SUMMARY =====
     console.log("\n" + "=".repeat(80));
     console.log("🎉 YEARLY DASHBOARD SEEDING COMPLETE!");
@@ -950,13 +1272,13 @@ if (month > 1 && Math.random() > 0.7) {
     console.log(`   Clubs: ${allClubs.length}`);
     console.log(`   Reservation Series: ${allSeries.length}`);
     console.log(`   Monthly Subscriptions: ${subscriptionsData.length}`);
-    
+
     // Get total counts
     const totalMonthlyPayments = await db.select().from(monthlyPayments);
     const totalReservations = await db.select().from(reservations);
     const totalCashPayments = await db.select().from(cashPaymentRecords);
     const totalNotifications = await db.select().from(notifications);
-    
+
     console.log(`   Monthly Payments: ${totalMonthlyPayments.length}`);
     console.log(`   Reservations: ${totalReservations.length}`);
     console.log(`   Cash Payments: ${totalCashPayments.length}`);
@@ -973,7 +1295,9 @@ if (month > 1 && Math.random() > 0.7) {
     console.log("   Athletics Club: athletics@club.ma / password123");
     console.log("   Beach Volley: beachvolley@club.ma / password123");
     console.log("   Youth Football: youth@football.ma / password123");
-    console.log("   Women's Basketball: womens@basketball.ma / password123 (NOT APPROVED)");
+    console.log(
+      "   Women's Basketball: womens@basketball.ma / password123 (NOT APPROVED)",
+    );
 
     console.log("\n📌 DASHBOARD FEATURES TESTED:");
     console.log("   • Year filtering (2025 vs 2026 comparison)");
@@ -981,7 +1305,9 @@ if (month > 1 && Math.random() > 0.7) {
     console.log("   • Revenue breakdown (subscriptions vs single sessions)");
     console.log("   • Stadium utilization statistics");
     console.log("   • Payment status distribution (PAID, PENDING, OVERDUE)");
-    console.log("   • Reservation status distribution (APPROVED, PENDING, DECLINED, CANCELLED)");
+    console.log(
+      "   • Reservation status distribution (APPROVED, PENDING, DECLINED, CANCELLED)",
+    );
     console.log("   • Recent activity notifications");
     console.log("   • Upcoming reservations");
 
@@ -992,6 +1318,23 @@ if (month > 1 && Math.random() > 0.7) {
     console.log("   • Weekends should have more reservations than weekdays");
     console.log("   • Collection rate should improve throughout the year");
 
+    // Add to final summary
+    console.log("\n⏰ OVERDUE PAYMENTS SUMMARY:");
+    if (realOverduePayments.length > 0) {
+      const totalOverdue = realOverduePayments.reduce(
+        (sum, p) => sum + parseFloat(p.amount),
+        0,
+      );
+      console.log(`   Total Overdue Payments: ${realOverduePayments.length}`);
+      console.log(
+        `   Total Overdue Amount: ${totalOverdue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`,
+      );
+      console.log(
+        `   Oldest Overdue: ${Math.max(...realOverduePayments.map((p) => currentMonth - p.month))} months overdue`,
+      );
+    } else {
+      console.log("   No overdue payments - all payments are current");
+    }
   } catch (error: any) {
     console.error("\n❌ Error during yearly seeding:", error);
     console.error("Stack:", error.stack);

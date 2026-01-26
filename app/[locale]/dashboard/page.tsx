@@ -80,7 +80,7 @@ function getStaticDashboardData(): DashboardData {
       newUsersThisYear: 0,
       changes: {},
     },
-    upcomingReservations: [],
+   overduePayments:[],
     reservationsByMonth: [],
     revenueByMonth: [],
     reservationsByStatus: [],

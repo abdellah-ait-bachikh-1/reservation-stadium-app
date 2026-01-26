@@ -447,6 +447,15 @@ export type TranslationKey =
     | 'pages.dashboard.home.charts.revenueByStadium.totalRevenue'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
+    | 'pages.dashboard.home.overduePayments.daysOverdue'
+    | 'pages.dashboard.home.overduePayments.description'
+    | 'pages.dashboard.home.overduePayments.longOverdue'
+    | 'pages.dashboard.home.overduePayments.noOverdue'
+    | 'pages.dashboard.home.overduePayments.overdue'
+    | 'pages.dashboard.home.overduePayments.recent'
+    | 'pages.dashboard.home.overduePayments.resolve'
+    | 'pages.dashboard.home.overduePayments.title'
+    | 'pages.dashboard.home.overduePayments.viewAll'
     | 'pages.dashboard.home.pendingUserApprovals.noUsers'
     | 'pages.dashboard.home.pendingUserApprovals.noUsersDescription'
     | 'pages.dashboard.home.pendingUserApprovals.subtitle'
@@ -1304,6 +1313,7 @@ export const _TranslationNamespaces = {
     "pendingUserApprovals",
     "upcomingReservations",
     "charts",
+    "overduePayments",
     "revenueTrends"
   ],
   "pages.dashboard.home.metadata": [
@@ -1434,6 +1444,17 @@ export const _TranslationNamespaces = {
     "pending",
     "total",
     "noData"
+  ],
+  "pages.dashboard.home.overduePayments": [
+    "title",
+    "viewAll",
+    "noOverdue",
+    "recent",
+    "overdue",
+    "longOverdue",
+    "daysOverdue",
+    "resolve",
+    "description"
   ],
   "pages.dashboard.home.revenueTrends": [
     "title",

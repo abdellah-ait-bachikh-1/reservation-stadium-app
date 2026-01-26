@@ -8,12 +8,12 @@ import DashboardHeader from "@/components/dashboard/home/DashboardHeader";
 import QuickActionsSection from "@/components/dashboard/home/QuickActionsSection";
 import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
 import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
-import UpcomingReservationsSection from "@/components/dashboard/home/UpcomingReservationsSection";
 import { DashboardData } from "@/hooks/useDashboardData";
 import { Card, CardBody } from "@heroui/card";
 import { Spinner } from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";
 import PendingUserApprovalsSection from "./PendingUserApprovalsSection";
+import OverduePaymentsSection from "./OverduePaymentsSection";
 
 interface User {
   id: string;
@@ -121,10 +121,9 @@ export default function DashboardClient({
           users={data.pendingUserApprovals}
         />
 
-        {/* Upcoming Reservations */}
-        <UpcomingReservationsSection
-          reservations={data.upcomingReservations}
-        />
+         <OverduePaymentsSection
+    payments={data.overduePayments} // You'll need to add this to your data structure
+  />
       </div>
 
       {/* Charts Section */}

@@ -649,6 +649,16 @@
             "total": "Total",
             "noData": "No reservation status data available"
           }
+        },"overduePayments": {
+          "title": "Overdue Payments",
+          "viewAll": "View All Payments",
+          "noOverdue": "No overdue payments",
+          "recent": "Recent",
+          "overdue": "Overdue",
+          "longOverdue": "Long Overdue",
+          "daysOverdue": "days overdue",
+          "resolve": "Resolve",
+          "description": "Payments requiring immediate attention"
         },
         "revenueTrends": {
           "title": "Revenue Trends",
