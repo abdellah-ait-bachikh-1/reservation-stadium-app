@@ -11,6 +11,7 @@ import {
   stadiumSports,
   sports,
   notifications,
+  reservationSeries,
 } from "@/drizzle/schema";
 import {
   eq,
@@ -26,6 +27,7 @@ import {
   inArray,
   or,
   like,
+  isNotNull,
 } from "drizzle-orm";
 import {
   startOfYear,
@@ -76,9 +78,13 @@ export interface ChartData {
   value: number;
 }
 
-export interface StadiumUtilization {
+export interface StadiumRevenue {
+  id: string;
   name: string;
-  usage: number;
+  totalRevenue: number;
+  subscriptionRevenue: number;
+  singleSessionRevenue: number;
+  percentage: number;
 }
 
 export interface MonthlyRevenueData {
@@ -136,35 +142,36 @@ export interface DashboardStats {
     newUsersChange?: string;
   };
 }
+// lib/queries/dashboard-home.ts
 export async function getDashboardData(
   year: number = new Date().getFullYear(),
 ) {
   try {
     const [
       stats,
-      pendingUserApprovals, // Changed from recentActivity
+      pendingUserApprovals,
       upcomingReservations,
       reservationsByMonth,
       revenueByMonth,
-      stadiumUtilization,
+      revenueByStadium, // ADD THIS
       reservationsByStatus,
     ] = await Promise.all([
       getDashboardStats(year),
-      getPendingUserApprovals(year), // Changed function
+      getPendingUserApprovals(year),
       getUpcomingReservations(year),
       getReservationsByMonth(year),
       getRevenueByMonth(year),
-      getStadiumUtilization(year),
+      getRevenueByStadium(year), // ADD THIS
       getReservationsByStatus(year),
     ]);
 
     return {
       stats,
-      pendingUserApprovals, // Changed key
+      pendingUserApprovals,
       upcomingReservations,
       reservationsByMonth,
       revenueByMonth,
-      stadiumUtilization,
+      revenueByStadium, // ADD THIS
       reservationsByStatus,
       revenueTrends: revenueByMonth,
     };
@@ -174,7 +181,117 @@ export async function getDashboardData(
   }
 }
 
+// lib/queries/dashboard-home.ts
+// Add this function to get revenue by stadium
+// lib/queries/dashboard-home.ts
+export async function getRevenueByStadium(
+  year: number,
+): Promise<StadiumRevenue[]> {
+  try {
+    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
+    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
 
+    // Get single session revenue per stadium
+    const singleSessionRevenue = await db
+      .select({
+        stadiumId: reservations.stadiumId,
+        stadiumName: stadiums.name,
+        amount: sum(cashPaymentRecords.amount),
+      })
+      .from(cashPaymentRecords)
+      .innerJoin(reservations, eq(cashPaymentRecords.reservationId, reservations.id))
+      .innerJoin(stadiums, eq(reservations.stadiumId, stadiums.id))
+      .where(
+        and(
+          gte(cashPaymentRecords.createdAt, startDate),
+          lte(cashPaymentRecords.createdAt, endDate),
+          isNull(stadiums.deletedAt),
+        ),
+      )
+      .groupBy(reservations.stadiumId, stadiums.name);
+
+    // Get subscription revenue per stadium
+    const subscriptionRevenue = await db
+      .select({
+        stadiumId: reservationSeries.stadiumId,
+        stadiumName: stadiums.name,
+        amount: sum(monthlyPayments.amount),
+      })
+      .from(monthlyPayments)
+      .innerJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
+      .innerJoin(stadiums, eq(reservationSeries.stadiumId, stadiums.id))
+      .where(
+        and(
+          gte(monthlyPayments.createdAt, startDate),
+          lte(monthlyPayments.createdAt, endDate),
+          isNull(stadiums.deletedAt),
+        ),
+      )
+      .groupBy(reservationSeries.stadiumId, stadiums.name);
+
+    // Combine the results
+    const revenueMap = new Map<string, StadiumRevenue>();
+
+    // Process single session revenue
+    singleSessionRevenue.forEach((row) => {
+      if (row.stadiumId && row.stadiumName) {
+        revenueMap.set(row.stadiumId, {
+          id: row.stadiumId,
+          name: row.stadiumName,
+          totalRevenue: Number(row.amount) || 0,
+          subscriptionRevenue: 0,
+          singleSessionRevenue: Number(row.amount) || 0,
+          percentage: 0,
+        });
+      }
+    });
+
+    // Add subscription revenue
+    subscriptionRevenue.forEach((row) => {
+      if (row.stadiumId && row.stadiumName) {
+        const existing = revenueMap.get(row.stadiumId);
+        const subscriptionAmount = Number(row.amount) || 0;
+        
+        if (existing) {
+          existing.subscriptionRevenue = subscriptionAmount;
+          existing.totalRevenue += subscriptionAmount;
+        } else {
+          revenueMap.set(row.stadiumId, {
+            id: row.stadiumId,
+            name: row.stadiumName,
+            totalRevenue: subscriptionAmount,
+            subscriptionRevenue: subscriptionAmount,
+            singleSessionRevenue: 0,
+            percentage: 0,
+          });
+        }
+      }
+    });
+
+    // Convert to array and calculate percentages
+    const stadiumRevenues = Array.from(revenueMap.values());
+    const totalRevenue = stadiumRevenues.reduce((sum, stadium) => sum + stadium.totalRevenue, 0);
+
+    // Calculate percentages
+    stadiumRevenues.forEach((stadium) => {
+      stadium.percentage = totalRevenue > 0 
+        ? Math.round((stadium.totalRevenue / totalRevenue) * 100)
+        : 0;
+    });
+
+    // Sort by total revenue descending
+    return stadiumRevenues
+      .sort((a, b) => b.totalRevenue - a.totalRevenue)
+      .slice(0, 10);
+  } catch (error) {
+    console.error("Error fetching revenue by stadium:", error);
+    return getMockRevenueByStadium();
+  }
+}
+// Add this mock function
+function getMockRevenueByStadium(): StadiumRevenue[] {
+  return [];
+}
 // Update the function name and return type
 export async function getPendingUserApprovals(
   year: number,
@@ -1028,57 +1145,6 @@ export async function getRevenueByMonth(
   }
 }
 
-// Get stadium utilization
-export async function getStadiumUtilization(
-  year: number,
-): Promise<StadiumUtilization[]> {
-  try {
-    // Get all stadiums
-    const allStadiums = await db.query.stadiums.findMany({
-      where: isNull(stadiums.deletedAt),
-      columns: {
-        id: true,
-        name: true,
-      },
-    });
-
-    const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
-    const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
-
-    const stadiumUtilization = await Promise.all(
-      allStadiums.map(async (stadium) => {
-        const reservationsCount = await db
-          .select({ count: count() })
-          .from(reservations)
-          .where(
-            and(
-              isNull(reservations.deletedAt),
-              eq(reservations.stadiumId, stadium.id),
-              gte(reservations.createdAt, startDate),
-              lte(reservations.createdAt, endDate),
-            ),
-          );
-
-        // Calculate utilization percentage
-        const maxCapacity = 20; // Adjust based on your logic
-        const usage = Math.min(
-          100,
-          Math.round(((reservationsCount[0]?.count || 0) / maxCapacity) * 100),
-        );
-
-        return {
-          name: stadium.name,
-          usage,
-        };
-      }),
-    );
-
-    return stadiumUtilization.sort((a, b) => b.usage - a.usage).slice(0, 5);
-  } catch (error) {
-    console.error("Error fetching stadium utilization:", error);
-    return getMockStadiumUtilization();
-  }
-}
 
 // Get reservation status distribution
 export async function getReservationsByStatus(
@@ -1159,9 +1225,7 @@ function getMockRevenueTrends(year: number): MonthlyRevenueData[] {
   }));
 }
 
-function getMockStadiumUtilization(): StadiumUtilization[] {
-  return []; // Always return empty array
-}
+
 
 function getMockReservationsByStatus(year: number): ReservationStatusData[] {
   return []; // Always return empty array

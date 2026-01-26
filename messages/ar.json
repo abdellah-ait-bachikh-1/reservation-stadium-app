@@ -626,11 +626,19 @@
           "noReservations": "لا توجد حجوزات قادمة"
         },
         "charts": {
-          "stadiumUtilization": {
-            "title": "استخدام الملاعب",
-            "description": "معدلات استخدام الملاعب",
-            "noData": "لا توجد بيانات استخدام للملاعب"
-          },
+          "revenueByStadium": {
+  "title": "الإيرادات حسب الملعب",
+  "description": "إجمالي الإيرادات المُحققة لكل ملعب هذا العام",
+  "totalRevenue": "إجمالي الإيرادات",
+  "subscription": "الاشتراك الشهري",
+  "singleSession": "جلسة واحدة",
+  "shareOfTotal": "حصة من الإجمالي",
+  "topStadium": "أفضل ملعب",
+  "avgPerStadium": "المتوسط لكل ملعب",
+  "noData": "لا توجد بيانات إيرادات متاحة",
+  "stadiums": "ملاعب",
+  "ofTotal": "من الإجمالي"
+},
           "reservationsByStatus": {
             "title": "الحجوزات حسب الحالة",
             "description": "توزيع الحجوزات حسب الحالات",

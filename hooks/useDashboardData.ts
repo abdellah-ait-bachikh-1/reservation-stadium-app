@@ -3,7 +3,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ReservationStatusType } from "@/types/db";
-
 export interface DashboardData {
   stats: {
     totalReservations: number;
@@ -36,6 +35,14 @@ export interface DashboardData {
       newUsersChange?: string;
     };
   };
+revenueByStadium: Array<{ // ADD THIS
+    id: string;
+    name: string;
+    totalRevenue: number;
+    subscriptionRevenue: number;
+    singleSessionRevenue: number;
+    percentage: number;
+  }>;
   pendingUserApprovals: Array<{
     // Changed from recentActivity
     id: string;
@@ -68,10 +75,7 @@ export interface DashboardData {
     overdueAmount: number;
     collectionRate: number;
   }>;
-  stadiumUtilization: Array<{
-    name: string;
-    usage: number;
-  }>;
+
   reservationsByStatus: Array<{
     status: ReservationStatusType;
     count: number;

@@ -83,8 +83,7 @@ function getStaticDashboardData(): DashboardData {
     upcomingReservations: [],
     reservationsByMonth: [],
     revenueByMonth: [],
-    stadiumUtilization: [],
     reservationsByStatus: [],
-    revenueTrends: [], pendingUserApprovals: []
+    revenueTrends: [], pendingUserApprovals: [], revenueByStadium: []
   };
 }

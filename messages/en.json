@@ -626,11 +626,19 @@
           "noReservations": "No upcoming reservations"
         },
         "charts": {
-          "stadiumUtilization": {
-            "title": "Stadium Utilization",
-            "description": "Stadium usage rates",
-            "noData": "No stadium utilization data available"
-          },
+         "revenueByStadium": {
+          "title": "Revenue by Stadium",
+          "description": "Total revenue generated per stadium this year",
+          "totalRevenue": "Total Revenue",
+          "subscription": "Subscription",
+          "singleSession": "Single Session",
+          "shareOfTotal": "Share of Total",
+          "topStadium": "Top Stadium",
+          "avgPerStadium": "Avg per Stadium",
+          "noData": "No revenue data available",
+          "stadiums": "stadiums",
+          "ofTotal": "of total"
+        },
           "reservationsByStatus": {
             "title": "Reservations by Status",
             "description": "Reservation distribution across statuses",
@@ -718,7 +726,7 @@
       "resetPassword": "Reset Password",
       "backToLogin": "Back to Login",
       "tryAgain": "Try Again",
-       "resendVerification": "Resend"
+      "resendVerification": "Resend"
     },
     "theme": {
       "light": "Light",

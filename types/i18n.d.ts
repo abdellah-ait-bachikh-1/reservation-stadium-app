@@ -434,9 +434,17 @@ export type TranslationKey =
     | 'pages.dashboard.home.charts.reservationsByStatus.title'
     | 'pages.dashboard.home.charts.reservationsByStatus.total'
     | 'pages.dashboard.home.charts.reservationsByStatus.totalReservations'
-    | 'pages.dashboard.home.charts.stadiumUtilization.description'
-    | 'pages.dashboard.home.charts.stadiumUtilization.noData'
-    | 'pages.dashboard.home.charts.stadiumUtilization.title'
+    | 'pages.dashboard.home.charts.revenueByStadium.avgPerStadium'
+    | 'pages.dashboard.home.charts.revenueByStadium.description'
+    | 'pages.dashboard.home.charts.revenueByStadium.noData'
+    | 'pages.dashboard.home.charts.revenueByStadium.ofTotal'
+    | 'pages.dashboard.home.charts.revenueByStadium.shareOfTotal'
+    | 'pages.dashboard.home.charts.revenueByStadium.singleSession'
+    | 'pages.dashboard.home.charts.revenueByStadium.stadiums'
+    | 'pages.dashboard.home.charts.revenueByStadium.subscription'
+    | 'pages.dashboard.home.charts.revenueByStadium.title'
+    | 'pages.dashboard.home.charts.revenueByStadium.topStadium'
+    | 'pages.dashboard.home.charts.revenueByStadium.totalRevenue'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
     | 'pages.dashboard.home.pendingUserApprovals.noUsers'
@@ -1401,13 +1409,21 @@ export const _TranslationNamespaces = {
     "noReservations"
   ],
   "pages.dashboard.home.charts": [
-    "stadiumUtilization",
+    "revenueByStadium",
     "reservationsByStatus"
   ],
-  "pages.dashboard.home.charts.stadiumUtilization": [
+  "pages.dashboard.home.charts.revenueByStadium": [
     "title",
     "description",
-    "noData"
+    "totalRevenue",
+    "subscription",
+    "singleSession",
+    "shareOfTotal",
+    "topStadium",
+    "avgPerStadium",
+    "noData",
+    "stadiums",
+    "ofTotal"
   ],
   "pages.dashboard.home.charts.reservationsByStatus": [
     "title",

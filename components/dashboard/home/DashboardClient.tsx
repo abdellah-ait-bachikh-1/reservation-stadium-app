@@ -122,7 +122,7 @@ export default function DashboardClient({
 
       {/* Charts Section */}
       <ChartsSection
-        stadiumUtilization={data.stadiumUtilization}
+      revenueByStadium={data.revenueByStadium}
         reservationsByStatus={data.reservationsByStatus || []}
       />
 

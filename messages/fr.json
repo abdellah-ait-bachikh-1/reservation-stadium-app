@@ -626,11 +626,19 @@
           "noReservations": "Aucune réservation à venir"
         },
         "charts": {
-          "stadiumUtilization": {
-            "title": "Utilisation des Stades",
-            "description": "Taux d'utilisation des stades",
-            "noData": "Aucune donnée d'utilisation de stade disponible"
-          },
+          "revenueByStadium": {
+  "title": "Revenus par Stade",
+  "description": "Revenu total généré par stade cette année",
+  "totalRevenue": "Revenu Total",
+  "subscription": "Abonnement",
+  "singleSession": "Session Unique",
+  "shareOfTotal": "Part du Total",
+  "topStadium": "Meilleur Stade",
+  "avgPerStadium": "Moyenne par Stade",
+  "noData": "Aucune donnée de revenu disponible",
+  "stadiums": "stades",
+  "ofTotal": "du total"
+},
           "reservationsByStatus": {
             "title": "Réservations par Statut",
             "description": "Répartition des réservations par statut",

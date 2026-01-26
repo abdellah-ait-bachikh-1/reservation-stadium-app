@@ -3,15 +3,18 @@
 
 import { useTypedTranslations } from "@/utils/i18n";
 import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Progress } from "@heroui/progress";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { HiCalendar, HiCheckCircle, HiClock, HiXCircle, HiCreditCard, HiExclamationCircle } from "react-icons/hi";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { HiCalendar, HiCheckCircle, HiClock, HiXCircle, HiCreditCard, HiExclamationCircle, HiCurrencyDollar } from "react-icons/hi";
 import { convertCase } from "@/utils";
 import { ReservationStatusType } from "@/types/db";
 
-interface StadiumUtilization {
+interface StadiumRevenue {
+  id: string;
   name: string;
-  usage: number;
+  totalRevenue: number;
+  subscriptionRevenue: number;
+  singleSessionRevenue: number;
+  percentage: number;
 }
 
 interface ReservationStatusData {
@@ -21,11 +24,21 @@ interface ReservationStatusData {
 }
 
 interface BarChartSectionProps {
-  stadiumUtilization: StadiumUtilization[];
+  revenueByStadium: StadiumRevenue[];
   reservationsByStatus: ReservationStatusData[];
 }
 
-interface ChartTooltipProps {
+interface StadiumRevenueTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    payload: StadiumRevenue;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
+interface StatusTooltipProps {
   active?: boolean;
   payload?: Array<{
     payload: ReservationStatusData;
@@ -35,32 +48,88 @@ interface ChartTooltipProps {
   label?: string;
 }
 
-const StatusTooltip = ({ active, payload, label }: ChartTooltipProps) => {
+const StadiumRevenueTooltip = ({ active, payload }: StadiumRevenueTooltipProps) => {
   const t = useTypedTranslations();
 
   if (active && payload && payload.length) {
     const data = payload[0].payload;
 
-    // Use convertCase for all statuses - it will handle "PAID" correctly
-    const statusKey = convertCase(data.status, "lower");
-
     return (
-      <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[180px] max-w-[280px] relative z-50">
         <div className="flex items-center gap-2 mb-2">
           <div
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: data.color }}
+            className="w-3 h-3 rounded-full flex-shrink-0"
+            style={{ backgroundColor: payload[0].color }}
           />
-          <p className="font-semibold text-gray-900 dark:text-white">
-            {t(`common.status.${statusKey}`)}
+          <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
+            {data.name}
           </p>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+              {t("pages.dashboard.home.charts.revenueByStadium.totalRevenue")}
+            </span>
+            <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">
+              {data.totalRevenue.toLocaleString()} MAD
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+              {t("pages.dashboard.home.charts.revenueByStadium.subscription")}
+            </span>
+            <span className="text-sm text-blue-600 dark:text-blue-400 whitespace-nowrap">
+              {data.subscriptionRevenue.toLocaleString()} MAD
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+              {t("pages.dashboard.home.charts.revenueByStadium.singleSession")}
+            </span>
+            <span className="text-sm text-green-600 dark:text-green-400 whitespace-nowrap">
+              {data.singleSessionRevenue.toLocaleString()} MAD
+            </span>
+          </div>
+          <div className="pt-1 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+                {t("pages.dashboard.home.charts.revenueByStadium.shareOfTotal")}
+              </span>
+              <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 whitespace-nowrap">
+                {data.percentage}% {t("pages.dashboard.home.charts.revenueByStadium.ofTotal")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+const StatusTooltip = ({ active, payload }: StatusTooltipProps) => {
+  const t = useTypedTranslations();
+
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const statusKey = convertCase(data.status, "lower");
+
+    return (
+      <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[150px] max-w-[220px] relative z-50">
+        <div className="flex items-center gap-2 mb-2">
+          <div
+            className="w-3 h-3 rounded-full flex-shrink-0"
+            style={{ backgroundColor: data.color }}
+          />
+          <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
+            {t(`common.status.${statusKey}`)}
+          </p>
+        </div>
+        <div className="space-y-1">
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
               {t("pages.dashboard.home.charts.reservationsByStatus.count")}
             </span>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">
               {data.count.toLocaleString()}
             </span>
           </div>
@@ -72,7 +141,7 @@ const StatusTooltip = ({ active, payload, label }: ChartTooltipProps) => {
 };
 
 export default function BarChartSection({
-  stadiumUtilization,
+  revenueByStadium,
   reservationsByStatus,
 }: BarChartSectionProps) {
   const t = useTypedTranslations();
@@ -88,10 +157,38 @@ export default function BarChartSection({
     )
     : 0;
 
-  // Filter stadium utilization to show only those with usage > 0
-  const cleanStadiumData = stadiumUtilization.filter(stadium => stadium.usage > 0);
+  // Filter and sort stadium revenue data
+  const cleanStadiumData = (revenueByStadium || [])
+    .filter(stadium => stadium.totalRevenue > 0)
+    .sort((a, b) => b.totalRevenue - a.totalRevenue) // Sort by revenue descending
+    .slice(0, 5); // Show only top 5 stadiums
 
-  // Format Y-axis values
+  // Calculate total revenue for percentage calculation
+  const totalAllStadiumRevenue = cleanStadiumData.reduce((sum, stadium) => sum + stadium.totalRevenue, 0);
+
+  // Get color based on revenue tier
+  const getRevenueColor = (revenue: number, maxRevenue: number): string => {
+    if (maxRevenue === 0) return '#3B82F6'; // Default blue if no data
+    const percentage = (revenue / maxRevenue) * 100;
+
+    if (percentage >= 80) return '#10B981'; // Green for top 20%
+    if (percentage >= 60) return '#F59E0B'; // Yellow for 20-40%
+    if (percentage >= 40) return '#3B82F6'; // Blue for 40-60%
+    if (percentage >= 20) return '#8B5CF6'; // Purple for 60-80%
+    return '#EF4444'; // Red for bottom 20%
+  };
+
+  // Find max revenue for color scaling
+  const maxRevenue = cleanStadiumData.length > 0
+    ? Math.max(...cleanStadiumData.map(stadium => stadium.totalRevenue))
+    : 0;
+
+  // Format currency
+  const formatCurrency = (value: number): string => {
+    return `${value.toLocaleString()} MAD`;
+  };
+
+  // Format Y-axis values for reservations chart
   const formatYAxis = (value: number) => {
     if (isNaN(value) || value === 0) return "0";
     if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
@@ -120,56 +217,131 @@ export default function BarChartSection({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-      {/* Stadium Utilization */}
-      <Card className="shadow-sm  h-125 overflow-y-auto">
-        <CardHeader className="pb-0">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {t("pages.dashboard.home.charts.stadiumUtilization.title")}
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {t("pages.dashboard.home.charts.stadiumUtilization.description")}
-          </p>
-        </CardHeader>
-        <CardBody>
-          <div className="space-y-4">
-            {cleanStadiumData.length > 0 ? (
-              cleanStadiumData.map((stadium, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
-                      {stadium.name}
-                    </span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {stadium.usage}%
-                    </span>
-                  </div>
-                  <Progress
-                    value={stadium.usage}
-                    color={
-                      stadium.usage >= 80 ? "success" :
-                        stadium.usage >= 60 ? "warning" : "danger"
-                    }
-                    size="sm"
-                    className="w-full"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-500 dark:text-gray-400">
-                  {t("pages.dashboard.home.charts.stadiumUtilization.noData")}
-                </p>
-              </div>
-            )}
-
+      {/* LEFT: Revenue by Stadium - Horizontal Bar Chart */}
+     <Card className="shadow-sm">
+        <CardHeader className="pb-0 px-0">
+          <div className="flex justify-between items-center px-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t("pages.dashboard.home.charts.revenueByStadium.title")}
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t("pages.dashboard.home.charts.revenueByStadium.description")}
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <HiCurrencyDollar className="w-4 h-4 text-green-500" />
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                {cleanStadiumData.length} {t("pages.dashboard.home.charts.revenueByStadium.stadiums")}
+              </span>
+            </div>
           </div>
+        </CardHeader>
+        <CardBody className="px-0">
+          {cleanStadiumData.length === 0 ? (
+            <div className="text-center py-8 px-4">
+              <p className="text-gray-500 dark:text-gray-400">
+                {t("pages.dashboard.home.charts.revenueByStadium.noData")}
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Horizontal Bar Chart for Stadium Revenue */}
+              <div className="h-72 w-full px-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={cleanStadiumData}
+                    layout="vertical"
+                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="#e5e7eb"
+                      horizontal={true}
+                      vertical={false}
+                      strokeOpacity={0.5}
+                    />
+                    <XAxis
+                      type="number"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickFormatter={formatCurrency}
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      width={80}
+                      tickFormatter={(value) => {
+                        // Truncate long stadium names
+                        if (value.length > 15) {
+                          return value.substring(0, 12) + '...';
+                        }
+                        return value;
+                      }}
+                    />
+                    <Tooltip
+                      content={<StadiumRevenueTooltip />}
+                      wrapperStyle={{ outline: 'none' }}
+                      position={{ y: 0 }}
+                    />
+                    <Bar
+                      dataKey="totalRevenue"
+                      radius={[0, 4, 4, 0]}
+                      barSize={20}
+                    >
+                      {cleanStadiumData.map((entry, index) => (
+                        <Cell
+                          key={`stadium-revenue-cell-${index}`}
+                          fill={getRevenueColor(entry.totalRevenue, maxRevenue)}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Revenue Summary */}
+              <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 px-4">
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.totalRevenue")}
+                  </p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">
+                    {formatCurrency(totalAllStadiumRevenue)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.topStadium")}
+                  </p>
+                  <p className="text-lg font-bold text-green-600">
+                    {cleanStadiumData[0]?.name.split(' ')[0] || 'N/A'}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.avgPerStadium")}
+                  </p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {cleanStadiumData.length > 0
+                      ? formatCurrency(totalAllStadiumRevenue / cleanStadiumData.length)
+                      : '0 MAD'}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </CardBody>
       </Card>
 
-      {/* Reservations by Status Bar Chart */}
-      <Card className="shadow-sm  h-125 overflow-y-auto">
-        <CardHeader className="pb-0">
-          <div className="flex justify-between items-center">
+      {/* RIGHT: Reservations by Status Bar Chart */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-0 px-0">
+          <div className="flex justify-between items-center px-4">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {t("pages.dashboard.home.charts.reservationsByStatus.title")}
@@ -188,20 +360,20 @@ export default function BarChartSection({
             </div>
           </div>
         </CardHeader>
-        <CardBody>
+        <CardBody className="px-0">
           {reservationStatusData.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 px-4">
               <p className="text-gray-500 dark:text-gray-400">
                 {t("pages.dashboard.home.charts.reservationsByStatus.noData")}
               </p>
             </div>
           ) : (
             <>
-              <div className="h-72">
+              <div className="h-72 w-full px-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={reservationStatusData}
-                    margin={{ top: 10, right: 10, left: 0, bottom: 30 }}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -230,6 +402,8 @@ export default function BarChartSection({
                     <Tooltip
                       content={<StatusTooltip />}
                       cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                      wrapperStyle={{ outline: 'none' }}
+                      position={{ y: 0 }}
                     />
                     <Bar
                       dataKey="count"
@@ -245,7 +419,7 @@ export default function BarChartSection({
               </div>
 
               {/* Summary Stats */}
-              <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 px-4">
                 <div className="text-center">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {t("pages.dashboard.home.charts.reservationsByStatus.totalReservations")}
@@ -273,7 +447,7 @@ export default function BarChartSection({
               </div>
 
               {/* Status Legend */}
-              <div className="flex flex-wrap justify-center gap-4 mt-6">
+              <div className="flex flex-wrap justify-center gap-4 mt-6 px-4">
                 {reservationStatusData.map((status) => {
                   const statusKey = convertCase(status.status, "lower");
 
