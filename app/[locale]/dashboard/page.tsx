@@ -80,12 +80,11 @@ function getStaticDashboardData(): DashboardData {
       newUsersThisYear: 0,
       changes: {},
     },
-    recentActivity: [],
     upcomingReservations: [],
     reservationsByMonth: [],
     revenueByMonth: [],
     stadiumUtilization: [],
     reservationsByStatus: [],
-    revenueTrends: [],
+    revenueTrends: [], pendingUserApprovals: []
   };
 }
