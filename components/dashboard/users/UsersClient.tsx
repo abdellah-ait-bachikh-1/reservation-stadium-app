@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useTypedTranslations } from "@/utils/i18n";
 import { useUsers, useUserActions } from "@/hooks/dashboard/useUsers";
 import { Button } from "@heroui/button";
@@ -19,10 +19,11 @@ import {
     HiEye,
     HiPencil,
     HiExclamationCircle,
-
 } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiArchive, HiDotsVertical } from "react-icons/hi";
+import { useDebounce } from "use-debounce";
+import { cn } from "@heroui/theme";
 
 interface UsersClientProps {
     locale: string;
@@ -33,17 +34,27 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [search, setSearch] = useState("");
+    const [searchInput, setSearchInput] = useState("");
     const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
     const [selectedStatuses, setSelectedStatuses] = useState<Set<string>>(new Set());
     const [showDeleted, setShowDeleted] = useState(false);
+    
+    // Debounce search input to avoid too many re-fetches
+    const [debouncedSearch] = useDebounce(searchInput, 500);
+    
+    // Track if this is initial load
+    const isInitialLoad = useRef(true);
+    // Track if we're currently filtering
+    const [isFiltering, setIsFiltering] = useState(false);
+    // Track the last params to detect changes
+    const [lastParams, setLastParams] = useState<any>(null);
 
     // Build query params with useMemo
     const queryParams = useMemo(() => {
         const params: any = {
             page,
             limit,
-            search: search || undefined,
+            search: debouncedSearch || undefined,
             isDeleted: showDeleted,
         };
 
@@ -67,7 +78,6 @@ export default function UsersClient({ locale }: UsersClientProps) {
         } else if (hasPending && !hasApproved) {
             params.isApproved = false;
         }
-        // If both approved and pending are selected or neither, don't filter by isApproved
 
         // Handle verification status
         if (hasVerified && !hasUnverified) {
@@ -75,14 +85,65 @@ export default function UsersClient({ locale }: UsersClientProps) {
         } else if (hasUnverified && !hasVerified) {
             params.isVerified = false;
         }
-        // If both verified and unverified are selected or neither, don't filter by isVerified
 
         return params;
-    }, [page, limit, search, selectedRoles, selectedStatuses, showDeleted]);
+    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, showDeleted]);
 
     // Fetch users
-    const { data, isLoading, isError, error, refetch } = useUsers(queryParams);
+    const { 
+        data, 
+        isLoading, 
+        isError, 
+        error, 
+        refetch,
+        isFetching,
+        isRefetching
+    } = useUsers(queryParams);
+    
     const actions = useUserActions();
+
+    // Effect to handle filtering state
+    useEffect(() => {
+        // Skip initial load
+        if (isInitialLoad.current) return;
+
+        // If params changed and we're fetching, set filtering to true
+        const paramsChanged = JSON.stringify(queryParams) !== JSON.stringify(lastParams);
+        
+        if (paramsChanged && (isFetching || isRefetching)) {
+            setIsFiltering(true);
+            setLastParams(queryParams);
+        }
+        
+        // When fetching stops, set filtering to false
+        if (!isFetching && !isRefetching && isFiltering) {
+            // Small delay to ensure UI updates smoothly
+            const timer = setTimeout(() => {
+                setIsFiltering(false);
+            }, 100);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [isFetching, isRefetching, queryParams, lastParams, isFiltering]);
+
+    // Mark initial load as complete after first data fetch
+    useEffect(() => {
+        if (isInitialLoad.current && data) {
+            isInitialLoad.current = false;
+            setLastParams(queryParams);
+        }
+    }, [data, queryParams]);
+
+    // Also check for manual refetches
+    const handleManualRefetch = async () => {
+        setIsFiltering(true);
+        try {
+            await refetch();
+        } finally {
+            // Ensure filtering state is cleared even on error
+            setTimeout(() => setIsFiltering(false), 500);
+        }
+    };
 
     // Handle selection
     const handleSelectAll = () => {
@@ -107,13 +168,44 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
     // Handle role selection - Hero UI style
     const handleRoleSelectionChange = (keys: any) => {
-        // HeroUI passes a Set<string> for multi-select
         setSelectedRoles(new Set(keys));
+        setPage(1);
+        setIsFiltering(true);
     };
 
     // Handle status selection - Hero UI style
     const handleStatusSelectionChange = (keys: any) => {
         setSelectedStatuses(new Set(keys));
+        setPage(1);
+        setIsFiltering(true);
+    };
+
+    // Handle search change
+    const handleSearchChange = (value: string) => {
+        setSearchInput(value);
+        setPage(1);
+        // Search is debounced, so we'll handle filtering state in the effect
+    };
+
+    // Handle show deleted change
+    const handleShowDeletedChange = (value: boolean) => {
+        setShowDeleted(value);
+        setPage(1);
+        setIsFiltering(true);
+    };
+
+    // Handle page change
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        setIsFiltering(true);
+    };
+
+    // Handle limit change
+    const handleLimitChange = (keys: any) => {
+        const newLimit = Array.from(keys)[0] as string;
+        setLimit(parseInt(newLimit));
+        setPage(1);
+        setIsFiltering(true);
     };
 
     // Handle actions
@@ -197,8 +289,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
         return `${statusNames.length} ${t("pages.dashboard.users.statusesSelected")}`;
     };
 
-    // Loading state
-    if (isLoading && !data) {
+    // Initial loading state (only on first load)
+    if (isLoading && !data && isInitialLoad.current) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Spinner size="lg" color="primary" />
@@ -310,16 +402,22 @@ export default function UsersClient({ locale }: UsersClientProps) {
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-4 mb-6">
+            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-4 mb-6 relative">
                 <div className="flex flex-col md:flex-row gap-4">
                     {/* Search */}
-                    <div className="flex-1">
+                    <div className="flex-1 relative">
                         <Input
                             placeholder={t("pages.dashboard.users.searchPlaceholder")}
                             startContent={<HiSearch className="w-4 h-4 text-gray-400" />}
-                            value={search}
-                            onValueChange={setSearch}
+                            value={searchInput}
+                            onValueChange={handleSearchChange}
                             size="lg"
+                            isClearable
+                            endContent={
+                                isFiltering ? (
+                                    <Spinner size="sm" color="primary" />
+                                ) : null
+                            }
                         />
                     </div>
 
@@ -335,7 +433,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             size="sm"
                             variant="flat"
                             placeholder={getRoleSelectionText()}
-                            isLoading={isLoading}
+                            isDisabled={isFiltering}
                         >
                             <SelectItem key="ADMIN">{t("common.roles.admin")}</SelectItem>
                             <SelectItem key="CLUB">{t("common.roles.club")}</SelectItem>
@@ -351,7 +449,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             size="sm"
                             variant="flat"
                             placeholder={getStatusSelectionText()}
-                            isLoading={isLoading}
+                            isDisabled={isFiltering}
                         >
                             <SelectItem key="approved">{t("common.status.approved")}</SelectItem>
                             <SelectItem key="pending">{t("common.status.pending")}</SelectItem>
@@ -359,24 +457,15 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             <SelectItem key="unverified">{t("common.status.unverified")}</SelectItem>
                         </Select>
 
-                        {/* Spinner indicator */}
-                        {isLoading && (
-                            <div className="flex items-center ml-2">
-                                <Spinner size="sm" color="primary" />
-                                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-                                    {t("common.status.filtering")}
-                                </span>
-                            </div>
-                        )}
-
+                        {/* Refresh button with loading */}
                         <Button
                             isIconOnly
                             variant="flat"
                             size="lg"
-                            onPress={() => refetch()}
-                            isLoading={isLoading}
+                            onPress={handleManualRefetch}
+                            isDisabled={isFiltering}
                         >
-                            <HiRefresh className="w-4 h-4" />
+                            <HiRefresh className={cn("w-4 h-4", isFiltering && "animate-spin")} />
                         </Button>
                     </div>
                 </div>
@@ -394,10 +483,14 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                     variant="flat"
                                     color="primary"
                                     onClose={() => {
-                                        const newRoles = new Set(selectedRoles);
-                                        newRoles.delete(role);
-                                        setSelectedRoles(newRoles);
+                                        if (!isFiltering) {
+                                            const newRoles = new Set(selectedRoles);
+                                            newRoles.delete(role);
+                                            setSelectedRoles(newRoles);
+                                            setIsFiltering(true);
+                                        }
                                     }}
+                                    isDisabled={isFiltering}
                                 >
                                     {role === "ADMIN" ? t("common.roles.admin") : t("common.roles.club")}
                                 </Chip>
@@ -420,10 +513,14 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                 status === "verified" ? "primary" : "danger"
                                     }
                                     onClose={() => {
-                                        const newStatuses = new Set(selectedStatuses);
-                                        newStatuses.delete(status);
-                                        setSelectedStatuses(newStatuses);
+                                        if (!isFiltering) {
+                                            const newStatuses = new Set(selectedStatuses);
+                                            newStatuses.delete(status);
+                                            setSelectedStatuses(newStatuses);
+                                            setIsFiltering(true);
+                                        }
                                     }}
+                                    isDisabled={isFiltering}
                                 >
                                     {status === "approved" ? t("common.status.approved") :
                                         status === "pending" ? t("common.status.pending") :
@@ -440,10 +537,14 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             size="sm"
                             variant="light"
                             onPress={() => {
-                                setSelectedRoles(new Set());
-                                setSelectedStatuses(new Set());
+                                if (!isFiltering) {
+                                    setSelectedRoles(new Set());
+                                    setSelectedStatuses(new Set());
+                                    setIsFiltering(true);
+                                }
                             }}
                             className="ml-auto"
+                            isDisabled={isFiltering}
                         >
                             {t("common.actions.clearFilters")}
                         </Button>
@@ -468,6 +569,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 startContent={<HiCheckCircle className="w-4 h-4" />}
                                 onPress={() => handleBulkAction("approve")}
                                 isLoading={actions.bulkAction.isPending}
+                                isDisabled={isFiltering}
                             >
                                 {t("common.actions.approve")}
                             </Button>
@@ -478,6 +580,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 startContent={<HiXCircle className="w-4 h-4" />}
                                 onPress={() => handleBulkAction("decline")}
                                 isLoading={actions.bulkAction.isPending}
+                                isDisabled={isFiltering}
                             >
                                 {t("common.actions.decline")}
                             </Button>
@@ -488,6 +591,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 startContent={<HiTrash className="w-4 h-4" />}
                                 onPress={() => handleBulkAction("softDelete")}
                                 isLoading={actions.bulkAction.isPending}
+                                isDisabled={isFiltering}
                             >
                                 {t("common.actions.delete")}
                             </Button>
@@ -495,6 +599,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 size="sm"
                                 variant="flat"
                                 onPress={() => setSelectedUsers(new Set())}
+                                isDisabled={isFiltering}
                             >
                                 {t("common.actions.clear")}
                             </Button>
@@ -507,7 +612,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     <div className="flex items-center gap-2">
                         <Checkbox
                             isSelected={showDeleted}
-                            onValueChange={setShowDeleted}
+                            onValueChange={handleShowDeletedChange}
+                            isDisabled={isFiltering}
                         >
                             <span className="text-sm text-gray-600 dark:text-gray-400">
                                 {t("pages.dashboard.users.showDeleted")}
@@ -515,11 +621,18 @@ export default function UsersClient({ locale }: UsersClientProps) {
                         </Checkbox>
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {t("pages.dashboard.users.totalUsers", {
-                            total: data?.total || 0,
-                            showing: users.length,
-                            page
-                        })}
+                        {isFiltering ? (
+                            <div className="flex items-center gap-2">
+                                <Spinner size="sm" color="primary" />
+                                <span>{t("common.status.filtering")}</span>
+                            </div>
+                        ) : (
+                            t("pages.dashboard.users.totalUsers", {
+                                total: data?.total || 0,
+                                showing: users.length,
+                                page
+                            })
+                        )}
                     </div>
                 </div>
             </div>
@@ -535,6 +648,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 isSelected={selectedUsers.size === users.length && users.length > 0}
                                 isIndeterminate={selectedUsers.size > 0 && selectedUsers.size < users.length}
                                 onValueChange={handleSelectAll}
+                                isDisabled={isFiltering}
                             />
                         </div>
                         <div className="col-span-3 font-medium text-gray-700 dark:text-gray-300">
@@ -555,7 +669,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     </div>
 
                     {/* Table Body with Horizontal Scroll */}
-                    {users.length === 0 ? (
+                    {users.length === 0 && !isFiltering ? (
                         <div className="text-center py-12">
                             <HiUsers className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                             <p className="text-gray-500 dark:text-gray-400">
@@ -576,6 +690,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                         <Checkbox
                                             isSelected={selectedUsers.has(user.id)}
                                             onValueChange={() => handleSelectUser(user.id)}
+                                            isDisabled={isFiltering}
                                         />
                                     </div>
 
@@ -652,6 +767,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                 variant="light"
                                                 as="a"
                                                 href={`/dashboard/users/${user.id}/edit`}
+                                                isDisabled={isFiltering}
                                             >
                                                 <HiPencil className="w-4 h-4" />
                                             </Button>
@@ -663,6 +779,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                 variant="light"
                                                 as="a"
                                                 href={`/dashboard/users/${user.id}`}
+                                                isDisabled={isFiltering}
                                             >
                                                 <HiEye className="w-4 h-4" />
                                             </Button>
@@ -674,11 +791,12 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                         isIconOnly
                                                         size="sm"
                                                         variant="light"
+                                                        isDisabled={isFiltering}
                                                     >
                                                         <HiDotsVertical className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownTrigger>
-                                                <DropdownMenu aria-label="User actions">
+                                                <DropdownMenu aria-label="User actions" disabledKeys={isFiltering ? ["all"] : []}>
                                                     {!user.isApproved ? (
                                                         <>
                                                             <DropdownItem
@@ -759,12 +877,9 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 <Select
                                     className="w-24"
                                     selectedKeys={[limit.toString()]}
-                                    onSelectionChange={(keys) => {
-                                        const newLimit = Array.from(keys)[0] as string;
-                                        setLimit(parseInt(newLimit));
-                                        setPage(1); // Reset to first page when changing limit
-                                    }}
+                                    onSelectionChange={handleLimitChange}
                                     size="sm"
+                                    isDisabled={isFiltering}
                                 >
                                     <SelectItem key="5">5</SelectItem>
                                     <SelectItem key="10">10</SelectItem>
@@ -777,11 +892,12 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             <Pagination
                                 total={totalPages}
                                 page={page}
-                                onChange={setPage}
+                                onChange={handlePageChange}
                                 showControls
                                 showShadow
                                 size="sm"
                                 className="mx-4"
+                                isDisabled={isFiltering}
                             />
 
                             <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 md:mt-0 whitespace-nowrap">
