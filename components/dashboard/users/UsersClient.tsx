@@ -156,16 +156,20 @@ export default function UsersClient({ locale }: UsersClientProps) {
         }
     };
 
-    // Handle selection
-    const handleSelectAll = () => {
-        if (!data?.users) return;
+const handleSelectAll = () => {
+  if (!data?.users || !data?.filteredUserIds) return;
 
-        if (selectedUsers.size === data.users.length) {
-            setSelectedUsers(new Set());
-        } else {
-            setSelectedUsers(new Set(data.users.map(user => user.id)));
-        }
-    };
+  // Check if all filtered users are already selected
+  const allFilteredSelected = data.filteredUserIds.every(id => selectedUsers.has(id));
+  
+  if (allFilteredSelected) {
+    // If all filtered users are selected, deselect all
+    setSelectedUsers(new Set());
+  } else {
+    // Select ALL filtered user IDs, not just current page
+    setSelectedUsers(new Set(data.filteredUserIds));
+  }
+};
 
     const handleSelectUser = (userId: string) => {
         const newSelected = new Set(selectedUsers);
@@ -710,9 +714,12 @@ export default function UsersClient({ locale }: UsersClientProps) {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
                     >
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {t("pages.dashboard.users.selectedCount", { count: selectedUsers.size })}
-                        </span>
+                       <span className="text-sm text-gray-600 dark:text-gray-400">
+  {t("pages.dashboard.users.selectedCount", { 
+    count: selectedUsers.size,
+    total: data?.filteredUserIds?.length || 0 
+  })}
+</span>
                         <div className="flex gap-2 ml-auto">
                             <Button
                                 size="sm"
@@ -796,12 +803,15 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     {/* Table Header - Fixed min-width for mobile scroll */}
                     <div className="min-w-[1000px] grid grid-cols-13 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
                         <div className="col-span-1">
-                            <Checkbox
-                                isSelected={selectedUsers.size === users.length && users.length > 0}
-                                isIndeterminate={selectedUsers.size > 0 && selectedUsers.size < users.length}
-                                onValueChange={handleSelectAll}
-                                isDisabled={isFiltering}
-                            />
+                          <Checkbox
+  isSelected={data?.filteredUserIds && data.filteredUserIds.length > 0 && 
+    data.filteredUserIds.every(id => selectedUsers.has(id))}
+  isIndeterminate={selectedUsers.size > 0 && 
+    data?.filteredUserIds && 
+    selectedUsers.size < data.filteredUserIds.length}
+  onValueChange={handleSelectAll}
+  isDisabled={isFiltering || !data?.filteredUserIds}
+/>
                         </div>
                         <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
                             {t("pages.dashboard.users.columns.name")}
@@ -1068,47 +1078,52 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     )}
 
                     {/* Pagination - Also scrollable on mobile */}
-                    {totalPages > 1 && (
-                        <div className="min-w-[1000px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
-                            <div className="flex items-center gap-4 mb-4 md:mb-0">
-                                <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                                    {t("pages.dashboard.users.rowsPerPage")}
-                                </span>
-                                <Select
-                                    className="w-24"
-                                    selectedKeys={[limit.toString()]}
-                                    onSelectionChange={handleLimitChange}
-                                    size="sm"
-                                    isDisabled={isFiltering}
-                                >
-                                    <SelectItem key="5">5</SelectItem>
-                                    <SelectItem key="10">10</SelectItem>
-                                    <SelectItem key="25">25</SelectItem>
-                                    <SelectItem key="50">50</SelectItem>
-                                    <SelectItem key="100">100</SelectItem>
-                                </Select>
-                            </div>
+                   {/* Always show rows per page selector when there are results */}
+{users.length > 0 && (
+    <div className="min-w-[1000px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-4 mb-4 md:mb-0">
+            <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                {t("pages.dashboard.users.rowsPerPage")}
+            </span>
+            <Select
+                className="w-24"
+                selectedKeys={[limit.toString()]}
+                onSelectionChange={handleLimitChange}
+                size="sm"
+                isDisabled={isFiltering}
+            >
+                <SelectItem key="5">5</SelectItem>
+                <SelectItem key="10">10</SelectItem>
+                <SelectItem key="25">25</SelectItem>
+                <SelectItem key="50">50</SelectItem>
+                <SelectItem key="100">100</SelectItem>
+            </Select>
+        </div>
 
-                            <Pagination
-                                total={totalPages}
-                                page={page}
-                                onChange={handlePageChange}
-                                showControls
-                                showShadow
-                                size="sm"
-                                className="mx-4"
-                                isDisabled={isFiltering}
-                            />
+        {/* Only show pagination controls if there are multiple pages */}
+        {totalPages > 1 && (
+            <Pagination
+                total={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                showControls
+                showShadow
+                size="sm"
+                className="mx-4"
+                isDisabled={isFiltering}
+            />
+        )}
 
-                            <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 md:mt-0 whitespace-nowrap">
-                                {t("pages.dashboard.users.pageInfo", {
-                                    page,
-                                    totalPages,
-                                    total: data?.total || 0
-                                })}
-                            </div>
-                        </div>
-                    )}
+        {/* Show page info even with single page */}
+        <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 md:mt-0 whitespace-nowrap">
+            {t("pages.dashboard.users.pageInfo", {
+                page,
+                totalPages,
+                total: data?.total || 0
+            })}
+        </div>
+    </div>
+)}
                 </div>
 
                 {/* Mobile scroll indicator */}

@@ -61,6 +61,7 @@ export interface UsersResponse {
   page: number;
   limit: number;
   totalPages: number;
+  filteredUserIds?: string[]; // Add this line
   sports: Array<{
     id: string;
     nameAr: string;
@@ -75,6 +76,110 @@ export interface UsersResponse {
   };
 }
 
+// Add this interface
+export interface FilteredUserIdsResponse {
+  userIds: string[];
+  total: number;
+}
+
+// Add this function to get filtered user IDs
+export async function getFilteredUserIds(params: UsersQueryParams = {}): Promise<FilteredUserIdsResponse> {
+  const {
+    search,
+    role,
+    isApproved,
+    isVerified,
+    isDeleted = false,
+    clubSearch,
+    sports: selectedSports,
+  } = params;
+
+  // Build where conditions for users (same as getUsers)
+  const userConditions = [];
+
+  // Only include non-deleted users by default
+  if (!isDeleted) {
+    userConditions.push(isNull(users.deletedAt));
+  }
+
+  // Filter by multiple roles using IN operator
+  if (role && role.length > 0) {
+    userConditions.push(inArray(users.role, role));
+  }
+
+  // Filter by approval status
+  if (isApproved !== undefined) {
+    userConditions.push(eq(users.isApproved, isApproved));
+  }
+
+  // Filter by verification status
+  if (isVerified !== undefined) {
+    if (isVerified) {
+      userConditions.push(sql`${users.emailVerifiedAt} IS NOT NULL`);
+    } else {
+      userConditions.push(sql`${users.emailVerifiedAt} IS NULL`);
+    }
+  }
+
+  // Search filter for user fields
+  if (search) {
+    userConditions.push(
+      sql`(
+        ${users.name} LIKE ${`%${search}%`} OR
+        ${users.email} LIKE ${`%${search}%`} OR
+        ${users.phoneNumber} LIKE ${`%${search}%`}
+      )`
+    );
+  }
+
+  // If clubSearch or sports filter is applied, we need to filter users who have matching clubs
+  if (clubSearch || (selectedSports && selectedSports.length > 0)) {
+    const clubSubquery = db
+      .select({ userId: clubs.userId })
+      .from(clubs)
+      .leftJoin(sports, eq(clubs.sportId, sports.id))
+      .where(
+        and(
+          isNull(clubs.deletedAt),
+          clubSearch ? like(clubs.name, `%${clubSearch}%`) : undefined,
+          selectedSports && selectedSports.length > 0 
+            ? inArray(clubs.sportId, selectedSports)
+            : undefined
+        )
+      )
+      .groupBy(clubs.userId)
+      .as("matchingClubs");
+
+    userConditions.push(exists(db.select().from(clubSubquery).where(eq(clubSubquery.userId, users.id))));
+  }
+
+  const userWhereCondition = userConditions.length > 0 
+    ? and(...userConditions)
+    : undefined;
+
+  // Get all user IDs that match the filters (NO PAGINATION)
+  const userIdsResult = await db
+    .select({
+      id: users.id,
+    })
+    .from(users)
+    .where(userWhereCondition);
+
+  // Get total count
+  const totalResult = await db
+    .select({ count: count() })
+    .from(users)
+    .where(userWhereCondition);
+
+  const total = totalResult[0]?.count || 0;
+
+  return {
+    userIds: userIdsResult.map(user => user.id),
+    total,
+  };
+}
+
+// Modify the getUsers function to return filtered IDs as well
 export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResponse> {
   const {
     page = 1,
@@ -132,7 +237,6 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
 
   // If clubSearch or sports filter is applied, we need to filter users who have matching clubs
   if (clubSearch || (selectedSports && selectedSports.length > 0)) {
-    // Create a subquery to find users with matching clubs
     const clubSubquery = db
       .select({ userId: clubs.userId })
       .from(clubs)
@@ -142,14 +246,13 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
           isNull(clubs.deletedAt),
           clubSearch ? like(clubs.name, `%${clubSearch}%`) : undefined,
           selectedSports && selectedSports.length > 0 
-            ? inArray(clubs.sportId, selectedSports)  // Use clubs.sportId, not sports.id
+            ? inArray(clubs.sportId, selectedSports)
             : undefined
         )
       )
       .groupBy(clubs.userId)
       .as("matchingClubs");
 
-    // Add condition that user must have matching clubs
     userConditions.push(exists(db.select().from(clubSubquery).where(eq(clubSubquery.userId, users.id))));
   }
 
@@ -221,7 +324,12 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     .limit(limit)
     .offset(offset);
 
-  // Get clubs for each user (ALL clubs, not filtered)
+  // Get all filtered user IDs (for select all)
+  const filteredUserIds = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(userWhereCondition);
+
   const userIds = userList.map(user => user.id);
   
   if (userIds.length === 0) {
@@ -242,6 +350,7 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
       page,
       limit,
       totalPages,
+      filteredUserIds: [], // Add filtered IDs
       sports: allSports,
       stats: {
         total,
@@ -314,6 +423,7 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     page,
     limit,
     totalPages,
+    filteredUserIds: filteredUserIds.map(user => user.id), // Add filtered IDs to response
     sports: allSports,
     stats: {
       total: Number(stats.total),

@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
       isDeleted: searchParams.get("isDeleted") === "true",
       sortBy: searchParams.get("sortBy") as "name" | "email" | "createdAt" | "updatedAt" || "createdAt",
       sortOrder: searchParams.get("sortOrder") as "asc" | "desc" || "desc",
+      clubSearch: searchParams.get("clubSearch") || undefined,
+      sports: searchParams.get("sports") ? searchParams.get("sports")!.split(",") : undefined,
     };
 
     // Fetch users with params
