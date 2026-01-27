@@ -19,9 +19,11 @@ import {
     HiEye,
     HiPencil,
     HiExclamationCircle,
+    HiBuildingStorefront,
+    HiTrophy,
 } from "react-icons/hi2";
 import { motion } from "framer-motion";
-import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiArchive, HiDotsVertical } from "react-icons/hi";
+import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiArchive, HiDotsVertical, HiFilter } from "react-icons/hi";
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
 
@@ -38,10 +40,13 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
     const [selectedStatuses, setSelectedStatuses] = useState<Set<string>>(new Set());
     const [showDeleted, setShowDeleted] = useState(false);
-    
-    // Debounce search input to avoid too many re-fetches
+    const [clubSearchInput, setClubSearchInput] = useState("");
+    const [selectedSports, setSelectedSports] = useState<Set<string>>(new Set());
+
+    // Debounce search inputs
     const [debouncedSearch] = useDebounce(searchInput, 500);
-    
+    const [debouncedClubSearch] = useDebounce(clubSearchInput, 500);
+
     // Track if this is initial load
     const isInitialLoad = useRef(true);
     // Track if we're currently filtering
@@ -56,6 +61,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
             limit,
             search: debouncedSearch || undefined,
             isDeleted: showDeleted,
+            clubSearch: debouncedClubSearch || undefined,
         };
 
         // Handle roles - only include if specific roles are selected
@@ -86,20 +92,25 @@ export default function UsersClient({ locale }: UsersClientProps) {
             params.isVerified = false;
         }
 
+        // Handle sports filter
+        if (selectedSports.size > 0) {
+            params.sports = Array.from(selectedSports);
+        }
+
         return params;
-    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, showDeleted]);
+    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, showDeleted, debouncedClubSearch, selectedSports]);
 
     // Fetch users
-    const { 
-        data, 
-        isLoading, 
-        isError, 
-        error, 
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
         refetch,
         isFetching,
         isRefetching
     } = useUsers(queryParams);
-    
+
     const actions = useUserActions();
 
     // Effect to handle filtering state
@@ -109,19 +120,19 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
         // If params changed and we're fetching, set filtering to true
         const paramsChanged = JSON.stringify(queryParams) !== JSON.stringify(lastParams);
-        
+
         if (paramsChanged && (isFetching || isRefetching)) {
             setIsFiltering(true);
             setLastParams(queryParams);
         }
-        
+
         // When fetching stops, set filtering to false
         if (!isFetching && !isRefetching && isFiltering) {
             // Small delay to ensure UI updates smoothly
             const timer = setTimeout(() => {
                 setIsFiltering(false);
             }, 100);
-            
+
             return () => clearTimeout(timer);
         }
     }, [isFetching, isRefetching, queryParams, lastParams, isFiltering]);
@@ -166,16 +177,23 @@ export default function UsersClient({ locale }: UsersClientProps) {
         setSelectedUsers(newSelected);
     };
 
-    // Handle role selection - Hero UI style
+    // Handle role selection
     const handleRoleSelectionChange = (keys: any) => {
         setSelectedRoles(new Set(keys));
         setPage(1);
         setIsFiltering(true);
     };
 
-    // Handle status selection - Hero UI style
+    // Handle status selection
     const handleStatusSelectionChange = (keys: any) => {
         setSelectedStatuses(new Set(keys));
+        setPage(1);
+        setIsFiltering(true);
+    };
+
+    // Handle sports selection
+    const handleSportsSelectionChange = (keys: any) => {
+        setSelectedSports(new Set(keys));
         setPage(1);
         setIsFiltering(true);
     };
@@ -184,7 +202,12 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const handleSearchChange = (value: string) => {
         setSearchInput(value);
         setPage(1);
-        // Search is debounced, so we'll handle filtering state in the effect
+    };
+
+    // Handle club search change
+    const handleClubSearchChange = (value: string) => {
+        setClubSearchInput(value);
+        setPage(1);
     };
 
     // Handle show deleted change
@@ -289,6 +312,30 @@ export default function UsersClient({ locale }: UsersClientProps) {
         return `${statusNames.length} ${t("pages.dashboard.users.statusesSelected")}`;
     };
 
+    // Get selected sports display text
+    const getSportsSelectionText = () => {
+        if (selectedSports.size === 0) {
+            return t("pages.dashboard.users.allSports");
+        }
+
+        const sportsList = data?.sports || [];
+        const selectedSportNames = Array.from(selectedSports).map(sportId => {
+            const sport = sportsList.find(s => s.id === sportId);
+            return sport ? (locale === "ar" ? sport.nameAr : sport.nameFr) : sportId;
+        });
+
+        if (selectedSportNames.length <= 2) {
+            return selectedSportNames.join(", ");
+        }
+        return `${selectedSportNames.length} ${t("pages.dashboard.users.sportsSelected")}`;
+    };
+
+    // Get sport name based on locale
+    const getSportName = (sport: { nameAr: string; nameFr: string } | null) => {
+        if (!sport) return "-";
+        return locale === "ar" ? sport.nameAr : sport.nameFr;
+    };
+
     // Initial loading state (only on first load)
     if (isLoading && !data && isInitialLoad.current) {
         return (
@@ -317,6 +364,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
     }
 
     const users = data?.users || [];
+    const sportsList = data?.sports || [];
     const totalPages = data?.totalPages || 1;
 
     return (
@@ -343,7 +391,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
             </div>
 
             {/* Stats Summary - Top of page */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-blue-100 shadow-xl dark:shadow-blue-900/30">
                     <div className="flex items-center justify-between">
                         <div>
@@ -351,7 +399,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 {t("pages.dashboard.users.stats.total")}
                             </p>
                             <p className="text-2xl font-bold text-blue-900 dark:text-white">
-                                {data?.total || 0}
+                                {data?.stats?.total || 0}
                             </p>
                         </div>
                         <HiUsers className="w-8 h-8 text-blue-500" />
@@ -365,7 +413,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 {t("pages.dashboard.users.stats.active")}
                             </p>
                             <p className="text-2xl font-bold text-green-900 dark:text-white">
-                                {users.filter(u => u.isApproved && u.emailVerifiedAt && !u.deletedAt).length}
+                                {data?.stats?.active || 0}
+
                             </p>
                         </div>
                         <HiCheckCircle className="w-8 h-8 text-green-500" />
@@ -379,7 +428,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 {t("pages.dashboard.users.stats.pending")}
                             </p>
                             <p className="text-2xl font-bold text-yellow-900 dark:text-white">
-                                {users.filter(u => !u.isApproved).length}
+                                {data?.stats?.pending || 0}
                             </p>
                         </div>
                         <HiExclamationCircle className="w-8 h-8 text-yellow-500" />
@@ -393,35 +442,75 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 {t("pages.dashboard.users.stats.unverified")}
                             </p>
                             <p className="text-2xl font-bold text-red-900 dark:text-white">
-                                {users.filter(u => !u.emailVerifiedAt).length}
+                                {data?.stats?.unverified || 0}
                             </p>
                         </div>
                         <HiMail className="w-8 h-8 text-red-500" />
+                    </div>
+                </div>
+
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg shadow-purple-100 shadow-xl dark:shadow-purple-900/30">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-purple-700 dark:text-purple-300">
+                                {t("pages.dashboard.users.stats.withClubs")}
+                            </p>
+                            <p className="text-2xl font-bold text-purple-900 dark:text-white">
+                                {data?.stats?.withClubs || 0}                            </p>
+                        </div>
+                        <HiBuildingStorefront className="w-8 h-8 text-purple-500" />
                     </div>
                 </div>
             </div>
 
             {/* Filters and Search */}
             <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-4 mb-6 relative">
-                <div className="flex flex-col md:flex-row gap-4">
-                    {/* Search */}
-                    <div className="flex-1 relative">
-                        <Input
-                            placeholder={t("pages.dashboard.users.searchPlaceholder")}
-                            startContent={<HiSearch className="w-4 h-4 text-gray-400" />}
-                            value={searchInput}
-                            onValueChange={handleSearchChange}
+                <div className="flex flex-col gap-4">
+                    {/* Main search row */}
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* User Search */}
+                        <div className="flex-1">
+                            <Input
+                                placeholder={t("pages.dashboard.users.searchPlaceholder")}
+                                startContent={<HiSearch className="w-4 h-4 text-gray-400" />}
+                                value={searchInput}
+                                onValueChange={handleSearchChange}
+                                size="lg"
+                                isClearable
+                                endContent={
+                                    isFiltering ? (
+                                        <Spinner size="sm" color="primary" />
+                                    ) : null
+                                }
+                            />
+                        </div>
+
+                        {/* Club Search */}
+                        <div className="flex-1">
+                            <Input
+                                placeholder={t("pages.dashboard.users.clubSearchPlaceholder")}
+                                startContent={<HiBuildingStorefront className="w-4 h-4 text-gray-400" />}
+                                value={clubSearchInput}
+                                onValueChange={handleClubSearchChange}
+                                size="lg"
+                                isClearable
+                            />
+                        </div>
+
+                        {/* Refresh button with loading */}
+                        <Button
+                            isIconOnly
+                            variant="flat"
                             size="lg"
-                            isClearable
-                            endContent={
-                                isFiltering ? (
-                                    <Spinner size="sm" color="primary" />
-                                ) : null
-                            }
-                        />
+                            onPress={handleManualRefetch}
+                            isDisabled={isFiltering}
+                            className="self-start"
+                        >
+                            <HiRefresh className={cn("w-4 h-4", isFiltering && "animate-spin")} />
+                        </Button>
                     </div>
 
-                    {/* Filters */}
+                    {/* Filter row */}
                     <div className="flex flex-wrap gap-2 items-center">
                         {/* Role Multi-Select */}
                         <Select
@@ -434,6 +523,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             variant="flat"
                             placeholder={getRoleSelectionText()}
                             isDisabled={isFiltering}
+                            startContent={<HiUsers className="w-4 h-4" />}
                         >
                             <SelectItem key="ADMIN">{t("common.roles.admin")}</SelectItem>
                             <SelectItem key="CLUB">{t("common.roles.club")}</SelectItem>
@@ -450,6 +540,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             variant="flat"
                             placeholder={getStatusSelectionText()}
                             isDisabled={isFiltering}
+                            startContent={<HiFilter className="w-4 h-4" />}
                         >
                             <SelectItem key="approved">{t("common.status.approved")}</SelectItem>
                             <SelectItem key="pending">{t("common.status.pending")}</SelectItem>
@@ -457,16 +548,25 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             <SelectItem key="unverified">{t("common.status.unverified")}</SelectItem>
                         </Select>
 
-                        {/* Refresh button with loading */}
-                        <Button
-                            isIconOnly
+                        {/* Sports Multi-Select */}
+                        <Select
+                            className="w-40"
+                            label={t("pages.dashboard.users.filterBySport")}
+                            selectionMode="multiple"
+                            selectedKeys={selectedSports}
+                            onSelectionChange={handleSportsSelectionChange}
+                            size="sm"
                             variant="flat"
-                            size="lg"
-                            onPress={handleManualRefetch}
+                            placeholder={getSportsSelectionText()}
                             isDisabled={isFiltering}
+                            startContent={<HiTrophy className="w-4 h-4" />}
                         >
-                            <HiRefresh className={cn("w-4 h-4", isFiltering && "animate-spin")} />
-                        </Button>
+                            {sportsList.map((sport) => (
+                                <SelectItem key={sport.id}>
+                                    {locale === "ar" ? sport.nameAr : sport.nameFr}
+                                </SelectItem>
+                            ))}
+                        </Select>
                     </div>
                 </div>
 
@@ -531,8 +631,58 @@ export default function UsersClient({ locale }: UsersClientProps) {
                         </div>
                     )}
 
+                    {/* Selected Sports */}
+                    {selectedSports.size > 0 && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">{t("pages.dashboard.users.sports")}:</span>
+                            {Array.from(selectedSports).map(sportId => {
+                                const sport = sportsList.find(s => s.id === sportId);
+                                return (
+                                    <Chip
+                                        key={sportId}
+                                        size="sm"
+                                        variant="flat"
+                                        color="secondary"
+                                        onClose={() => {
+                                            if (!isFiltering) {
+                                                const newSports = new Set(selectedSports);
+                                                newSports.delete(sportId);
+                                                setSelectedSports(newSports);
+                                                setIsFiltering(true);
+                                            }
+                                        }}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {sport ? (locale === "ar" ? sport.nameAr : sport.nameFr) : sportId}
+                                    </Chip>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {/* Club Search Indicator */}
+                    {clubSearchInput && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">{t("pages.dashboard.users.clubs")}:</span>
+                            <Chip
+                                size="sm"
+                                variant="flat"
+                                color="warning"
+                                onClose={() => {
+                                    if (!isFiltering) {
+                                        setClubSearchInput("");
+                                        setIsFiltering(true);
+                                    }
+                                }}
+                                isDisabled={isFiltering}
+                            >
+                                {clubSearchInput}
+                            </Chip>
+                        </div>
+                    )}
+
                     {/* Clear All Filters Button */}
-                    {(selectedRoles.size > 0 || selectedStatuses.size > 0) && (
+                    {(selectedRoles.size > 0 || selectedStatuses.size > 0 || selectedSports.size > 0 || clubSearchInput) && (
                         <Button
                             size="sm"
                             variant="light"
@@ -540,6 +690,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 if (!isFiltering) {
                                     setSelectedRoles(new Set());
                                     setSelectedStatuses(new Set());
+                                    setSelectedSports(new Set());
+                                    setClubSearchInput("");
                                     setIsFiltering(true);
                                 }
                             }}
@@ -642,7 +794,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                 {/* Mobile-friendly scroll container */}
                 <div className="overflow-x-auto">
                     {/* Table Header - Fixed min-width for mobile scroll */}
-                    <div className="min-w-[800px] grid grid-cols-12 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
+                    <div className="min-w-[1000px] grid grid-cols-13 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
                         <div className="col-span-1">
                             <Checkbox
                                 isSelected={selectedUsers.size === users.length && users.length > 0}
@@ -651,13 +803,16 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 isDisabled={isFiltering}
                             />
                         </div>
-                        <div className="col-span-3 font-medium text-gray-700 dark:text-gray-300">
+                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
                             {t("pages.dashboard.users.columns.name")}
                         </div>
-                        <div className="col-span-3 font-medium text-gray-700 dark:text-gray-300">
+                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
                             {t("pages.dashboard.users.columns.email")}
                         </div>
                         <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
+                            {t("pages.dashboard.users.columns.clubs")}
+                        </div>
+                        <div className="col-span-1 font-medium text-gray-700 dark:text-gray-300">
                             {t("pages.dashboard.users.columns.role")}
                         </div>
                         <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
@@ -677,13 +832,13 @@ export default function UsersClient({ locale }: UsersClientProps) {
                             </p>
                         </div>
                     ) : (
-                        <div className="min-w-[800px] divide-y divide-gray-200 dark:divide-gray-700">
+                        <div className="min-w-[1000px] divide-y divide-gray-200 dark:divide-gray-700">
                             {users.map((user) => (
                                 <motion.div
                                     key={user.id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="grid grid-cols-12 gap-4 p-4 hover:bg-gray-50 dark:hover:bg-zinc-900/30 transition-colors"
+                                    className="grid grid-cols-13 gap-4 p-4 hover:bg-gray-50 dark:hover:bg-zinc-900/30 transition-colors"
                                 >
                                     {/* Checkbox */}
                                     <div className="col-span-1 flex items-center">
@@ -695,27 +850,75 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                     </div>
 
                                     {/* Name */}
-                                    <div className="col-span-3 min-w-[150px]">
+                                    <div className="col-span-2 min-w-[120px]">
                                         <div className="font-medium text-gray-900 dark:text-white truncate">
                                             {user.name}
                                         </div>
                                         <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
                                             {user.phoneNumber}
                                         </div>
-                                    </div>
-
-                                    {/* Email */}
-                                    <div className="col-span-3 min-w-[180px]">
-                                        <div className="text-gray-900 dark:text-white truncate">
-                                            {user.email}
-                                        </div>
                                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                             {t("pages.dashboard.users.joined")}: {formatDate(user.createdAt)}
                                         </div>
                                     </div>
 
+                                    {/* Email */}
+                                    <div className="col-span-2 min-w-[150px]">
+                                        <div className="text-gray-900 dark:text-white truncate">
+                                            {user.email}
+                                        </div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            {user.preferredLocale}
+                                        </div>
+                                    </div>
+
+                                    {/* Clubs */}
+                                    <div className="col-span-2 min-w-[150px]">
+                                        {user.clubs && user.clubs.length > 0 ? (
+                                            <Dropdown placement="bottom-start">
+                                                <DropdownTrigger>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="flat"
+                                                        className="justify-start w-full"
+                                                        startContent={<HiBuildingStorefront className="w-4 h-4" />}
+                                                        isDisabled={isFiltering}
+                                                    >
+                                                        <span className="truncate">
+                                                            {user.clubs.length === 1
+                                                                ? user.clubs[0].name
+                                                                : t("pages.dashboard.users.clubsCount", { count: user.clubs.length })
+                                                            }
+                                                        </span>
+                                                    </Button>
+                                                </DropdownTrigger>
+                                                <DropdownMenu
+                                                    aria-label="User clubs"
+                                                    className="max-h-64 overflow-y-auto"
+                                                >
+                                                    {user.clubs.map((club) => (
+                                                        <DropdownItem key={club.id}>
+                                                            <div className="flex flex-col">
+                                                                <span className="font-medium">{club.name}</span>
+                                                                {club.sport && (
+                                                                    <span className="text-xs text-gray-500">
+                                                                        {getSportName(club.sport)}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </DropdownItem>
+                                                    ))}
+                                                </DropdownMenu>
+                                            </Dropdown>
+                                        ) : (
+                                            <span className="text-gray-400 text-sm">
+                                                {t("pages.dashboard.users.noClubs")}
+                                            </span>
+                                        )}
+                                    </div>
+
                                     {/* Role */}
-                                    <div className="col-span-2 min-w-[100px]">
+                                    <div className="col-span-1 min-w-[80px]">
                                         <Chip
                                             color={user.role === "ADMIN" ? "primary" : "secondary"}
                                             variant="flat"
@@ -726,9 +929,6 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                 ? t("common.roles.admin")
                                                 : t("common.roles.club")}
                                         </Chip>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
-                                            {user.preferredLocale}
-                                        </div>
                                     </div>
 
                                     {/* Status */}
@@ -869,7 +1069,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                     {/* Pagination - Also scrollable on mobile */}
                     {totalPages > 1 && (
-                        <div className="min-w-[800px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                        <div className="min-w-[1000px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
                             <div className="flex items-center gap-4 mb-4 md:mb-0">
                                 <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                     {t("pages.dashboard.users.rowsPerPage")}

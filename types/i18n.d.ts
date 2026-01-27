@@ -575,18 +575,25 @@ export type TranslationKey =
     | 'pages.dashboard.profile.title'
     | 'pages.dashboard.users.addUser'
     | 'pages.dashboard.users.allRoles'
+    | 'pages.dashboard.users.allSports'
     | 'pages.dashboard.users.allStatus'
+    | 'pages.dashboard.users.clubSearchPlaceholder'
+    | 'pages.dashboard.users.clubs'
+    | 'pages.dashboard.users.clubsCount'
     | 'pages.dashboard.users.columns.actions'
+    | 'pages.dashboard.users.columns.clubs'
     | 'pages.dashboard.users.columns.email'
     | 'pages.dashboard.users.columns.name'
     | 'pages.dashboard.users.columns.role'
     | 'pages.dashboard.users.columns.status'
     | 'pages.dashboard.users.confirmPermanentDelete'
     | 'pages.dashboard.users.filterByRole'
+    | 'pages.dashboard.users.filterBySport'
     | 'pages.dashboard.users.filterByStatus'
     | 'pages.dashboard.users.joined'
     | 'pages.dashboard.users.metadata.description'
     | 'pages.dashboard.users.metadata.title'
+    | 'pages.dashboard.users.noClubs'
     | 'pages.dashboard.users.noUsersFound'
     | 'pages.dashboard.users.pageInfo'
     | 'pages.dashboard.users.roles'
@@ -595,10 +602,13 @@ export type TranslationKey =
     | 'pages.dashboard.users.searchPlaceholder'
     | 'pages.dashboard.users.selectedCount'
     | 'pages.dashboard.users.showDeleted'
+    | 'pages.dashboard.users.sports'
+    | 'pages.dashboard.users.sportsSelected'
     | 'pages.dashboard.users.stats.active'
     | 'pages.dashboard.users.stats.pending'
     | 'pages.dashboard.users.stats.total'
     | 'pages.dashboard.users.stats.unverified'
+    | 'pages.dashboard.users.stats.withClubs'
     | 'pages.dashboard.users.status'
     | 'pages.dashboard.users.statusesSelected'
     | 'pages.dashboard.users.subtitle'
@@ -1601,6 +1611,14 @@ export const _TranslationNamespaces = {
     "title",
     "subtitle",
     "metadata",
+    "clubs",
+    "clubsCount",
+    "noClubs",
+    "clubSearchPlaceholder",
+    "filterBySport",
+    "allSports",
+    "sportsSelected",
+    "sports",
     "searchPlaceholder",
     "filterByRole",
     "filterByStatus",
@@ -1631,13 +1649,15 @@ export const _TranslationNamespaces = {
     "email",
     "role",
     "status",
-    "actions"
+    "actions",
+    "clubs"
   ],
   "pages.dashboard.users.stats": [
     "total",
     "active",
     "pending",
-    "unverified"
+    "unverified",
+    "withClubs"
   ],
   "common": [
     "roles",

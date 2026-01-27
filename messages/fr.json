@@ -722,7 +722,14 @@
         "metadata": {
           "title": "Utilisateurs",
           "description": "Gérez les utilisateurs et leurs permissions"
-        },
+        }, "clubs": "Clubs",
+        "clubsCount": "{count} clubs",
+        "noClubs": "Aucun club",
+        "clubSearchPlaceholder": "Rechercher par nom de club...",
+        "filterBySport": "Filtrer par Sport",
+        "allSports": "Tous les sports",
+        "sportsSelected": "sports sélectionnés",
+        "sports": "Sports",
         "searchPlaceholder": "Rechercher par nom, email ou téléphone...",
         "filterByRole": "Filtrer par rôle",
         "filterByStatus": "Filtrer par statut",
@@ -739,7 +746,9 @@
           "email": "Email",
           "role": "Rôle",
           "status": "Statut",
-          "actions": "Actions"
+          "actions": "Actions",
+                    "clubs": "Clubs"
+
         },
         "joined": "Inscrit le",
         "rowsPerPage": "Lignes par page :",
@@ -752,7 +761,9 @@
           "total": "Total Utilisateurs",
           "active": "Utilisateurs Actifs",
           "pending": "En attente d'approbation",
-          "unverified": "Non vérifiés"
+          "unverified": "Non vérifiés",
+                    "withClubs": "Avec Clubs"
+
         }
       }
     }

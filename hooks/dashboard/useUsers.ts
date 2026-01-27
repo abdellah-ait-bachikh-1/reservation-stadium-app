@@ -23,6 +23,14 @@ async function fetchUsers(params: UsersQueryParams): Promise<UsersResponse> {
   if (params.isDeleted !== undefined) queryParams.set("isDeleted", params.isDeleted.toString());
   if (params.sortBy) queryParams.set("sortBy", params.sortBy);
   if (params.sortOrder) queryParams.set("sortOrder", params.sortOrder);
+  
+  // New params
+  if (params.clubSearch) queryParams.set("clubSearch", params.clubSearch);
+  
+  // Handle array of sports
+  if (params.sports && params.sports.length > 0) {
+    queryParams.set("sports", params.sports.join(","));
+  }
 
   const response = await fetch(`${API_BASE}/paginations?${queryParams.toString()}`);
   
@@ -47,6 +55,7 @@ export function useUsers(params: UsersQueryParams = {}) {
   });
 }
 
+// ... rest of the hook remains the same
 export function useUserActions() {
   const queryClient = useQueryClient();
 

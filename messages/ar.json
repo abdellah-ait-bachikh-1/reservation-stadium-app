@@ -723,7 +723,14 @@
         "metadata": {
           "title": "المستخدمين",
           "description": "إدارة المستخدمين وأذوناتهم"
-        },
+        }, "clubs": "الأندية",
+        "clubsCount": "{count} أندية",
+        "noClubs": "لا توجد أندية",
+        "clubSearchPlaceholder": "البحث باسم النادي...",
+        "filterBySport": "تصفية حسب الرياضة",
+        "allSports": "جميع الرياضات",
+        "sportsSelected": "رياضات مختارة",
+        "sports": "الرياضات",
         "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف...",
         "filterByRole": "تصفية حسب الدور",
         "filterByStatus": "تصفية حسب الحالة",
@@ -740,7 +747,8 @@
           "email": "البريد الإلكتروني",
           "role": "الدور",
           "status": "الحالة",
-          "actions": "الإجراءات"
+          "actions": "الإجراءات",          "clubs": "الأندية"
+
         },
         "joined": "انضم في",
         "rowsPerPage": "صفوف في الصفحة:",
@@ -753,7 +761,8 @@
           "total": "إجمالي المستخدمين",
           "active": "المستخدمين النشطين",
           "pending": "بانتظار الموافقة",
-          "unverified": "غير موثقين"
+          "unverified": "غير موثقين",          "withClubs": "مع أندية"
+
         }
       }
     }
