@@ -14,7 +14,7 @@ import {
   validateActorUserId,
   getAllUsersIds,
   userExists,
-} from "../queries/user";
+} from "../user";
 import { sendRealTimeNotification } from "@/services/notifications";
 
 // Types

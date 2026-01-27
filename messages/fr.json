@@ -613,7 +613,7 @@
           "sendNotification": "Envoyer une Notification",
           "generateReport": "Générer un Rapport"
         },
-         "pendingUserApprovals": {
+        "pendingUserApprovals": {
           "title": "Approbations en attente",
           "subtitle": "Utilisateurs en attente d'approbation",
           "viewAll": "Voir tous les utilisateurs",
@@ -627,18 +627,18 @@
         },
         "charts": {
           "revenueByStadium": {
-  "title": "Revenus par Stade",
-  "description": "Revenu total généré par stade cette année",
-  "totalRevenue": "Revenu Total",
-  "subscription": "Abonnement",
-  "singleSession": "Session Unique",
-  "shareOfTotal": "Part du Total",
-  "topStadium": "Meilleur Stade",
-  "avgPerStadium": "Moyenne par Stade",
-  "noData": "Aucune donnée de revenu disponible",
-  "stadiums": "stades",
-  "ofTotal": "du total"
-},
+            "title": "Revenus par Stade",
+            "description": "Revenu total généré par stade cette année",
+            "totalRevenue": "Revenu Total",
+            "subscription": "Abonnement",
+            "singleSession": "Session Unique",
+            "shareOfTotal": "Part du Total",
+            "topStadium": "Meilleur Stade",
+            "avgPerStadium": "Moyenne par Stade",
+            "noData": "Aucune donnée de revenu disponible",
+            "stadiums": "stades",
+            "ofTotal": "du total"
+          },
           "reservationsByStatus": {
             "title": "Réservations par Statut",
             "description": "Répartition des réservations par statut",
@@ -649,17 +649,18 @@
             "total": "Total",
             "noData": "Aucune donnée de statut de réservation disponible"
           }
-        },"overduePayments": {
-  "title": "Paiements en Retard",
-  "viewAll": "Voir Tous les Paiements",
-  "noOverdue": "Aucun paiement en retard",
-  "recent": "Récent",
-  "overdue": "En Retard",
-  "longOverdue": "Très en Retard",
-  "daysOverdue": "jours de retard",
-  "resolve": "Résoudre",
-  "description": "Paiements nécessitant une attention immédiate"
-},
+        },
+        "overduePayments": {
+          "title": "Paiements en Retard",
+          "viewAll": "Voir Tous les Paiements",
+          "noOverdue": "Aucun paiement en retard",
+          "recent": "Récent",
+          "overdue": "En Retard",
+          "longOverdue": "Très en Retard",
+          "daysOverdue": "jours de retard",
+          "resolve": "Résoudre",
+          "description": "Paiements nécessitant une attention immédiate"
+        },
         "revenueTrends": {
           "title": "Tendances des revenus",
           "description": "Répartition mensuelle des revenus par type",
@@ -677,17 +678,98 @@
           "monthlyRevenue": "Revenu Mensuel",
           "monthlySubscription": "Abonnement Mensuel",
           "monthlySingleSession": "Session Unique Mensuelle",
-           "noData": "Aucune donnée de revenu disponible",
+          "noData": "Aucune donnée de revenu disponible",
           "paid": "Payé",
           "overdue": "En retard",
           "pendingAnnual": "En Attente",
-        "enAttente": "en attente",
-        "monthlyPending": "En attente mensuelle"
+          "enAttente": "en attente",
+          "monthlyPending": "En attente mensuelle"
+        }
+      },
+      "profile": {
+        "title": "Mon Profil",
+        "subtitle": "Gérez vos informations personnelles et les paramètres de votre compte",
+        "metadata": {
+          "title": "Profil",
+          "description": "Gérez votre profil et les paramètres de votre compte"
+        },
+        "status": "Statut",
+        "emailVerified": "Email Vérifié",
+        "memberSince": "Membre depuis",
+        "lastUpdated": "Dernière mise à jour",
+        "changePassword": "Changer le mot de passe",
+        "currentPassword": "Mot de passe actuel",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "personalInfo": "Informations personnelles",
+        "name": "Nom complet",
+        "enterName": "Entrez votre nom complet",
+        "email": "Adresse email",
+        "enterEmail": "Entrez votre adresse email",
+        "phoneNumber": "Numéro de téléphone",
+        "enterPhone": "Entrez votre numéro de téléphone",
+        "preferredLanguage": "Langue préférée",
+        "selectLanguage": "Sélectionnez votre langue préférée",
+        "role": "Rôle du compte",
+        "adminDescription": "Accès complet au système et gestion",
+        "clubDescription": "Gestion du club et réservations",
+        "accountActions": "Actions du compte",
+        "resendVerification": "Renvoyer l'email de vérification",
+        "manageSessions": "Gérer les sessions actives"
+      }, "users": {
+        "title": "Gestion des Utilisateurs",
+        "subtitle": "Gérez tous les utilisateurs du système, les approbations et les vérifications",
+        "metadata": {
+          "title": "Utilisateurs",
+          "description": "Gérez les utilisateurs et leurs permissions"
+        },
+        "searchPlaceholder": "Rechercher par nom, email ou téléphone...",
+        "filterByRole": "Filtrer par rôle",
+        "filterByStatus": "Filtrer par statut",
+        "allRoles": "Tous les rôles",
+        "allStatus": "Tous les statuts",
+        "selectedCount": "{count} sélectionné(s)",
+        "showDeleted": "Afficher les utilisateurs supprimés",
+        "totalUsers": "Affichage de {showing} sur {total} utilisateurs (Page {page})",
+        "noUsersFound": "Aucun utilisateur trouvé",
+        "addUser": "Ajouter un utilisateur",
+        "confirmPermanentDelete": "Êtes-vous sûr de vouloir supprimer définitivement cet utilisateur ? Cette action ne peut pas être annulée.",
+        "columns": {
+          "name": "Nom",
+          "email": "Email",
+          "role": "Rôle",
+          "status": "Statut",
+          "actions": "Actions"
+        },
+        "joined": "Inscrit le",
+        "rowsPerPage": "Lignes par page :",
+        "pageInfo": "Page {page} sur {totalPages} ({total} au total)",
+        "roles": "Rôles",
+        "status": "Statut",
+        "rolesSelected": "rôles sélectionnés",
+        "statusesSelected": "statuts sélectionnés",
+        "stats": {
+          "total": "Total Utilisateurs",
+          "active": "Utilisateurs Actifs",
+          "pending": "En attente d'approbation",
+          "unverified": "Non vérifiés"
         }
       }
     }
   },
-  "common": {
+  "common": {"roles": {
+      "admin": "Administrateur",
+      "club": "Club"
+    },
+    "languages": {
+      "en": "Anglais",
+      "fr": "Français",
+      "ar": "Arabe"
+    },
+    "notProvided": "Non fourni",
+    "yes": "Oui",
+    "no": "Non",
+    "loading": "Chargement...",
     "actions": {
       "reserve": "Réserver maintenant",
       "search": "Rechercher",
@@ -740,7 +822,13 @@
       "resetPassword": "Réinitialiser le mot de passe",
       "backToLogin": "Retour à la connexion",
       "tryAgain": "Réessayer",
-            "resendVerification": "Renvoyer"
+      
+      "decline": "Refuser",
+      "resendVerification": "Renvoyer la vérification",
+      "restore": "Restaurer",
+      "permanentDelete": "Supprimer définitivement",
+      "clear": "Effacer la sélection",
+            "clearFilters": "Effacer les filtres"
 
     },
     "theme": {
@@ -827,7 +915,9 @@
         "phone": "Veuillez entrer un numéro de téléphone valide",
         "min": "La valeur doit être supérieure à {min}",
         "max": "La valeur doit être inférieure à {max}",
-        "invalid": "Valeur invalide"
+        "invalid": "Valeur invalide",
+              "loadingFailed": "Échec du chargement des utilisateurs"
+
       }
     },
     "notifications": {
@@ -924,10 +1014,16 @@
       "cancelled": "Annulé",
       "paid": "Payé",
       "unpaid": "Impayé",
-       "verified": "Vérifié",
+      "verified": "Vérifié",
       "unverified": "Non vérifié",
       "notVerified": "Non vérifié",
-      "invalidDate": "Date invalide"
+      "invalidDate": "Date invalide",
+      "active": "Actif", 
+    
+      "pendingApproval": "En attente d'approbation",
+      "deleted": "Supprimé",
+            "filtering":"..."
+
     },
     "currency": {
       "symbol": "DH",

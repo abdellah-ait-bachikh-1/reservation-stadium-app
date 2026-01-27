@@ -14,10 +14,13 @@ export type TranslationKey =
     | 'common.actions.cancel_subscription'
     | 'common.actions.checkout'
     | 'common.actions.checkout_now'
+    | 'common.actions.clear'
+    | 'common.actions.clearFilters'
     | 'common.actions.close'
     | 'common.actions.confirm'
     | 'common.actions.continue'
     | 'common.actions.create'
+    | 'common.actions.decline'
     | 'common.actions.delete'
     | 'common.actions.deselect_all'
     | 'common.actions.disable'
@@ -33,6 +36,7 @@ export type TranslationKey =
     | 'common.actions.next'
     | 'common.actions.open'
     | 'common.actions.pay'
+    | 'common.actions.permanentDelete'
     | 'common.actions.preview'
     | 'common.actions.previous'
     | 'common.actions.refresh'
@@ -43,6 +47,7 @@ export type TranslationKey =
     | 'common.actions.reserve'
     | 'common.actions.reset'
     | 'common.actions.resetPassword'
+    | 'common.actions.restore'
     | 'common.actions.retry'
     | 'common.actions.save'
     | 'common.actions.search'
@@ -93,6 +98,7 @@ export type TranslationKey =
     | 'common.footer.teamAlwaysHere'
     | 'common.inputs.errors.email'
     | 'common.inputs.errors.invalid'
+    | 'common.inputs.errors.loadingFailed'
     | 'common.inputs.errors.max'
     | 'common.inputs.errors.min'
     | 'common.inputs.errors.password_length'
@@ -130,6 +136,10 @@ export type TranslationKey =
     | 'common.inputs.placeholders.price'
     | 'common.inputs.placeholders.search'
     | 'common.inputs.placeholders.time'
+    | 'common.languages.ar'
+    | 'common.languages.en'
+    | 'common.languages.fr'
+    | 'common.loading'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
     | 'common.months.full.april'
@@ -162,6 +172,8 @@ export type TranslationKey =
     | 'common.navigation.public.links.sectionTitle'
     | 'common.navigation.public.links.stadiums'
     | 'common.navigation.public.title'
+    | 'common.no'
+    | 'common.notProvided'
     | 'common.notifications.close'
     | 'common.notifications.connecting'
     | 'common.notifications.live'
@@ -175,13 +187,19 @@ export type TranslationKey =
     | 'common.notifications.total'
     | 'common.notifications.unread'
     | 'common.notifications.viewAll'
+    | 'common.roles.admin'
+    | 'common.roles.club'
+    | 'common.status.active'
     | 'common.status.approved'
     | 'common.status.cancelled'
     | 'common.status.declined'
+    | 'common.status.deleted'
+    | 'common.status.filtering'
     | 'common.status.invalidDate'
     | 'common.status.notVerified'
     | 'common.status.paid'
     | 'common.status.pending'
+    | 'common.status.pendingApproval'
     | 'common.status.unpaid'
     | 'common.status.unverified'
     | 'common.status.verified'
@@ -205,6 +223,7 @@ export type TranslationKey =
     | 'common.toast.error.creationFailed'
     | 'common.toast.error.deleteFailed'
     | 'common.toast.error.generic'
+    | 'common.toast.error.loadingFailed'
     | 'common.toast.error.loginFailed'
     | 'common.toast.error.network'
     | 'common.toast.error.registrationFailed'
@@ -237,6 +256,7 @@ export type TranslationKey =
     | 'common.user.role'
     | 'common.user.roles.admin'
     | 'common.user.roles.club'
+    | 'common.yes'
     | 'pages.about.commitment.description'
     | 'pages.about.commitment.items.0'
     | 'pages.about.commitment.items.1'
@@ -526,6 +546,64 @@ export type TranslationKey =
     | 'pages.dashboard.home.yearFilter.currentYear'
     | 'pages.dashboard.home.yearFilter.label'
     | 'pages.dashboard.home.yearFilter.selectYear'
+    | 'pages.dashboard.profile.accountActions'
+    | 'pages.dashboard.profile.adminDescription'
+    | 'pages.dashboard.profile.changePassword'
+    | 'pages.dashboard.profile.clubDescription'
+    | 'pages.dashboard.profile.confirmPassword'
+    | 'pages.dashboard.profile.currentPassword'
+    | 'pages.dashboard.profile.email'
+    | 'pages.dashboard.profile.emailVerified'
+    | 'pages.dashboard.profile.enterEmail'
+    | 'pages.dashboard.profile.enterName'
+    | 'pages.dashboard.profile.enterPhone'
+    | 'pages.dashboard.profile.lastUpdated'
+    | 'pages.dashboard.profile.manageSessions'
+    | 'pages.dashboard.profile.memberSince'
+    | 'pages.dashboard.profile.metadata.description'
+    | 'pages.dashboard.profile.metadata.title'
+    | 'pages.dashboard.profile.name'
+    | 'pages.dashboard.profile.newPassword'
+    | 'pages.dashboard.profile.personalInfo'
+    | 'pages.dashboard.profile.phoneNumber'
+    | 'pages.dashboard.profile.preferredLanguage'
+    | 'pages.dashboard.profile.resendVerification'
+    | 'pages.dashboard.profile.role'
+    | 'pages.dashboard.profile.selectLanguage'
+    | 'pages.dashboard.profile.status'
+    | 'pages.dashboard.profile.subtitle'
+    | 'pages.dashboard.profile.title'
+    | 'pages.dashboard.users.addUser'
+    | 'pages.dashboard.users.allRoles'
+    | 'pages.dashboard.users.allStatus'
+    | 'pages.dashboard.users.columns.actions'
+    | 'pages.dashboard.users.columns.email'
+    | 'pages.dashboard.users.columns.name'
+    | 'pages.dashboard.users.columns.role'
+    | 'pages.dashboard.users.columns.status'
+    | 'pages.dashboard.users.confirmPermanentDelete'
+    | 'pages.dashboard.users.filterByRole'
+    | 'pages.dashboard.users.filterByStatus'
+    | 'pages.dashboard.users.joined'
+    | 'pages.dashboard.users.metadata.description'
+    | 'pages.dashboard.users.metadata.title'
+    | 'pages.dashboard.users.noUsersFound'
+    | 'pages.dashboard.users.pageInfo'
+    | 'pages.dashboard.users.roles'
+    | 'pages.dashboard.users.rolesSelected'
+    | 'pages.dashboard.users.rowsPerPage'
+    | 'pages.dashboard.users.searchPlaceholder'
+    | 'pages.dashboard.users.selectedCount'
+    | 'pages.dashboard.users.showDeleted'
+    | 'pages.dashboard.users.stats.active'
+    | 'pages.dashboard.users.stats.pending'
+    | 'pages.dashboard.users.stats.total'
+    | 'pages.dashboard.users.stats.unverified'
+    | 'pages.dashboard.users.status'
+    | 'pages.dashboard.users.statusesSelected'
+    | 'pages.dashboard.users.subtitle'
+    | 'pages.dashboard.users.title'
+    | 'pages.dashboard.users.totalUsers'
     | 'pages.error.errorId'
     | 'pages.error.goHome'
     | 'pages.error.noStackTrace'
@@ -1306,7 +1384,9 @@ export const _TranslationNamespaces = {
     "keywords"
   ],
   "pages.dashboard": [
-    "home"
+    "home",
+    "profile",
+    "users"
   ],
   "pages.dashboard.home": [
     "metadata",
@@ -1485,7 +1565,87 @@ export const _TranslationNamespaces = {
     "enAttente",
     "monthlyPending"
   ],
+  "pages.dashboard.profile": [
+    "title",
+    "subtitle",
+    "metadata",
+    "status",
+    "emailVerified",
+    "memberSince",
+    "lastUpdated",
+    "changePassword",
+    "currentPassword",
+    "newPassword",
+    "confirmPassword",
+    "personalInfo",
+    "name",
+    "enterName",
+    "email",
+    "enterEmail",
+    "phoneNumber",
+    "enterPhone",
+    "preferredLanguage",
+    "selectLanguage",
+    "role",
+    "adminDescription",
+    "clubDescription",
+    "accountActions",
+    "resendVerification",
+    "manageSessions"
+  ],
+  "pages.dashboard.profile.metadata": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.users": [
+    "title",
+    "subtitle",
+    "metadata",
+    "searchPlaceholder",
+    "filterByRole",
+    "filterByStatus",
+    "allRoles",
+    "allStatus",
+    "selectedCount",
+    "showDeleted",
+    "totalUsers",
+    "noUsersFound",
+    "addUser",
+    "confirmPermanentDelete",
+    "columns",
+    "joined",
+    "rowsPerPage",
+    "pageInfo",
+    "roles",
+    "status",
+    "rolesSelected",
+    "statusesSelected",
+    "stats"
+  ],
+  "pages.dashboard.users.metadata": [
+    "title",
+    "description"
+  ],
+  "pages.dashboard.users.columns": [
+    "name",
+    "email",
+    "role",
+    "status",
+    "actions"
+  ],
+  "pages.dashboard.users.stats": [
+    "total",
+    "active",
+    "pending",
+    "unverified"
+  ],
   "common": [
+    "roles",
+    "languages",
+    "notProvided",
+    "yes",
+    "no",
+    "loading",
     "actions",
     "theme",
     "user",
@@ -1501,6 +1661,15 @@ export const _TranslationNamespaces = {
     "months",
     "time",
     "dates"
+  ],
+  "common.roles": [
+    "admin",
+    "club"
+  ],
+  "common.languages": [
+    "en",
+    "fr",
+    "ar"
   ],
   "common.actions": [
     "reserve",
@@ -1554,7 +1723,12 @@ export const _TranslationNamespaces = {
     "resetPassword",
     "backToLogin",
     "tryAgain",
-    "resendVerification"
+    "decline",
+    "resendVerification",
+    "restore",
+    "permanentDelete",
+    "clear",
+    "clearFilters"
   ],
   "common.theme": [
     "light",
@@ -1649,7 +1823,8 @@ export const _TranslationNamespaces = {
     "phone",
     "min",
     "max",
-    "invalid"
+    "invalid",
+    "loadingFailed"
   ],
   "common.notifications": [
     "title",
@@ -1752,7 +1927,11 @@ export const _TranslationNamespaces = {
     "verified",
     "unverified",
     "notVerified",
-    "invalidDate"
+    "invalidDate",
+    "active",
+    "pendingApproval",
+    "deleted",
+    "filtering"
   ],
   "common.currency": [
     "symbol",

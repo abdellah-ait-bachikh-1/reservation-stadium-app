@@ -2,13 +2,13 @@
 "use client";
 
 import { useState } from "react";
-import { useDashboardData } from "@/hooks/useDashboardData";
+import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
 import ChartsSection from "@/components/dashboard/home/BarChartSection";
 import DashboardHeader from "@/components/dashboard/home/DashboardHeader";
 import QuickActionsSection from "@/components/dashboard/home/QuickActionsSection";
 import RevenueTrendsChart from "@/components/dashboard/home/RevenueTrendsChart";
 import StatsGridSection from "@/components/dashboard/home/StatsGridSection";
-import { DashboardData } from "@/hooks/useDashboardData";
+import { DashboardData } from "@/hooks/dashboard/useDashboardData";
 import { Card, CardBody } from "@heroui/card";
 import { Spinner } from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";

@@ -7,7 +7,7 @@ import {
   sendNotificationToAdmins,
   sendNotificationToAllUsers,
   type NotificationData
-} from "@/lib/queries/notifications";
+} from "@/lib/queries/dashboard/notifications";
 
 // Test notification data templates
 const getTestNotificationData = (

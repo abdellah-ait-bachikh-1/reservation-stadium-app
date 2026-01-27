@@ -1,5 +1,5 @@
 // app/api/dashboard/home/route.ts
-import { getDashboardData } from "@/lib/queries/dashboard-home";
+import { getDashboardData } from "@/lib/queries/dashboard/dashboard-home";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

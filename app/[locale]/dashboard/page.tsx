@@ -2,9 +2,9 @@
 import { Metadata } from "next";
 import { redirect } from "@/i18n/navigation";
 import { getSession } from "@/lib/auth";
-import { getDashboardData } from "@/lib/queries/dashboard-home";
+import { getDashboardData } from "@/lib/queries/dashboard/dashboard-home";
 import DashboardClient from "@/components/dashboard/home/DashboardClient";
-import { DashboardData } from "@/hooks/useDashboardData";
+import { DashboardData } from "@/hooks/dashboard/useDashboardData";
 
 export async function generateMetadata({
   params,

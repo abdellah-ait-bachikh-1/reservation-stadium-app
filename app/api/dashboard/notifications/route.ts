@@ -4,7 +4,7 @@ import { clearAuthCookies, getSession, isAuthenticatedUserTokenExistInDb } from 
 import { db } from "@/drizzle/db";
 import { notifications, users } from "@/drizzle/schema";
 import { eq, desc } from "drizzle-orm";
-import { getLimitedNotificationForUser } from "@/lib/queries/notifications";
+import { getLimitedNotificationForUser } from "@/lib/queries/dashboard/notifications";
 import { isErrorHasMessage } from "@/utils";
 
 export async function GET(request: NextRequest) {

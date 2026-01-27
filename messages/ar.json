@@ -627,18 +627,18 @@
         },
         "charts": {
           "revenueByStadium": {
-  "title": "الإيرادات حسب الملعب",
-  "description": "إجمالي الإيرادات المُحققة لكل ملعب هذا العام",
-  "totalRevenue": "إجمالي الإيرادات",
-  "subscription": "الاشتراك الشهري",
-  "singleSession": "جلسة واحدة",
-  "shareOfTotal": "حصة من الإجمالي",
-  "topStadium": "أفضل ملعب",
-  "avgPerStadium": "المتوسط لكل ملعب",
-  "noData": "لا توجد بيانات إيرادات متاحة",
-  "stadiums": "ملاعب",
-  "ofTotal": "من الإجمالي"
-},
+            "title": "الإيرادات حسب الملعب",
+            "description": "إجمالي الإيرادات المُحققة لكل ملعب هذا العام",
+            "totalRevenue": "إجمالي الإيرادات",
+            "subscription": "الاشتراك الشهري",
+            "singleSession": "جلسة واحدة",
+            "shareOfTotal": "حصة من الإجمالي",
+            "topStadium": "أفضل ملعب",
+            "avgPerStadium": "المتوسط لكل ملعب",
+            "noData": "لا توجد بيانات إيرادات متاحة",
+            "stadiums": "ملاعب",
+            "ofTotal": "من الإجمالي"
+          },
           "reservationsByStatus": {
             "title": "الحجوزات حسب الحالة",
             "description": "توزيع الحجوزات حسب الحالات",
@@ -649,17 +649,18 @@
             "total": "المجموع",
             "noData": "لا توجد بيانات حالة الحجوزات متاحة"
           }
-        },"overduePayments": {
-  "title": "المدفوعات المتأخرة",
-  "viewAll": "عرض جميع المدفوعات",
-  "noOverdue": "لا توجد مدفوعات متأخرة",
-  "recent": "حديث",
-  "overdue": "متأخر",
-  "longOverdue": "متأخر جداً",
-  "daysOverdue": "أيام متأخرة",
-  "resolve": "حل",
-  "description": "المدفوعات التي تحتاج إلى اهتمام فوري"
-},
+        },
+        "overduePayments": {
+          "title": "المدفوعات المتأخرة",
+          "viewAll": "عرض جميع المدفوعات",
+          "noOverdue": "لا توجد مدفوعات متأخرة",
+          "recent": "حديث",
+          "overdue": "متأخر",
+          "longOverdue": "متأخر جداً",
+          "daysOverdue": "أيام متأخرة",
+          "resolve": "حل",
+          "description": "المدفوعات التي تحتاج إلى اهتمام فوري"
+        },
         "revenueTrends": {
           "title": "اتجاهات الإيرادات",
           "description": "تفصيل الإيرادات الشهرية حسب النوع",
@@ -677,17 +678,100 @@
           "monthlyRevenue": "الإيراد الشهري",
           "monthlySubscription": "الاشتراك الشهري",
           "monthlySingleSession": "الجلسة المفردة الشهرية",
-           "noData": "لا توجد بيانات إيرادات متاحة",
+          "noData": "لا توجد بيانات إيرادات متاحة",
           "paid": "مدفوع",
           "overdue": "متأخر",
           "pendingAnnual": "في الانتظار",
-        "enAttente": "في الانتظار",
-        "monthlyPending": "في الانتظار الشهري"
+          "enAttente": "في الانتظار",
+          "monthlyPending": "في الانتظار الشهري"
+        }
+      },
+      "profile": {
+        "title": "ملفي الشخصي",
+        "subtitle": "إدارة معلوماتك الشخصية وإعدادات حسابك",
+        "metadata": {
+          "title": "الملف الشخصي",
+          "description": "إدارة ملفك الشخصي وإعدادات حسابك"
+        },
+        "status": "الحالة",
+        "emailVerified": "البريد الإلكتروني مؤكد",
+        "memberSince": "عضو منذ",
+        "lastUpdated": "آخر تحديث",
+        "changePassword": "تغيير كلمة المرور",
+        "currentPassword": "كلمة المرور الحالية",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "personalInfo": "المعلومات الشخصية",
+        "name": "الاسم الكامل",
+        "enterName": "أدخل اسمك الكامل",
+        "email": "عنوان البريد الإلكتروني",
+        "enterEmail": "أدخل عنوان بريدك الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "enterPhone": "أدخل رقم هاتفك",
+        "preferredLanguage": "اللغة المفضلة",
+        "selectLanguage": "اختر لغتك المفضلة",
+        "role": "دور الحساب",
+        "adminDescription": "وصول كامل إلى النظام والإدارة",
+        "clubDescription": "إدارة النادي والحجوزات",
+        "accountActions": "إجراءات الحساب",
+        "resendVerification": "إعادة إرسال بريد التحقق",
+        "manageSessions": "إدارة الجلسات النشطة"
+      },
+      "users": {
+        "title": "إدارة المستخدمين",
+        "subtitle": "إدارة جميع مستخدمي النظام والموافقات والتحقق",
+        "metadata": {
+          "title": "المستخدمين",
+          "description": "إدارة المستخدمين وأذوناتهم"
+        },
+        "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف...",
+        "filterByRole": "تصفية حسب الدور",
+        "filterByStatus": "تصفية حسب الحالة",
+        "allRoles": "جميع الأدوار",
+        "allStatus": "جميع الحالات",
+        "selectedCount": "{count} محددة",
+        "showDeleted": "إظهار المستخدمين المحذوفين",
+        "totalUsers": "عرض {showing} من {total} مستخدم (الصفحة {page})",
+        "noUsersFound": "لم يتم العثور على مستخدمين",
+        "addUser": "إضافة مستخدم جديد",
+        "confirmPermanentDelete": "هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+        "columns": {
+          "name": "الاسم",
+          "email": "البريد الإلكتروني",
+          "role": "الدور",
+          "status": "الحالة",
+          "actions": "الإجراءات"
+        },
+        "joined": "انضم في",
+        "rowsPerPage": "صفوف في الصفحة:",
+        "pageInfo": "الصفحة {page} من {totalPages} ({total} إجمالي)",
+        "roles": "الأدوار",
+        "status": "الحالة",
+        "rolesSelected": "أدوار مختارة",
+        "statusesSelected": "حالات مختارة",
+        "stats": {
+          "total": "إجمالي المستخدمين",
+          "active": "المستخدمين النشطين",
+          "pending": "بانتظار الموافقة",
+          "unverified": "غير موثقين"
         }
       }
     }
   },
   "common": {
+    "roles": {
+      "admin": "المسؤول",
+      "club": "النادي"
+    },
+    "languages": {
+      "en": "الإنجليزية",
+      "fr": "الفرنسية",
+      "ar": "العربية"
+    },
+    "notProvided": "غير مقدم",
+    "yes": "نعم",
+    "no": "لا",
+    "loading": "جار التحميل...",
     "actions": {
       "reserve": "احجز الآن",
       "search": "بحث",
@@ -740,7 +824,12 @@
       "resetPassword": "إعادة تعيين كلمة المرور",
       "backToLogin": "العودة إلى تسجيل الدخول",
       "tryAgain": "حاول مرة أخرى",
-      "resendVerification": "إعادة الإرسال"
+      "decline": "رفض",
+      "resendVerification": "إعادة إرسال التحقق",
+      "restore": "استعادة",
+      "permanentDelete": "حذف نهائي",
+      "clear": "مسح التحديد",
+      "clearFilters": "مسح الفلاتر"
     },
     "theme": {
       "light": "فاتح",
@@ -870,7 +959,8 @@
         "resetPasswordFailed": "فشل إرسال بريد إلكتروني لإعادة التعيين",
         "accountDeleted": "تم حذف هذا الحساب. الرجاء الاتصال بالدعم.",
         "accountNotVerified": "حسابك الإلكتروني غير مفعل بعد. الرجاء التحقق من صندوق الوارد.",
-        "accountNotApproved": "حسابك في انتظار موافقة المسؤول. الرجاء الاتصال بالدعم."
+        "accountNotApproved": "حسابك في انتظار موافقة المسؤول. الرجاء الاتصال بالدعم.",
+        "loadingFailed": "فشل تحميل المستخدمين"
       },
       "info": {
         "loading": "جاري التحميل...",
@@ -926,7 +1016,12 @@
       "verified": "تم التحقق",
       "unverified": "غير مُتحقَّق",
       "notVerified": "غير مُتحقَّق",
-      "invalidDate": "تاريخ غير صالح"
+      "invalidDate": "تاريخ غير صالح",
+      "active": "نشط",
+      "pendingApproval": "بانتظار الموافقة",
+      "deleted": "محذوف",
+            "filtering":"..."
+
     },
     "currency": {
       "symbol": "درهم",

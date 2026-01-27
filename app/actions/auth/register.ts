@@ -12,7 +12,7 @@ import { eq } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 import { v4 as uuidv4 } from "uuid";
 import { addDays, format } from "date-fns";
-import { sendNotificationToAdmins } from "@/lib/queries/notifications";
+import { sendNotificationToAdmins } from "@/lib/queries/dashboard/notifications";
 import { RegisterFormData } from "@/types/auth";
 import { sendEmail } from "@/services/email";
 import { generateVerificationEmail } from "@/utils/email";

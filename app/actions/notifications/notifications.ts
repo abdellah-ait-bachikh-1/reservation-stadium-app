@@ -1,7 +1,7 @@
 "use server";
 
 import { getSession } from "@/lib/auth";
-import { markAllNotificationAsReadForSpecificUser, markOnNotificationAsRead } from "@/lib/queries/notifications";
+import { markAllNotificationAsReadForSpecificUser, markOnNotificationAsRead } from "@/lib/queries/dashboard/notifications";
 import { isErrorHasMessage } from "@/utils";
 
 export async function markAllNotificationAsReadAction() {

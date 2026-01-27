@@ -626,19 +626,19 @@
           "noReservations": "No upcoming reservations"
         },
         "charts": {
-         "revenueByStadium": {
-          "title": "Revenue by Stadium",
-          "description": "Total revenue generated per stadium this year",
-          "totalRevenue": "Total Revenue",
-          "subscription": "Subscription",
-          "singleSession": "Single Session",
-          "shareOfTotal": "Share of Total",
-          "topStadium": "Top Stadium",
-          "avgPerStadium": "Avg per Stadium",
-          "noData": "No revenue data available",
-          "stadiums": "stadiums",
-          "ofTotal": "of total"
-        },
+          "revenueByStadium": {
+            "title": "Revenue by Stadium",
+            "description": "Total revenue generated per stadium this year",
+            "totalRevenue": "Total Revenue",
+            "subscription": "Subscription",
+            "singleSession": "Single Session",
+            "shareOfTotal": "Share of Total",
+            "topStadium": "Top Stadium",
+            "avgPerStadium": "Avg per Stadium",
+            "noData": "No revenue data available",
+            "stadiums": "stadiums",
+            "ofTotal": "of total"
+          },
           "reservationsByStatus": {
             "title": "Reservations by Status",
             "description": "Reservation distribution across statuses",
@@ -649,7 +649,8 @@
             "total": "Total",
             "noData": "No reservation status data available"
           }
-        },"overduePayments": {
+        },
+        "overduePayments": {
           "title": "Overdue Payments",
           "viewAll": "View All Payments",
           "noOverdue": "No overdue payments",
@@ -660,7 +661,7 @@
           "resolve": "Resolve",
           "description": "Payments requiring immediate attention"
         },
-       "revenueTrends": {
+        "revenueTrends": {
           "title": "Revenue Trends",
           "description": "Monthly revenue breakdown by type",
           "annualTotal": "Annual Total",
@@ -677,18 +678,101 @@
           "monthlyRevenue": "Monthly Revenue",
           "monthlySubscription": "Monthly Subscription",
           "monthlySingleSession": "Monthly Single Session",
-           "noData": "No revenue data available",
+          "noData": "No revenue data available",
           "paid": "Paid",
           "overdue": "Overdue",
           "pendingAnnual": "Pending",
-        "enAttente": "pending",
-        "monthlyPending": "Monthly Pending"
+          "enAttente": "pending",
+          "monthlyPending": "Monthly Pending"
+        }
+      },
+      "profile": {
+        "title": "My Profile",
+        "subtitle": "Manage your personal information and account settings",
+        "metadata": {
+          "title": "Profile",
+          "description": "Manage your profile and account settings"
+        },
+        "status": "Status",
+        "emailVerified": "Email Verified",
+        "memberSince": "Member Since",
+        "lastUpdated": "Last Updated",
+        "changePassword": "Change Password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "personalInfo": "Personal Information",
+        "name": "Full Name",
+        "enterName": "Enter your full name",
+        "email": "Email Address",
+        "enterEmail": "Enter your email address",
+        "phoneNumber": "Phone Number",
+        "enterPhone": "Enter your phone number",
+        "preferredLanguage": "Preferred Language",
+        "selectLanguage": "Select your preferred language",
+        "role": "Account Role",
+        "adminDescription": "Full system access and management",
+        "clubDescription": "Club management and reservations",
+        "accountActions": "Account Actions",
+        "resendVerification": "Resend Verification Email",
+        "manageSessions": "Manage Active Sessions"
+      },
+      "users": {
+        "title": "Users Management",
+        "subtitle": "Manage all system users, approvals, and verifications",
+        "metadata": {
+          "title": "Users",
+          "description": "Manage users and their permissions"
+        },
+        "searchPlaceholder": "Search by name, email, or phone...",
+        "filterByRole": "Filter by role",
+        "filterByStatus": "Filter by status",
+        "allRoles": "All Roles",
+        "allStatus": "All Status",
+        "selectedCount": "{count} selected",
+        "showDeleted": "Show deleted users",
+        "totalUsers": "Showing {showing} of {total} users (Page {page})",
+        "noUsersFound": "No users found",
+        "addUser": "Add New User",
+        "confirmPermanentDelete": "Are you sure you want to permanently delete this user? This action cannot be undone.",
+        "columns": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "joined": "Joined",
+        "rowsPerPage": "Rows per page:",
+        "pageInfo": "Page {page} of {totalPages} ({total} total)",
+        "roles": "Roles",
+        "status": "Status",
+        "rolesSelected": "roles selected",
+        "statusesSelected": "statuses selected",
+        "stats": {
+          "total": "Total Users",
+          "active": "Active Users",
+          "pending": "Pending Approval",
+          "unverified": "Unverified"
         }
       },
       "notifications": {}
     }
   },
   "common": {
+    "roles": {
+      "admin": "Administrator",
+      "club": "Club"
+    },
+    "languages": {
+      "en": "English",
+      "fr": "French",
+      "ar": "Arabic"
+    },
+    "notProvided": "Not provided",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading...",
     "actions": {
       "reserve": "Reserve Now",
       "search": "Search",
@@ -722,7 +806,6 @@
       "share": "Share",
       "send": "Send",
       "cancel_subscription": "Cancel Subscription",
-      "retry": "Retry",
       "refresh": "Refresh",
       "close": "Close",
       "open": "Open",
@@ -741,7 +824,13 @@
       "resetPassword": "Reset Password",
       "backToLogin": "Back to Login",
       "tryAgain": "Try Again",
-      "resendVerification": "Resend"
+      "decline": "Decline",
+      "resendVerification": "Resend Verification",
+      "restore": "Restore",
+      "permanentDelete": "Permanent Delete",
+      "clear": "Clear Selection",
+      "retry": "Try Again",
+      "clearFilters": "Clear Filters"
     },
     "theme": {
       "light": "Light",
@@ -871,7 +960,8 @@
         "resetPasswordFailed": "Failed to send reset email",
         "accountDeleted": "This account has been deleted. Please contact support.",
         "accountNotVerified": "Your account email is not verified yet. Please check your inbox.",
-        "accountNotApproved": "Your account is pending admin approval. Please contact support."
+        "accountNotApproved": "Your account is pending admin approval. Please contact support.",
+        "loadingFailed": "Failed to load users"
       },
       "info": {
         "loading": "Loading...",
@@ -927,7 +1017,11 @@
       "verified": "Verified",
       "unverified": "Unverified",
       "notVerified": "Not verified",
-      "invalidDate": "Invalid date"
+      "invalidDate": "Invalid date",
+      "active": "Active",
+      "pendingApproval": "Pending Approval",
+      "deleted": "Deleted",
+      "filtering":"filtering"
     },
     "currency": {
       "symbol": "MAD",

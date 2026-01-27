@@ -1,5 +1,5 @@
 import { pusherServer } from "@/lib/pusher/server";
-import { NotificationData } from "@/lib/queries/notifications";
+import { NotificationData } from "@/lib/queries/dashboard/notifications";
 import { getUserPreferredLocale } from "@/lib/queries/user";
 
 
