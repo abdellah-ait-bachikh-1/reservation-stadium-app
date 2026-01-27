@@ -8,13 +8,18 @@ export async function getUserByEmailForAuth(email: string) {
   const [user] = await db
     .select({
       id: users.id,
-      name: users.name,
-      email: users.email,
-      password: users.password,
-      role: users.role,
-      deletedAt: users.deletedAt,
-      isApproved: users.isApproved,
-      emailVerifiedAt: users.emailVerifiedAt,
+          name: users.name,
+          email: users.email,
+          phoneNumber: users.phoneNumber,
+          createdAt: users.createdAt,
+          role: users.role,
+          deletedAt: users.deletedAt,
+          emailVerifiedAt: users.emailVerifiedAt,
+          isApproved: users.isApproved,
+          preferredLocale: users.preferredLocale,
+          updatedAt: users.updatedAt,
+          password:users.password
+      
     })
     .from(users)
     .where(eq(users.email, email));

@@ -22,7 +22,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { isRtl } from "@/utils";
 import { LocaleEnumType } from "@/types";
 import { button, cn } from "@heroui/theme";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 type DropdownRenderItem = {
   key: string;
@@ -68,7 +68,7 @@ export default function UserAvatar({
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
+  const router = useRouter()
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -82,7 +82,7 @@ export default function UserAvatar({
     });
 
     setShowLogoutModal(false);
-    window.location.reload();
+    router.push('/')
   };
 
   const handleAction = (key: string) => {

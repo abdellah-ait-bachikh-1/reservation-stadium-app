@@ -1,10 +1,8 @@
-import { logoutUser } from "@/app/actions/auth/logout";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Sparkles } from "@/components/sparkles";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { redirect } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { LocaleEnumType } from "@/types";
 import { getAppName } from "@/utils";
 import { Metadata } from "next";
@@ -21,10 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const messages = (await import(`../../../messages/${locale}.json`)).default;
-  const authenticatedUser = await isAuthenticatedUserExistsInDB()
-  if (authenticatedUser) {
-    redirect({ locale: locale, href: "/" })
-  }
+
   return {
     title: {
       template: `%s | ${getAppName(locale as LocaleEnumType)}`,
@@ -42,7 +37,12 @@ export default async function AuthLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  await params;
+ const {locale}=  await params;
+   const session = await  getSession()
+ console.log({session})
+  if(session && session.user){
+      redirect({locale:locale,href:"/"})
+  }
   return (
     <div className="w-full min-h-screen flex items-center justify-center flex-col gap-6 p-5">
       <header className="flex items-center justif-center gap-4">

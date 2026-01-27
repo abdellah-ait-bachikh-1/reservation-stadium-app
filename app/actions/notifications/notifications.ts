@@ -1,16 +1,16 @@
 "use server";
 
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { markAllNotificationAsReadForSpecificUser, markOnNotificationAsRead } from "@/lib/queries/notifications";
 import { isErrorHasMessage } from "@/utils";
 
 export async function markAllNotificationAsReadAction() {
   try {
-    const user = await isAuthenticatedUserExistsInDB();
-    if (!user) {
+    const session = await getSession();
+    if (!session || !session.user) {
       return { success: false };
     }
-    await markAllNotificationAsReadForSpecificUser(user.id);
+    await markAllNotificationAsReadForSpecificUser(session.user.id);
 
     return { success: true };
   } catch (error) {
@@ -25,11 +25,11 @@ export async function markAllNotificationAsReadAction() {
 
 export async function markOnNotificationAsReadAction(notificationId:string) {
   try {
-    const user = await isAuthenticatedUserExistsInDB();
-    if (!user) {
+   const session = await getSession();
+    if (!session || !session.user) {
       return { success: false };
     }
-    await markOnNotificationAsRead(user.id,notificationId);
+    await markOnNotificationAsRead(session.user.id,notificationId);
 
     return { success: true };
   } catch (error) {

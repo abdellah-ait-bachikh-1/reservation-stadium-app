@@ -1,7 +1,7 @@
 // app/dashboard/home/page.tsx
 import { Metadata } from "next";
 import { redirect } from "@/i18n/navigation";
-import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getDashboardData } from "@/lib/queries/dashboard-home";
 import DashboardClient from "@/components/dashboard/home/DashboardClient";
 import { DashboardData } from "@/hooks/useDashboardData";
@@ -26,11 +26,16 @@ const DashboardPage = async ({
   params: Promise<{ locale: string }>;
 }) => {
   const { locale } = await params;
-  const authenticatedUser = await isAuthenticatedUserExistsInDB();
 
-  if (!authenticatedUser) {
-    await apiLogout();
-    redirect({ locale: locale, href: "/auth/login" });
+  const session = await getSession()
+  if (!session || !session.user) {
+    redirect({ locale: locale, href: "/" })
+    return
+  }
+
+  if (session.user.role !== "ADMIN") {
+    redirect({ locale: locale, href: "/dashboard/profile" })
+  return
   }
 
   // Get current year
@@ -48,9 +53,9 @@ const DashboardPage = async ({
 
   return (
     <>
-      {authenticatedUser && (
+      {session.user && (
         <DashboardClient
-          user={authenticatedUser}
+          user={session.user}
           currentYear={currentYear}
           initialData={initialData}
         />
@@ -65,7 +70,7 @@ export default DashboardPage;
 function getStaticDashboardData(): DashboardData {
   const currentYear = new Date().getFullYear();
   const startYear = 2025;
-  
+
   return {
     stats: {
       totalReservations: 0,

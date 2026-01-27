@@ -83,7 +83,7 @@ export default function DashboardClient({
   }
 console.log(data)
   return (
-    <div className="p-4 md:p-6">
+    <div className="">
       {/* Loading overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50 flex items-center justify-center">

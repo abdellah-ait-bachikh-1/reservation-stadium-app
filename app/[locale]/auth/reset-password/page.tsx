@@ -1,6 +1,6 @@
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { redirect } from "@/i18n/navigation";
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getTypedTranslations } from "@/utils/i18n";
 import { Metadata } from "next";
 
@@ -40,9 +40,10 @@ const ResetPasswordPage = async ({
   const { token } = await searchParams;
   const t = await getTypedTranslations();
   
-  const authenticatedUser = await isAuthenticatedUserExistsInDB();
-  if (authenticatedUser) {
-    redirect({ locale: locale, href: "/" });
+   const session = await  getSession()
+ console.log({session})
+  if(session && session.user){
+      redirect({locale:locale,href:"/"})
   }
 
   if (!token) {

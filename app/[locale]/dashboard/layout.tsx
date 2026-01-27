@@ -11,9 +11,8 @@ import Header from "@/components/dashboard/Header";
 import MainContentWithMargin from "@/components/dashboard/MainContentWithMargin";
 import AsideContextProvider from "@/context/AsideContext";
 import { redirect } from "@/i18n/navigation";
-import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
-import { cn } from "@heroui/theme";
 export const dynamic = 'force-dynamic';
 //   return {
 //     title: {
@@ -34,20 +33,32 @@ export default async function DashboardLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  const authenticatedUser = await isAuthenticatedUserExistsInDB()
 
-  if (!authenticatedUser) {
-    await apiLogout()
-    redirect({ locale: locale, href: "/auth/login" })
+  const session = await getSession()
+  if (!session || !session.user) {
+    redirect({ locale: locale, href: "/" })
+    return
   }
-  
+
   return (
     <AsideContextProvider>
       <div className="flex w-full h-screen bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
-        <Aside />
+        <Aside userRole={session?.user?.role} />
         <MainContentWithMargin>
-          <Header user={authenticatedUser} />
-          <main className="flex-1 overflow-y-auto">
+          <Header user={{
+            id: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+            phoneNumber: session.user.phoneNumber,
+            role: session.user.role,
+            preferredLocale: session.user.preferredLocale,
+            isApproved: session.user.isApproved,
+            createdAt: session.user.createdAt,
+            updatedAt: session.user.updatedAt,
+            deletedAt: session.user.deletedAt,
+            emailVerifiedAt: session.user.emailVerifiedAt
+          }} />
+          <main className="flex-1 overflow-y-auto p-4">
             {children}
           </main>
         </MainContentWithMargin>

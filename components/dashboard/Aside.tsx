@@ -25,19 +25,23 @@ import Image from "next/image"
 import { MdOutlinePayments, MdSportsSoccer } from "react-icons/md"
 import { HiMiniPercentBadge } from "react-icons/hi2"
 
-const Aside = () => {
+const Aside = ({ userRole }: { userRole: "ADMIN" | "CLUB" }) => {
   const { isAsideOpen, closeAside } = useAsideContext()
   const pathname = usePathname()
   const t = useTypedTranslations()
   const locale = useLocale()
   const asideRef = useRef<HTMLDivElement>(null)
 
-  // Navigation items
   const navItems = [
     {
       title: t("common.aside.dashboard"),
       href: "/dashboard",
       icon: Home,
+      roles: ["ADMIN"]
+    }, {
+      title: t("common.aside.profile"),
+      href: "/dashboard/profile",
+      icon: UserCircle,
       roles: ["ADMIN", "CLUB"]
     },
     {
@@ -88,12 +92,7 @@ const Aside = () => {
       icon: Bell,
       roles: ["ADMIN", "CLUB"],
     },
-    {
-      title: t("common.aside.profile"),
-      href: "/dashboard/profile",
-      icon: UserCircle,
-      roles: ["ADMIN", "CLUB"]
-    },
+
   ]
 
   // Close aside on mobile when clicking outside
@@ -123,8 +122,8 @@ const Aside = () => {
   return (
     <>
       {/* Mobile Overlay */}
-      {isAsideOpen &&  (
-        <div 
+      {isAsideOpen && (
+        <div
           className="fixed inset-0 md:hidden bg-black/50 backdrop-blur-sm z-99995  transition-all duration-1500 ease-in-out"
           onClick={closeAside}
         />
@@ -134,9 +133,9 @@ const Aside = () => {
       <aside
         ref={asideRef}
         className={cn(
-         "bg-white dark:bg-zinc-900 fixed top-0  ltr:left-0 rtl:right-0 transition-all duration-300 ease-in-out overflow-hidden z-99996 h-screen flex flex-col",
-         isAsideOpen ? "w-70 md:w-60" : " w-0 md:w-20",
-         
+          "bg-white dark:bg-zinc-900 fixed top-0  ltr:left-0 rtl:right-0 transition-all duration-300 ease-in-out overflow-hidden z-99996 h-screen flex flex-col",
+          isAsideOpen ? "w-70 md:w-60" : " w-0 md:w-20",
+
         )}
       >
         {/* Logo / Header */}
@@ -177,7 +176,7 @@ const Aside = () => {
               const Icon = item.icon
               const active = isActive(item.href)
 
-              return (
+              return item.roles.includes(userRole) && (
                 <li key={item.title}>
                   <Link
                     href={item.href}
@@ -187,7 +186,7 @@ const Aside = () => {
                       isAsideOpen && "hover:bg-gray-50 dark:hover:bg-zinc-800/50",
                       active && isAsideOpen && "bg-amber-50 dark:bg-amber-900/20",
                       active && "text-amber-600 dark:text-amber-400",
-                   
+
                     )}
                   >
                     <div className={cn(
@@ -230,7 +229,7 @@ const Aside = () => {
               "w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200",
               "hover:bg-red-50 dark:hover:bg-red-900/20",
               "group",
-            
+
             )}
           >
             <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-700 group-hover:bg-red-100 dark:group-hover:bg-red-800/30 transition-colors shrink-0">
@@ -240,7 +239,7 @@ const Aside = () => {
             <span className={cn(
               "font-medium whitespace-nowrap truncate text-red-600 dark:text-red-400 transition-all duration-300",
               "overflow-hidden",
-              
+
             )}>
               {t("common.aside.logout")}
             </span>

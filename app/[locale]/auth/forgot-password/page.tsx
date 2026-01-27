@@ -1,6 +1,6 @@
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 import { redirect } from "@/i18n/navigation";
-import { isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getTypedTranslations } from "@/utils/i18n";
 import { Metadata } from "next";
 
@@ -35,11 +35,12 @@ const ForgotPasswordPage = async ({
   const { locale } = await params;
   const t = await getTypedTranslations();
   
-  const authenticatedUser = await isAuthenticatedUserExistsInDB()
-  if (authenticatedUser) {
-    redirect({ locale: locale, href: "/" })
+ const session = await  getSession()
+ console.log({session})
+  if(session && session.user){
+      redirect({locale:locale,href:"/"})
   }
-  
+
   return (
     <section
       className="flex flex-col items-center justify-center gap-4

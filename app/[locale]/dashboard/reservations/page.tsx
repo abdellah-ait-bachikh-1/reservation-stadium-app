@@ -1,29 +1,20 @@
+import { redirect } from '@/i18n/navigation'
+import { getSession } from '@/lib/auth'
 import React from 'react'
 
-const ReservationsPage = async ({params}:{params:Promise<{locale:string}>}) => {
-  const {locale} = await params
-  return (
-    <div>
-          <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
+const ReservationsPage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale } = await params
+  const session = await getSession()
+  if (!session || !session.user) {
+    redirect({ locale: locale, href: "/" })
+    return
+  }
+  if (session.user.role !== "ADMIN") {
+    return <div>Club reservations page</div>
 
-    <div>ReservationsPage fdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</div>
-    </div>
+  }
+  return (
+    <div>Admin ReservationsPage</div>
   )
 }
 

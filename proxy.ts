@@ -66,7 +66,7 @@ export default async function middleware(request: NextRequest) {
   const locale = hasValidLocalePrefix ? pathLocale : convertCase(userPrefferedLocale, "lower");
   
   // Update locale in DB if authenticated
-  if (token && hasValidLocalePrefix) {
+  if (token && token.id && hasValidLocalePrefix) {
     await updateUserPreferredLocaleLocale(
       token.id,
       convertCase(locale as LocaleEnumType, "upper")

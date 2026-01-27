@@ -12,22 +12,7 @@ import { cookies } from "next/headers";
 export const getSession = async () => {
   return await getServerSession(authConfig);
 };
-export const isAuthenticatedUserExistsInDB = async () => {
-  const session = await getSession();
 
-  if (!session || !session.user) return null;
-
-  const user = await getUserByIdForAuth(session.user.id);
-  if (
-    !user ||
-    user.emailVerifiedAt === null ||
-    !user.isApproved ||
-    user.deletedAt !== null
-  ) {
-    return null;
-  }
-  return user;
-};
 //-----------------------------------usage
 //  const authenticatedUser = await isAuthenticatedUserExistsInDB()
 
@@ -44,9 +29,9 @@ export const getApiUserToken = async (req: NextRequest) => {
 };
 export const isAuthenticatedUserTokenExistInDb = async (req: NextRequest) => {
   const token = await getApiUserToken(req);
-  if (!token) return null;
+  if (!token || !token.id) return null;
   const user = await db.query.users.findFirst({
-    where: (table, { eq }) => eq(table.id, token.id),
+   where: (table, { eq }) => eq(table.id, token.id!),
     columns: {
       id: true,
       name: true,
@@ -142,50 +127,3 @@ export function clearAuthCookies(response: NextResponse) {
 
 
 
-// lib/auth.ts - Update the apiLogout function
-export async function apiLogout() {
-  try {
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore
-      .getAll()
-      .map(cookie => `${cookie.name}=${cookie.value}`)
-      .join('; ');
-    
-    const response = await fetch(`${NEXT_PUBLIC_APP_URL}/api/auth/force-logout`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cookie': cookieHeader,
-      },
-      cache: 'no-store'
-    });
-    
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('API logout error:', error);
-    return { success: false, error: 'Network error' };
-  }
-}
-
-// Add this new function that handles logout + redirect
-export async function logoutAndRedirect(locale: string) {
-  try {
-    const result = await apiLogout();
-    
-    if (result.success) {
-      // IMPORTANT: You need to throw a redirect, not return it
-      throw {
-        type: 'redirect',
-        url: `/${locale}/auth/login`
-      };
-    }
-    
-    return { success: false };
-  } catch (error: any) {
-    if (error.type === 'redirect') {
-      throw error; // Re-throw redirect errors
-    }
-    return { success: false, error: error.message };
-  }
-}

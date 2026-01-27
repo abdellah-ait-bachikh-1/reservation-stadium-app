@@ -1,17 +1,21 @@
 import TestNotificationsPage from "@/components/dashboard/TestNotificationsPage";
 import { redirect } from "@/i18n/navigation";
-import { apiLogout, isAuthenticatedUserExistsInDB } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 import { getLocale } from "next-intl/server";
 
-const DashboardHomePage = async () => {
-  const locale = await getLocale();
-  const authenticatedUser = await isAuthenticatedUserExistsInDB()
-
-  if (!authenticatedUser) {
-    await apiLogout()
-    redirect({ locale: locale, href: "/auth/login" })
+const DashboardHomePage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale } = await params
+   const session = await getSession()
+  if (!session || !session.user) {
+    redirect({ locale: locale, href: "/" })
+    return
   }
+  if (session.user.role !== "ADMIN") {
+    return <div>Club Noptificatoions  page</div>
+
+  }
+
   return <TestNotificationsPage />;
 };
 

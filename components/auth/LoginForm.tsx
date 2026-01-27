@@ -13,20 +13,20 @@ import { useFormValidation } from "@/hooks/useFormValidation";
 import { addToast } from "@heroui/toast";
 import { signIn } from "next-auth/react";
 import { getLocalizedValidationMessage } from "@/utils/validation";
+import { useQueryClient } from "@tanstack/react-query";
 const LoginForm = () => {
   const locale = useLocale();
   const t = useTypedTranslations();
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordRef = useRef<HTMLInputElement>(null);
-
+ 
   const {
     hasError,
     getErrorMessages,
@@ -120,6 +120,8 @@ const LoginForm = () => {
         description: t("common.toast.error.loginFailed"),
       });
     } else if (result?.ok) {
+            queryClient.invalidateQueries({ queryKey: ['current-user'] });
+
       setFormData({
         email: "",
         password: "",
