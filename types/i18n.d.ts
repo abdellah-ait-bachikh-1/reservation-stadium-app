@@ -471,8 +471,10 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.annualTotal'
     | 'pages.dashboard.home.revenueTrends.collectionRate'
     | 'pages.dashboard.home.revenueTrends.description'
+    | 'pages.dashboard.home.revenueTrends.enAttente'
     | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
     | 'pages.dashboard.home.revenueTrends.monthlyChange'
+    | 'pages.dashboard.home.revenueTrends.monthlyPending'
     | 'pages.dashboard.home.revenueTrends.monthlyRevenue'
     | 'pages.dashboard.home.revenueTrends.monthlySingleSession'
     | 'pages.dashboard.home.revenueTrends.monthlySubscription'
@@ -483,6 +485,7 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.overdueAnnual'
     | 'pages.dashboard.home.revenueTrends.paid'
     | 'pages.dashboard.home.revenueTrends.paidAnnual'
+    | 'pages.dashboard.home.revenueTrends.pendingAnnual'
     | 'pages.dashboard.home.revenueTrends.singleSessionAnnual'
     | 'pages.dashboard.home.revenueTrends.subscriptionAnnual'
     | 'pages.dashboard.home.revenueTrends.title'
@@ -1477,7 +1480,10 @@ export const _TranslationNamespaces = {
     "monthlySingleSession",
     "noData",
     "paid",
-    "overdue"
+    "overdue",
+    "pendingAnnual",
+    "enAttente",
+    "monthlyPending"
   ],
   "common": [
     "actions",

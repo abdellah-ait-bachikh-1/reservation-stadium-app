@@ -13,7 +13,8 @@ import {
   HiTicket,
   HiCheckCircle,
   HiExclamation,
-  HiCalendar
+  HiCalendar,
+  HiClock // ADD THIS IMPORT
 } from "react-icons/hi";
 import { useState, useMemo, useEffect } from "react";
 import { FiRefreshCcw, FiRefreshCw } from "react-icons/fi";
@@ -26,6 +27,7 @@ interface MonthlyRevenueData {
   singleSessionRevenue: number;
   paidAmount: number;
   overdueAmount: number;
+  pendingAmount: number; 
   collectionRate: number;
 }
 
@@ -35,8 +37,7 @@ interface RevenueTrendsChartProps {
   onYearChange?: (year: number) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
-    availableYears?: number[]; // ADD THIS
-
+  availableYears?: number[];
 }
 
 interface CustomTooltipProps {
@@ -48,10 +49,9 @@ interface CustomTooltipProps {
     payload: MonthlyRevenueData;
   }>;
   label?: string;
-  
 }
 
-const CustomTooltip = ({ active, payload, label, }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   const t = useTypedTranslations();
 
   if (active && payload && payload.length) {
@@ -102,6 +102,15 @@ const CustomTooltip = ({ active, payload, label, }: CustomTooltipProps) => {
                 {data.overdueAmount.toLocaleString()} {t("common.currency.symbol")}
               </span>
             </div>
+            {/* ADD PENDING AMOUNT TO TOOLTIP */}
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {t("pages.dashboard.home.revenueTrends.pendingAnnual") || "Pending"}:
+              </span>
+              <span className="text-sm font-semibold text-yellow-500">
+                {data.pendingAmount?.toLocaleString() || 0} {t("common.currency.symbol")}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -116,8 +125,7 @@ export default function RevenueTrendsChart({
   onYearChange,
   onRefresh,
   isRefreshing = false,
-    availableYears = [], // ADD THIS
-
+  availableYears = [],
 }: RevenueTrendsChartProps) {
   const t = useTypedTranslations();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
@@ -126,6 +134,7 @@ export default function RevenueTrendsChart({
     subscription: true,
     singleSession: true,
   });
+  
   // Sync selectedYear with prop changes
   useEffect(() => {
     setSelectedYear(currentYear);
@@ -140,12 +149,11 @@ export default function RevenueTrendsChart({
     onRefresh?.();
   };
 
- const yearOptions = useMemo(() => {
+  const yearOptions = useMemo(() => {
     if (availableYears && availableYears.length > 0) {
       return availableYears;
     }
     
-    // Fallback to generated years
     const currentYearNow = new Date().getFullYear();
     const startYear = 2026;
     return Array.from(
@@ -166,6 +174,7 @@ export default function RevenueTrendsChart({
         totalSingleSession: 0,
         totalPaid: 0,
         totalOverdue: 0,
+        totalPending: 0, // ADD THIS
         collectionRate: 0,
         revenueChange: 0,
       };
@@ -176,11 +185,12 @@ export default function RevenueTrendsChart({
     const totalSingleSession = data.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
     const totalPaid = data.reduce((sum, item) => sum + item.paidAmount, 0);
     const totalOverdue = data.reduce((sum, item) => sum + item.overdueAmount, 0);
+    const totalPending = data.reduce((sum, item) => sum + (item.pendingAmount || 0), 0); // ADD THIS
 
-    const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
+    // Update collection rate calculation to consider pending
+    const expectedRevenue = totalPaid + totalOverdue + totalPending;
+    const collectionRate = expectedRevenue > 0 ? Math.round((totalPaid / expectedRevenue) * 100) : 0;
 
-    // Note: For real year-over-year comparison, you'd need previous year data from backend
-    // For now, we'll return 0
     const revenueChange = 0;
 
     return {
@@ -189,6 +199,7 @@ export default function RevenueTrendsChart({
       totalSingleSession,
       totalPaid,
       totalOverdue,
+      totalPending, // ADD THIS
       collectionRate,
       revenueChange,
     };
@@ -234,13 +245,11 @@ export default function RevenueTrendsChart({
   const chartData = useMemo(() => {
     const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    // Create a map of existing data by month
     const dataMap = new Map<string, MonthlyRevenueData>();
     data.forEach(item => {
       dataMap.set(item.month, item);
     });
 
-    // Create array with all 12 months, filling missing ones with 0 values
     return allMonths.map(month => {
       const existingData = dataMap.get(month);
       if (existingData) {
@@ -257,6 +266,7 @@ export default function RevenueTrendsChart({
         singleSessionRevenue: 0,
         paidAmount: 0,
         overdueAmount: 0,
+        pendingAmount: 0, // ADD THIS
         collectionRate: 0,
       };
     });
@@ -328,7 +338,8 @@ export default function RevenueTrendsChart({
 
       <CardBody>
         {/* Summary Stats - ANNUAL TOTALS for Selected Year */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+        {/* CHANGE grid-cols-5 to grid-cols-6 and add sm:grid-cols-2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
           {/* Annual Total Revenue Card */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -438,6 +449,10 @@ export default function RevenueTrendsChart({
             </div>
             <p className="text-xs text-green-600 font-medium mt-1 rtl:text-right">
               {annualStats.collectionRate}% {t("pages.dashboard.home.revenueTrends.collectionRate")}
+              <br />
+              <span className="text-xs text-gray-500">
+                ({annualStats.totalPaid.toLocaleString()} / {(annualStats.totalPaid + annualStats.totalOverdue + annualStats.totalPending).toLocaleString()})
+              </span>
             </p>
           </div>
 
@@ -464,6 +479,32 @@ export default function RevenueTrendsChart({
               {annualStats.totalRevenue > 0 
                 ? Math.round((annualStats.totalOverdue / annualStats.totalRevenue) * 100)
                 : 0}% {t("pages.dashboard.home.revenueTrends.outstanding")}
+            </p>
+          </div>
+
+          {/* ADD THIS NEW CARD - Annual Pending Amount Card */}
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-900/10 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
+                  {t("pages.dashboard.home.revenueTrends.pendingAnnual") || "Pending"}
+                </p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-1 rtl:text-right">
+                  {annualStats.totalPending.toLocaleString()} {t("common.currency.symbol")}
+                </p>
+                <div className="flex items-center gap-1 mt-2 rtl:text-right">
+                  <HiCalendar className="w-3 h-3 text-gray-400" />
+                  <span className="text-xs text-gray-500 rtl:text-right">
+                    {selectedYear}
+                  </span>
+                </div>
+              </div>
+              <HiClock className="w-8 h-8 text-yellow-600" />
+            </div>
+            <p className="text-xs text-yellow-600 font-medium mt-1 rtl:text-right">
+              {annualStats.totalRevenue > 0 
+                ? Math.round((annualStats.totalPending / annualStats.totalRevenue) * 100)
+                : 0}% {t("pages.dashboard.home.revenueTrends.enAttente") || "pending"}
             </p>
           </div>
         </div>

@@ -679,7 +679,10 @@
           "monthlySingleSession": "Monthly Single Session",
            "noData": "No revenue data available",
           "paid": "Paid",
-          "overdue": "Overdue"
+          "overdue": "Overdue",
+          "pendingAnnual": "Pending",
+        "enAttente": "pending",
+        "monthlyPending": "Monthly Pending"
         }
       },
       "notifications": {}

@@ -679,7 +679,10 @@
           "monthlySingleSession": "Session Unique Mensuelle",
            "noData": "Aucune donnée de revenu disponible",
           "paid": "Payé",
-          "overdue": "En retard"
+          "overdue": "En retard",
+          "pendingAnnual": "En Attente",
+        "enAttente": "en attente",
+        "monthlyPending": "En attente mensuelle"
         }
       }
     }

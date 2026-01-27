@@ -91,14 +91,32 @@ function getStaticDashboardData(): DashboardData {
     },
     overduePayments: [],
     reservationsByMonth: [],
-    revenueByMonth: [],
+    revenueByMonth: Array.from({ length: 12 }, (_, i) => ({
+      month: new Date(2000, i, 1).toLocaleDateString("en-US", { month: "short" }),
+      totalRevenue: 0,
+      subscriptionRevenue: 0,
+      singleSessionRevenue: 0,
+      paidAmount: 0,
+      overdueAmount: 0,
+      pendingAmount: 0, // ADD THIS
+      collectionRate: 0,
+    })),
     reservationsByStatus: [],
-    revenueTrends: [],
+    revenueTrends: Array.from({ length: 12 }, (_, i) => ({
+      month: new Date(2000, i, 1).toLocaleDateString("en-US", { month: "short" }),
+      totalRevenue: 0,
+      subscriptionRevenue: 0,
+      singleSessionRevenue: 0,
+      paidAmount: 0,
+      overdueAmount: 0,
+      pendingAmount: 0, // ADD THIS
+      collectionRate: 0,
+    })),
     pendingUserApprovals: [],
     revenueByStadium: [],
     availableYears: Array.from(
       { length: Math.max(0, currentYear - startYear + 1) },
       (_, i) => startYear + i,
-    ).reverse(), // ADD THIS
+    ).reverse(),
   };
 }

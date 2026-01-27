@@ -75,6 +75,7 @@ export interface MonthlyRevenueData {
   singleSessionRevenue: number;
   paidAmount: number;
   overdueAmount: number;
+   pendingAmount: number;
   collectionRate: number;
 }
 
@@ -912,7 +913,13 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
   try {
     console.log(`Fetching revenue by month for year: ${year}`);
 
-    // Create array for all 12 months
+    // Validate year is reasonable
+    const currentYear = new Date().getFullYear();
+    if (year < 2020 || year > currentYear) {
+      year = currentYear;
+    }
+
+    // Create array for all 12 months - ADD pendingAmount
     const monthlyData: MonthlyRevenueData[] = Array.from(
       { length: 12 },
       (_, i) => ({
@@ -922,21 +929,30 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
         singleSessionRevenue: 0,
         paidAmount: 0,
         overdueAmount: 0,
+        pendingAmount: 0, // ADD THIS
         collectionRate: 0,
       }),
     );
 
-    // 1. Get subscription payments for the SPECIFIED YEAR - use year field for subscription payments
+    // Define date range for the entire year
+    const yearStartDate = new Date(year, 0, 1);
+    const yearEndDate = new Date(year, 11, 31, 23, 59, 59, 999);
+
+    console.log(`Year range: ${yearStartDate.toISOString()} to ${yearEndDate.toISOString()}`);
+
+    // 1. Get ALL subscription payments for the SPECIFIED YEAR
     const monthlyPaymentsData = await db
       .select({
-        month: monthlyPayments.month, // Use month field from table
+        month: monthlyPayments.month,
         amount: sum(monthlyPayments.amount),
         status: monthlyPayments.status,
       })
       .from(monthlyPayments)
       .where(
         and(
-          eq(monthlyPayments.year, year), // Filter by year field, not created_at
+          eq(monthlyPayments.year, year),
+          gte(monthlyPayments.createdAt, yearStartDate.toISOString()),
+          lte(monthlyPayments.createdAt, yearEndDate.toISOString()),
         ),
       )
       .groupBy(
@@ -944,9 +960,24 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
         monthlyPayments.status,
       );
 
-    console.log('Subscription payments for year:', year, monthlyPaymentsData);
+    console.log(`\nSubscription payments found for ${year}:`);
+    let totalPaid = 0;
+    let totalOverdue = 0;
+    let totalPending = 0;
+    
+    monthlyPaymentsData.forEach(item => {
+      const amount = Number(item.amount) || 0;
+      console.log(`  Month ${item.month}, Status: ${item.status}, Amount: ${amount}`);
+      
+      if (item.status === "PAID") totalPaid += amount;
+      else if (item.status === "OVERDUE") totalOverdue += amount;
+      else if (item.status === "PENDING") totalPending += amount;
+    });
+    
+    console.log(`Total Paid: ${totalPaid}, Total Overdue: ${totalOverdue}, Total Pending: ${totalPending}`);
+    console.log(`Total Subscription Amount: ${totalPaid + totalOverdue + totalPending}`);
 
-    // 2. Get single session payments for the specified year - use created_at
+    // 2. Get single session payments for the specified year
     const cashPaymentsData = await db
       .select({
         month: sql<string>`MONTH(${cashPaymentRecords.createdAt})`,
@@ -955,13 +986,21 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       .from(cashPaymentRecords)
       .where(
         and(
-          sql`YEAR(${cashPaymentRecords.createdAt}) = ${year}`,
+          gte(cashPaymentRecords.createdAt, yearStartDate.toISOString()),
+          lte(cashPaymentRecords.createdAt, yearEndDate.toISOString()),
           isNotNull(cashPaymentRecords.reservationId),
         ),
       )
       .groupBy(sql`MONTH(${cashPaymentRecords.createdAt})`);
 
-    console.log('Single session payments for year:', year, cashPaymentsData);
+    console.log(`\nSingle session payments found for ${year}:`);
+    let totalCash = 0;
+    cashPaymentsData.forEach(item => {
+      const amount = Number(item.amount) || 0;
+      totalCash += amount;
+      console.log(`  Month ${item.month}, Amount: ${amount}`);
+    });
+    console.log(`Total Cash Amount: ${totalCash}`);
 
     // Process subscription payments
     monthlyPaymentsData.forEach((item) => {
@@ -977,6 +1016,10 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
           monthlyData[monthIndex].paidAmount += amount;
         } else if (item.status === "OVERDUE") {
           monthlyData[monthIndex].overdueAmount += amount;
+        } else if (item.status === "PENDING") {
+          monthlyData[monthIndex].pendingAmount += amount;
+        } else {
+          console.log(`  WARNING: Unhandled status '${item.status}' for month ${item.month}, amount: ${amount}`);
         }
       }
     });
@@ -990,28 +1033,45 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
         // Add to single session revenue
         monthlyData[monthIndex].singleSessionRevenue += amount;
         monthlyData[monthIndex].totalRevenue += amount;
-        monthlyData[monthIndex].paidAmount += amount; // Cash payments are considered paid
+        monthlyData[monthIndex].paidAmount += amount;
       }
     });
 
     // Calculate collection rate for each month
     monthlyData.forEach((month) => {
+      // Collection rate = Paid / (Paid + Overdue + Pending)
+      const expectedRevenue = month.paidAmount + month.overdueAmount + month.pendingAmount;
       month.collectionRate =
-        month.totalRevenue > 0
-          ? Math.round((month.paidAmount / month.totalRevenue) * 100)
+        expectedRevenue > 0
+          ? Math.round((month.paidAmount / expectedRevenue) * 100)
           : 0;
     });
 
+    // Calculate totals for verification
+    const totalRevenue = monthlyData.reduce((sum, month) => sum + month.totalRevenue, 0);
+    const totalPaidAll = monthlyData.reduce((sum, month) => sum + month.paidAmount, 0);
+    const totalOverdueAll = monthlyData.reduce((sum, month) => sum + month.overdueAmount, 0);
+    const totalPendingAll = monthlyData.reduce((sum, month) => sum + month.pendingAmount, 0);
+
+    console.log(`\n=== VERIFICATION ===`);
+    console.log(`Total Revenue: ${totalRevenue}`);
+    console.log(`Total Paid: ${totalPaidAll}`);
+    console.log(`Total Overdue: ${totalOverdueAll}`);
+    console.log(`Total Pending: ${totalPendingAll}`);
+    console.log(`Sum of all categories: ${totalPaidAll + totalOverdueAll + totalPendingAll}`);
+    console.log(`Difference: ${totalRevenue - (totalPaidAll + totalOverdueAll + totalPendingAll)}`);
+    
+    if (totalRevenue !== (totalPaidAll + totalOverdueAll + totalPendingAll)) {
+      console.log(`\n⚠️  WARNING: Data mismatch!`);
+    }
+
     // DEBUG: Log final results
-    console.log(`Final revenue data for ${year}:`, monthlyData.map((m, i) => ({
-      monthIndex: i,
-      month: m.month,
-      totalRevenue: m.totalRevenue,
-      subscriptionRevenue: m.subscriptionRevenue,
-      singleSessionRevenue: m.singleSessionRevenue,
-      paidAmount: m.paidAmount,
-      overdueAmount: m.overdueAmount,
-    })));
+    console.log(`\nFinal revenue data for ${year}:`);
+    monthlyData.forEach((m, i) => {
+      if (m.totalRevenue > 0 || m.subscriptionRevenue > 0 || m.singleSessionRevenue > 0) {
+        console.log(`  ${m.month}: Total=${m.totalRevenue}, Sub=${m.subscriptionRevenue}, Cash=${m.singleSessionRevenue}, Paid=${m.paidAmount}, Overdue=${m.overdueAmount}, Pending=${m.pendingAmount}, Rate=${m.collectionRate}%`);
+      }
+    });
 
     return monthlyData;
   } catch (error) {
@@ -1023,6 +1083,7 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       singleSessionRevenue: 0,
       paidAmount: 0,
       overdueAmount: 0,
+      pendingAmount: 0, // ADD THIS
       collectionRate: 0,
     }));
   }

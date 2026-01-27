@@ -679,7 +679,10 @@
           "monthlySingleSession": "الجلسة المفردة الشهرية",
            "noData": "لا توجد بيانات إيرادات متاحة",
           "paid": "مدفوع",
-          "overdue": "متأخر"
+          "overdue": "متأخر",
+          "pendingAnnual": "في الانتظار",
+        "enAttente": "في الانتظار",
+        "monthlyPending": "في الانتظار الشهري"
         }
       }
     }

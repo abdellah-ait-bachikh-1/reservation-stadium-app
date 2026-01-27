@@ -76,6 +76,7 @@ overduePayments: Array<{
     singleSessionRevenue: number;
     paidAmount: number;
     overdueAmount: number;
+    pendingAmount: number; 
     collectionRate: number;
   }>;
 
@@ -91,6 +92,7 @@ overduePayments: Array<{
     singleSessionRevenue: number;
     paidAmount: number;
     overdueAmount: number;
+    pendingAmount: number;
     collectionRate: number;
   }>;
     availableYears: number[]; // ADD THIS
