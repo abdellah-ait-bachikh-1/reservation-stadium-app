@@ -724,6 +724,19 @@
           "title": "Users",
           "description": "Manage users and their permissions"
         },
+        "viewActive": "View Active Users",
+        "filterByDeleted": "Deleted Status",
+        "allDeletedStatus": "All Status",
+        "deleted": "Deleted",
+        "notDeleted": "Not Deleted",
+        "viewDeleted": "View Deleted Users",
+        "deletedStatusSelected": "deleted status selected",
+        "deletedUsers": "Deleted Users",
+        "activeUsers": "Active Users",
+        "viewClubs": "View clubs ({count})",
+        "clubsForUser": "Clubs for {name}",
+        "totalClubs": "Total: {count} club(s)",
+        "noSport": "No sport assigned",
         "clubs": "Clubs",
         "clubsCount": "{count} clubs",
         "noClubs": "No clubs",
@@ -763,8 +776,7 @@
           "active": "Active Users",
           "pending": "Pending Approval",
           "unverified": "Unverified",
-                    "withClubs": "With Clubs"
-
+          "withClubs": "With Clubs"
         }
       },
       "notifications": {}
@@ -837,11 +849,14 @@
       "tryAgain": "Try Again",
       "decline": "Decline",
       "resendVerification": "Resend Verification",
-      "restore": "Restore",
-      "permanentDelete": "Permanent Delete",
       "clear": "Clear Selection",
       "retry": "Try Again",
-      "clearFilters": "Clear Filters"
+      "clearFilters": "Clear Filters",
+      "softDelete": "Move to Trash",
+      "permanentDelete": "Delete Permanently",
+      "restore": "Restore",
+      "viewDeleted": "View Deleted",
+      "viewActive": "View Active"
     },
     "theme": {
       "light": "Light",
@@ -1032,7 +1047,8 @@
       "active": "Active",
       "pendingApproval": "Pending Approval",
       "deleted": "Deleted",
-      "filtering": "filtering"
+      "filtering": "filtering",
+      "trashed": "In Trash"
     },
     "currency": {
       "symbol": "MAD",
@@ -1082,6 +1098,11 @@
       "createdShort": "Created",
       "emailVerified": "Email verified",
       "emailVerifiedShort": "Email"
+    },
+    "mobile": {
+      "scrollHorizontal": "← Scroll horizontally for more details →",
+      "scrollLeft": "Scroll left",
+      "scrollRight": "Scroll right"
     }
   }
 }

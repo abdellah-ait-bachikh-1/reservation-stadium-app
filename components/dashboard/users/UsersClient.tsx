@@ -1,3 +1,4 @@
+// UsersClient.tsx - Updated with resend verification button and translated scroll
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
@@ -6,7 +7,7 @@ import { useUsers, useUserActions } from "@/hooks/dashboard/useUsers";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection } from "@heroui/dropdown";
 import { Checkbox } from "@heroui/checkbox";
 import { Chip } from "@heroui/chip";
 import { Spinner } from "@heroui/spinner";
@@ -21,9 +22,12 @@ import {
     HiExclamationCircle,
     HiBuildingStorefront,
     HiTrophy,
+
+    HiArchiveBox,
+    HiArchiveBoxXMark,
 } from "react-icons/hi2";
 import { motion } from "framer-motion";
-import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiArchive, HiDotsVertical, HiFilter } from "react-icons/hi";
+import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
 
@@ -39,7 +43,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const [searchInput, setSearchInput] = useState("");
     const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
     const [selectedStatuses, setSelectedStatuses] = useState<Set<string>>(new Set());
-    const [showDeleted, setShowDeleted] = useState(false);
+    const [deletedFilter, setDeletedFilter] = useState<"all" | "deleted" | "notDeleted">("notDeleted");
     const [clubSearchInput, setClubSearchInput] = useState("");
     const [selectedSports, setSelectedSports] = useState<Set<string>>(new Set());
 
@@ -60,7 +64,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
             page,
             limit,
             search: debouncedSearch || undefined,
-            isDeleted: showDeleted,
+            deletedFilter,
             clubSearch: debouncedClubSearch || undefined,
         };
 
@@ -98,7 +102,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
         }
 
         return params;
-    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, showDeleted, debouncedClubSearch, selectedSports]);
+    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, deletedFilter, debouncedClubSearch, selectedSports]);
 
     // Fetch users
     const {
@@ -156,20 +160,20 @@ export default function UsersClient({ locale }: UsersClientProps) {
         }
     };
 
-const handleSelectAll = () => {
-  if (!data?.users || !data?.filteredUserIds) return;
+    const handleSelectAll = () => {
+        if (!data?.users || !data?.filteredUserIds) return;
 
-  // Check if all filtered users are already selected
-  const allFilteredSelected = data.filteredUserIds.every(id => selectedUsers.has(id));
-  
-  if (allFilteredSelected) {
-    // If all filtered users are selected, deselect all
-    setSelectedUsers(new Set());
-  } else {
-    // Select ALL filtered user IDs, not just current page
-    setSelectedUsers(new Set(data.filteredUserIds));
-  }
-};
+        // Check if all filtered users are already selected
+        const allFilteredSelected = data.filteredUserIds.every(id => selectedUsers.has(id));
+
+        if (allFilteredSelected) {
+            // If all filtered users are selected, deselect all
+            setSelectedUsers(new Set());
+        } else {
+            // Select ALL filtered user IDs, not just current page
+            setSelectedUsers(new Set(data.filteredUserIds));
+        }
+    };
 
     const handleSelectUser = (userId: string) => {
         const newSelected = new Set(selectedUsers);
@@ -202,6 +206,13 @@ const handleSelectAll = () => {
         setIsFiltering(true);
     };
 
+    // Handle deleted filter change
+    const handleDeletedFilterChange = (value: "all" | "deleted" | "notDeleted") => {
+        setDeletedFilter(value);
+        setPage(1);
+        setIsFiltering(true);
+    };
+
     // Handle search change
     const handleSearchChange = (value: string) => {
         setSearchInput(value);
@@ -212,13 +223,6 @@ const handleSelectAll = () => {
     const handleClubSearchChange = (value: string) => {
         setClubSearchInput(value);
         setPage(1);
-    };
-
-    // Handle show deleted change
-    const handleShowDeletedChange = (value: boolean) => {
-        setShowDeleted(value);
-        setPage(1);
-        setIsFiltering(true);
     };
 
     // Handle page change
@@ -270,6 +274,11 @@ const handleSelectAll = () => {
         if (window.confirm(t("pages.dashboard.users.confirmPermanentDelete"))) {
             actions.permanentDeleteUser.mutate(userId);
         }
+    };
+
+    // NEW: Handle resend verification button action
+    const handleResendVerificationBtn = (userId: string) => {
+        actions.resendVerification.mutate(userId);
     };
 
     // Format date
@@ -332,6 +341,20 @@ const handleSelectAll = () => {
             return selectedSportNames.join(", ");
         }
         return `${selectedSportNames.length} ${t("pages.dashboard.users.sportsSelected")}`;
+    };
+
+    // Get deleted filter display text
+    const getDeletedFilterText = () => {
+        switch (deletedFilter) {
+            case "all":
+                return t("pages.dashboard.users.allDeletedStatus");
+            case "deleted":
+                return t("pages.dashboard.users.deleted");
+            case "notDeleted":
+                return t("pages.dashboard.users.notDeleted");
+            default:
+                return t("pages.dashboard.users.notDeleted");
+        }
     };
 
     // Get sport name based on locale
@@ -418,7 +441,6 @@ const handleSelectAll = () => {
                             </p>
                             <p className="text-2xl font-bold text-green-900 dark:text-white">
                                 {data?.stats?.active || 0}
-
                             </p>
                         </div>
                         <HiCheckCircle className="w-8 h-8 text-green-500" />
@@ -460,7 +482,8 @@ const handleSelectAll = () => {
                                 {t("pages.dashboard.users.stats.withClubs")}
                             </p>
                             <p className="text-2xl font-bold text-purple-900 dark:text-white">
-                                {data?.stats?.withClubs || 0}                            </p>
+                                {data?.stats?.withClubs || 0}
+                            </p>
                         </div>
                         <HiBuildingStorefront className="w-8 h-8 text-purple-500" />
                     </div>
@@ -508,7 +531,7 @@ const handleSelectAll = () => {
                             size="lg"
                             onPress={handleManualRefetch}
                             isDisabled={isFiltering}
-                            className="self-start"
+                            className=" w-full md:w-auto md:self-start "
                         >
                             <HiRefresh className={cn("w-4 h-4", isFiltering && "animate-spin")} />
                         </Button>
@@ -518,7 +541,7 @@ const handleSelectAll = () => {
                     <div className="flex flex-wrap gap-2 items-center">
                         {/* Role Multi-Select */}
                         <Select
-                            className="w-40"
+                            className="w-full md:w-40"
                             label={t("pages.dashboard.users.filterByRole")}
                             selectionMode="multiple"
                             selectedKeys={selectedRoles}
@@ -535,7 +558,7 @@ const handleSelectAll = () => {
 
                         {/* Status Multi-Select */}
                         <Select
-                            className="w-40"
+                            className="w-full md:w-40"
                             label={t("pages.dashboard.users.filterByStatus")}
                             selectionMode="multiple"
                             selectedKeys={selectedStatuses}
@@ -552,9 +575,37 @@ const handleSelectAll = () => {
                             <SelectItem key="unverified">{t("common.status.unverified")}</SelectItem>
                         </Select>
 
+                        {/* Deleted Status Filter */}
+                        <Select
+                            className="w-full md:w-40"
+                            label={t("pages.dashboard.users.filterByDeleted")}
+                            selectedKeys={[deletedFilter]}
+                            onSelectionChange={(keys) => {
+                                const value = Array.from(keys)[0] as "all" | "deleted" | "notDeleted";
+                                handleDeletedFilterChange(value);
+                            }}
+                            size="sm"
+                            variant="flat"
+                            placeholder={getDeletedFilterText()}
+                            isDisabled={isFiltering}
+                            startContent={
+                                deletedFilter === "deleted" ? (
+                                    <HiArchiveBoxXMark className="w-4 h-4 text-red-500" />
+                                ) : deletedFilter === "all" ? (
+                                    <HiArchiveBox className="w-4 h-4 text-blue-500" />
+                                ) : (
+                                    <HiArchive className="w-4 h-4 text-green-500" />
+                                )
+                            }
+                        >
+                            <SelectItem key="notDeleted">{t("pages.dashboard.users.notDeleted")}</SelectItem>
+                            <SelectItem key="deleted">{t("pages.dashboard.users.deleted")}</SelectItem>
+                            <SelectItem key="all">{t("pages.dashboard.users.allDeletedStatus")}</SelectItem>
+                        </Select>
+
                         {/* Sports Multi-Select */}
                         <Select
-                            className="w-40"
+                            className="w-full md:w-40"
                             label={t("pages.dashboard.users.filterBySport")}
                             selectionMode="multiple"
                             selectedKeys={selectedSports}
@@ -635,6 +686,29 @@ const handleSelectAll = () => {
                         </div>
                     )}
 
+                    {/* Deleted Filter */}
+                    {deletedFilter !== "notDeleted" && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">{t("pages.dashboard.users.filterByDeleted")}:</span>
+                            <Chip
+                                size="sm"
+                                variant="flat"
+                                color={deletedFilter === "deleted" ? "danger" : "warning"}
+                                onClose={() => {
+                                    if (!isFiltering) {
+                                        setDeletedFilter("notDeleted");
+                                        setIsFiltering(true);
+                                    }
+                                }}
+                                isDisabled={isFiltering}
+                            >
+                                {deletedFilter === "deleted"
+                                    ? t("pages.dashboard.users.deleted")
+                                    : t("pages.dashboard.users.allDeletedStatus")}
+                            </Chip>
+                        </div>
+                    )}
+
                     {/* Selected Sports */}
                     {selectedSports.size > 0 && (
                         <div className="flex items-center gap-1">
@@ -686,7 +760,7 @@ const handleSelectAll = () => {
                     )}
 
                     {/* Clear All Filters Button */}
-                    {(selectedRoles.size > 0 || selectedStatuses.size > 0 || selectedSports.size > 0 || clubSearchInput) && (
+                    {(selectedRoles.size > 0 || selectedStatuses.size > 0 || selectedSports.size > 0 || clubSearchInput || deletedFilter !== "notDeleted") && (
                         <Button
                             size="sm"
                             variant="light"
@@ -696,6 +770,7 @@ const handleSelectAll = () => {
                                     setSelectedStatuses(new Set());
                                     setSelectedSports(new Set());
                                     setClubSearchInput("");
+                                    setDeletedFilter("notDeleted");
                                     setIsFiltering(true);
                                 }
                             }}
@@ -707,6 +782,7 @@ const handleSelectAll = () => {
                     )}
                 </div>
 
+           
                 {/* Bulk Actions */}
                 {selectedUsers.size > 0 && (
                     <motion.div
@@ -714,46 +790,90 @@ const handleSelectAll = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
                     >
-                       <span className="text-sm text-gray-600 dark:text-gray-400">
-  {t("pages.dashboard.users.selectedCount", { 
-    count: selectedUsers.size,
-    total: data?.filteredUserIds?.length || 0 
-  })}
-</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {t("pages.dashboard.users.selectedCount", {
+                                count: selectedUsers.size,
+                                total: data?.filteredUserIds?.length || 0
+                            })}
+                        </span>
                         <div className="flex gap-2 ml-auto">
-                            <Button
-                                size="sm"
-                                color="success"
-                                variant="flat"
-                                startContent={<HiCheckCircle className="w-4 h-4" />}
-                                onPress={() => handleBulkAction("approve")}
-                                isLoading={actions.bulkAction.isPending}
-                                isDisabled={isFiltering}
-                            >
-                                {t("common.actions.approve")}
-                            </Button>
-                            <Button
-                                size="sm"
-                                color="danger"
-                                variant="flat"
-                                startContent={<HiXCircle className="w-4 h-4" />}
-                                onPress={() => handleBulkAction("decline")}
-                                isLoading={actions.bulkAction.isPending}
-                                isDisabled={isFiltering}
-                            >
-                                {t("common.actions.decline")}
-                            </Button>
-                            <Button
-                                size="sm"
-                                color="warning"
-                                variant="flat"
-                                startContent={<HiTrash className="w-4 h-4" />}
-                                onPress={() => handleBulkAction("softDelete")}
-                                isLoading={actions.bulkAction.isPending}
-                                isDisabled={isFiltering}
-                            >
-                                {t("common.actions.delete")}
-                            </Button>
+                            {deletedFilter !== "deleted" && (
+                                <>
+                                    <Button
+                                        size="sm"
+                                        color="success"
+                                        variant="flat"
+                                        startContent={<HiCheckCircle className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("approve")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.approve")}
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        color="danger"
+                                        variant="flat"
+                                        startContent={<HiXCircle className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("decline")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.decline")}
+                                    </Button>
+
+                                    {/* ADDED: Resend Verification Bulk Action */}
+                                    <Button
+                                        size="sm"
+                                        color="warning"
+                                        variant="flat"
+                                        startContent={<HiMail className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("resendVerification")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.resendVerification")}
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        color="warning"
+                                        variant="flat"
+                                        startContent={<HiTrash className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("softDelete")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.softDelete")}
+                                    </Button>
+                                </>
+                            )}
+                            {deletedFilter === "deleted" && (
+                                <>
+                                    <Button
+                                        size="sm"
+                                        color="success"
+                                        variant="flat"
+                                        startContent={<HiArchive className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("restore")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.restore")}
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        color="danger"
+                                        variant="flat"
+                                        startContent={<HiTrash className="w-4 h-4" />}
+                                        onPress={() => handleBulkAction("permanentDelete")}
+                                        isLoading={actions.bulkAction.isPending}
+                                        isDisabled={isFiltering}
+                                    >
+                                        {t("common.actions.permanentDelete")}
+                                    </Button>
+                                </>
+                            )}
                             <Button
                                 size="sm"
                                 variant="flat"
@@ -766,18 +886,25 @@ const handleSelectAll = () => {
                     </motion.div>
                 )}
 
-                {/* Show Deleted Toggle */}
+                {/* Deleted Filter Info */}
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            isSelected={showDeleted}
-                            onValueChange={handleShowDeletedChange}
-                            isDisabled={isFiltering}
-                        >
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                {t("pages.dashboard.users.showDeleted")}
-                            </span>
-                        </Checkbox>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {deletedFilter === "deleted" ? (
+                            <div className="flex items-center gap-2">
+                                <HiArchiveBoxXMark className="w-4 h-4 text-red-500" />
+                                <span>{t("pages.dashboard.users.viewDeleted")}</span>
+                            </div>
+                        ) : deletedFilter === "all" ? (
+                            <div className="flex items-center gap-2">
+                                <HiArchiveBox className="w-4 h-4 text-blue-500" />
+                                <span>{t("pages.dashboard.users.allDeletedStatus")}</span>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <HiArchive className="w-4 h-4 text-green-500" />
+                                <span>{t("pages.dashboard.users.viewActive")}</span>
+                            </div>
+                        )}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                         {isFiltering ? (
@@ -800,335 +927,369 @@ const handleSelectAll = () => {
             <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm overflow-hidden">
                 {/* Mobile-friendly scroll container */}
                 <div className="overflow-x-auto">
-                    {/* Table Header - Fixed min-width for mobile scroll */}
-                    <div className="min-w-[1000px] grid grid-cols-13 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
-                        <div className="col-span-1">
-                          <Checkbox
-  isSelected={data?.filteredUserIds && data.filteredUserIds.length > 0 && 
-    data.filteredUserIds.every(id => selectedUsers.has(id))}
-  isIndeterminate={selectedUsers.size > 0 && 
-    data?.filteredUserIds && 
-    selectedUsers.size < data.filteredUserIds.length}
-  onValueChange={handleSelectAll}
-  isDisabled={isFiltering || !data?.filteredUserIds}
-/>
-                        </div>
-                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.name")}
-                        </div>
-                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.email")}
-                        </div>
-                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.clubs")}
-                        </div>
-                        <div className="col-span-1 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.role")}
-                        </div>
-                        <div className="col-span-2 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.status")}
-                        </div>
-                        <div className="col-span-1 font-medium text-gray-700 dark:text-gray-300">
-                            {t("pages.dashboard.users.columns.actions")}
-                        </div>
-                    </div>
+                    {/* Table with fixed width for mobile scroll */}
+                    <table className="min-w-[1000px] w-full">
+                        {/* Table Header */}
+                        <thead>
+                            <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
+                                <th className="p-4 text-left">
+                                    <Checkbox
+                                        isSelected={data?.filteredUserIds && data.filteredUserIds.length > 0 &&
+                                            data.filteredUserIds.every(id => selectedUsers.has(id))}
+                                        isIndeterminate={selectedUsers.size > 0 &&
+                                            data?.filteredUserIds &&
+                                            selectedUsers.size < data.filteredUserIds.length}
+                                        onValueChange={handleSelectAll}
+                                        isDisabled={isFiltering || !data?.filteredUserIds}
+                                    />
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.name")}
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.email")}
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.clubs")}
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.role")}
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.status")}
+                                </th>
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                    {t("pages.dashboard.users.columns.actions")}
+                                </th>
+                            </tr>
+                        </thead>
 
-                    {/* Table Body with Horizontal Scroll */}
-                    {users.length === 0 && !isFiltering ? (
-                        <div className="text-center py-12">
-                            <HiUsers className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                            <p className="text-gray-500 dark:text-gray-400">
-                                {t("pages.dashboard.users.noUsersFound")}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="min-w-[1000px] divide-y divide-gray-200 dark:divide-gray-700">
-                            {users.map((user) => (
-                                <motion.div
-                                    key={user.id}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="grid grid-cols-13 gap-4 p-4 hover:bg-gray-50 dark:hover:bg-zinc-900/30 transition-colors"
-                                >
-                                    {/* Checkbox */}
-                                    <div className="col-span-1 flex items-center">
-                                        <Checkbox
-                                            isSelected={selectedUsers.has(user.id)}
-                                            onValueChange={() => handleSelectUser(user.id)}
-                                            isDisabled={isFiltering}
-                                        />
-                                    </div>
+                        {/* Table Body */}
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {users.length === 0 && !isFiltering ? (
+                                <tr>
+                                    <td colSpan={7} className="p-12 text-center">
+                                        <HiUsers className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                                        <p className="text-gray-500 dark:text-gray-400">
+                                            {t("pages.dashboard.users.noUsersFound")}
+                                        </p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                users.map((user) => (
+                                    <motion.tr
+                                        key={user.id}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="hover:bg-gray-50 dark:hover:bg-zinc-900/30 transition-colors"
+                                    >
+                                        {/* Checkbox */}
+                                        <td className="p-4">
+                                            <Checkbox
+                                                isSelected={selectedUsers.has(user.id)}
+                                                onValueChange={() => handleSelectUser(user.id)}
+                                                isDisabled={isFiltering}
+                                            />
+                                        </td>
 
-                                    {/* Name */}
-                                    <div className="col-span-2 min-w-[120px]">
-                                        <div className="font-medium text-gray-900 dark:text-white truncate">
-                                            {user.name}
-                                        </div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
-                                            {user.phoneNumber}
-                                        </div>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            {t("pages.dashboard.users.joined")}: {formatDate(user.createdAt)}
-                                        </div>
-                                    </div>
-
-                                    {/* Email */}
-                                    <div className="col-span-2 min-w-[150px]">
-                                        <div className="text-gray-900 dark:text-white truncate">
-                                            {user.email}
-                                        </div>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            {user.preferredLocale}
-                                        </div>
-                                    </div>
-
-                                    {/* Clubs */}
-                                    <div className="col-span-2 min-w-[150px]">
-                                        {user.clubs && user.clubs.length > 0 ? (
-                                            <Dropdown placement="bottom-start">
-                                                <DropdownTrigger>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="justify-start w-full"
-                                                        startContent={<HiBuildingStorefront className="w-4 h-4" />}
-                                                        isDisabled={isFiltering}
-                                                    >
-                                                        <span className="truncate">
-                                                            {user.clubs.length === 1
-                                                                ? user.clubs[0].name
-                                                                : t("pages.dashboard.users.clubsCount", { count: user.clubs.length })
-                                                            }
-                                                        </span>
-                                                    </Button>
-                                                </DropdownTrigger>
-                                                <DropdownMenu
-                                                    aria-label="User clubs"
-                                                    className="max-h-64 overflow-y-auto"
-                                                >
-                                                    {user.clubs.map((club) => (
-                                                        <DropdownItem key={club.id}>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium">{club.name}</span>
-                                                                {club.sport && (
-                                                                    <span className="text-xs text-gray-500">
-                                                                        {getSportName(club.sport)}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        </DropdownItem>
-                                                    ))}
-                                                </DropdownMenu>
-                                            </Dropdown>
-                                        ) : (
-                                            <span className="text-gray-400 text-sm">
-                                                {t("pages.dashboard.users.noClubs")}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {/* Role */}
-                                    <div className="col-span-1 min-w-[80px]">
-                                        <Chip
-                                            color={user.role === "ADMIN" ? "primary" : "secondary"}
-                                            variant="flat"
-                                            size="sm"
-                                            className="truncate"
-                                        >
-                                            {user.role === "ADMIN"
-                                                ? t("common.roles.admin")
-                                                : t("common.roles.club")}
-                                        </Chip>
-                                    </div>
-
-                                    {/* Status */}
-                                    <div className="col-span-2 min-w-[120px]">
-                                        <div className="flex flex-col gap-1">
-                                            {!user.isApproved && (
-                                                <Chip color="warning" variant="flat" size="sm" className="truncate">
-                                                    {t("common.status.pendingApproval")}
-                                                </Chip>
-                                            )}
-                                            {!user.emailVerifiedAt && (
-                                                <Chip color="danger" variant="flat" size="sm" className="truncate">
-                                                    {t("common.status.unverified")}
-                                                </Chip>
-                                            )}
+                                        {/* Name */}
+                                        <td className="p-4 min-w-[150px]">
+                                            <div className="font-medium text-gray-900 dark:text-white truncate">
+                                                {user.name}
+                                            </div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+                                                {user.phoneNumber}
+                                            </div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                {t("pages.dashboard.users.joined")}: {formatDate(user.createdAt)}
+                                            </div>
                                             {user.deletedAt && (
-                                                <Chip color="danger" variant="flat" size="sm" className="truncate">
-                                                    {t("common.status.deleted")}
-                                                </Chip>
+                                                <div className="text-xs text-red-500 dark:text-red-400 mt-1">
+                                                    {t("common.status.trashed")}: {formatDate(user.deletedAt)}
+                                                </div>
                                             )}
-                                            {user.isApproved && user.emailVerifiedAt && !user.deletedAt && (
-                                                <Chip color="success" variant="flat" size="sm" className="truncate">
-                                                    {t("common.status.active")}
-                                                </Chip>
+                                        </td>
+
+                                        {/* Email */}
+                                        <td className="p-4 min-w-[200px]">
+                                            <div className="text-gray-900 dark:text-white truncate">
+                                                {user.email}
+                                            </div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                {user.preferredLocale}
+                                            </div>
+                                        </td>
+
+                                        {/* Clubs - Icon only with dropdown */}
+                                        <td className="p-4">
+                                            {user.clubs && user.clubs.length > 0 ? (
+                                                <Dropdown placement="bottom-start">
+                                                    <DropdownTrigger>
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="flat"
+                                                            isDisabled={isFiltering}
+                                                            className="font-medium"
+                                                            radius="lg"
+                                                            color="secondary"
+                                                        >
+                                                            {user.clubs.length}
+                                                        </Button>
+                                                    </DropdownTrigger>
+                                                    <DropdownMenu
+                                                        aria-label="User clubs"
+                                                        className="max-w-sm max-h-64 overflow-y-auto"
+                                                        variant="flat"
+                                                    >
+                                                        <DropdownSection
+                                                            title={t('pages.dashboard.users.clubsCount', { count: user.clubs.length })}
+                                                        >
+                                                            {user.clubs.map((club) => (
+                                                                <DropdownItem
+                                                                    key={club.id}
+                                                                    isReadOnly
+                                                                    className="opacity-100 hover:bg-transparent cursor-default py-2"
+                                                                >
+                                                                    <div className="flex items-center justify-between gap-3">
+                                                                        <div className="flex flex-col flex-1 min-w-0">
+                                                                            <span className="font-medium text-sm truncate">{club.name}</span>
+                                                                            {club.sport && (
+                                                                                <span className="text-xs text-gray-500 mt-0.5">
+                                                                                    {getSportName(club.sport)}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </DropdownItem>
+                                                            ))}
+                                                        </DropdownSection>
+                                                    </DropdownMenu>
+                                                </Dropdown>
+                                            ) : (
+                                                <Button
+                                                    isIconOnly
+                                                    size="sm"
+                                                    variant="flat"
+                                                    isDisabled={true}
+                                                    className="font-medium"
+                                                    radius="lg"
+                                                >
+                                                    0
+                                                </Button>
                                             )}
-                                        </div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="col-span-1 min-w-[80px]">
-                                        <div className="flex items-center gap-1">
-                                            {/* Edit */}
-                                            <Button
-                                                isIconOnly
+                                        </td>
+                                        {/* Role */}
+                                        <td className="p-4 min-w-[100px]">
+                                            <Chip
+                                                color={user.role === "ADMIN" ? "primary" : "secondary"}
+                                                variant="flat"
                                                 size="sm"
-                                                variant="light"
-                                                as="a"
-                                                href={`/dashboard/users/${user.id}/edit`}
-                                                isDisabled={isFiltering}
+                                                className="truncate"
                                             >
-                                                <HiPencil className="w-4 h-4" />
-                                            </Button>
+                                                {user.role === "ADMIN"
+                                                    ? t("common.roles.admin")
+                                                    : t("common.roles.club")}
+                                            </Chip>
+                                        </td>
 
-                                            {/* View Details */}
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="light"
-                                                as="a"
-                                                href={`/dashboard/users/${user.id}`}
-                                                isDisabled={isFiltering}
-                                            >
-                                                <HiEye className="w-4 h-4" />
-                                            </Button>
+                                        {/* Status */}
+                                        <td className="p-4 min-w-[150px]">
+                                            <div className="flex flex-col gap-1">
+                                                {user.deletedAt ? (
+                                                    <Chip color="danger" variant="flat" size="sm" className="truncate">
+                                                        {t("common.status.trashed")}
+                                                    </Chip>
+                                                ) : (
+                                                    <>
+                                                        {!user.isApproved && (
+                                                            <Chip color="warning" variant="flat" size="sm" className="truncate">
+                                                                {t("common.status.pendingApproval")}
+                                                            </Chip>
+                                                        )}
+                                                        {!user.emailVerifiedAt && (
+                                                            <Chip color="danger" variant="flat" size="sm" className="truncate">
+                                                                {t("common.status.unverified")}
+                                                            </Chip>
+                                                        )}
+                                                        {user.isApproved && user.emailVerifiedAt && (
+                                                            <Chip color="success" variant="flat" size="sm" className="truncate">
+                                                                {t("common.status.active")}
+                                                            </Chip>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
 
-                                            {/* Actions Dropdown */}
-                                            <Dropdown placement="bottom-end">
-                                                <DropdownTrigger>
+                                        {/* Actions */}
+                                        <td className="p-4 min-w-[120px]">
+                                            <div className="flex items-center gap-1">
+                                                {/* Edit - Only show for non-deleted users */}
+                                                {!user.deletedAt && (
                                                     <Button
                                                         isIconOnly
                                                         size="sm"
                                                         variant="light"
+                                                        as="a"
+                                                        href={`/dashboard/users/${user.id}/edit`}
                                                         isDisabled={isFiltering}
                                                     >
-                                                        <HiDotsVertical className="w-4 h-4" />
+                                                        <HiPencil className="w-4 h-4" />
                                                     </Button>
-                                                </DropdownTrigger>
-                                                <DropdownMenu aria-label="User actions" disabledKeys={isFiltering ? ["all"] : []}>
-                                                    {!user.isApproved ? (
-                                                        <>
-                                                            <DropdownItem
-                                                                key="approve"
-                                                                startContent={<HiCheckCircle className="w-4 h-4 text-green-500" />}
-                                                                onPress={() => handleApproveUser(user.id)}
-                                                                className="text-green-600"
-                                                            >
-                                                                {t("common.actions.approve")}
-                                                            </DropdownItem>
-                                                            <DropdownItem
-                                                                key="decline"
-                                                                startContent={<HiXCircle className="w-4 h-4 text-red-500" />}
-                                                                onPress={() => handleDeclineUser(user.id)}
-                                                                className="text-red-600"
-                                                            >
-                                                                {t("common.actions.decline")}
-                                                            </DropdownItem>
-                                                        </>
-                                                    ) : null}
+                                                )}
 
-                                                    {!user.emailVerifiedAt ? (
-                                                        <DropdownItem
-                                                            key="resend-verification"
-                                                            startContent={<HiMail className="w-4 h-4 text-yellow-500" />}
-                                                            onPress={() => handleResendVerification(user.id)}
-                                                            className="text-yellow-600"
-                                                        >
-                                                            {t("common.actions.resendVerification")}
-                                                        </DropdownItem>
-                                                    ) : null}
+                                                {/* View Details */}
+                                                <Button
+                                                    isIconOnly
+                                                    size="sm"
+                                                    variant="light"
+                                                    as="a"
+                                                    href={`/dashboard/users/${user.id}`}
+                                                    isDisabled={isFiltering}
+                                                >
+                                                    <HiEye className="w-4 h-4" />
+                                                </Button>
 
-                                                    {!user.deletedAt ? (
-                                                        <DropdownItem
-                                                            key="delete"
-                                                            startContent={<HiTrash className="w-4 h-4 text-red-500" />}
-                                                            onPress={() => handleSoftDelete(user.id)}
-                                                            className="text-red-600"
+                                                {/* Actions Dropdown */}
+                                                <Dropdown placement="bottom-end">
+                                                    <DropdownTrigger>
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            isDisabled={isFiltering}
                                                         >
-                                                            {t("common.actions.delete")}
-                                                        </DropdownItem>
-                                                    ) : (
-                                                        <>
-                                                            <DropdownItem
-                                                                key="restore"
-                                                                startContent={<HiArchive className="w-4 h-4 text-green-500" />}
-                                                                onPress={() => handleRestore(user.id)}
-                                                                className="text-green-600"
-                                                            >
-                                                                {t("common.actions.restore")}
-                                                            </DropdownItem>
-                                                            <DropdownItem
-                                                                key="permanent-delete"
-                                                                startContent={<HiTrash className="w-4 h-4 text-red-500" />}
-                                                                onPress={() => handlePermanentDelete(user.id)}
-                                                                className="text-red-600"
-                                                            >
-                                                                {t("common.actions.permanentDelete")}
-                                                            </DropdownItem>
-                                                        </>
-                                                    )}
-                                                </DropdownMenu>
-                                            </Dropdown>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                                            <HiDotsVertical className="w-4 h-4" />
+                                                        </Button>
+                                                    </DropdownTrigger>
+                                                    <DropdownMenu aria-label="User actions" disabledKeys={isFiltering ? ["all"] : []}>
+                                                        {!user.deletedAt ? (
+                                                            <>
+                                                                {!user.isApproved ? (
+                                                                    <>
+                                                                        <DropdownItem
+                                                                            key="approve"
+                                                                            startContent={<HiCheckCircle className="w-4 h-4 text-green-500" />}
+                                                                            onPress={() => handleApproveUser(user.id)}
+                                                                            className="text-green-600"
+                                                                        >
+                                                                            {t("common.actions.approve")}
+                                                                        </DropdownItem>
+                                                                        <DropdownItem
+                                                                            key="decline"
+                                                                            startContent={<HiXCircle className="w-4 h-4 text-red-500" />}
+                                                                            onPress={() => handleDeclineUser(user.id)}
+                                                                            className="text-red-600"
+                                                                        >
+                                                                            {t("common.actions.decline")}
+                                                                        </DropdownItem>
+                                                                    </>
+                                                                ) : null}
+
+                                                                {!user.emailVerifiedAt ? (
+                                                                    <>
+                                                                        <DropdownItem
+                                                                            key="resend-verification"
+                                                                            startContent={<HiMail className="w-4 h-4 text-yellow-500" />}
+                                                                            onPress={() => handleResendVerificationBtn(user.id)}
+                                                                            className="text-yellow-600"
+                                                                        >
+                                                                            {t("common.actions.resendVerification")}
+                                                                        </DropdownItem>
+                                                                    </>
+                                                                ) : null}
+
+                                                                <DropdownItem
+                                                                    key="delete"
+                                                                    startContent={<HiTrash className="w-4 h-4 text-red-500" />}
+                                                                    onPress={() => handleSoftDelete(user.id)}
+                                                                    className="text-red-600"
+                                                                >
+                                                                    {t("common.actions.delete")}
+                                                                </DropdownItem>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <DropdownItem
+                                                                    key="restore"
+                                                                    startContent={<HiArchive className="w-4 h-4 text-green-500" />}
+                                                                    onPress={() => handleRestore(user.id)}
+                                                                    className="text-green-600"
+                                                                >
+                                                                    {t("common.actions.restore")}
+                                                                </DropdownItem>
+                                                                <DropdownItem
+                                                                    key="permanent-delete"
+                                                                    startContent={<HiTrash className="w-4 h-4 text-red-500" />}
+                                                                    onPress={() => handlePermanentDelete(user.id)}
+                                                                    className="text-red-600"
+                                                                >
+                                                                    {t("common.actions.permanentDelete")}
+                                                                </DropdownItem>
+                                                            </>
+                                                        )}
+                                                    </DropdownMenu>
+                                                </Dropdown>
+                                            </div>
+                                        </td>
+                                    </motion.tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+
+                    {/* Pagination */}
+                    {users.length > 0 && (
+                        <div className="min-w-[1000px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center gap-4 mb-4 md:mb-0">
+                                <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                    {t("pages.dashboard.users.rowsPerPage")}
+                                </span>
+                                <Select
+                                    className="w-24"
+                                    selectedKeys={[limit.toString()]}
+                                    onSelectionChange={handleLimitChange}
+                                    size="sm"
+                                    isDisabled={isFiltering}
+                                >
+                                    <SelectItem key="5">5</SelectItem>
+                                    <SelectItem key="10">10</SelectItem>
+                                    <SelectItem key="25">25</SelectItem>
+                                    <SelectItem key="50">50</SelectItem>
+                                    <SelectItem key="100">100</SelectItem>
+                                </Select>
+                            </div>
+
+                            {/* Only show pagination controls if there are multiple pages */}
+                            {totalPages > 1 && (
+                                <Pagination
+                                    total={totalPages}
+                                    page={page}
+                                    onChange={handlePageChange}
+                                    showControls
+                                    showShadow
+                                    size="sm"
+                                    className="mx-4"
+                                    isDisabled={isFiltering}
+                                />
+                            )}
+
+                            {/* Show page info even with single page */}
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 md:mt-0 whitespace-nowrap">
+                                {t("pages.dashboard.users.pageInfo", {
+                                    page,
+                                    totalPages,
+                                    total: data?.total || 0
+                                })}
+                            </div>
                         </div>
                     )}
-
-                    {/* Pagination - Also scrollable on mobile */}
-                   {/* Always show rows per page selector when there are results */}
-{users.length > 0 && (
-    <div className="min-w-[1000px] flex flex-col md:flex-row justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                {t("pages.dashboard.users.rowsPerPage")}
-            </span>
-            <Select
-                className="w-24"
-                selectedKeys={[limit.toString()]}
-                onSelectionChange={handleLimitChange}
-                size="sm"
-                isDisabled={isFiltering}
-            >
-                <SelectItem key="5">5</SelectItem>
-                <SelectItem key="10">10</SelectItem>
-                <SelectItem key="25">25</SelectItem>
-                <SelectItem key="50">50</SelectItem>
-                <SelectItem key="100">100</SelectItem>
-            </Select>
-        </div>
-
-        {/* Only show pagination controls if there are multiple pages */}
-        {totalPages > 1 && (
-            <Pagination
-                total={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                showControls
-                showShadow
-                size="sm"
-                className="mx-4"
-                isDisabled={isFiltering}
-            />
-        )}
-
-        {/* Show page info even with single page */}
-        <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 md:mt-0 whitespace-nowrap">
-            {t("pages.dashboard.users.pageInfo", {
-                page,
-                totalPages,
-                total: data?.total || 0
-            })}
-        </div>
-    </div>
-)}
                 </div>
 
-                {/* Mobile scroll indicator */}
+                {/* Mobile scroll indicator - USING EXISTING TRANSLATION */}
                 <div className="md:hidden px-4 py-2 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
-                    ← Scroll horizontally for more details →
+                    {t("common.mobile.scrollHorizontal")}
                 </div>
             </div>
         </div>

@@ -716,13 +716,26 @@
         "accountActions": "Actions du compte",
         "resendVerification": "Renvoyer l'email de vérification",
         "manageSessions": "Gérer les sessions actives"
-      }, "users": {
+      },
+      "users": {
         "title": "Gestion des Utilisateurs",
         "subtitle": "Gérez tous les utilisateurs du système, les approbations et les vérifications",
         "metadata": {
           "title": "Utilisateurs",
           "description": "Gérez les utilisateurs et leurs permissions"
-        }, "clubs": "Clubs",
+        },"filterByDeleted": "Statut de suppression",
+        "allDeletedStatus": "Tous les statuts",
+        "deleted": "Supprimé",
+        "notDeleted": "Non supprimé",
+        "viewDeleted": "Afficher les utilisateurs supprimés",
+        "viewActive": "Afficher les utilisateurs actifs",
+        "deletedStatusSelected": "statut de suppression sélectionné",
+        "deletedUsers": "Utilisateurs supprimés",
+        "activeUsers": "Utilisateurs actifs", "viewClubs": "Voir les clubs ({count})",
+        "clubsForUser": "Clubs de {name}",
+        "totalClubs": "Total: {count} club(s)",
+        "noSport": "Aucun sport attribué",
+        "clubs": "Clubs",
         "clubsCount": "{count} clubs",
         "noClubs": "Aucun club",
         "clubSearchPlaceholder": "Rechercher par nom de club...",
@@ -747,8 +760,7 @@
           "role": "Rôle",
           "status": "Statut",
           "actions": "Actions",
-                    "clubs": "Clubs"
-
+          "clubs": "Clubs"
         },
         "joined": "Inscrit le",
         "rowsPerPage": "Lignes par page :",
@@ -762,13 +774,13 @@
           "active": "Utilisateurs Actifs",
           "pending": "En attente d'approbation",
           "unverified": "Non vérifiés",
-                    "withClubs": "Avec Clubs"
-
+          "withClubs": "Avec Clubs"
         }
       }
     }
   },
-  "common": {"roles": {
+  "common": {
+    "roles": {
       "admin": "Administrateur",
       "club": "Club"
     },
@@ -833,14 +845,14 @@
       "resetPassword": "Réinitialiser le mot de passe",
       "backToLogin": "Retour à la connexion",
       "tryAgain": "Réessayer",
-      
       "decline": "Refuser",
       "resendVerification": "Renvoyer la vérification",
-      "restore": "Restaurer",
-      "permanentDelete": "Supprimer définitivement",
       "clear": "Effacer la sélection",
-            "clearFilters": "Effacer les filtres"
-
+      "clearFilters": "Effacer les filtres","softDelete": "Mettre à la corbeille",
+      "permanentDelete": "Supprimer définitivement",
+      "restore": "Restaurer",
+      "viewDeleted": "Afficher les supprimés",
+      "viewActive": "Afficher les actifs"
     },
     "theme": {
       "light": "Clair",
@@ -927,8 +939,7 @@
         "min": "La valeur doit être supérieure à {min}",
         "max": "La valeur doit être inférieure à {max}",
         "invalid": "Valeur invalide",
-              "loadingFailed": "Échec du chargement des utilisateurs"
-
+        "loadingFailed": "Échec du chargement des utilisateurs"
       }
     },
     "notifications": {
@@ -1029,11 +1040,11 @@
       "unverified": "Non vérifié",
       "notVerified": "Non vérifié",
       "invalidDate": "Date invalide",
-      "active": "Actif", 
-    
+      "active": "Actif",
       "pendingApproval": "En attente d'approbation",
       "deleted": "Supprimé",
-            "filtering":"..."
+      "filtering": "...",
+            "trashed": "À la corbeille"
 
     },
     "currency": {
@@ -1084,6 +1095,10 @@
       "createdShort": "Créé",
       "emailVerified": "Email vérifié",
       "emailVerifiedShort": "Email"
-    }
+    },"mobile": {
+  "scrollHorizontal": "← Défilez horizontalement pour plus de détails →",
+  "scrollLeft": "Défiler à gauche",
+  "scrollRight": "Défiler à droite"
+}
   }
 }

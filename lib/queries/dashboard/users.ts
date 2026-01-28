@@ -21,7 +21,7 @@ export interface UsersQueryParams {
   role?: ("ADMIN" | "CLUB")[];
   isApproved?: boolean;
   isVerified?: boolean;
-  isDeleted?: boolean;
+  deletedFilter?: "all" | "deleted" | "notDeleted"; // Add this parameter
   clubSearch?: string;
   sports?: string[];
   sortBy?: "name" | "email" | "createdAt" | "updatedAt";
@@ -89,19 +89,20 @@ export async function getFilteredUserIds(params: UsersQueryParams = {}): Promise
     role,
     isApproved,
     isVerified,
-    isDeleted = false,
+    deletedFilter = "notDeleted",
     clubSearch,
     sports: selectedSports,
   } = params;
 
-  // Build where conditions for users (same as getUsers)
+  // Build where conditions for users
   const userConditions = [];
 
-  // Only include non-deleted users by default
-  if (!isDeleted) {
+  // Handle deleted filter
+  if (deletedFilter === "deleted") {
+    userConditions.push(sql`${users.deletedAt} IS NOT NULL`);
+  } else if (deletedFilter === "notDeleted") {
     userConditions.push(isNull(users.deletedAt));
   }
-
   // Filter by multiple roles using IN operator
   if (role && role.length > 0) {
     userConditions.push(inArray(users.role, role));
@@ -179,7 +180,10 @@ export async function getFilteredUserIds(params: UsersQueryParams = {}): Promise
   };
 }
 
-// Modify the getUsers function to return filtered IDs as well
+// /lib/queries/dashboard/users.ts
+
+
+// Update the getUsers function to handle deletedFilter properly
 export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResponse> {
   const {
     page = 1,
@@ -188,7 +192,7 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     role,
     isApproved,
     isVerified,
-    isDeleted = false,
+    deletedFilter = "notDeleted", // Default to not deleted
     clubSearch,
     sports: selectedSports,
     sortBy = "createdAt",
@@ -200,10 +204,15 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
   // Build where conditions for users
   const userConditions = [];
 
-  // Only include non-deleted users by default
-  if (!isDeleted) {
+  // Handle deleted filter
+  if (deletedFilter === "deleted") {
+    // Show only deleted users
+    userConditions.push(sql`${users.deletedAt} IS NOT NULL`);
+  } else if (deletedFilter === "notDeleted") {
+    // Show only non-deleted users (default)
     userConditions.push(isNull(users.deletedAt));
   }
+  // If "all" is selected, don't add any deletedAt filter
 
   // Filter by multiple roles using IN operator
   if (role && role.length > 0) {
@@ -235,21 +244,29 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     );
   }
 
+  // Create club filter conditions for both user filtering and stats
+  let clubFilterCondition = undefined;
+  if (clubSearch || (selectedSports && selectedSports.length > 0)) {
+    const clubConditions = [isNull(clubs.deletedAt)];
+    
+    if (clubSearch) {
+      clubConditions.push(like(clubs.name, `%${clubSearch}%`));
+    }
+    
+    if (selectedSports && selectedSports.length > 0) {
+      clubConditions.push(inArray(clubs.sportId, selectedSports));
+    }
+    
+    clubFilterCondition = and(...clubConditions);
+  }
+
   // If clubSearch or sports filter is applied, we need to filter users who have matching clubs
   if (clubSearch || (selectedSports && selectedSports.length > 0)) {
     const clubSubquery = db
       .select({ userId: clubs.userId })
       .from(clubs)
       .leftJoin(sports, eq(clubs.sportId, sports.id))
-      .where(
-        and(
-          isNull(clubs.deletedAt),
-          clubSearch ? like(clubs.name, `%${clubSearch}%`) : undefined,
-          selectedSports && selectedSports.length > 0 
-            ? inArray(clubs.sportId, selectedSports)
-            : undefined
-        )
-      )
+      .where(clubFilterCondition!)
       .groupBy(clubs.userId)
       .as("matchingClubs");
 
@@ -264,31 +281,65 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
   const totalResult = await db
     .select({ count: count() })
     .from(users)
-    .where(userWhereCondition);
+    .where(userWhereCondition || undefined);
 
   const total = totalResult[0]?.count || 0;
   const totalPages = Math.ceil(total / limit);
 
-  // Get aggregated stats for all filtered users
-  const statsResult = await db
+  // Calculate stats - including withClubs with proper filtering
+  // First, get basic stats
+  const basicStatsResult = await db
     .select({
       total: count(),
-      active: sql<number>`COUNT(CASE WHEN ${users.isApproved} = TRUE AND ${users.emailVerifiedAt} IS NOT NULL AND ${users.deletedAt} IS NULL THEN 1 END)`,
+      active: sql<number>`COUNT(CASE WHEN ${users.isApproved} = TRUE AND ${users.emailVerifiedAt} IS NOT NULL THEN 1 END)`,
       pending: sql<number>`COUNT(CASE WHEN ${users.isApproved} = FALSE THEN 1 END)`,
       unverified: sql<number>`COUNT(CASE WHEN ${users.emailVerifiedAt} IS NULL THEN 1 END)`,
-      withClubs: sql<number>`COUNT(CASE WHEN EXISTS (
-        SELECT 1 FROM ${clubs} WHERE ${clubs.userId} = ${users.id} AND ${clubs.deletedAt} IS NULL
-      ) THEN 1 END)`,
     })
     .from(users)
-    .where(userWhereCondition);
+    .where(userWhereCondition || undefined);
 
-  const stats = statsResult[0] || {
+  const basicStats = basicStatsResult[0] || {
     total: 0,
     active: 0,
     pending: 0,
     unverified: 0,
-    withClubs: 0,
+  };
+
+  // Calculate withClubs separately with proper filtering
+  let withClubsCount = 0;
+  
+  // First, let's get all user IDs that match the user conditions
+  const userBaseQuery = userWhereCondition 
+    ? db.select({ id: users.id }).from(users).where(userWhereCondition)
+    : db.select({ id: users.id }).from(users);
+  
+  const matchingUsers = await userBaseQuery;
+  const matchingUserIds = matchingUsers.map(u => u.id);
+
+  if (matchingUserIds.length > 0) {
+    // Now count users who have clubs (with optional filters)
+    const clubsCountQuery = db
+      .select({ userId: clubs.userId })
+      .from(clubs)
+      .where(
+        and(
+          inArray(clubs.userId, matchingUserIds),
+          isNull(clubs.deletedAt),
+          clubFilterCondition || undefined
+        )
+      )
+      .groupBy(clubs.userId);
+
+    const usersWithClubs = await clubsCountQuery;
+    withClubsCount = usersWithClubs.length;
+  }
+
+  const stats = {
+    total: Number(basicStats.total),
+    active: Number(basicStats.active),
+    pending: Number(basicStats.pending),
+    unverified: Number(basicStats.unverified),
+    withClubs: withClubsCount,
   };
 
   // Determine order by
@@ -319,17 +370,18 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
       deletedAt: users.deletedAt,
     })
     .from(users)
-    .where(userWhereCondition)
+    .where(userWhereCondition || undefined)
     .orderBy(orderBy)
     .limit(limit)
     .offset(offset);
 
   // Get all filtered user IDs (for select all)
-  const filteredUserIds = await db
+  const filteredUserIdsResult = await db
     .select({ id: users.id })
     .from(users)
-    .where(userWhereCondition);
+    .where(userWhereCondition || undefined);
 
+  const filteredUserIds = filteredUserIdsResult.map(user => user.id);
   const userIds = userList.map(user => user.id);
   
   if (userIds.length === 0) {
@@ -350,19 +402,28 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
       page,
       limit,
       totalPages,
-      filteredUserIds: [], // Add filtered IDs
+      filteredUserIds: [],
       sports: allSports,
-      stats: {
-        total,
-        active: 0,
-        pending: 0,
-        unverified: 0,
-        withClubs: 0,
-      },
+      stats,
     };
   }
 
-  // Get ALL clubs for these users (not filtered by clubSearch/sports)
+  // Get clubs for these users - apply filters if they exist
+  // Build club conditions
+  const clubConditions = [
+    inArray(clubs.userId, userIds),
+    isNull(clubs.deletedAt)
+  ];
+
+  if (clubSearch) {
+    clubConditions.push(like(clubs.name, `%${clubSearch}%`));
+  }
+
+  if (selectedSports && selectedSports.length > 0) {
+    clubConditions.push(inArray(clubs.sportId, selectedSports));
+  }
+
+  // Get clubs with sports information
   const clubsList = await db
     .select({
       id: clubs.id,
@@ -374,12 +435,7 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     })
     .from(clubs)
     .leftJoin(sports, eq(clubs.sportId, sports.id))
-    .where(
-      and(
-        inArray(clubs.userId, userIds),
-        isNull(clubs.deletedAt)
-      )
-    );
+    .where(and(...clubConditions));
 
   // Group clubs by userId
   const clubsByUser: Record<string, ClubData[]> = {};
@@ -423,14 +479,8 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<UsersResp
     page,
     limit,
     totalPages,
-    filteredUserIds: filteredUserIds.map(user => user.id), // Add filtered IDs to response
+    filteredUserIds,
     sports: allSports,
-    stats: {
-      total: Number(stats.total),
-      active: Number(stats.active),
-      pending: Number(stats.pending),
-      unverified: Number(stats.unverified),
-      withClubs: Number(stats.withClubs),
-    },
+    stats,
   };
 }

@@ -20,11 +20,11 @@ async function fetchUsers(params: UsersQueryParams): Promise<UsersResponse> {
   
   if (params.isApproved !== undefined) queryParams.set("isApproved", params.isApproved.toString());
   if (params.isVerified !== undefined) queryParams.set("isVerified", params.isVerified.toString());
-  if (params.isDeleted !== undefined) queryParams.set("isDeleted", params.isDeleted.toString());
+  if (params.deletedFilter) queryParams.set("deletedFilter", params.deletedFilter); // Updated to deletedFilter
   if (params.sortBy) queryParams.set("sortBy", params.sortBy);
   if (params.sortOrder) queryParams.set("sortOrder", params.sortOrder);
   
-  // New params
+  // Club search param
   if (params.clubSearch) queryParams.set("clubSearch", params.clubSearch);
   
   // Handle array of sports

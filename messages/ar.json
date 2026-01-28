@@ -723,7 +723,17 @@
         "metadata": {
           "title": "المستخدمين",
           "description": "إدارة المستخدمين وأذوناتهم"
-        }, "clubs": "الأندية",
+        },
+        "filterByDeleted": "حالة الحذف",
+        "allDeletedStatus": "جميع الحالات",
+        "deleted": "محذوف",
+        "notDeleted": "غير محذوف",
+        "viewDeleted": "عرض المستخدمين المحذوفين",
+        "viewActive": "عرض المستخدمين النشطين",
+        "deletedStatusSelected": "حالة الحذف المختارة",
+        "deletedUsers": "المستخدمين المحذوفين",
+        "activeUsers": "المستخدمين النشطين",
+        "clubs": "الأندية",
         "clubsCount": "{count} أندية",
         "noClubs": "لا توجد أندية",
         "clubSearchPlaceholder": "البحث باسم النادي...",
@@ -741,14 +751,18 @@
         "totalUsers": "عرض {showing} من {total} مستخدم (الصفحة {page})",
         "noUsersFound": "لم يتم العثور على مستخدمين",
         "addUser": "إضافة مستخدم جديد",
+        "viewClubs": "عرض النوادي ({count})",
+        "clubsForUser": "نوادي {name}",
+        "totalClubs": "المجموع: {count} نادي",
+        "noSport": "لا يوجد رياضة معينة",
         "confirmPermanentDelete": "هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
         "columns": {
           "name": "الاسم",
           "email": "البريد الإلكتروني",
           "role": "الدور",
           "status": "الحالة",
-          "actions": "الإجراءات",          "clubs": "الأندية"
-
+          "actions": "الإجراءات",
+          "clubs": "الأندية"
         },
         "joined": "انضم في",
         "rowsPerPage": "صفوف في الصفحة:",
@@ -761,8 +775,8 @@
           "total": "إجمالي المستخدمين",
           "active": "المستخدمين النشطين",
           "pending": "بانتظار الموافقة",
-          "unverified": "غير موثقين",          "withClubs": "مع أندية"
-
+          "unverified": "غير موثقين",
+          "withClubs": "مع أندية"
         }
       }
     }
@@ -835,10 +849,13 @@
       "tryAgain": "حاول مرة أخرى",
       "decline": "رفض",
       "resendVerification": "إعادة إرسال التحقق",
-      "restore": "استعادة",
       "permanentDelete": "حذف نهائي",
       "clear": "مسح التحديد",
-      "clearFilters": "مسح الفلاتر"
+      "clearFilters": "مسح الفلاتر",
+      "softDelete": "نقل إلى سلة المهملات",
+      "restore": "استعادة",
+      "viewDeleted": "عرض المحذوفين",
+      "viewActive": "عرض النشطين"
     },
     "theme": {
       "light": "فاتح",
@@ -1029,8 +1046,8 @@
       "active": "نشط",
       "pendingApproval": "بانتظار الموافقة",
       "deleted": "محذوف",
-            "filtering":"..."
-
+      "filtering": "...",
+      "trashed": "في سلة المهملات"
     },
     "currency": {
       "symbol": "درهم",
@@ -1080,6 +1097,10 @@
       "createdShort": "أنشئ",
       "emailVerified": "تم التحقق من البريد",
       "emailVerifiedShort": "البريد"
-    }
+    },"mobile": {
+  "scrollHorizontal": "← مرر أفقيًا لمزيد من التفاصيل →",
+  "scrollLeft": "مرر لليسار",
+  "scrollRight": "مرر لليمين"
+}
   }
 }

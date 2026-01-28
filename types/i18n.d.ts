@@ -54,12 +54,15 @@ export type TranslationKey =
     | 'common.actions.select_all'
     | 'common.actions.send'
     | 'common.actions.share'
+    | 'common.actions.softDelete'
     | 'common.actions.sort'
     | 'common.actions.submit'
     | 'common.actions.tryAgain'
     | 'common.actions.unarchive'
     | 'common.actions.update'
     | 'common.actions.view'
+    | 'common.actions.viewActive'
+    | 'common.actions.viewDeleted'
     | 'common.aside.clubs'
     | 'common.aside.dashboard'
     | 'common.aside.logout'
@@ -140,6 +143,9 @@ export type TranslationKey =
     | 'common.languages.en'
     | 'common.languages.fr'
     | 'common.loading'
+    | 'common.mobile.scrollHorizontal'
+    | 'common.mobile.scrollLeft'
+    | 'common.mobile.scrollRight'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
     | 'common.months.full.april'
@@ -200,6 +206,7 @@ export type TranslationKey =
     | 'common.status.paid'
     | 'common.status.pending'
     | 'common.status.pendingApproval'
+    | 'common.status.trashed'
     | 'common.status.unpaid'
     | 'common.status.unverified'
     | 'common.status.verified'
@@ -573,13 +580,16 @@ export type TranslationKey =
     | 'pages.dashboard.profile.status'
     | 'pages.dashboard.profile.subtitle'
     | 'pages.dashboard.profile.title'
+    | 'pages.dashboard.users.activeUsers'
     | 'pages.dashboard.users.addUser'
+    | 'pages.dashboard.users.allDeletedStatus'
     | 'pages.dashboard.users.allRoles'
     | 'pages.dashboard.users.allSports'
     | 'pages.dashboard.users.allStatus'
     | 'pages.dashboard.users.clubSearchPlaceholder'
     | 'pages.dashboard.users.clubs'
     | 'pages.dashboard.users.clubsCount'
+    | 'pages.dashboard.users.clubsForUser'
     | 'pages.dashboard.users.columns.actions'
     | 'pages.dashboard.users.columns.clubs'
     | 'pages.dashboard.users.columns.email'
@@ -587,6 +597,10 @@ export type TranslationKey =
     | 'pages.dashboard.users.columns.role'
     | 'pages.dashboard.users.columns.status'
     | 'pages.dashboard.users.confirmPermanentDelete'
+    | 'pages.dashboard.users.deleted'
+    | 'pages.dashboard.users.deletedStatusSelected'
+    | 'pages.dashboard.users.deletedUsers'
+    | 'pages.dashboard.users.filterByDeleted'
     | 'pages.dashboard.users.filterByRole'
     | 'pages.dashboard.users.filterBySport'
     | 'pages.dashboard.users.filterByStatus'
@@ -594,7 +608,9 @@ export type TranslationKey =
     | 'pages.dashboard.users.metadata.description'
     | 'pages.dashboard.users.metadata.title'
     | 'pages.dashboard.users.noClubs'
+    | 'pages.dashboard.users.noSport'
     | 'pages.dashboard.users.noUsersFound'
+    | 'pages.dashboard.users.notDeleted'
     | 'pages.dashboard.users.pageInfo'
     | 'pages.dashboard.users.roles'
     | 'pages.dashboard.users.rolesSelected'
@@ -613,7 +629,11 @@ export type TranslationKey =
     | 'pages.dashboard.users.statusesSelected'
     | 'pages.dashboard.users.subtitle'
     | 'pages.dashboard.users.title'
+    | 'pages.dashboard.users.totalClubs'
     | 'pages.dashboard.users.totalUsers'
+    | 'pages.dashboard.users.viewActive'
+    | 'pages.dashboard.users.viewClubs'
+    | 'pages.dashboard.users.viewDeleted'
     | 'pages.error.errorId'
     | 'pages.error.goHome'
     | 'pages.error.noStackTrace'
@@ -1611,6 +1631,19 @@ export const _TranslationNamespaces = {
     "title",
     "subtitle",
     "metadata",
+    "filterByDeleted",
+    "allDeletedStatus",
+    "deleted",
+    "notDeleted",
+    "viewDeleted",
+    "viewActive",
+    "deletedStatusSelected",
+    "deletedUsers",
+    "activeUsers",
+    "viewClubs",
+    "clubsForUser",
+    "totalClubs",
+    "noSport",
     "clubs",
     "clubsCount",
     "noClubs",
@@ -1745,10 +1778,13 @@ export const _TranslationNamespaces = {
     "tryAgain",
     "decline",
     "resendVerification",
-    "restore",
-    "permanentDelete",
     "clear",
-    "clearFilters"
+    "clearFilters",
+    "softDelete",
+    "permanentDelete",
+    "restore",
+    "viewDeleted",
+    "viewActive"
   ],
   "common.theme": [
     "light",
@@ -1951,7 +1987,8 @@ export const _TranslationNamespaces = {
     "active",
     "pendingApproval",
     "deleted",
-    "filtering"
+    "filtering",
+    "trashed"
   ],
   "common.currency": [
     "symbol",
@@ -2003,6 +2040,11 @@ export const _TranslationNamespaces = {
     "createdShort",
     "emailVerified",
     "emailVerifiedShort"
+  ],
+  "common.mobile": [
+    "scrollHorizontal",
+    "scrollLeft",
+    "scrollRight"
   ]
 } as const;
 
