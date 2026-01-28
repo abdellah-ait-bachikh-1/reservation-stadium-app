@@ -30,6 +30,7 @@ import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArc
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
 import DeleteOptionsModal from "@/components/DeleteOptionsModal";
+import { Link } from "@/i18n/navigation";
 
 interface UsersClientProps {
     locale: string;
@@ -1019,7 +1020,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                         {/* Table Header */}
                         <thead>
                             <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900/50">
-                                <th className="p-4 text-left">
+                                <th className="p-4 text-left rtl:text-right">
                                     <Checkbox
                                         isSelected={data?.filteredUserIds && data.filteredUserIds.length > 0 &&
                                             data.filteredUserIds.every(id => selectedUsers.has(id))}
@@ -1030,22 +1031,22 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                         isDisabled={isFiltering || !data?.filteredUserIds}
                                     />
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.name")}
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.email")}
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.clubs")}
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.role")}
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.status")}
                                 </th>
-                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300">
+                                <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.actions")}
                                 </th>
                             </tr>
@@ -1218,7 +1219,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                         isIconOnly
                                                         size="sm"
                                                         variant="light"
-                                                        as="a"
+                                                        as={Link}
                                                         href={`/dashboard/users/${user.id}/edit`}
                                                         isDisabled={isFiltering}
                                                     >
@@ -1231,7 +1232,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                     isIconOnly
                                                     size="sm"
                                                     variant="light"
-                                                    as="a"
+                                                    as={Link}
                                                     href={`/dashboard/users/${user.id}`}
                                                     isDisabled={isFiltering}
                                                 >
