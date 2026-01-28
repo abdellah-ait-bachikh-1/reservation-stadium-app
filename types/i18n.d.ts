@@ -597,6 +597,11 @@ export type TranslationKey =
     | 'pages.dashboard.users.columns.role'
     | 'pages.dashboard.users.columns.status'
     | 'pages.dashboard.users.confirmPermanentDelete'
+    | 'pages.dashboard.users.deleteMultiple'
+    | 'pages.dashboard.users.deleteMultipleDescription'
+    | 'pages.dashboard.users.deletePermanently'
+    | 'pages.dashboard.users.deleteUser'
+    | 'pages.dashboard.users.deleteUserDescription'
     | 'pages.dashboard.users.deleted'
     | 'pages.dashboard.users.deletedStatusSelected'
     | 'pages.dashboard.users.deletedUsers'
@@ -607,11 +612,13 @@ export type TranslationKey =
     | 'pages.dashboard.users.joined'
     | 'pages.dashboard.users.metadata.description'
     | 'pages.dashboard.users.metadata.title'
+    | 'pages.dashboard.users.moveToTrash'
     | 'pages.dashboard.users.noClubs'
     | 'pages.dashboard.users.noSport'
     | 'pages.dashboard.users.noUsersFound'
     | 'pages.dashboard.users.notDeleted'
     | 'pages.dashboard.users.pageInfo'
+    | 'pages.dashboard.users.permanentDeleteDescription'
     | 'pages.dashboard.users.roles'
     | 'pages.dashboard.users.rolesSelected'
     | 'pages.dashboard.users.rowsPerPage'
@@ -631,6 +638,7 @@ export type TranslationKey =
     | 'pages.dashboard.users.title'
     | 'pages.dashboard.users.totalClubs'
     | 'pages.dashboard.users.totalUsers'
+    | 'pages.dashboard.users.trashDescription'
     | 'pages.dashboard.users.viewActive'
     | 'pages.dashboard.users.viewClubs'
     | 'pages.dashboard.users.viewDeleted'
@@ -1631,6 +1639,14 @@ export const _TranslationNamespaces = {
     "title",
     "subtitle",
     "metadata",
+    "deleteUser",
+    "deleteUserDescription",
+    "deleteMultiple",
+    "deleteMultipleDescription",
+    "moveToTrash",
+    "deletePermanently",
+    "trashDescription",
+    "permanentDeleteDescription",
     "filterByDeleted",
     "allDeletedStatus",
     "deleted",
@@ -1713,7 +1729,8 @@ export const _TranslationNamespaces = {
     "currency",
     "months",
     "time",
-    "dates"
+    "dates",
+    "mobile"
   ],
   "common.roles": [
     "admin",

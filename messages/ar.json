@@ -723,7 +723,14 @@
         "metadata": {
           "title": "المستخدمين",
           "description": "إدارة المستخدمين وأذوناتهم"
-        },
+        }, "deleteUser": "حذف المستخدم",
+        "deleteUserDescription": "هل أنت متأكد من رغبتك في حذف {name}؟",
+        "deleteMultiple": "حذف المستخدمين",
+        "deleteMultipleDescription": "هل أنت متأكد من رغبتك في حذف {count} مستخدم محدد؟",
+        "moveToTrash": "نقل إلى سلة المهملات",
+        "deletePermanently": "حذف نهائي",
+        "trashDescription": "سيتم نقل المستخدم إلى سلة المهملات ويمكن استعادته لاحقًا.",
+        "permanentDeleteDescription": "لا يمكن التراجع عن هذا الإجراء. سيتم إزالة المستخدم نهائيًا من النظام.",
         "filterByDeleted": "حالة الحذف",
         "allDeletedStatus": "جميع الحالات",
         "deleted": "محذوف",

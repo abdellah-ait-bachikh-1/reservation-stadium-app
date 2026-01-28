@@ -1,4 +1,4 @@
-// UsersClient.tsx - Updated with resend verification button and translated scroll
+// UsersClient.tsx - Updated with DeleteOptionsModal
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
@@ -22,7 +22,6 @@ import {
     HiExclamationCircle,
     HiBuildingStorefront,
     HiTrophy,
-
     HiArchiveBox,
     HiArchiveBoxXMark,
 } from "react-icons/hi2";
@@ -30,6 +29,7 @@ import { motion } from "framer-motion";
 import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
+import DeleteOptionsModal from "@/components/DeleteOptionsModal";
 
 interface UsersClientProps {
     locale: string;
@@ -37,6 +37,16 @@ interface UsersClientProps {
 
 export default function UsersClient({ locale }: UsersClientProps) {
     const t = useTypedTranslations();
+    
+    // State for delete modal
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        userId: null as string | null,
+        userName: null as string | null,
+        isBulk: false
+    });
+
+    // Original states
     const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
@@ -239,15 +249,24 @@ export default function UsersClient({ locale }: UsersClientProps) {
         setIsFiltering(true);
     };
 
-    // Handle actions
+    // Handle bulk actions
     const handleBulkAction = (action: string) => {
         if (selectedUsers.size === 0) return;
 
-        actions.bulkAction.mutate({
-            action,
-            userIds: Array.from(selectedUsers),
-        });
-        setSelectedUsers(new Set());
+        if (action === "delete") {
+            setDeleteModal({
+                isOpen: true,
+                userId: null,
+                userName: null,
+                isBulk: true
+            });
+        } else {
+            actions.bulkAction.mutate({
+                action,
+                userIds: Array.from(selectedUsers),
+            });
+            setSelectedUsers(new Set());
+        }
     };
 
     const handleApproveUser = (userId: string) => {
@@ -262,21 +281,57 @@ export default function UsersClient({ locale }: UsersClientProps) {
         actions.resendVerification.mutate(userId);
     };
 
-    const handleSoftDelete = (userId: string) => {
-        actions.softDeleteUser.mutate(userId);
+    // Handle delete click for single user
+    const handleDeleteClick = (userId: string, userName: string) => {
+        setDeleteModal({
+            isOpen: true,
+            userId,
+            userName,
+            isBulk: false
+        });
+    };
+
+    // Handle soft delete
+    const handleSoftDelete = () => {
+        if (deleteModal.isBulk) {
+            // Bulk soft delete
+            actions.bulkAction.mutate({
+                action: "softDelete",
+                userIds: Array.from(selectedUsers),
+            });
+            setSelectedUsers(new Set());
+        } else {
+            // Single soft delete
+            if (deleteModal.userId) {
+                actions.softDeleteUser.mutate(deleteModal.userId);
+            }
+        }
+        setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
+    };
+
+    // Handle permanent delete
+    const handlePermanentDelete = () => {
+        if (deleteModal.isBulk) {
+            // Bulk permanent delete
+            actions.bulkAction.mutate({
+                action: "permanentDelete",
+                userIds: Array.from(selectedUsers),
+            });
+            setSelectedUsers(new Set());
+        } else {
+            // Single permanent delete
+            if (deleteModal.userId) {
+                actions.permanentDeleteUser.mutate(deleteModal.userId);
+            }
+        }
+        setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
     };
 
     const handleRestore = (userId: string) => {
         actions.restoreUser.mutate(userId);
     };
 
-    const handlePermanentDelete = (userId: string) => {
-        if (window.confirm(t("pages.dashboard.users.confirmPermanentDelete"))) {
-            actions.permanentDeleteUser.mutate(userId);
-        }
-    };
-
-    // NEW: Handle resend verification button action
+    // Handle resend verification button action
     const handleResendVerificationBtn = (userId: string) => {
         actions.resendVerification.mutate(userId);
     };
@@ -363,6 +418,26 @@ export default function UsersClient({ locale }: UsersClientProps) {
         return locale === "ar" ? sport.nameAr : sport.nameFr;
     };
 
+    // Get modal texts
+    const getDeleteModalTexts = () => {
+        if (deleteModal.isBulk) {
+            return {
+                title: t("pages.dashboard.users.deleteMultiple"),
+                description: t("pages.dashboard.users.deleteMultipleDescription", { count: selectedUsers.size }),
+            };
+        } else {
+            return {
+                title: t("pages.dashboard.users.deleteUser"),
+                description: t("pages.dashboard.users.deleteUserDescription", { name: deleteModal.userName }),
+            };
+        }
+    };
+
+    // Check if any delete action is pending
+    const isDeleteLoading = actions.softDeleteUser.isPending || 
+                          actions.permanentDeleteUser.isPending || 
+                          actions.bulkAction.isPending;
+
     // Initial loading state (only on first load)
     if (isLoading && !data && isInitialLoad.current) {
         return (
@@ -396,6 +471,18 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
     return (
         <div className="min-h-screen">
+            {/* Delete Options Modal */}
+            <DeleteOptionsModal
+                isOpen={deleteModal.isOpen}
+                onClose={() => setDeleteModal({ ...deleteModal, isOpen: false })}
+                onSoftDelete={handleSoftDelete}
+                onPermanentDelete={handlePermanentDelete}
+                title={getDeleteModalTexts().title}
+                description={getDeleteModalTexts().description}
+                isLoading={isDeleteLoading}
+                isDisabled={isFiltering}
+            />
+
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
@@ -840,11 +927,11 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                         color="warning"
                                         variant="flat"
                                         startContent={<HiTrash className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("softDelete")}
+                                        onPress={() => handleBulkAction("delete")}
                                         isLoading={actions.bulkAction.isPending}
                                         isDisabled={isFiltering}
                                     >
-                                        {t("common.actions.softDelete")}
+                                        {t("common.actions.delete")}
                                     </Button>
                                 </>
                             )}
@@ -1203,7 +1290,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                                 <DropdownItem
                                                                     key="delete"
                                                                     startContent={<HiTrash className="w-4 h-4 text-red-500" />}
-                                                                    onPress={() => handleSoftDelete(user.id)}
+                                                                    onPress={() => handleDeleteClick(user.id, user.name)}
                                                                     className="text-red-600"
                                                                 >
                                                                     {t("common.actions.delete")}
@@ -1222,7 +1309,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                                 <DropdownItem
                                                                     key="permanent-delete"
                                                                     startContent={<HiTrash className="w-4 h-4 text-red-500" />}
-                                                                    onPress={() => handlePermanentDelete(user.id)}
+                                                                    onPress={() => handleDeleteClick(user.id, user.name)}
                                                                     className="text-red-600"
                                                                 >
                                                                     {t("common.actions.permanentDelete")}

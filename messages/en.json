@@ -723,7 +723,16 @@
         "metadata": {
           "title": "Users",
           "description": "Manage users and their permissions"
-        },
+        }, "deleteUser": "Delete User",
+        "deleteUserDescription": "Are you sure you want to delete {name}?",
+        "deleteMultiple": "Delete Users",
+        "deleteMultipleDescription": "Are you sure you want to delete {count} selected users?",
+        "moveToTrash": "Move to Trash",
+        "deletePermanently": "Delete Permanently",
+        
+     
+      "trashDescription": "User will be moved to trash and can be restored later.",
+      "permanentDeleteDescription": "This action cannot be undone. The user will be permanently removed from the system.",
         "viewActive": "View Active Users",
         "filterByDeleted": "Deleted Status",
         "allDeletedStatus": "All Status",
