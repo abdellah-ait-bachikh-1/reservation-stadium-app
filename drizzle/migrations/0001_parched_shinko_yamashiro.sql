@@ -1,0 +1,1 @@
+ALTER TABLE `clubs` ADD `shortcut_name` varchar(20);

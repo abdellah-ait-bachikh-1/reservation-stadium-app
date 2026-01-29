@@ -27,7 +27,7 @@ interface MonthlyRevenueData {
   singleSessionRevenue: number;
   paidAmount: number;
   overdueAmount: number;
-  pendingAmount: number; 
+  pendingAmount: number;
   collectionRate: number;
 }
 
@@ -134,7 +134,7 @@ export default function RevenueTrendsChart({
     subscription: true,
     singleSession: true,
   });
-  
+
   // Sync selectedYear with prop changes
   useEffect(() => {
     setSelectedYear(currentYear);
@@ -153,7 +153,7 @@ export default function RevenueTrendsChart({
     if (availableYears && availableYears.length > 0) {
       return availableYears;
     }
-    
+
     const currentYearNow = new Date().getFullYear();
     const startYear = 2026;
     return Array.from(
@@ -211,7 +211,7 @@ export default function RevenueTrendsChart({
 
     const currentMonth = data[data.length - 1];
     const previousMonth = data[data.length - 2];
-    
+
     let revenueChange = 0;
     if (previousMonth.totalRevenue > 0 && !isNaN(previousMonth.totalRevenue)) {
       const change = ((currentMonth.totalRevenue - previousMonth.totalRevenue) / previousMonth.totalRevenue) * 100;
@@ -244,7 +244,7 @@ export default function RevenueTrendsChart({
   // Prepare chart data - ensure all 12 months are present
   const chartData = useMemo(() => {
     const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
+
     const dataMap = new Map<string, MonthlyRevenueData>();
     data.forEach(item => {
       dataMap.set(item.month, item);
@@ -258,7 +258,7 @@ export default function RevenueTrendsChart({
           month: translateMonth(month)
         };
       }
-      
+
       return {
         month: translateMonth(month),
         totalRevenue: 0,
@@ -274,9 +274,9 @@ export default function RevenueTrendsChart({
 
   // Check if we have any real data (non-zero)
   const hasData = useMemo(() => {
-    return data.some(item => 
-      item.totalRevenue > 0 || 
-      item.subscriptionRevenue > 0 || 
+    return data.some(item =>
+      item.totalRevenue > 0 ||
+      item.subscriptionRevenue > 0 ||
       item.singleSessionRevenue > 0
     );
   }, [data]);
@@ -396,7 +396,7 @@ export default function RevenueTrendsChart({
               <HiCollection className="w-8 h-8 text-blue-600" />
             </div>
             <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-              {annualStats.totalRevenue > 0 
+              {annualStats.totalRevenue > 0
                 ? Math.round((annualStats.totalSubscription / annualStats.totalRevenue) * 100)
                 : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
@@ -422,7 +422,7 @@ export default function RevenueTrendsChart({
               <HiTicket className="w-8 h-8 text-purple-600" />
             </div>
             <p className="text-xs text-gray-500 mt-1 rtl:text-right">
-              {annualStats.totalRevenue > 0 
+              {annualStats.totalRevenue > 0
                 ? Math.round((annualStats.totalSingleSession / annualStats.totalRevenue) * 100)
                 : 0}% {t("pages.dashboard.home.revenueTrends.ofTotal")}
             </p>
@@ -476,7 +476,7 @@ export default function RevenueTrendsChart({
               <HiExclamation className="w-8 h-8 text-red-600" />
             </div>
             <p className="text-xs text-red-600 font-medium mt-1 rtl:text-right">
-              {annualStats.totalRevenue > 0 
+              {annualStats.totalRevenue > 0
                 ? Math.round((annualStats.totalOverdue / annualStats.totalRevenue) * 100)
                 : 0}% {t("pages.dashboard.home.revenueTrends.outstanding")}
             </p>
@@ -502,7 +502,7 @@ export default function RevenueTrendsChart({
               <HiClock className="w-8 h-8 text-yellow-600" />
             </div>
             <p className="text-xs text-yellow-600 font-medium mt-1 rtl:text-right">
-              {annualStats.totalRevenue > 0 
+              {annualStats.totalRevenue > 0
                 ? Math.round((annualStats.totalPending / annualStats.totalRevenue) * 100)
                 : 0}% {t("pages.dashboard.home.revenueTrends.enAttente") || "pending"}
             </p>

@@ -120,7 +120,7 @@ export const users = mysqlTable(
   (table) => [
     index("role_index").on(table.role),
     index("deleted_at_index").on(table.deletedAt),
-  ]
+  ],
 );
 // drizzle/schema.ts - Add this table
 export const passwordResetTokens = mysqlTable(
@@ -148,7 +148,7 @@ export const passwordResetTokens = mysqlTable(
     index("user_id_idx").on(table.userId),
     index("expires_at_idx").on(table.expiresAt),
     index("used_at_idx").on(table.usedAt),
-  ]
+  ],
 );
 export const sports = mysqlTable("sports", {
   id: char("id", { length: 36 })
@@ -174,6 +174,7 @@ export const clubs = mysqlTable(
       .default(sql`(UUID())`)
       .notNull(),
     name: varchar("name", { length: 255 }).notNull(),
+    shortcutName: varchar("shortcut_name", { length: 20 }),
     address: varchar("address", { length: 255 }),
     monthlyFee: decimal("monthly_fee", { precision: 10, scale: 2 }),
     paymentDueDay: smallint("payment_due_day", {
@@ -208,7 +209,7 @@ export const clubs = mysqlTable(
     index("sport_id_index").on(table.sportId),
     index("name_index").on(table.name),
     index("user_id_sport_id_index").on(table.userId, table.sportId),
-  ]
+  ],
 );
 
 export const stadiums = mysqlTable(
@@ -237,7 +238,7 @@ export const stadiums = mysqlTable(
     index("price_per_session").on(table.pricePerSession),
     index("deleted_at_index").on(table.deletedAt),
     index("address_index").on(table.address),
-  ]
+  ],
 );
 
 export const stadiumImages = mysqlTable(
@@ -267,7 +268,7 @@ export const stadiumImages = mysqlTable(
     }).onDelete("cascade"),
 
     index("stadium_id_index").on(table.stadiumId),
-  ]
+  ],
 );
 
 export const stadiumSports = mysqlTable(
@@ -290,7 +291,7 @@ export const stadiumSports = mysqlTable(
       name: "fk_stadium_sports_sport",
     }).onDelete("cascade"),
     primaryKey({ columns: [table.stadiumId, table.sportId] }),
-  ]
+  ],
 );
 
 export const reservationSeries = mysqlTable(
@@ -339,7 +340,7 @@ export const reservationSeries = mysqlTable(
     index("created_at_index").on(table.createdAt),
     index("recurrence_end_date_index").on(table.recurrenceEndDate),
     index("start_time_end_time_index").on(table.startTime, table.endTime),
-  ]
+  ],
 );
 
 export const monthlySubscriptions = mysqlTable(
@@ -390,7 +391,7 @@ export const monthlySubscriptions = mysqlTable(
     index("start_date_index").on(table.startDate),
     index("end_date_index").on(table.endDate),
     index("created_at_index").on(table.createdAt),
-  ]
+  ],
 );
 
 export const monthlyPayments = mysqlTable(
@@ -440,9 +441,9 @@ export const monthlyPayments = mysqlTable(
     unique("month_year_series_unique").on(
       table.month,
       table.year,
-      table.reservationSeriesId
+      table.reservationSeriesId,
     ),
-  ]
+  ],
 );
 
 export const reservations = mysqlTable(
@@ -499,10 +500,10 @@ export const reservations = mysqlTable(
     index("is_paid_index").on(table.isPaid),
     index("start_date_time_stadium_id_index").on(
       table.startDateTime,
-      table.stadiumId
+      table.stadiumId,
     ),
     index("status_start_date_time_index").on(table.status, table.startDateTime),
-  ]
+  ],
 );
 
 export const cashPaymentRecords = mysqlTable(
@@ -554,7 +555,7 @@ export const cashPaymentRecords = mysqlTable(
     index("monthly_payment_id_index").on(table.monthlyPaymentId),
     index("payment_date_index").on(table.paymentDate),
     index("created_at_index").on(table.createdAt),
-  ]
+  ],
 );
 
 export const notifications = mysqlTable(
@@ -605,7 +606,7 @@ export const notifications = mysqlTable(
     index("created_at_idx").on(table.createdAt),
     index("type_idx").on(table.type),
     index("actor_user_id_idx").on(table.actorUserId),
-  ]
+  ],
 );
 //--------------------- Relations -----------------------
 
@@ -722,7 +723,7 @@ export const reservationSeriesRelations = relations(
       references: [monthlySubscriptions.reservationSeriesId],
       relationName: "reservation_series_subscription",
     }),
-  })
+  }),
 );
 
 export const monthlyPaymentsRelations = relations(
@@ -746,7 +747,7 @@ export const monthlyPaymentsRelations = relations(
     reservations: many(reservations, {
       relationName: "monthly_payment_reservations",
     }),
-  })
+  }),
 );
 
 export const cashPaymentRecordsRelations = relations(
@@ -767,7 +768,7 @@ export const cashPaymentRecordsRelations = relations(
       references: [users.id],
       relationName: "user_cash_payments",
     }),
-  })
+  }),
 );
 
 export const monthlySubscriptionsRelations = relations(
@@ -783,7 +784,7 @@ export const monthlySubscriptionsRelations = relations(
       references: [reservationSeries.id],
       relationName: "reservation_series_subscription",
     }),
-  })
+  }),
 );
 
 export const usersRelations = relations(users, ({ many }) => ({

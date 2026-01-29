@@ -8,6 +8,13 @@
       "when": 1768852776512,
       "tag": "0000_dry_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1769687200040,
+      "tag": "0001_parched_shinko_yamashiro",
+      "breakpoints": true
     }
   ]
 }
