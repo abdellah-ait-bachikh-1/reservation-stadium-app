@@ -10,6 +10,7 @@ import {
   HiCollection,
   HiChartBar
 } from "react-icons/hi";
+import { Link } from "@/i18n/navigation";
 
 export default  function QuickActionsSection() {
   const t =  useTypedTranslations();
@@ -69,7 +70,7 @@ export default  function QuickActionsSection() {
               color={action.color}
               variant="flat"
               className="h-24 flex flex-col gap-2"
-              as="a"
+              as={Link}
               href={action.href}
             >
               {action.icon}

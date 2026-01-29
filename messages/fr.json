@@ -541,6 +541,13 @@
         },
         "welcome": "Bienvenue, {name} !",
         "subtitle": "Voici ce qui se passe avec votre gestion de stades",
+        "loading": {
+"title": "Chargement des données du tableau de bord",
+"loadingDataForYear": "Chargement des données du tableau de bord pour {selectedYear}...",
+"failedToLoad": "Échec du chargement des données du tableau de bord",
+"anErrorOccurred": "Une erreur s'est produite lors du chargement des données du tableau de bord",
+"tryAgain": "Réessayer"
+},
         "yearFilter": {
           "label": "Année",
           "selectYear": "Sélectionner l'année",
@@ -1109,6 +1116,16 @@
       "scrollHorizontal": "← Défilez horizontalement pour plus de détails →",
       "scrollLeft": "Défiler à gauche",
       "scrollRight": "Défiler à droite"
+    },
+      "orderBy": {
+        "sortBy": "Trier par",
+        "sortOrder": "Ordre",
+        "name": "Nom",
+        "email": "Email",
+        "createdAt": "Date de création",
+        "updatedAt": "Dernière mise à jour",
+        "ascending": "Croissant",
+        "descending": "Décroissant"
     }
   }
 }

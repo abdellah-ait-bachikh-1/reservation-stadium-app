@@ -1,4 +1,4 @@
-// UsersClient.tsx - Updated with DeleteOptionsModal
+// UsersClient.tsx - Updated with Order By functionality
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
@@ -24,9 +24,15 @@ import {
     HiTrophy,
     HiArchiveBox,
     HiArchiveBoxXMark,
+  
+    
+    HiUser,
+   
+    HiCalendar,
+    HiClock,
 } from "react-icons/hi2";
 import { motion } from "framer-motion";
-import { HiMail, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
+import { HiMail as HiMailIcon,HiSortDescending,  HiMail, HiSortAscending, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
 import DeleteOptionsModal from "@/components/DeleteOptionsModal";
@@ -58,6 +64,10 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const [clubSearchInput, setClubSearchInput] = useState("");
     const [selectedSports, setSelectedSports] = useState<Set<string>>(new Set());
 
+    // New order by states
+    const [sortBy, setSortBy] = useState<"name" | "email" | "createdAt" | "updatedAt">("createdAt");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
     // Debounce search inputs
     const [debouncedSearch] = useDebounce(searchInput, 500);
     const [debouncedClubSearch] = useDebounce(clubSearchInput, 500);
@@ -77,6 +87,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
             search: debouncedSearch || undefined,
             deletedFilter,
             clubSearch: debouncedClubSearch || undefined,
+            sortBy, // Add sortBy
+            sortOrder, // Add sortOrder
         };
 
         // Handle roles - only include if specific roles are selected
@@ -113,7 +125,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
         }
 
         return params;
-    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, deletedFilter, debouncedClubSearch, selectedSports]);
+    }, [page, limit, debouncedSearch, selectedRoles, selectedStatuses, deletedFilter, debouncedClubSearch, selectedSports, sortBy, sortOrder]);
 
     // Fetch users
     const {
@@ -246,6 +258,22 @@ export default function UsersClient({ locale }: UsersClientProps) {
     const handleLimitChange = (keys: any) => {
         const newLimit = Array.from(keys)[0] as string;
         setLimit(parseInt(newLimit));
+        setPage(1);
+        setIsFiltering(true);
+    };
+
+    // Handle sort by change
+    const handleSortByChange = (keys: any) => {
+        const value = Array.from(keys)[0] as "name" | "email" | "createdAt" | "updatedAt";
+        setSortBy(value);
+        setPage(1);
+        setIsFiltering(true);
+    };
+
+    // Handle sort order change
+    const handleSortOrderChange = (keys: any) => {
+        const value = Array.from(keys)[0] as "asc" | "desc";
+        setSortOrder(value);
         setPage(1);
         setIsFiltering(true);
     };
@@ -410,6 +438,52 @@ export default function UsersClient({ locale }: UsersClientProps) {
                 return t("pages.dashboard.users.notDeleted");
             default:
                 return t("pages.dashboard.users.notDeleted");
+        }
+    };
+
+    // Get sort by display text
+    const getSortByText = () => {
+        switch (sortBy) {
+            case "name":
+                return t("common.orderBy.name");
+            case "email":
+                return t("common.orderBy.email");
+            case "createdAt":
+                return t("common.orderBy.createdAt");
+            case "updatedAt":
+                return t("common.orderBy.updatedAt");
+            default:
+                return t("common.orderBy.createdAt");
+        }
+    };
+
+    // Get sort order display text
+    const getSortOrderText = () => {
+        return sortOrder === "asc" 
+            ? t("common.orderBy.ascending") 
+            : t("common.orderBy.descending");
+    };
+
+    // Get sort order icon
+    const getSortOrderIcon = () => {
+        return sortOrder === "asc" 
+            ? <HiSortAscending className="w-4 h-4" />
+            : <HiSortDescending className="w-4 h-4" />;
+    };
+
+    // Get sort by icon
+    const getSortByIcon = () => {
+        switch (sortBy) {
+            case "name":
+                return <HiUser className="w-4 h-4" />;
+            case "email":
+                return <HiMailIcon className="w-4 h-4" />;
+            case "createdAt":
+                return <HiCalendar className="w-4 h-4" />;
+            case "updatedAt":
+                return <HiClock className="w-4 h-4" />;
+            default:
+                return <HiSortAscending className="w-4 h-4" />;
         }
     };
 
@@ -710,6 +784,40 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 </SelectItem>
                             ))}
                         </Select>
+
+                        {/* Sort By Filter */}
+                        <Select
+                            className="w-full md:w-40"
+                            label={t("common.orderBy.sortBy")}
+                            selectedKeys={[sortBy]}
+                            onSelectionChange={handleSortByChange}
+                            size="sm"
+                            variant="flat"
+                            placeholder={getSortByText()}
+                            isDisabled={isFiltering}
+                            startContent={getSortByIcon()}
+                        >
+                            <SelectItem key="name">{t("common.orderBy.name")}</SelectItem>
+                            <SelectItem key="email">{t("common.orderBy.email")}</SelectItem>
+                            <SelectItem key="createdAt">{t("common.orderBy.createdAt")}</SelectItem>
+                            <SelectItem key="updatedAt">{t("common.orderBy.updatedAt")}</SelectItem>
+                        </Select>
+
+                        {/* Sort Order Filter */}
+                        <Select
+                            className="w-full md:w-40"
+                            label={t("common.orderBy.sortOrder")}
+                            selectedKeys={[sortOrder]}
+                            onSelectionChange={handleSortOrderChange}
+                            size="sm"
+                            variant="flat"
+                            placeholder={getSortOrderText()}
+                            isDisabled={isFiltering}
+                            startContent={getSortOrderIcon()}
+                        >
+                            <SelectItem key="asc">{t("common.orderBy.ascending")}</SelectItem>
+                            <SelectItem key="desc">{t("common.orderBy.descending")}</SelectItem>
+                        </Select>
                     </div>
                 </div>
 
@@ -847,8 +955,52 @@ export default function UsersClient({ locale }: UsersClientProps) {
                         </div>
                     )}
 
+                    {/* Sort By Indicator */}
+                    {sortBy && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">{t("common.orderBy.sortBy")}:</span>
+                            <Chip
+                                size="sm"
+                                variant="flat"
+                                color="success"
+                                onClose={() => {
+                                    if (!isFiltering) {
+                                        setSortBy("createdAt");
+                                        setIsFiltering(true);
+                                    }
+                                }}
+                                isDisabled={isFiltering}
+                                startContent={getSortByIcon()}
+                            >
+                                {getSortByText()}
+                            </Chip>
+                        </div>
+                    )}
+
+                    {/* Sort Order Indicator */}
+                    {sortOrder && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">{t("common.orderBy.sortOrder")}:</span>
+                            <Chip
+                                size="sm"
+                                variant="flat"
+                                color="success"
+                                onClose={() => {
+                                    if (!isFiltering) {
+                                        setSortOrder("desc");
+                                        setIsFiltering(true);
+                                    }
+                                }}
+                                isDisabled={isFiltering}
+                                startContent={getSortOrderIcon()}
+                            >
+                                {getSortOrderText()}
+                            </Chip>
+                        </div>
+                    )}
+
                     {/* Clear All Filters Button */}
-                    {(selectedRoles.size > 0 || selectedStatuses.size > 0 || selectedSports.size > 0 || clubSearchInput || deletedFilter !== "notDeleted") && (
+                    {(selectedRoles.size > 0 || selectedStatuses.size > 0 || selectedSports.size > 0 || clubSearchInput || deletedFilter !== "notDeleted" || sortBy !== "createdAt" || sortOrder !== "desc") && (
                         <Button
                             size="sm"
                             variant="light"
@@ -859,6 +1011,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                     setSelectedSports(new Set());
                                     setClubSearchInput("");
                                     setDeletedFilter("notDeleted");
+                                    setSortBy("createdAt");
+                                    setSortOrder("desc");
                                     setIsFiltering(true);
                                 }
                             }}
@@ -1033,9 +1187,19 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                 </th>
                                 <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.name")}
+                                    {sortBy === "name" && (
+                                        <span className="ml-1 text-xs">
+                                            {sortOrder === "asc" ? "↑" : "↓"}
+                                        </span>
+                                    )}
                                 </th>
                                 <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.email")}
+                                    {sortBy === "email" && (
+                                        <span className="ml-1 text-xs">
+                                            {sortOrder === "asc" ? "↑" : "↓"}
+                                        </span>
+                                    )}
                                 </th>
                                 <th className="p-4 text-left font-medium text-gray-700 dark:text-gray-300 rtl:text-right">
                                     {t("pages.dashboard.users.columns.clubs")}

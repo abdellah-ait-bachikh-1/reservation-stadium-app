@@ -14,6 +14,7 @@ import { Spinner } from "@heroui/spinner"
 import { HiExclamationTriangle } from "react-icons/hi2";
 import PendingUserApprovalsSection from "./PendingUserApprovalsSection";
 import OverduePaymentsSection from "./OverduePaymentsSection";
+import { useTypedTranslations } from "@/utils/i18n";
 
 interface User {
   id: string;
@@ -34,7 +35,7 @@ export default function DashboardClient({
   initialData
 }: DashboardClientProps) {
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
-
+  const t = useTypedTranslations()
   // Use React Query to fetch data
   const {
     data: dashboardData,
@@ -64,10 +65,10 @@ export default function DashboardClient({
             <CardBody className="flex flex-col items-center gap-4 text-center">
               <HiExclamationTriangle className="w-12 h-12 text-red-500" />
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Failed to Load Dashboard Data
+                {t('pages.dashboard.home.loading.failedToLoad')}
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                {error instanceof Error ? error.message : "An error occurred while loading dashboard data"}
+                {error instanceof Error ? error.message : t('pages.dashboard.home.loading.anErrorOccurred')}
               </p>
               <button
                 onClick={() => refetch()}
@@ -81,7 +82,7 @@ export default function DashboardClient({
       </div>
     );
   }
-console.log(data)
+  console.log(data)
   return (
     <div className="">
       {/* Loading overlay */}
@@ -90,7 +91,7 @@ console.log(data)
           <div className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg flex flex-col items-center gap-4">
             <Spinner size="lg" color="primary" />
             <p className="text-gray-600 dark:text-gray-400">
-              Loading dashboard data for {selectedYear}...
+              {t('pages.dashboard.home.loading.loadingDataForYear', { selectedYear })}
             </p>
           </div>
         </div>
@@ -122,14 +123,14 @@ console.log(data)
           users={data.pendingUserApprovals}
         />
 
-         <OverduePaymentsSection
-    payments={data.overduePayments} // You'll need to add this to your data structure
-  />
+        <OverduePaymentsSection
+          payments={data.overduePayments} // You'll need to add this to your data structure
+        />
       </div>
 
       {/* Charts Section */}
       <ChartsSection
-      revenueByStadium={data.revenueByStadium}
+        revenueByStadium={data.revenueByStadium}
         reservationsByStatus={data.reservationsByStatus || []}
       />
 
@@ -139,9 +140,9 @@ console.log(data)
           monthlyData={data.revenueTrends}
           currentYear={selectedYear}
           onYearChange={handleYearChange}
-              onRefresh={handleRefresh}
-        isRefreshing={isRefetching} 
-                  availableYears={data.availableYears || []} // PASS AVAILABLE YEARS
+          onRefresh={handleRefresh}
+          isRefreshing={isRefetching}
+          availableYears={data.availableYears || []} // PASS AVAILABLE YEARS
 
         />
       </div>

@@ -63,6 +63,7 @@ export type TranslationKey =
     | 'common.actions.view'
     | 'common.actions.viewActive'
     | 'common.actions.viewDeleted'
+    | 'common.ascending'
     | 'common.aside.clubs'
     | 'common.aside.dashboard'
     | 'common.aside.logout'
@@ -75,12 +76,15 @@ export type TranslationKey =
     | 'common.aside.stadiums'
     | 'common.aside.subscriptions'
     | 'common.aside.users'
+    | 'common.createdAt'
     | 'common.currency.name'
     | 'common.currency.symbol'
     | 'common.dates.created'
     | 'common.dates.createdShort'
     | 'common.dates.emailVerified'
     | 'common.dates.emailVerifiedShort'
+    | 'common.descending'
+    | 'common.email'
     | 'common.footer.address'
     | 'common.footer.allRightsReserved'
     | 'common.footer.appName'
@@ -172,6 +176,7 @@ export type TranslationKey =
     | 'common.months.short.nov'
     | 'common.months.short.oct'
     | 'common.months.short.sep'
+    | 'common.name'
     | 'common.navigation.public.links.about'
     | 'common.navigation.public.links.contact'
     | 'common.navigation.public.links.home'
@@ -193,8 +198,18 @@ export type TranslationKey =
     | 'common.notifications.total'
     | 'common.notifications.unread'
     | 'common.notifications.viewAll'
+    | 'common.orderBy.ascending'
+    | 'common.orderBy.createdAt'
+    | 'common.orderBy.descending'
+    | 'common.orderBy.email'
+    | 'common.orderBy.name'
+    | 'common.orderBy.sortBy'
+    | 'common.orderBy.sortOrder'
+    | 'common.orderBy.updatedAt'
     | 'common.roles.admin'
     | 'common.roles.club'
+    | 'common.sortBy'
+    | 'common.sortOrder'
     | 'common.status.active'
     | 'common.status.approved'
     | 'common.status.cancelled'
@@ -256,6 +271,7 @@ export type TranslationKey =
     | 'common.toast.success.updated'
     | 'common.toast.warning.confirmationRequired'
     | 'common.toast.warning.unsavedChanges'
+    | 'common.updatedAt'
     | 'common.user.dashboard'
     | 'common.user.dashboard_description'
     | 'common.user.logout'
@@ -472,6 +488,11 @@ export type TranslationKey =
     | 'pages.dashboard.home.charts.revenueByStadium.title'
     | 'pages.dashboard.home.charts.revenueByStadium.topStadium'
     | 'pages.dashboard.home.charts.revenueByStadium.totalRevenue'
+    | 'pages.dashboard.home.loading.anErrorOccurred'
+    | 'pages.dashboard.home.loading.failedToLoad'
+    | 'pages.dashboard.home.loading.loadingDataForYear'
+    | 'pages.dashboard.home.loading.title'
+    | 'pages.dashboard.home.loading.tryAgain'
     | 'pages.dashboard.home.metadata.description'
     | 'pages.dashboard.home.metadata.title'
     | 'pages.dashboard.home.overduePayments.daysOverdue'
@@ -1430,6 +1451,7 @@ export const _TranslationNamespaces = {
     "metadata",
     "welcome",
     "subtitle",
+    "loading",
     "yearFilter",
     "stats",
     "quickActions",
@@ -1442,6 +1464,13 @@ export const _TranslationNamespaces = {
   "pages.dashboard.home.metadata": [
     "title",
     "description"
+  ],
+  "pages.dashboard.home.loading": [
+    "title",
+    "loadingDataForYear",
+    "failedToLoad",
+    "anErrorOccurred",
+    "tryAgain"
   ],
   "pages.dashboard.home.yearFilter": [
     "label",
@@ -1730,7 +1759,8 @@ export const _TranslationNamespaces = {
     "months",
     "time",
     "dates",
-    "mobile"
+    "mobile",
+    "orderBy"
   ],
   "common.roles": [
     "admin",
@@ -2062,6 +2092,16 @@ export const _TranslationNamespaces = {
     "scrollHorizontal",
     "scrollLeft",
     "scrollRight"
+  ],
+  "common.orderBy": [
+    "sortBy",
+    "sortOrder",
+    "name",
+    "email",
+    "createdAt",
+    "updatedAt",
+    "ascending",
+    "descending"
   ]
 } as const;
 

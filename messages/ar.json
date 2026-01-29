@@ -541,6 +541,13 @@
         },
         "welcome": "مرحبًا بعودتك، {name}!",
         "subtitle": "إليك ما يحدث في إدارة ملاعبك",
+        "loading": {
+          "title": "تحميل بيانات لوحة التحكم",
+          "loadingDataForYear": "جاري تحميل بيانات لوحة التحكم لسنة {selectedYear}...",
+          "failedToLoad": "فشل تحميل بيانات لوحة التحكم",
+          "anErrorOccurred": "حدث خطأ أثناء تحميل بيانات لوحة التحكم",
+          "tryAgain": "حاول مرة أخرى"
+        },
         "yearFilter": {
           "label": "السنة",
           "selectYear": "اختر السنة",
@@ -723,7 +730,8 @@
         "metadata": {
           "title": "المستخدمين",
           "description": "إدارة المستخدمين وأذوناتهم"
-        }, "deleteUser": "حذف المستخدم",
+        },
+        "deleteUser": "حذف المستخدم",
         "deleteUserDescription": "هل أنت متأكد من رغبتك في حذف {name}؟",
         "deleteMultiple": "حذف المستخدمين",
         "deleteMultipleDescription": "هل أنت متأكد من رغبتك في حذف {count} مستخدم محدد؟",
@@ -1104,10 +1112,21 @@
       "createdShort": "أنشئ",
       "emailVerified": "تم التحقق من البريد",
       "emailVerifiedShort": "البريد"
-    },"mobile": {
-  "scrollHorizontal": "← مرر أفقيًا لمزيد من التفاصيل →",
-  "scrollLeft": "مرر لليسار",
-  "scrollRight": "مرر لليمين"
-}
+    },
+    "mobile": {
+      "scrollHorizontal": "← مرر أفقيًا لمزيد من التفاصيل →",
+      "scrollLeft": "مرر لليسار",
+      "scrollRight": "مرر لليمين"
+    },
+     "orderBy": {
+        "sortBy": "ترتيب حسب",
+        "sortOrder": "الترتيب",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "createdAt": "تاريخ الإنشاء",
+        "updatedAt": "آخر تحديث",
+        "ascending": "تصاعدي",
+        "descending": "تنازلي"
+    }
   }
 }
