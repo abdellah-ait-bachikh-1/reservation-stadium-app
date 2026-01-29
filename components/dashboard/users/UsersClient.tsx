@@ -24,15 +24,15 @@ import {
     HiTrophy,
     HiArchiveBox,
     HiArchiveBoxXMark,
-  
-    
+
+
     HiUser,
-   
+
     HiCalendar,
     HiClock,
 } from "react-icons/hi2";
 import { motion } from "framer-motion";
-import { HiMail as HiMailIcon,HiSortDescending,  HiMail, HiSortAscending, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
+import { HiMail as HiMailIcon, HiSortDescending, HiMail, HiSortAscending, HiRefresh, HiSearch, HiUserAdd, HiDotsVertical, HiFilter, HiArchive } from "react-icons/hi";
 import { useDebounce } from "use-debounce";
 import { cn } from "@heroui/theme";
 import DeleteOptionsModal from "@/components/DeleteOptionsModal";
@@ -44,7 +44,7 @@ interface UsersClientProps {
 
 export default function UsersClient({ locale }: UsersClientProps) {
     const t = useTypedTranslations();
-    
+
     // State for delete modal
     const [deleteModal, setDeleteModal] = useState({
         isOpen: false,
@@ -459,14 +459,14 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
     // Get sort order display text
     const getSortOrderText = () => {
-        return sortOrder === "asc" 
-            ? t("common.orderBy.ascending") 
+        return sortOrder === "asc"
+            ? t("common.orderBy.ascending")
             : t("common.orderBy.descending");
     };
 
     // Get sort order icon
     const getSortOrderIcon = () => {
-        return sortOrder === "asc" 
+        return sortOrder === "asc"
             ? <HiSortAscending className="w-4 h-4" />
             : <HiSortDescending className="w-4 h-4" />;
     };
@@ -509,9 +509,9 @@ export default function UsersClient({ locale }: UsersClientProps) {
     };
 
     // Check if any delete action is pending
-    const isDeleteLoading = actions.softDeleteUser.isPending || 
-                          actions.permanentDeleteUser.isPending || 
-                          actions.bulkAction.isPending;
+    const isDeleteLoading = actions.softDeleteUser.isPending ||
+        actions.permanentDeleteUser.isPending ||
+        actions.bulkAction.isPending;
 
     // Initial loading state (only on first load)
     if (isLoading && !data && isInitialLoad.current) {
@@ -581,7 +581,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
             {/* Stats Summary - Top of page */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg shadow-blue-100 shadow-xl dark:shadow-blue-900/30">
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -595,7 +595,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     </div>
                 </div>
 
-                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg shadow-green-100 shadow-xl dark:shadow-green-900/30">
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-green-700 dark:text-green-300">
@@ -609,7 +609,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     </div>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg shadow-yellow-100 shadow-xl dark:shadow-yellow-900/30">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-yellow-700 dark:text-yellow-300">
@@ -623,7 +623,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     </div>
                 </div>
 
-                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg shadow-red-100 shadow-xl dark:shadow-red-900/30">
+                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-red-700 dark:text-red-300">
@@ -637,7 +637,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     </div>
                 </div>
 
-                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg shadow-purple-100 shadow-xl dark:shadow-purple-900/30">
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-purple-700 dark:text-purple-300">
@@ -703,7 +703,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     <div className="flex flex-wrap gap-2 items-center">
                         {/* Role Multi-Select */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("pages.dashboard.users.filterByRole")}
                             selectionMode="multiple"
                             selectedKeys={selectedRoles}
@@ -720,7 +720,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                         {/* Status Multi-Select */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("pages.dashboard.users.filterByStatus")}
                             selectionMode="multiple"
                             selectedKeys={selectedStatuses}
@@ -739,7 +739,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                         {/* Deleted Status Filter */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("pages.dashboard.users.filterByDeleted")}
                             selectedKeys={[deletedFilter]}
                             onSelectionChange={(keys) => {
@@ -767,7 +767,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                         {/* Sports Multi-Select */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("pages.dashboard.users.filterBySport")}
                             selectionMode="multiple"
                             selectedKeys={selectedSports}
@@ -787,7 +787,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                         {/* Sort By Filter */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("common.orderBy.sortBy")}
                             selectedKeys={[sortBy]}
                             onSelectionChange={handleSortByChange}
@@ -805,7 +805,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
 
                         {/* Sort Order Filter */}
                         <Select
-                            className="w-full md:w-40"
+                            className="w-full md:w-44"
                             label={t("common.orderBy.sortOrder")}
                             selectedKeys={[sortOrder]}
                             onSelectionChange={handleSortOrderChange}
@@ -1024,7 +1024,7 @@ export default function UsersClient({ locale }: UsersClientProps) {
                     )}
                 </div>
 
-           
+
                 {/* Bulk Actions */}
                 {selectedUsers.size > 0 && (
                     <motion.div
@@ -1386,6 +1386,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                         as={Link}
                                                         href={`/dashboard/users/${user.id}/edit`}
                                                         isDisabled={isFiltering}
+                                                        color="warning"
+                                                        radius="full"
                                                     >
                                                         <HiPencil className="w-4 h-4" />
                                                     </Button>
@@ -1399,6 +1401,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                     as={Link}
                                                     href={`/dashboard/users/${user.id}`}
                                                     isDisabled={isFiltering}
+                                                    color="primary"
+                                                    radius="full"
                                                 >
                                                     <HiEye className="w-4 h-4" />
                                                 </Button>
@@ -1411,6 +1415,8 @@ export default function UsersClient({ locale }: UsersClientProps) {
                                                             size="sm"
                                                             variant="light"
                                                             isDisabled={isFiltering}
+                                                            color="secondary"
+                                                            radius="full"
                                                         >
                                                             <HiDotsVertical className="w-4 h-4" />
                                                         </Button>

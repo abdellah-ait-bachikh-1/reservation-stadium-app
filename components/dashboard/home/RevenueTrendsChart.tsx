@@ -341,7 +341,7 @@ export default function RevenueTrendsChart({
         {/* CHANGE grid-cols-5 to grid-cols-6 and add sm:grid-cols-2 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
           {/* Annual Total Revenue Card */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -377,7 +377,7 @@ export default function RevenueTrendsChart({
           </div>
 
           {/* Annual Subscription Revenue Card */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -403,7 +403,7 @@ export default function RevenueTrendsChart({
           </div>
 
           {/* Annual Single Session Revenue Card */}
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -429,7 +429,7 @@ export default function RevenueTrendsChart({
           </div>
 
           {/* Annual Paid Amount Card */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between rtl:text-right">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -457,7 +457,7 @@ export default function RevenueTrendsChart({
           </div>
 
           {/* Annual Overdue Amount Card */}
-          <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -483,7 +483,7 @@ export default function RevenueTrendsChart({
           </div>
 
           {/* ADD THIS NEW CARD - Annual Pending Amount Card */}
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-900/10 p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
