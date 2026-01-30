@@ -690,7 +690,19 @@
           "overdue": "En retard",
           "pendingAnnual": "En Attente",
           "enAttente": "en attente",
-          "monthlyPending": "En attente mensuelle"
+          "monthlyPending": "En attente mensuelle",
+             "collected": "collecté",
+          "collectionSummary": "Résumé de Collecte",
+          "totalPaidAmount": "Montant Total Payé",
+          "totalOverdueAmount": "Montant Total En Retard",
+          "totalPendingAmount": "Montant Total En Attente",
+          "expectedRevenue": "Revenu Attendu",
+          "subscription": "Abonnement",
+          "singleSession": "Session Unique",
+           "breakdown": "Répartition",
+        "paymentBreakdown": "Répartition des Paiements",
+        "subscriptionBreakdown": "Répartition des Abonnements",
+        "singleSessionBreakdown": "Répartition des Sessions Uniques"
         }
       },
       "profile": {
@@ -795,7 +807,12 @@
       }
     }
   },
-  "common": {
+  "common": { 
+  "average": "Moyenne",
+  "total": "Total",
+  "expected": "Attendu",
+  "summary": "Résumé","monthlyAverage": "Moyenne Mensuelle",
+    "month": "mois",
     "roles": {
       "admin": "Administrateur",
       "club": "Club"
@@ -1061,7 +1078,11 @@
       "pendingApproval": "En attente d'approbation",
       "deleted": "Supprimé",
       "filtering": "...",
-      "trashed": "À la corbeille"
+      "trashed": "À la corbeille",
+      "paymentStatus": "Statut de Paiement",
+  
+    "overdue": "En Retard",
+    "collected": "Collecté"
     },
     "currency": {
       "symbol": "DH",

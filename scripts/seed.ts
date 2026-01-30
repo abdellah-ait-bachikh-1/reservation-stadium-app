@@ -31,16 +31,8 @@ import {
   format,
   addMonths,
   subMonths,
-  addDays,
   subDays,
-  startOfMonth,
-  endOfMonth,
-  eachMonthOfInterval,
   eachDayOfInterval,
-  isWeekend,
-  isFriday,
-  isSaturday,
-  isSunday,
 } from "date-fns";
 
 async function yearlyDashboardSeedV2() {
@@ -560,101 +552,100 @@ for (const year of SEED_YEARS) {
   console.log(`\n📅 Processing year ${year}...`);
 
   // ===== CREATE MONTHLY PAYMENTS =====
-// ===== CREATE MONTHLY PAYMENTS =====
-console.log(`  💳 Creating monthly payments for ${year}...`);
-const monthlyPaymentsData: InsertMonthlyPaymentType[] = [];
+  console.log(`  💳 Creating monthly payments for ${year}...`);
+  const monthlyPaymentsData: InsertMonthlyPaymentType[] = [];
 
-// Track which (month, year, series) combinations we've already created
-const existingPaymentKeys = new Set<string>();
+  // Track which (month, year, series) combinations we've already created
+  const existingPaymentKeys = new Set<string>();
 
-// Realistic monthly trends - more activity in certain months
-const monthlyTrends = {
-  reservations: [70, 75, 85, 95, 105, 120, 130, 125, 110, 95, 80, 70], // Summer peak
-  paymentRate: [0.85, 0.87, 0.90, 0.92, 0.93, 0.94, 0.95, 0.94, 0.93, 0.91, 0.88, 0.86],
-};
+  // Realistic monthly trends - more activity in certain months
+  const monthlyTrends = {
+    reservations: [70, 75, 85, 95, 105, 120, 130, 125, 110, 95, 80, 70], // Summer peak
+    paymentRate: [0.85, 0.87, 0.90, 0.92, 0.93, 0.94, 0.95, 0.94, 0.93, 0.91, 0.88, 0.86],
+  };
 
-// Adjust for year (current year should be more active)
-const yearMultiplier = year === CURRENT_YEAR ? 1.15 : 1.0;
+  // Adjust for year (current year should be more active)
+  const yearMultiplier = year === CURRENT_YEAR ? 1.15 : 1.0;
 
-// Create payments for each month
-for (let month = 1; month <= 12; month++) {
-  const monthReservations = Math.round(
-    monthlyTrends.reservations[month - 1] * yearMultiplier,
-  );
-  const paymentRate = monthlyTrends.paymentRate[month - 1];
+  // Create payments for each month
+  for (let month = 1; month <= 12; month++) {
+    const monthReservations = Math.round(
+      monthlyTrends.reservations[month - 1] * yearMultiplier,
+    );
+    const paymentRate = monthlyTrends.paymentRate[month - 1];
 
-  // Create payments for monthly series
-  monthlySeries.forEach((series, seriesIndex) => {
-    // Skip some series occasionally (not all clubs pay every month)
-    if (Math.random() > 0.8) return;
+    // Create payments for monthly series
+    monthlySeries.forEach((series, seriesIndex) => {
+      // Skip some series occasionally (not all clubs pay every month)
+      if (Math.random() > 0.8) return;
 
-    // Create a unique key for this combination
-    const paymentKey = `${month}-${year}-${series.id}`;
-    
-    // Skip if we already have a payment for this combination
-    if (existingPaymentKeys.has(paymentKey)) {
-      return;
-    }
+      // Create a unique key for this combination
+      const paymentKey = `${month}-${year}-${series.id}`;
+      
+      // Skip if we already have a payment for this combination
+      if (existingPaymentKeys.has(paymentKey)) {
+        return;
+      }
 
-    const paymentStatuses: Array<"PAID" | "PENDING" | "OVERDUE"> = 
-      Math.random() <= paymentRate ? 
-      ["PAID", "PAID", "PAID", "PAID", "PAID"] : // Higher chance of PAID
-      ["PENDING", "PENDING", "OVERDUE"];
-    
-    const paymentStatus = paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)];
-    const isPaid = paymentStatus === "PAID";
+      const paymentStatuses: Array<"PAID" | "PENDING" | "OVERDUE"> = 
+        Math.random() <= paymentRate ? 
+        ["PAID", "PAID", "PAID", "PAID", "PAID"] : // Higher chance of PAID
+        ["PENDING", "PENDING", "OVERDUE"];
+      
+      const paymentStatus = paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)];
+      const isPaid = paymentStatus === "PAID";
 
-    const paymentDate = isPaid
-      ? format(
-          new Date(year, month - 1, 5 + Math.floor(Math.random() * 20)),
-          "yyyy-MM-dd HH:mm:ss",
-        )
-      : null;
+      const paymentDate = isPaid
+        ? format(
+            new Date(year, month - 1, 5 + Math.floor(Math.random() * 20)),
+            "yyyy-MM-dd HH:mm:ss",
+          )
+        : null;
 
-    monthlyPaymentsData.push({
-      month: month,
-      year: year,
-      amount: MONTHLY_PRICE,
-      status: paymentStatus,
-      paymentDate: paymentDate,
-      receiptNumber: isPaid
-        ? `REC-${year}${month.toString().padStart(2, "0")}-${(seriesIndex + 1).toString().padStart(3, "0")}`
-        : null,
-      userId: series.userId!,
-      reservationSeriesId: series.id,
-    });
-
-    // Mark this combination as used
-    existingPaymentKeys.add(paymentKey);
-  });
-}
-
-// Add some specific overdue payments for testing
-if (year === CURRENT_YEAR) {
-  // Add overdue payments for last 3 months
-  for (let i = 1; i <= 3; i++) {
-    const overdueSeries = monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
-    
-    // Create a unique key for this overdue payment
-    const overdueKey = `${i}-${year}-${overdueSeries.id}`;
-    
-    // Skip if we already have a payment for this combination
-    if (!existingPaymentKeys.has(overdueKey)) {
       monthlyPaymentsData.push({
-        month: i, // January, February, March
+        month: month,
         year: year,
         amount: MONTHLY_PRICE,
-        status: "OVERDUE" as const,
-        paymentDate: null,
-        receiptNumber: null,
-        userId: overdueSeries.userId!,
-        reservationSeriesId: overdueSeries.id,
+        status: paymentStatus,
+        paymentDate: paymentDate,
+        receiptNumber: isPaid
+          ? `REC-${year}${month.toString().padStart(2, "0")}-${(seriesIndex + 1).toString().padStart(3, "0")}`
+          : null,
+        userId: series.userId!,
+        reservationSeriesId: series.id,
       });
+
+      // Mark this combination as used
+      existingPaymentKeys.add(paymentKey);
+    });
+  }
+
+  // Add some specific overdue payments for testing
+  if (year === CURRENT_YEAR) {
+    // Add overdue payments for last 3 months
+    for (let i = 1; i <= 3; i++) {
+      const overdueSeries = monthlySeries[Math.floor(Math.random() * monthlySeries.length)];
       
-      existingPaymentKeys.add(overdueKey);
+      // Create a unique key for this overdue payment
+      const overdueKey = `${i}-${year}-${overdueSeries.id}`;
+      
+      // Skip if we already have a payment for this combination
+      if (!existingPaymentKeys.has(overdueKey)) {
+        monthlyPaymentsData.push({
+          month: i, // January, February, March
+          year: year,
+          amount: MONTHLY_PRICE,
+          status: "OVERDUE" as const,
+          paymentDate: null,
+          receiptNumber: null,
+          userId: overdueSeries.userId!,
+          reservationSeriesId: overdueSeries.id,
+        });
+        
+        existingPaymentKeys.add(overdueKey);
+      }
     }
   }
-}
 
   await db.insert(monthlyPayments).values(monthlyPaymentsData);
   allMonthlyPayments.push(...monthlyPaymentsData);
@@ -738,7 +729,7 @@ if (year === CURRENT_YEAR) {
         }
       });
 
-      // 2. Create reservations from per-session series
+      // 2. Create reservations from per-session series (SINGLE_SESSION)
       perSessionSeries.forEach((series) => {
         if (series.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek)) {
           const startTimeParts = series.startTime!.split(" ")[1];
@@ -753,43 +744,49 @@ if (year === CURRENT_YEAR) {
           endDateTime.setHours(endHours, endMinutes, 0, 0);
 
           const isPaid = Math.random() > 0.4; // 60% paid
+          const isApproved = isPaid ? true : Math.random() > 0.3; // Approved if paid, or 70% chance if not paid
 
           reservationsData.push({
             startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
             endDateTime: format(endDateTime, "yyyy-MM-dd HH:mm:ss"),
-            status: isPaid ? "APPROVED" : "PENDING",
+            status: isApproved ? "APPROVED" : "PENDING",
             sessionPrice: SESSION_PRICE,
             isPaid: isPaid,
             paymentType: "SINGLE_SESSION" as const,
             stadiumId: series.stadiumId!,
             userId: series.userId!,
             reservationSeriesId: series.id,
+            // No monthlyPaymentId for single sessions
           });
         }
       });
 
-      // 3. Create additional individual reservations
-      const existingSeriesReservations = allSeries.filter(
-        (s) => s.dayOfWeek === (dayOfWeek === 0 ? 7 : dayOfWeek),
-      ).length;
+      // 3. CREATE ADDITIONAL ONE-TIME SINGLE SESSION RESERVATIONS (Non-series)
+      // These are one-time bookings, not part of any series
+      const oneTimeSessionCount = Math.floor(Math.random() * 4); // 0-3 additional single sessions per day
       
-      const additionalReservations = Math.max(
-        0,
-        dayReservations - existingSeriesReservations,
-      );
-
-      for (let i = 0; i < additionalReservations; i++) {
+      for (let i = 0; i < oneTimeSessionCount; i++) {
+        // Random time slots (avoiding existing series times)
         const hour = 8 + Math.floor(Math.random() * 12); // 8 AM to 8 PM
+        const minuteSlot = Math.floor(Math.random() * 4) * 15; // 00, 15, 30, 45
         const duration = 1 + Math.floor(Math.random() * 3); // 1-3 hours
 
         const startDateTime = new Date(currentDate);
-        startDateTime.setHours(hour, 0, 0, 0);
+        startDateTime.setHours(hour, minuteSlot, 0, 0);
 
         const endDateTime = new Date(currentDate);
-        endDateTime.setHours(hour + duration, 0, 0, 0);
+        endDateTime.setHours(hour + duration, minuteSlot, 0, 0);
 
         const stadiumIndex = Math.floor(Math.random() * allStadiums.length);
         const user = activeClubUsers[Math.floor(Math.random() * activeClubUsers.length)];
+
+        // Check if this time slot is already taken in this stadium
+        const conflictingReservation = reservationsData.find(r => 
+          r.stadiumId === allStadiums[stadiumIndex].id &&
+          r.startDateTime === format(startDateTime, "yyyy-MM-dd HH:mm:ss")
+        );
+        
+        if (conflictingReservation) continue; // Skip if conflict
 
         // Varied status distribution
         const statuses = ["APPROVED", "PENDING", "DECLINED", "CANCELLED"];
@@ -805,7 +802,7 @@ if (year === CURRENT_YEAR) {
         }
 
         const isApproved = statuses[statusIndex] === "APPROVED";
-        const isPaid = isApproved ? Math.random() > 0.5 : false; // 50% of approved are paid
+        const isPaid = isApproved ? Math.random() > 0.3 : false; // 70% of approved one-time sessions are paid
 
         reservationsData.push({
           startDateTime: format(startDateTime, "yyyy-MM-dd HH:mm:ss"),
@@ -816,6 +813,8 @@ if (year === CURRENT_YEAR) {
           paymentType: "SINGLE_SESSION" as const,
           stadiumId: allStadiums[stadiumIndex].id,
           userId: user.id,
+          // No reservationSeriesId for one-time bookings
+          // No monthlyPaymentId for single sessions
         });
       }
     }
@@ -824,33 +823,51 @@ if (year === CURRENT_YEAR) {
   await db.insert(reservations).values(reservationsData);
   allReservations.push(...reservationsData);
   
+  // Calculate metrics for single sessions vs subscriptions
+  const subscriptionReservations = reservationsData.filter(r => r.paymentType === "MONTHLY_SUBSCRIPTION");
+  const singleSessionReservations = reservationsData.filter(r => r.paymentType === "SINGLE_SESSION");
+  const oneTimeSingleSessions = singleSessionReservations.filter(r => !r.reservationSeriesId);
+  const seriesSingleSessions = singleSessionReservations.filter(r => r.reservationSeriesId);
+  
   const approvedCount = reservationsData.filter(r => r.status === "APPROVED").length;
   const pendingReservationsCount = reservationsData.filter(r => r.status === "PENDING").length;
   const declinedReservationsCount = reservationsData.filter(r => r.status === "DECLINED").length;
   const cancelledReservationsCount = reservationsData.filter(r => r.status === "CANCELLED").length;
   
   console.log(`  ✅ Created ${reservationsData.length} reservations for ${year}`);
+  console.log(`     - Monthly Subscriptions: ${subscriptionReservations.length}`);
+  console.log(`     - Single Sessions (Series): ${seriesSingleSessions.length}`);
+  console.log(`     - One-time Single Sessions: ${oneTimeSingleSessions.length}`);
   console.log(`     - Approved: ${approvedCount}, Pending: ${pendingReservationsCount}, Declined: ${declinedReservationsCount}, Cancelled: ${cancelledReservationsCount}`);
 
   // ===== CREATE CASH PAYMENT RECORDS =====
   console.log(`  💵 Creating cash payment records for ${year}...`);
   const cashPaymentsData: InsertCashPaymentRecordType[] = [];
 
-  // Create cash payments for paid reservations without monthly payments
-  reservationsData.forEach((reservation, index) => {
-    if (reservation.isPaid && !reservation.monthlyPaymentId) {
-      const paymentDate = new Date(reservation.startDateTime);
-      paymentDate.setDate(paymentDate.getDate() - Math.floor(Math.random() * 7)); // Paid 0-6 days before
+  // Create cash payments for paid single session reservations (both series-based and one-time)
+  const paidSingleSessionReservations = reservationsData.filter(
+    reservation => reservation.paymentType === "SINGLE_SESSION" && reservation.isPaid
+  );
 
-      cashPaymentsData.push({
-        amount: SESSION_PRICE,
-        paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
-        receiptNumber: `CASH-${format(new Date(reservation.startDateTime), "yyyyMMdd")}-${(index + 1).toString().padStart(3, "0")}`,
-        notes: ["Payment received in cash", "Paid via bank transfer", "Mobile payment"][index % 3],
-        reservationId: reservation.id,
-        userId: reservation.userId!,
-      });
-    }
+  paidSingleSessionReservations.forEach((reservation, index) => {
+    // Generate payment date (paid 0-7 days before reservation)
+    const reservationDate = new Date(reservation.startDateTime);
+    const daysBefore = Math.floor(Math.random() * 8); // 0-7 days
+    const paymentDate = new Date(reservationDate);
+    paymentDate.setDate(paymentDate.getDate() - daysBefore);
+
+    const isOneTime = !reservation.reservationSeriesId;
+    const paymentType = isOneTime ? 'One-time Single Session' : 'Series Single Session';
+    
+    cashPaymentsData.push({
+      amount: reservation.sessionPrice,
+      paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
+      receiptNumber: `CASH-${format(new Date(reservation.startDateTime), "yyyyMMdd")}-${(index + 1).toString().padStart(3, "0")}`,
+      notes: `${paymentType} payment for ${format(new Date(reservation.startDateTime), "MM/dd/yyyy HH:mm")}`,
+      reservationId: reservation.id,
+      userId: reservation.userId!,
+      // No monthlyPaymentId for single session payments
+    });
   });
 
   // Create cash payments for monthly payments
@@ -863,15 +880,39 @@ if (year === CURRENT_YEAR) {
         notes: `Monthly subscription for ${payment.month}/${payment.year}`,
         monthlyPaymentId: payment.id,
         userId: payment.userId!,
+        // No reservationId for monthly subscription payments
       });
     }
   });
 
   await db.insert(cashPaymentRecords).values(cashPaymentsData);
   allCashPayments.push(...cashPaymentsData);
+  
+  // Separate cash payments for single sessions vs subscriptions
+  const singleSessionCashPayments = cashPaymentsData.filter(cp => !cp.monthlyPaymentId);
+  const subscriptionCashPayments = cashPaymentsData.filter(cp => cp.monthlyPaymentId);
+  
   console.log(
-    `  ✅ Created ${cashPaymentsData.length} cash payment records for ${year}`,
+    `  ✅ Created ${cashPaymentsData.length} cash payment records for ${year}`
   );
+  console.log(`     - Single Session Payments: ${singleSessionCashPayments.length}`);
+  console.log(`     - Subscription Payments: ${subscriptionCashPayments.length}`);
+  
+  // DEBUG: Show detailed breakdown of single session types
+  const seriesSingleSessionCash = singleSessionCashPayments.filter(cp => {
+    // Find the reservation to check if it has seriesId
+    const reservation = paidSingleSessionReservations.find(r => r.id === cp.reservationId);
+    return reservation && reservation.reservationSeriesId;
+  });
+  
+  const oneTimeSingleSessionCash = singleSessionCashPayments.filter(cp => {
+    // Find the reservation to check if it has seriesId
+    const reservation = paidSingleSessionReservations.find(r => r.id === cp.reservationId);
+    return reservation && !reservation.reservationSeriesId;
+  });
+  
+  console.log(`     - Series Single Sessions: ${seriesSingleSessionCash.length}`);
+  console.log(`     - One-time Single Sessions: ${oneTimeSingleSessionCash.length}`);
 }
 
 // ===== 10. CREATE NOTIFICATIONS =====
@@ -1087,11 +1128,26 @@ for (const year of SEED_YEARS) {
     .reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
   const totalRevenue = subscriptionRevenue + singleSessionRevenue;
 
+  // Single session breakdown
+  const singleSessionReservations = yearReservations.filter(r => r.paymentType === "SINGLE_SESSION");
+  const oneTimeSingleSessions = singleSessionReservations.filter(r => !r.reservationSeriesId);
+  const seriesSingleSessions = singleSessionReservations.filter(r => r.reservationSeriesId);
+  
+  const paidSingleSessions = singleSessionReservations.filter(r => r.isPaid);
+  const paidOneTimeSessions = oneTimeSingleSessions.filter(r => r.isPaid);
+  const paidSeriesSingleSessions = seriesSingleSessions.filter(r => r.isPaid);
+
   console.log(`📅 Total Reservations: ${yearReservations.length}`);
   console.log(`   ✅ Approved: ${approvedReservations.length} (${Math.round(approvedReservations.length/yearReservations.length*100)}%)`);
   console.log(`   ⏳ Pending: ${pendingReservations.length} (${Math.round(pendingReservations.length/yearReservations.length*100)}%)`);
   console.log(`   ❌ Declined: ${declinedReservations.length} (${Math.round(declinedReservations.length/yearReservations.length*100)}%)`);
   console.log(`   🚫 Cancelled: ${cancelledReservations.length} (${Math.round(cancelledReservations.length/yearReservations.length*100)}%)`);
+
+  console.log(`\n🎫 Single Session Breakdown:`);
+  console.log(`   Total Single Sessions: ${singleSessionReservations.length}`);
+  console.log(`   - One-time Single Sessions: ${oneTimeSingleSessions.length} (${Math.round(oneTimeSingleSessions.length/singleSessionReservations.length*100)}%)`);
+  console.log(`   - Series Single Sessions: ${seriesSingleSessions.length} (${Math.round(seriesSingleSessions.length/singleSessionReservations.length*100)}%)`);
+  console.log(`   Paid Single Sessions: ${paidSingleSessions.length} (${Math.round(paidSingleSessions.length/singleSessionReservations.length*100)}%)`);
 
   console.log(`\n💰 Revenue: ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`);
   console.log(`   📋 Subscriptions: ${subscriptionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD (${Math.round(subscriptionRevenue/totalRevenue*100)}%)`);
@@ -1133,6 +1189,7 @@ for (const year of SEED_YEARS) {
     console.log(`  ${sportName}: ${Math.round(yearReservations.length/4)} reservations`);
   });
 }
+
     // ===== FINAL SUMMARY =====
     console.log("\n" + "=".repeat(80));
     console.log("🎉 ENHANCED DASHBOARD SEEDING COMPLETE!");
@@ -1149,6 +1206,54 @@ for (const year of SEED_YEARS) {
     console.log(`   Reservations: ${allReservations.length}`);
     console.log(`   Cash Payments: ${allCashPayments.length}`);
     console.log(`   Notifications: ${notificationsData.length}`);
+
+    // Calculate single session vs subscription metrics
+    const subscriptionReservations = allReservations.filter(r => r.paymentType === "MONTHLY_SUBSCRIPTION");
+    const singleSessionReservations = allReservations.filter(r => r.paymentType === "SINGLE_SESSION");
+    const oneTimeSingleSessions = singleSessionReservations.filter(r => !r.reservationSeriesId);
+    const seriesSingleSessions = singleSessionReservations.filter(r => r.reservationSeriesId);
+    
+    const singleSessionCashPayments = allCashPayments.filter(cp => !cp.monthlyPaymentId);
+    const subscriptionCashPayments = allCashPayments.filter(cp => cp.monthlyPaymentId);
+    
+    console.log("\n📊 RESERVATION TYPES:");
+    console.log(`   Monthly Subscriptions: ${subscriptionReservations.length} (${Math.round(subscriptionReservations.length/allReservations.length*100)}%)`);
+    console.log(`   Single Sessions (Series-based): ${seriesSingleSessions.length} (${Math.round(seriesSingleSessions.length/allReservations.length*100)}%)`);
+    console.log(`   One-time Single Sessions: ${oneTimeSingleSessions.length} (${Math.round(oneTimeSingleSessions.length/allReservations.length*100)}%)`);
+    
+    console.log("\n📊 PAYMENT TYPES:");
+    console.log(`   Single Session Payments: ${singleSessionCashPayments.length} (${Math.round(singleSessionCashPayments.length/allCashPayments.length*100)}%)`);
+    console.log(`   Subscription Payments: ${subscriptionCashPayments.length} (${Math.round(subscriptionCashPayments.length/allCashPayments.length*100)}%)`);
+    
+    // Calculate revenue for single sessions vs subscriptions
+    const singleSessionRevenue = singleSessionCashPayments.reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
+    const subscriptionRevenue = subscriptionCashPayments.reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
+    const totalRevenue = singleSessionRevenue + subscriptionRevenue;
+    
+    console.log("\n💰 REVENUE BREAKDOWN:");
+    console.log(`   Total Revenue: ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD`);
+    console.log(`   Single Session Revenue: ${singleSessionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD (${Math.round(singleSessionRevenue/totalRevenue*100)}%)`);
+    console.log(`   Subscription Revenue: ${subscriptionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD (${Math.round(subscriptionRevenue/totalRevenue*100)}%)`);
+
+    // Single session revenue breakdown
+    const seriesSingleSessionCash = singleSessionCashPayments.filter(cp => {
+      // Find the reservation to check if it has seriesId
+      const reservation = allReservations.find(r => r.id === cp.reservationId);
+      return reservation && reservation.reservationSeriesId;
+    });
+    
+    const oneTimeSingleSessionCash = singleSessionCashPayments.filter(cp => {
+      // Find the reservation to check if it has seriesId
+      const reservation = allReservations.find(r => r.id === cp.reservationId);
+      return reservation && !reservation.reservationSeriesId;
+    });
+    
+    const seriesSingleSessionRevenue = seriesSingleSessionCash.reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
+    const oneTimeSingleSessionRevenue = oneTimeSingleSessionCash.reduce((sum, cp) => sum + parseFloat(cp.amount), 0);
+    
+    console.log(`\n🎫 SINGLE SESSION REVENUE BREAKDOWN:`);
+    console.log(`   Series-based Single Sessions: ${seriesSingleSessionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD (${Math.round(seriesSingleSessionRevenue/singleSessionRevenue*100)}%)`);
+    console.log(`   One-time Single Sessions: ${oneTimeSingleSessionRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })} MAD (${Math.round(oneTimeSingleSessionRevenue/singleSessionRevenue*100)}%)`);
 
     console.log("\n🔑 TEST LOGIN CREDENTIALS:");
     console.log("   Admin: admin@dashboard.ma / password123");
@@ -1169,6 +1274,11 @@ for (const year of SEED_YEARS) {
     console.log("   ✓ Year-over-year growth (15% increase for current year)");
     console.log("   ✓ Real overdue payments for testing");
     console.log("   ✓ Notifications covering all use cases");
+    console.log("   ✓ Single session reservations (BOTH types)");
+    console.log("   ✓ Series-based single sessions (from per-session series)");
+    console.log("   ✓ One-time single sessions (non-series bookings)");
+    console.log("   ✓ Clear separation between single session vs subscription revenue");
+    console.log("   ✓ Cash payment records for all paid reservations");
 
     console.log("\n📈 EXPECTED DASHBOARD INSIGHTS:");
     console.log("   • Summer months should show highest activity");
@@ -1177,6 +1287,10 @@ for (const year of SEED_YEARS) {
     console.log("   • Current year should show 15% growth over 2025");
     console.log("   • Subscription revenue should dominate total revenue");
     console.log("   • Real overdue payments visible in dashboard");
+    console.log("   • Clear distinction between single session and subscription bookings");
+    console.log("   • Single session price fixed at 50 MAD across all stadiums");
+    console.log("   • Both series-based and one-time single sessions should be visible");
+    console.log("   • Revenue breakdown should show single session contributions");
 
   } catch (error: any) {
     console.error("\n❌ Error during enhanced seeding:", error);

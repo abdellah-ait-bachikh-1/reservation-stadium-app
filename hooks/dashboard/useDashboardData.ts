@@ -14,15 +14,15 @@ export interface DashboardData {
     totalUsers: number;
     subscriptions: number;
     overduePayments: number;
+    overdueAmount: number; // ADD THIS
     newClubsThisMonth: number;
     newUsersThisMonth: number;
-    newClubsThisYear: number; // ADD THIS
-    newUsersThisYear: number; // ADD THIS
+    newClubsThisYear: number;
+    newUsersThisYear: number;
     avgUtilization: number;
     completionRate: number;
-      
+    
     changes?: {
-      // ADD THIS OPTIONAL CHANGES OBJECT
       totalReservationsChange?: string;
       activeReservationsChange?: string;
       pendingReservationsChange?: string;
@@ -31,13 +31,15 @@ export interface DashboardData {
       totalUsersChange?: string;
       subscriptionsChange?: string;
       overduePaymentsChange?: string;
+      overdueAmountChange?: string; // ADD THIS
       avgUtilizationChange?: string;
       completionRateChange?: string;
       newClubsChange?: string;
       newUsersChange?: string;
     };
   };
-revenueByStadium: Array<{ // ADD THIS
+  
+  revenueByStadium: Array<{
     id: string;
     name: string;
     totalRevenue: number;
@@ -45,17 +47,18 @@ revenueByStadium: Array<{ // ADD THIS
     singleSessionRevenue: number;
     percentage: number;
   }>;
+  
   pendingUserApprovals: Array<{
-    // Changed from recentActivity
     id: string;
     name: string;
     email: string;
     phoneNumber: string;
-    emailVerifiedAt: string | null; 
+    emailVerifiedAt: string | null;
     createdAt: string;
     timeAgo: string;
   }>;
-overduePayments: Array<{
+  
+  overduePayments: Array<{
     id: string;
     clubName: string;
     stadiumName: string;
@@ -64,11 +67,15 @@ overduePayments: Array<{
     overdueDays: number;
     reservationSeriesId: string;
     userId: string;
+    month: number;
+    year: number;
   }>;
+  
   reservationsByMonth: Array<{
     month: string;
     value: number;
   }>;
+  
   revenueByMonth: Array<{
     month: string;
     totalRevenue: number;
@@ -76,15 +83,16 @@ overduePayments: Array<{
     singleSessionRevenue: number;
     paidAmount: number;
     overdueAmount: number;
-    pendingAmount: number; 
+    pendingAmount: number;
     collectionRate: number;
   }>;
-
+  
   reservationsByStatus: Array<{
     status: ReservationStatusType;
     count: number;
     color: string;
   }>;
+  
   revenueTrends: Array<{
     month: string;
     totalRevenue: number;
@@ -95,10 +103,9 @@ overduePayments: Array<{
     pendingAmount: number;
     collectionRate: number;
   }>;
-    availableYears: number[]; // ADD THIS
-
+  
+  availableYears: number[];
 }
-
 async function fetchDashboardData(year: number): Promise<DashboardData> {
   // Only validate that year is not in the future
   const currentYear = new Date().getFullYear();

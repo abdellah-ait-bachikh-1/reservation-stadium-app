@@ -690,7 +690,18 @@
           "overdue": "متأخر",
           "pendingAnnual": "في الانتظار",
           "enAttente": "في الانتظار",
-          "monthlyPending": "في الانتظار الشهري"
+          "monthlyPending": "في الانتظار الشهري", "collected": "متحصل",
+          "collectionSummary": "ملخص التحصيل",
+          "totalPaidAmount": "المبلغ الإجمالي المدفوع",
+          "totalOverdueAmount": "المبلغ الإجمالي المتأخر",
+          "totalPendingAmount": "المبلغ الإجمالي المعلق",
+          "expectedRevenue": "الإيراد المتوقع",
+          "subscription": "الاشتراك",
+          "singleSession": "الجلسة المفردة",  "breakdown": "تفصيل",
+        "paymentBreakdown": "تفصيل المدفوعات",
+        "subscriptionBreakdown": "تفصيل الاشتراكات",
+        "singleSessionBreakdown": "تفصيل الجلسات المفردة"
+          
         }
       },
       "profile": {
@@ -796,7 +807,12 @@
       }
     }
   },
-  "common": {
+  "common": {  
+  "average": "المتوسط",
+  "total": "الإجمالي",
+  "expected": "المتوقع",
+  "summary": "ملخص", "monthlyAverage": "المتوسط الشهري",
+    "month": "شهر",
     "roles": {
       "admin": "المسؤول",
       "club": "النادي"
@@ -1062,7 +1078,11 @@
       "pendingApproval": "بانتظار الموافقة",
       "deleted": "محذوف",
       "filtering": "...",
-      "trashed": "في سلة المهملات"
+      "trashed": "في سلة المهملات",
+       "paymentStatus": "حالة الدفع",
+
+    "overdue": "متأخر",
+    "collected": "متحصل"
     },
     "currency": {
       "symbol": "درهم",

@@ -690,7 +690,20 @@
           "overdue": "Overdue",
           "pendingAnnual": "Pending",
           "enAttente": "pending",
-          "monthlyPending": "Monthly Pending"
+          "monthlyPending": "Monthly Pending",
+           "collected": "collected",
+          "collectionSummary": "Collection Summary",
+          "totalPaidAmount": "Total Paid Amount",
+          "totalOverdueAmount": "Total Overdue Amount",
+          "totalPendingAmount": "Total Pending Amount",
+          "expectedRevenue": "Expected Revenue",
+          "subscription": "Subscription",
+          "singleSession": "Single Session",
+          
+        "breakdown": "Breakdown",
+        "paymentBreakdown": "Payment Breakdown",
+        "subscriptionBreakdown": "Subscription Breakdown",
+        "singleSessionBreakdown": "Single Session Breakdown"
         }
       },
       "profile": {
@@ -798,6 +811,11 @@
     }
   },
   "common": {
+  "average": "Average",
+  "total": "Total",
+  "expected": "Expected",
+  "summary": "Summary", "monthlyAverage": "Monthly Average",
+    "month": "month",
     "roles": {
       "admin": "Administrator",
       "club": "Club"
@@ -1063,7 +1081,9 @@
       "pendingApproval": "Pending Approval",
       "deleted": "Deleted",
       "filtering": "filtering",
-      "trashed": "In Trash"
+      "trashed": "In Trash", "paymentStatus": "Payment Status",
+    "overdue": "Overdue",
+    "collected": "Collected"
     },
     "currency": {
       "symbol": "MAD",

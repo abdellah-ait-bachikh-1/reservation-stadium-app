@@ -63,7 +63,6 @@ export type TranslationKey =
     | 'common.actions.view'
     | 'common.actions.viewActive'
     | 'common.actions.viewDeleted'
-    | 'common.ascending'
     | 'common.aside.clubs'
     | 'common.aside.dashboard'
     | 'common.aside.logout'
@@ -76,15 +75,14 @@ export type TranslationKey =
     | 'common.aside.stadiums'
     | 'common.aside.subscriptions'
     | 'common.aside.users'
-    | 'common.createdAt'
+    | 'common.average'
     | 'common.currency.name'
     | 'common.currency.symbol'
     | 'common.dates.created'
     | 'common.dates.createdShort'
     | 'common.dates.emailVerified'
     | 'common.dates.emailVerifiedShort'
-    | 'common.descending'
-    | 'common.email'
+    | 'common.expected'
     | 'common.footer.address'
     | 'common.footer.allRightsReserved'
     | 'common.footer.appName'
@@ -152,6 +150,8 @@ export type TranslationKey =
     | 'common.mobile.scrollRight'
     | 'common.modals.logout.message'
     | 'common.modals.logout.title'
+    | 'common.month'
+    | 'common.monthlyAverage'
     | 'common.months.full.april'
     | 'common.months.full.august'
     | 'common.months.full.december'
@@ -176,7 +176,6 @@ export type TranslationKey =
     | 'common.months.short.nov'
     | 'common.months.short.oct'
     | 'common.months.short.sep'
-    | 'common.name'
     | 'common.navigation.public.links.about'
     | 'common.navigation.public.links.contact'
     | 'common.navigation.public.links.home'
@@ -208,23 +207,25 @@ export type TranslationKey =
     | 'common.orderBy.updatedAt'
     | 'common.roles.admin'
     | 'common.roles.club'
-    | 'common.sortBy'
-    | 'common.sortOrder'
     | 'common.status.active'
     | 'common.status.approved'
     | 'common.status.cancelled'
+    | 'common.status.collected'
     | 'common.status.declined'
     | 'common.status.deleted'
     | 'common.status.filtering'
     | 'common.status.invalidDate'
     | 'common.status.notVerified'
+    | 'common.status.overdue'
     | 'common.status.paid'
+    | 'common.status.paymentStatus'
     | 'common.status.pending'
     | 'common.status.pendingApproval'
     | 'common.status.trashed'
     | 'common.status.unpaid'
     | 'common.status.unverified'
     | 'common.status.verified'
+    | 'common.summary'
     | 'common.theme.dark'
     | 'common.theme.description.dark'
     | 'common.theme.description.light'
@@ -271,7 +272,7 @@ export type TranslationKey =
     | 'common.toast.success.updated'
     | 'common.toast.warning.confirmationRequired'
     | 'common.toast.warning.unsavedChanges'
-    | 'common.updatedAt'
+    | 'common.total'
     | 'common.user.dashboard'
     | 'common.user.dashboard_description'
     | 'common.user.logout'
@@ -517,9 +518,13 @@ export type TranslationKey =
     | 'pages.dashboard.home.quickActions.title'
     | 'pages.dashboard.home.quickActions.viewPayments'
     | 'pages.dashboard.home.revenueTrends.annualTotal'
+    | 'pages.dashboard.home.revenueTrends.breakdown'
+    | 'pages.dashboard.home.revenueTrends.collected'
     | 'pages.dashboard.home.revenueTrends.collectionRate'
+    | 'pages.dashboard.home.revenueTrends.collectionSummary'
     | 'pages.dashboard.home.revenueTrends.description'
     | 'pages.dashboard.home.revenueTrends.enAttente'
+    | 'pages.dashboard.home.revenueTrends.expectedRevenue'
     | 'pages.dashboard.home.revenueTrends.monthlyBreakdown'
     | 'pages.dashboard.home.revenueTrends.monthlyChange'
     | 'pages.dashboard.home.revenueTrends.monthlyPending'
@@ -533,10 +538,18 @@ export type TranslationKey =
     | 'pages.dashboard.home.revenueTrends.overdueAnnual'
     | 'pages.dashboard.home.revenueTrends.paid'
     | 'pages.dashboard.home.revenueTrends.paidAnnual'
+    | 'pages.dashboard.home.revenueTrends.paymentBreakdown'
     | 'pages.dashboard.home.revenueTrends.pendingAnnual'
+    | 'pages.dashboard.home.revenueTrends.singleSession'
     | 'pages.dashboard.home.revenueTrends.singleSessionAnnual'
+    | 'pages.dashboard.home.revenueTrends.singleSessionBreakdown'
+    | 'pages.dashboard.home.revenueTrends.subscription'
     | 'pages.dashboard.home.revenueTrends.subscriptionAnnual'
+    | 'pages.dashboard.home.revenueTrends.subscriptionBreakdown'
     | 'pages.dashboard.home.revenueTrends.title'
+    | 'pages.dashboard.home.revenueTrends.totalOverdueAmount'
+    | 'pages.dashboard.home.revenueTrends.totalPaidAmount'
+    | 'pages.dashboard.home.revenueTrends.totalPendingAmount'
     | 'pages.dashboard.home.revenueTrends.vsLastYear'
     | 'pages.dashboard.home.stats.activeReservations.description'
     | 'pages.dashboard.home.stats.activeReservations.title'
@@ -1630,7 +1643,19 @@ export const _TranslationNamespaces = {
     "overdue",
     "pendingAnnual",
     "enAttente",
-    "monthlyPending"
+    "monthlyPending",
+    "collected",
+    "collectionSummary",
+    "totalPaidAmount",
+    "totalOverdueAmount",
+    "totalPendingAmount",
+    "expectedRevenue",
+    "subscription",
+    "singleSession",
+    "breakdown",
+    "paymentBreakdown",
+    "subscriptionBreakdown",
+    "singleSessionBreakdown"
   ],
   "pages.dashboard.profile": [
     "title",
@@ -1738,6 +1763,12 @@ export const _TranslationNamespaces = {
     "withClubs"
   ],
   "common": [
+    "average",
+    "total",
+    "expected",
+    "summary",
+    "monthlyAverage",
+    "month",
     "roles",
     "languages",
     "notProvided",
@@ -2035,7 +2066,10 @@ export const _TranslationNamespaces = {
     "pendingApproval",
     "deleted",
     "filtering",
-    "trashed"
+    "trashed",
+    "paymentStatus",
+    "overdue",
+    "collected"
   ],
   "common.currency": [
     "symbol",

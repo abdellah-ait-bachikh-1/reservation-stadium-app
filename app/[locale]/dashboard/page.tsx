@@ -87,7 +87,7 @@ function getStaticDashboardData(): DashboardData {
       completionRate: 0,
       newClubsThisYear: 0,
       newUsersThisYear: 0,
-      changes: {},
+      changes: {},overdueAmount:0
     },
     overduePayments: [],
     reservationsByMonth: [],
