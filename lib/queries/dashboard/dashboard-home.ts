@@ -405,7 +405,6 @@ export async function getOverduePayments(year: number): Promise<OverduePayment[]
 
 export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[]> {
   try {
-    console.log(`DEBUG: Fetching stadium revenue for year ${year}`);
 
     // ===== 1. GET ALL STADIUMS FIRST =====
     const allStadiums = await db
@@ -416,7 +415,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
       .from(stadiums)
       .where(isNull(stadiums.deletedAt));
 
-    console.log(`DEBUG: Total stadiums: ${allStadiums.length}`);
 
     // Initialize revenue map
     const revenueMap = new Map<string, StadiumRevenue>();
@@ -454,7 +452,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
       )
       .groupBy(reservationSeries.stadiumId, stadiums.name);
 
-    console.log(`DEBUG: Subscription revenue found:`, subscriptionRevenue);
 
     // Second, get single session revenue from reservations that are paid
     // This is the FIXED query - getting revenue from paid single session reservations
@@ -477,7 +474,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
       )
       .groupBy(reservations.stadiumId, stadiums.name);
 
-    console.log(`DEBUG: Single session revenue found:`, singleSessionRevenue);
 
     // ===== 3. ALTERNATIVE: Check cashPaymentRecords for single sessions =====
     // If the above doesn't work, try this alternative
@@ -499,7 +495,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
       )
       .groupBy(reservations.stadiumId, stadiums.name);
 
-    console.log(`DEBUG: Alternative single sessions from cashPaymentRecords:`, alternativeSingleSessions);
 
     // ===== 4. COMBINE REVENUE =====
     // Add subscription revenue
@@ -510,7 +505,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
           const amount = Number(row.amount) || 0;
           existing.subscriptionRevenue = amount;
           existing.totalRevenue += amount;
-          console.log(`Added subscription: ${row.stadiumName} = ${amount} MAD`);
         }
       }
     });
@@ -525,14 +519,12 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
           const amount = Number(row.amount) || 0;
           existing.singleSessionRevenue = amount;
           existing.totalRevenue += amount;
-          console.log(`Added single session: ${row.stadiumName} = ${amount} MAD`);
         }
       }
     });
 
     // ===== 5. DEBUG: If still no single session revenue, check database directly =====
     if (singleSessionData.length === 0) {
-      console.log(`\n=== DEBUG: No single session revenue found, checking database ===`);
       
       // Check paid single session reservations
       const paidSingleReservations = await db
@@ -555,7 +547,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
         )
         .limit(5);
       
-      console.log(`Paid single session reservations:`, paidSingleReservations);
       
       // Check cash payments without monthlyPaymentId
       const cashPaymentsWithoutMonthly = await db
@@ -575,7 +566,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
         )
         .limit(5);
       
-      console.log(`Cash payments without monthlyPaymentId:`, cashPaymentsWithoutMonthly);
     }
 
     // ===== 6. CALCULATE TOTALS AND PERCENTAGES =====
@@ -583,11 +573,7 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
     const stadiumsWithRevenue = stadiumRevenues.filter(s => s.totalRevenue > 0);
     const totalRevenue = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.totalRevenue, 0);
 
-    console.log(`\n=== FINAL SUMMARY ===`);
-    console.log(`Total revenue calculated: ${totalRevenue} MAD`);
-    console.log(`Expected total: 1900 MAD`);
-    console.log(`Stadiums with revenue: ${stadiumsWithRevenue.length}`);
-
+   
     // Calculate percentages
     stadiumsWithRevenue.forEach(stadium => {
       stadium.percentage = totalRevenue > 0 
@@ -598,24 +584,15 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
     // Sort by revenue (highest first)
     const sortedStadiums = stadiumsWithRevenue.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
-    // Log final results
-    console.log("\n=== STADIUM REVENUE DETAILS ===");
-    sortedStadiums.forEach((stadium, index) => {
-      console.log(`${index + 1}. ${stadium.name}:`);
-      console.log(`   Total: ${stadium.totalRevenue} MAD (${stadium.percentage}%)`);
-      console.log(`   Subscription: ${stadium.subscriptionRevenue} MAD`);
-      console.log(`   Single Session: ${stadium.singleSessionRevenue} MAD`);
-    });
+ 
 
     // ===== 7. FALLBACK: If still no single session revenue, use revenueByMonth data =====
     if (totalRevenue < 1900 && stadiumsWithRevenue.length > 0) {
-      console.log(`\n=== DEBUG: Using fallback calculation ===`);
       
       // Get revenue by month data
       const monthlyRevenue = await getRevenueByMonth(year);
       const totalSingleSessionFromMonthly = monthlyRevenue.reduce((sum, month) => sum + month.singleSessionRevenue, 0);
       
-      console.log(`Single session revenue from monthly data: ${totalSingleSessionFromMonthly} MAD`);
       
       // Distribute single session revenue proportionally based on subscription revenue
       const totalSubscriptionFromStadiums = stadiumsWithRevenue.reduce((sum, s) => sum + s.subscriptionRevenue, 0);
@@ -636,7 +613,7 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
             : 0;
         });
         
-        console.log(`After fallback calculation - Total: ${newTotalRevenue} MAD`);
+   
       }
     }
 
@@ -645,7 +622,6 @@ export async function getRevenueByStadium(year: number): Promise<StadiumRevenue[
   } catch (error) {
     console.error("Error fetching revenue by stadium:", error);
     
-    // Fallback: return empty array
     return [];
   }
 }
@@ -1262,9 +1238,7 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       )
       .groupBy(sql`MONTH(${cashPaymentRecords.paymentDate})`);
 
-    console.log("DEBUG: Subscription payments from monthlyPayments table:", subscriptionPayments);
-    console.log("DEBUG: Single session payments:", singleSessionPayments);
-    console.log("DEBUG: Subscription cash payments:", subscriptionCashPayments);
+    
 
     // ===== 4. PROCESS SUBSCRIPTION PAYMENTS =====
     subscriptionPayments.forEach(item => {
