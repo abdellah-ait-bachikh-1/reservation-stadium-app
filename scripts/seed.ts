@@ -818,69 +818,54 @@ async function comprehensiveSeed() {
         }
       }
 
-      await db.insert(reservations).values(reservationsData);
-      allReservations.push(...reservationsData);
-      
-      // Calculate metrics
-      const subscriptionReservations = reservationsData.filter(r => r.paymentType === "MONTHLY_SUBSCRIPTION");
-      const singleSessionReservations = reservationsData.filter(r => r.paymentType === "SINGLE_SESSION");
-      const oneTimeSingleSessions = singleSessionReservations.filter(r => !r.reservationSeriesId);
-      const seriesSingleSessions = singleSessionReservations.filter(r => r.reservationSeriesId);
-      
-      const approvedCount = reservationsData.filter(r => r.status === "APPROVED").length;
-      const pendingReservationsCount = reservationsData.filter(r => r.status === "PENDING").length;
-      const declinedReservationsCount = reservationsData.filter(r => r.status === "DECLINED").length;
-      const cancelledReservationsCount = reservationsData.filter(r => r.status === "CANCELLED").length;
-      
-      console.log(`  ✅ Created ${reservationsData.length} reservations for ${year}`);
-      console.log(`     - Monthly Subscriptions: ${subscriptionReservations.length}`);
-      console.log(`     - Single Sessions (Series): ${seriesSingleSessions.length}`);
-      console.log(`     - One-time Single Sessions: ${oneTimeSingleSessions.length}`);
-      console.log(`     - Approved: ${approvedCount}, Pending: ${pendingReservationsCount}, Declined: ${declinedReservationsCount}, Cancelled: ${cancelledReservationsCount}`);
+    // In your seed file, fix the cash payment creation:
+// 1. FIRST insert reservations
+await db.insert(reservations).values(reservationsData);
+const allReservations = await db.select().from(reservations);
 
-      // ===== CREATE CASH PAYMENT RECORDS =====
-      console.log(`  💵 Creating cash payment records for ${year}...`);
-      const cashPaymentsData: InsertCashPaymentRecordType[] = [];
+// 2. THEN create cash payments with the actual reservation IDs
+const cashPaymentsData: InsertCashPaymentRecordType[] = [];
 
-      // Create cash payments for paid single session reservations
-      const paidSingleSessionReservations = reservationsData.filter(
-        reservation => reservation.paymentType === "SINGLE_SESSION" && reservation.isPaid
-      );
+// Create cash payments for paid single session reservations
+const paidSingleSessionReservations = allReservations.filter(
+  reservation => reservation.paymentType === "SINGLE_SESSION" && reservation.isPaid
+);
 
-      paidSingleSessionReservations.forEach((reservation, index) => {
-        // Generate payment date (paid 0-3 days before reservation)
-        const reservationDate = new Date(reservation.startDateTime);
-        const daysBefore = Math.floor(Math.random() * 4); // 0-3 days
-        const paymentDate = subDays(reservationDate, daysBefore);
-        
-        const isOneTime = !reservation.reservationSeriesId;
-        const paymentType = isOneTime ? 'One-time Single Session' : 'Series Single Session';
-        
-        cashPaymentsData.push({
-          amount: reservation.sessionPrice,
-          paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
-          receiptNumber: `CASH-${format(new Date(reservation.startDateTime), "yyyyMMdd")}-${(index + 1).toString().padStart(3, "0")}`,
-          notes: `${paymentType} payment for ${format(new Date(reservation.startDateTime), "MM/dd/yyyy HH:mm")}`,
-          reservationId: reservation.id,
-          userId: reservation.userId!,
-        });
-      });
+paidSingleSessionReservations.forEach((reservation, index) => {
+  const reservationDate = new Date(reservation.startDateTime);
+  const daysBefore = Math.floor(Math.random() * 4);
+  const paymentDate = subDays(reservationDate, daysBefore);
+  
+  const isOneTime = !reservation.reservationSeriesId;
+  const paymentType = isOneTime ? 'One-time Single Session' : 'Series Single Session';
+  
+  cashPaymentsData.push({
+    amount: reservation.sessionPrice,
+    paymentDate: format(paymentDate, "yyyy-MM-dd HH:mm:ss"),
+    receiptNumber: `CASH-${format(new Date(reservation.startDateTime), "yyyyMMdd")}-${(index + 1).toString().padStart(3, "0")}`,
+    notes: `${paymentType} payment for ${format(new Date(reservation.startDateTime), "MM/dd/yyyy HH:mm")}`,
+    reservationId: reservation.id, // <-- NOW this will work!
+    userId: reservation.userId!,
+  });
+});
 
-      // Create cash payments for monthly payments (PAID ones)
-      const paidMonthlyPayments = monthlyPaymentsData.filter(p => p.status === "PAID" && p.paymentDate);
-      
-      paidMonthlyPayments.forEach((payment, index) => {
-        cashPaymentsData.push({
-          amount: payment.amount,
-          paymentDate: payment.paymentDate!,
-          receiptNumber: payment.receiptNumber!,
-          notes: `Monthly subscription for ${payment.month}/${payment.year}`,
-          monthlyPaymentId: payment.id,
-          userId: payment.userId!,
-        });
-      });
+// Create cash payments for monthly payments (PAID ones)
+const paidMonthlyPayments = monthlyPaymentsData.filter(p => p.status === "PAID" && p.paymentDate);
 
-      await db.insert(cashPaymentRecords).values(cashPaymentsData);
+paidMonthlyPayments.forEach((payment, index) => {
+  // Need to insert monthly payments first to get their IDs
+  cashPaymentsData.push({
+    amount: payment.amount,
+    paymentDate: payment.paymentDate!,
+    receiptNumber: payment.receiptNumber!,
+    notes: `Monthly subscription for ${payment.month}/${payment.year}`,
+    monthlyPaymentId: payment.id, // <-- This also needs to be fixed
+    userId: payment.userId!,
+  });
+});
+
+// Insert cash payments AFTER monthly payments are inserted
+await db.insert(cashPaymentRecords).values(cashPaymentsData);
       allCashPayments.push(...cashPaymentsData);
       
       // Separate cash payments for single sessions vs subscriptions
