@@ -81,13 +81,14 @@ function getStaticDashboardData(): DashboardData {
       totalUsers: 0,
       subscriptions: 0,
       overduePayments: 0,
+      overdueAmount: 0,
       newClubsThisMonth: 0,
       newUsersThisMonth: 0,
       avgUtilization: 0,
       completionRate: 0,
       newClubsThisYear: 0,
       newUsersThisYear: 0,
-      changes: {},overdueAmount:0
+      changes: {},
     },
     overduePayments: [],
     reservationsByMonth: [],
@@ -98,7 +99,7 @@ function getStaticDashboardData(): DashboardData {
       singleSessionRevenue: 0,
       paidAmount: 0,
       overdueAmount: 0,
-      pendingAmount: 0, // ADD THIS
+      pendingAmount: 0,
       collectionRate: 0,
     })),
     reservationsByStatus: [],
@@ -109,7 +110,7 @@ function getStaticDashboardData(): DashboardData {
       singleSessionRevenue: 0,
       paidAmount: 0,
       overdueAmount: 0,
-      pendingAmount: 0, // ADD THIS
+      pendingAmount: 0,
       collectionRate: 0,
     })),
     pendingUserApprovals: [],
@@ -118,5 +119,19 @@ function getStaticDashboardData(): DashboardData {
       { length: Math.max(0, currentYear - startYear + 1) },
       (_, i) => startYear + i,
     ).reverse(),
+    // ADD THIS
+    stadiumRevenueSummary: {
+      stadiums: [],
+      summary: {
+        totalRevenue: 0,
+        subscriptionRevenue: 0,
+        singleSessionRevenue: 0,
+        paidAmount: 0,
+        overdueAmount: 0,
+        pendingAmount: 0,
+        collectionRate: 0,
+        expectedRevenue: 0,
+      },
+    },
   };
 }

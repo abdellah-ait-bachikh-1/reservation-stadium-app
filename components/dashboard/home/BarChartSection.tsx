@@ -11,12 +11,21 @@ import { ReservationStatusType } from "@/types/db";
 interface StadiumRevenue {
   id: string;
   name: string;
-  totalRevenue: number;
+  totalRevenue: number; // Expected revenue (PAID + PENDING + OVERDUE)
+  paidRevenue: number;
+  overdueRevenue: number;
+  pendingRevenue: number;
   subscriptionRevenue: number;
   singleSessionRevenue: number;
+  subscriptionPaid: number;
+  subscriptionOverdue: number;
+  subscriptionPending: number;
+  singleSessionPaid: number;
+  singleSessionOverdue: number;
+  singleSessionPending: number;
   percentage: number;
+  collectionRate: number;
 }
-
 interface ReservationStatusData {
   status: ReservationStatusType;
   count: number;
@@ -24,7 +33,19 @@ interface ReservationStatusData {
 }
 
 interface BarChartSectionProps {
-  revenueByStadium: StadiumRevenue[];
+  revenueByStadium: {
+    stadiums: StadiumRevenue[];
+    summary: {
+      totalRevenue: number;
+      subscriptionRevenue: number;
+      singleSessionRevenue: number;
+      paidAmount: number;
+      overdueAmount: number;
+      pendingAmount: number;
+      collectionRate: number;
+      expectedRevenue: number;
+    };
+  };
   reservationsByStatus: ReservationStatusData[];
 }
 
@@ -48,6 +69,7 @@ interface StatusTooltipProps {
   label?: string;
 }
 
+// components/dashboard/home/sections/BarChartSection.tsx - Update the tooltip
 const StadiumRevenueTooltip = ({ active, payload }: StadiumRevenueTooltipProps) => {
   const t = useTypedTranslations();
 
@@ -55,7 +77,7 @@ const StadiumRevenueTooltip = ({ active, payload }: StadiumRevenueTooltipProps) 
     const data = payload[0].payload;
 
     return (
-      <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[180px] max-w-[280px] relative z-50">
+      <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[220px] max-w-[320px] relative z-50">
         <div className="flex items-center gap-2 mb-2">
           <div
             className="w-3 h-3 rounded-full flex-shrink-0"
@@ -74,29 +96,51 @@ const StadiumRevenueTooltip = ({ active, payload }: StadiumRevenueTooltipProps) 
               {data.totalRevenue.toLocaleString()} MAD
             </span>
           </div>
+
+          {/* Paid Breakdown */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
-              {t("pages.dashboard.home.charts.revenueByStadium.subscription")}
-            </span>
-            <span className="text-sm text-blue-600 dark:text-blue-400 whitespace-nowrap">
-              {data.subscriptionRevenue.toLocaleString()} MAD
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
-              {t("pages.dashboard.home.charts.revenueByStadium.singleSession")}
+              {t("pages.dashboard.home.charts.revenueByStadium.paid")}
             </span>
             <span className="text-sm text-green-600 dark:text-green-400 whitespace-nowrap">
-              {data.singleSessionRevenue.toLocaleString()} MAD
+              {data.paidRevenue.toLocaleString()} MAD
             </span>
           </div>
+
+          {/* Overdue Breakdown */}
+          {data.overdueRevenue > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+                {t("pages.dashboard.home.charts.revenueByStadium.overdue")}
+              </span>
+              <span className="text-sm text-red-600 dark:text-red-400 whitespace-nowrap">
+                {data.overdueRevenue.toLocaleString()} MAD
+              </span>
+            </div>
+          )}
+
+          {/* Pending Breakdown */}
+          {data.pendingRevenue > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
+                {t("pages.dashboard.home.charts.revenueByStadium.pending")}
+              </span>
+              <span className="text-sm text-amber-600 dark:text-amber-400 whitespace-nowrap">
+                {data.pendingRevenue.toLocaleString()} MAD
+              </span>
+            </div>
+          )}
+
+          {/* Collection Rate */}
           <div className="pt-1 border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600 dark:text-gray-400 truncate mr-2">
-                {t("pages.dashboard.home.charts.revenueByStadium.shareOfTotal")}
+                {t("pages.dashboard.home.charts.revenueByStadium.collectionRate")}
               </span>
-              <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 whitespace-nowrap">
-                {data.percentage}% {t("pages.dashboard.home.charts.revenueByStadium.ofTotal")}
+              <span className={`text-sm font-semibold whitespace-nowrap ${data.collectionRate >= 90 ? 'text-green-600' :
+                  data.collectionRate >= 70 ? 'text-amber-600' : 'text-red-600'
+                }`}>
+                {data.collectionRate}%
               </span>
             </div>
           </div>
@@ -146,6 +190,19 @@ export default function BarChartSection({
 }: BarChartSectionProps) {
   const t = useTypedTranslations();
 
+  // Extract stadiums and summary from the new structure
+  const stadiumData = revenueByStadium?.stadiums || [];
+  const summary = revenueByStadium?.summary || {
+    totalRevenue: 0,
+    subscriptionRevenue: 0,
+    singleSessionRevenue: 0,
+    paidAmount: 0,
+    overdueAmount: 0,
+    pendingAmount: 0,
+    collectionRate: 0,
+    expectedRevenue: 0,
+  };
+
   // Use reservation status data from props
   const reservationStatusData = reservationsByStatus || [];
 
@@ -158,7 +215,7 @@ export default function BarChartSection({
     : 0;
 
   // Filter and sort stadium revenue data
-  const cleanStadiumData = (revenueByStadium || [])
+  const cleanStadiumData = stadiumData
     .filter(stadium => stadium.totalRevenue > 0)
     .sort((a, b) => b.totalRevenue - a.totalRevenue) // Sort by revenue descending
     .slice(0, 5); // Show only top 5 stadiums
@@ -218,7 +275,7 @@ export default function BarChartSection({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       {/* LEFT: Revenue by Stadium - Horizontal Bar Chart */}
-     <Card className="shadow-sm">
+      <Card className="shadow-sm">
         <CardHeader className="pb-0 px-0">
           <div className="flex justify-between items-center px-4 w-full">
             <div>
@@ -304,6 +361,66 @@ export default function BarChartSection({
                 </ResponsiveContainer>
               </div>
 
+              {/* Revenue Summary with Status Breakdown */}
+              <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 px-4">
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.total")}
+                  </p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">
+                    {formatCurrency(summary.totalRevenue)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-green-600 dark:text-green-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.paid")}
+                  </p>
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400">
+                    {formatCurrency(summary.paidAmount)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-red-600 dark:text-red-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.overdue")}
+                  </p>
+                  <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                    {formatCurrency(summary.overdueAmount)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.pending")}
+                  </p>
+                  <p className="text-sm font-bold text-amber-600 dark:text-amber-400">
+                    {formatCurrency(summary.pendingAmount)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Collection Rate Summary */}
+              <div className="mt-2 px-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("pages.dashboard.home.charts.revenueByStadium.collectionRate")}
+                  </span>
+                  <span className={`text-sm font-bold ${
+                    summary.collectionRate >= 90 ? 'text-green-600' : 
+                    summary.collectionRate >= 70 ? 'text-amber-600' : 'text-red-600'
+                  }`}>
+                    {summary.collectionRate}% {t("pages.dashboard.home.charts.revenueByStadium.collected")}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                  <div 
+                    className={`h-2 rounded-full ${
+                      summary.collectionRate >= 90 ? 'bg-green-500' : 
+                      summary.collectionRate >= 70 ? 'bg-amber-500' : 'bg-red-500'
+                    }`}
+                    style={{ width: `${summary.collectionRate}%` }}
+                  />
+                </div>
+              </div>
+
               {/* Revenue Summary */}
               <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 px-4">
                 <div className="text-center">
@@ -337,7 +454,6 @@ export default function BarChartSection({
           )}
         </CardBody>
       </Card>
-
       {/* RIGHT: Reservations by Status Bar Chart */}
       <Card className="shadow-sm">
         <CardHeader className="pb-0 px-0">

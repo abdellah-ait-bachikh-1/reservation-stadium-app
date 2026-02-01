@@ -205,6 +205,11 @@ export type TranslationKey =
     | 'common.orderBy.sortBy'
     | 'common.orderBy.sortOrder'
     | 'common.orderBy.updatedAt'
+    | 'common.paymentStatus.collected'
+    | 'common.paymentStatus.expected'
+    | 'common.paymentStatus.overdue'
+    | 'common.paymentStatus.paid'
+    | 'common.paymentStatus.pending'
     | 'common.roles.admin'
     | 'common.roles.club'
     | 'common.status.active'
@@ -478,16 +483,34 @@ export type TranslationKey =
     | 'pages.dashboard.home.charts.reservationsByStatus.title'
     | 'pages.dashboard.home.charts.reservationsByStatus.total'
     | 'pages.dashboard.home.charts.reservationsByStatus.totalReservations'
+    | 'pages.dashboard.home.charts.revenueByStadium.actualRevenue'
     | 'pages.dashboard.home.charts.revenueByStadium.avgPerStadium'
+    | 'pages.dashboard.home.charts.revenueByStadium.collected'
+    | 'pages.dashboard.home.charts.revenueByStadium.collectionRate'
     | 'pages.dashboard.home.charts.revenueByStadium.description'
+    | 'pages.dashboard.home.charts.revenueByStadium.expectedRevenue'
     | 'pages.dashboard.home.charts.revenueByStadium.noData'
     | 'pages.dashboard.home.charts.revenueByStadium.ofTotal'
+    | 'pages.dashboard.home.charts.revenueByStadium.outstandingAmount'
+    | 'pages.dashboard.home.charts.revenueByStadium.overdue'
+    | 'pages.dashboard.home.charts.revenueByStadium.paid'
+    | 'pages.dashboard.home.charts.revenueByStadium.pending'
+    | 'pages.dashboard.home.charts.revenueByStadium.recoveryRate'
     | 'pages.dashboard.home.charts.revenueByStadium.shareOfTotal'
     | 'pages.dashboard.home.charts.revenueByStadium.singleSession'
+    | 'pages.dashboard.home.charts.revenueByStadium.singleSessionOverdue'
+    | 'pages.dashboard.home.charts.revenueByStadium.singleSessionPaid'
+    | 'pages.dashboard.home.charts.revenueByStadium.singleSessionPending'
     | 'pages.dashboard.home.charts.revenueByStadium.stadiums'
+    | 'pages.dashboard.home.charts.revenueByStadium.statusBreakdown'
     | 'pages.dashboard.home.charts.revenueByStadium.subscription'
+    | 'pages.dashboard.home.charts.revenueByStadium.subscriptionOverdue'
+    | 'pages.dashboard.home.charts.revenueByStadium.subscriptionPaid'
+    | 'pages.dashboard.home.charts.revenueByStadium.subscriptionPending'
     | 'pages.dashboard.home.charts.revenueByStadium.title'
+    | 'pages.dashboard.home.charts.revenueByStadium.toBeCollected'
     | 'pages.dashboard.home.charts.revenueByStadium.topStadium'
+    | 'pages.dashboard.home.charts.revenueByStadium.total'
     | 'pages.dashboard.home.charts.revenueByStadium.totalRevenue'
     | 'pages.dashboard.home.loading.anErrorOccurred'
     | 'pages.dashboard.home.loading.failedToLoad'
@@ -1598,7 +1621,25 @@ export const _TranslationNamespaces = {
     "avgPerStadium",
     "noData",
     "stadiums",
-    "ofTotal"
+    "ofTotal",
+    "paid",
+    "overdue",
+    "pending",
+    "collected",
+    "collectionRate",
+    "total",
+    "statusBreakdown",
+    "subscriptionPaid",
+    "subscriptionOverdue",
+    "subscriptionPending",
+    "singleSessionPaid",
+    "singleSessionOverdue",
+    "singleSessionPending",
+    "expectedRevenue",
+    "actualRevenue",
+    "recoveryRate",
+    "outstandingAmount",
+    "toBeCollected"
   ],
   "pages.dashboard.home.charts.reservationsByStatus": [
     "title",
@@ -1770,6 +1811,7 @@ export const _TranslationNamespaces = {
     "monthlyAverage",
     "month",
     "roles",
+    "paymentStatus",
     "languages",
     "notProvided",
     "yes",
@@ -1796,6 +1838,13 @@ export const _TranslationNamespaces = {
   "common.roles": [
     "admin",
     "club"
+  ],
+  "common.paymentStatus": [
+    "paid",
+    "overdue",
+    "pending",
+    "collected",
+    "expected"
   ],
   "common.languages": [
     "en",

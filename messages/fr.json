@@ -644,7 +644,25 @@
             "avgPerStadium": "Moyenne par Stade",
             "noData": "Aucune donnée de revenu disponible",
             "stadiums": "stades",
-            "ofTotal": "du total"
+            "ofTotal": "du total",
+            "paid": "Payé",
+            "overdue": "En retard",
+            "pending": "En attente",
+            "collected": "collecté",
+            "collectionRate": "Taux de recouvrement",
+            "total": "Total",
+            "statusBreakdown": "Répartition par statut",
+            "subscriptionPaid": "Abonnements payés",
+            "subscriptionOverdue": "Abonnements en retard",
+            "subscriptionPending": "Abonnements en attente",
+            "singleSessionPaid": "Séances uniques payées",
+            "singleSessionOverdue": "Séances uniques en retard",
+            "singleSessionPending": "Séances uniques en attente",
+            "expectedRevenue": "Revenu attendu",
+            "actualRevenue": "Revenu réel",
+            "recoveryRate": "Taux de récupération",
+            "outstandingAmount": "Montant en souffrance",
+            "toBeCollected": "À collecter"
           },
           "reservationsByStatus": {
             "title": "Réservations par Statut",
@@ -816,6 +834,12 @@
     "roles": {
       "admin": "Administrateur",
       "club": "Club"
+    },"paymentStatus": {
+      "paid": "Payé",
+      "overdue": "En retard",
+      "pending": "En attente",
+      "collected": "Collecté",
+      "expected": "Attendu"
     },
     "languages": {
       "en": "Anglais",

@@ -129,10 +129,22 @@ export default function DashboardClient({
       </div>
 
       {/* Charts Section */}
-      <ChartsSection
-        revenueByStadium={data.revenueByStadium}
-        reservationsByStatus={data.reservationsByStatus || []}
-      />
+  <ChartsSection
+  revenueByStadium={data.stadiumRevenueSummary || { 
+    stadiums: [], 
+    summary: {
+      totalRevenue: 0,
+      subscriptionRevenue: 0,
+      singleSessionRevenue: 0,
+      paidAmount: 0,
+      overdueAmount: 0,
+      pendingAmount: 0,
+      collectionRate: 0,
+      expectedRevenue: 0,
+    }
+  }}
+  reservationsByStatus={data.reservationsByStatus || []}
+/>
 
       {/* Revenue Trends Chart */}
       <div className="mt-6">

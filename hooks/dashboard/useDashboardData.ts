@@ -14,7 +14,7 @@ export interface DashboardData {
     totalUsers: number;
     subscriptions: number;
     overduePayments: number;
-    overdueAmount: number; // ADD THIS
+    overdueAmount: number;
     newClubsThisMonth: number;
     newUsersThisMonth: number;
     newClubsThisYear: number;
@@ -31,7 +31,7 @@ export interface DashboardData {
       totalUsersChange?: string;
       subscriptionsChange?: string;
       overduePaymentsChange?: string;
-      overdueAmountChange?: string; // ADD THIS
+      overdueAmountChange?: string;
       avgUtilizationChange?: string;
       completionRateChange?: string;
       newClubsChange?: string;
@@ -105,6 +105,64 @@ export interface DashboardData {
   }>;
   
   availableYears: number[];
+  
+  detailedRevenueStats?: {
+    totalRevenue: number;
+    totalSubscription: number;
+    totalSingleSession: number;
+    totalPaid: number;
+    totalOverdue: number;
+    totalPending: number;
+    paidSubscription: number;
+    paidSingleSession: number;
+    overdueSubscription: number;
+    overdueSingleSession: number;
+    pendingSubscription: number;
+    pendingSingleSession: number;
+    collectionRate: number;
+    expectedRevenue: number;
+    collectedRevenue: number;
+    avgMonthlyRevenue: number;
+    avgMonthlySubscription: number;
+    avgMonthlySingleSession: number;
+    subscriptionPercentage: number;
+    singleSessionPercentage: number;
+    paidPercentage: number;
+    overduePercentage: number;
+    pendingPercentage: number;
+  };
+  
+  // ADD THIS NEW PROPERTY
+  stadiumRevenueSummary?: {
+    stadiums: Array<{
+      id: string;
+      name: string;
+      totalRevenue: number;
+      paidRevenue: number;
+      overdueRevenue: number;
+      pendingRevenue: number;
+      subscriptionRevenue: number;
+      singleSessionRevenue: number;
+      subscriptionPaid: number;
+      subscriptionOverdue: number;
+      subscriptionPending: number;
+      singleSessionPaid: number;
+      singleSessionOverdue: number;
+      singleSessionPending: number;
+      percentage: number;
+      collectionRate: number;
+    }>;
+    summary: {
+      totalRevenue: number;
+      subscriptionRevenue: number;
+      singleSessionRevenue: number;
+      paidAmount: number;
+      overdueAmount: number;
+      pendingAmount: number;
+      collectionRate: number;
+      expectedRevenue: number;
+    };
+  };
 }
 async function fetchDashboardData(year: number): Promise<DashboardData> {
   // Only validate that year is not in the future

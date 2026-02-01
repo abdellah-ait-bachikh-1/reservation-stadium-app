@@ -644,7 +644,25 @@
             "avgPerStadium": "المتوسط لكل ملعب",
             "noData": "لا توجد بيانات إيرادات متاحة",
             "stadiums": "ملاعب",
-            "ofTotal": "من الإجمالي"
+            "ofTotal": "من الإجمالي",
+             "paid": "مدفوع",
+            "overdue": "متأخر",
+            "pending": "قيد الانتظار",
+            "collected": "متحصل عليه",
+            "collectionRate": "معدل التحصيل",
+            "total": "المجموع",
+            "statusBreakdown": "تفصيل حسب الحالة",
+            "subscriptionPaid": "الاشتراكات المدفوعة",
+            "subscriptionOverdue": "الاشتراكات المتأخرة",
+            "subscriptionPending": "الاشتراكات المعلقة",
+            "singleSessionPaid": "الجلسات الفردية المدفوعة",
+            "singleSessionOverdue": "الجلسات الفردية المتأخرة",
+            "singleSessionPending": "الجلسات الفردية المعلقة",
+            "expectedRevenue": "الإيراد المتوقع",
+            "actualRevenue": "الإيراد الفعلي",
+            "recoveryRate": "معدل الاسترداد",
+            "outstandingAmount": "المبلغ المستحق",
+            "toBeCollected": "للتجميع"
           },
           "reservationsByStatus": {
             "title": "الحجوزات حسب الحالة",
@@ -816,6 +834,12 @@
     "roles": {
       "admin": "المسؤول",
       "club": "النادي"
+    },"paymentStatus": {
+      "paid": "مدفوع",
+      "overdue": "متأخر",
+      "pending": "قيد الانتظار",
+      "collected": "متحصل عليه",
+      "expected": "متوقع"
     },
     "languages": {
       "en": "الإنجليزية",

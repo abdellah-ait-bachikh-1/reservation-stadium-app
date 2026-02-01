@@ -644,7 +644,25 @@
             "avgPerStadium": "Avg per Stadium",
             "noData": "No revenue data available",
             "stadiums": "stadiums",
-            "ofTotal": "of total"
+            "ofTotal": "of total",
+            "paid": "Paid",
+            "overdue": "Overdue",
+            "pending": "Pending",
+            "collected": "collected",
+            "collectionRate": "Collection Rate",
+            "total": "Total",
+            "statusBreakdown": "Status Breakdown",
+            "subscriptionPaid": "Subscriptions Paid",
+            "subscriptionOverdue": "Subscriptions Overdue",
+            "subscriptionPending": "Subscriptions Pending",
+            "singleSessionPaid": "Single Sessions Paid",
+            "singleSessionOverdue": "Single Sessions Overdue",
+            "singleSessionPending": "Single Sessions Pending",
+            "expectedRevenue": "Expected Revenue",
+            "actualRevenue": "Actual Revenue",
+            "recoveryRate": "Recovery Rate",
+            "outstandingAmount": "Outstanding Amount",
+            "toBeCollected": "To Be Collected"
           },
           "reservationsByStatus": {
             "title": "Reservations by Status",
@@ -691,7 +709,7 @@
           "pendingAnnual": "Pending",
           "enAttente": "pending",
           "monthlyPending": "Monthly Pending",
-           "collected": "collected",
+          "collected": "collected",
           "collectionSummary": "Collection Summary",
           "totalPaidAmount": "Total Paid Amount",
           "totalOverdueAmount": "Total Overdue Amount",
@@ -699,11 +717,10 @@
           "expectedRevenue": "Expected Revenue",
           "subscription": "Subscription",
           "singleSession": "Single Session",
-          
-        "breakdown": "Breakdown",
-        "paymentBreakdown": "Payment Breakdown",
-        "subscriptionBreakdown": "Subscription Breakdown",
-        "singleSessionBreakdown": "Single Session Breakdown"
+          "breakdown": "Breakdown",
+          "paymentBreakdown": "Payment Breakdown",
+          "subscriptionBreakdown": "Subscription Breakdown",
+          "singleSessionBreakdown": "Single Session Breakdown"
         }
       },
       "profile": {
@@ -811,14 +828,21 @@
     }
   },
   "common": {
-  "average": "Average",
-  "total": "Total",
-  "expected": "Expected",
-  "summary": "Summary", "monthlyAverage": "Monthly Average",
+    "average": "Average",
+    "total": "Total",
+    "expected": "Expected",
+    "summary": "Summary",
+    "monthlyAverage": "Monthly Average",
     "month": "month",
     "roles": {
       "admin": "Administrator",
       "club": "Club"
+    },"paymentStatus": {
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "pending": "Pending",
+      "collected": "Collected",
+      "expected": "Expected"
     },
     "languages": {
       "en": "English",
@@ -1081,9 +1105,10 @@
       "pendingApproval": "Pending Approval",
       "deleted": "Deleted",
       "filtering": "filtering",
-      "trashed": "In Trash", "paymentStatus": "Payment Status",
-    "overdue": "Overdue",
-    "collected": "Collected"
+      "trashed": "In Trash",
+      "paymentStatus": "Payment Status",
+      "overdue": "Overdue",
+      "collected": "Collected"
     },
     "currency": {
       "symbol": "MAD",
@@ -1138,15 +1163,16 @@
       "scrollHorizontal": "← Scroll horizontally for more details →",
       "scrollLeft": "Scroll left",
       "scrollRight": "Scroll right"
-    }, "orderBy": {
-        "sortBy": "Sort By",
-        "sortOrder": "Order",
-        "name": "Name",
-        "email": "Email",
-        "createdAt": "Date Created",
-        "updatedAt": "Last Updated",
-        "ascending": "Ascending",
-        "descending": "Descending"
+    },
+    "orderBy": {
+      "sortBy": "Sort By",
+      "sortOrder": "Order",
+      "name": "Name",
+      "email": "Email",
+      "createdAt": "Date Created",
+      "updatedAt": "Last Updated",
+      "ascending": "Ascending",
+      "descending": "Descending"
     }
   }
 }
