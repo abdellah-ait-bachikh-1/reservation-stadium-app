@@ -1276,8 +1276,6 @@ export async function getReservationsByMonth(year: number): Promise<ChartData[]>
 }
 
 // ==================== REVENUE BY MONTH - IMPROVED ====================
-// ==================== REVENUE BY MONTH - FIXED VERSION ====================
-// ==================== REVENUE BY MONTH - FINAL FIX ====================
 export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueData[]> {
   try {
     // Create array for all 12 months
@@ -1322,7 +1320,7 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.totalExpected) || 0;
-        monthlyData[monthIndex].singleSessionRevenue = amount;
+        monthlyData[monthIndex].singleSessionRevenue += amount;
         monthlyData[monthIndex].totalRevenue += amount;
         monthlyData[monthIndex].pendingAmount += amount; // Start as pending
       }
@@ -1424,52 +1422,104 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.totalUnpaid) || 0;
-        monthlyData[monthIndex].pendingAmount -= amount;
+        // IMPORTANT: Check if we have pending amount to deduct
+        if (monthlyData[monthIndex].pendingAmount >= amount) {
+          monthlyData[monthIndex].pendingAmount -= amount;
+        } else {
+          // If pending is less than unpaid, adjust appropriately
+          monthlyData[monthIndex].pendingAmount = Math.max(0, monthlyData[monthIndex].pendingAmount - amount);
+        }
         monthlyData[monthIndex].overdueAmount += amount;
       }
     });
 
-    // ===== 5. CALCULATE COLLECTION RATE =====
-    monthlyData.forEach(month => {
-      const expectedRevenue = month.totalRevenue;
-      if (expectedRevenue > 0) {
-        const paid = Math.max(0, month.paidAmount); // Ensure not negative
-        const pending = Math.max(0, month.pendingAmount); // Ensure not negative
-        const overdue = Math.max(0, month.overdueAmount); // Ensure not negative
-        
-        // Recalculate to ensure consistency
-        month.paidAmount = paid;
-        month.pendingAmount = pending;
-        month.overdueAmount = overdue;
-        
-        // Recalculate total to ensure it matches sum of statuses
-        month.totalRevenue = paid + pending + overdue;
-        
-        // Recalculate single session revenue to match total minus subscription
-        month.singleSessionRevenue = month.totalRevenue - month.subscriptionRevenue;
-        
-        // Calculate collection rate
-        month.collectionRate = Math.min(100, Math.max(0, Math.round((paid / month.totalRevenue) * 100)));
+    // ===== 5. CORRECTION: SUBSCRIPTION CASH PAYMENTS =====
+    // Some subscription payments might be marked as PENDING but have cash payments
+    const subscriptionCashPayments = await db
+      .select({
+        month: sql<string>`MONTH(${cashPaymentRecords.paymentDate})`,
+        amount: sql<number>`COALESCE(SUM(${cashPaymentRecords.amount}), 0)`,
+      })
+      .from(cashPaymentRecords)
+      .where(
+        and(
+          sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`,
+          isNotNull(cashPaymentRecords.monthlyPaymentId), // Subscription payments
+        ),
+      )
+      .groupBy(sql`MONTH(${cashPaymentRecords.paymentDate})`);
+
+    console.log("\n=== DEBUG: Subscription Cash Payments ===");
+    subscriptionCashPayments.forEach(item => {
+      console.log(`Month ${item.month}: ${item.amount} MAD`);
+    });
+
+    // Process subscription cash payments (adjust from pending to paid)
+    subscriptionCashPayments.forEach(item => {
+      const monthIndex = parseInt(item.month) - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        const amount = Number(item.amount) || 0;
+        // Adjust from pending to paid
+        monthlyData[monthIndex].pendingAmount = Math.max(0, monthlyData[monthIndex].pendingAmount - amount);
+        monthlyData[monthIndex].paidAmount += amount;
       }
     });
 
-    // ===== 6. DEBUG LOGGING =====
+    // ===== 6. CALCULATE COLLECTION RATE AND FINALIZE =====
+    monthlyData.forEach(month => {
+      // Ensure non-negative values
+      month.paidAmount = Math.max(0, month.paidAmount);
+      month.overdueAmount = Math.max(0, month.overdueAmount);
+      month.pendingAmount = Math.max(0, month.pendingAmount);
+      
+      // Recalculate total as sum of statuses
+      month.totalRevenue = month.paidAmount + month.pendingAmount + month.overdueAmount;
+      
+      // Recalculate single session revenue as total minus subscription
+      const totalSubscriptionForMonth = allMonthlyPayments
+        .filter(mp => Number(mp.month) - 1 === monthlyData.indexOf(month))
+        .reduce((sum, mp) => sum + Number(mp.totalExpected || 0), 0);
+      
+      month.subscriptionRevenue = totalSubscriptionForMonth;
+      month.singleSessionRevenue = month.totalRevenue - month.subscriptionRevenue;
+      
+      // Calculate collection rate
+      if (month.totalRevenue > 0) {
+        month.collectionRate = Math.min(100, Math.max(0, Math.round((month.paidAmount / month.totalRevenue) * 100)));
+      } else {
+        month.collectionRate = 0;
+      }
+    });
+
+    // ===== 7. DEBUG LOGGING =====
     console.log("\n=== DEBUG: Final Monthly Revenue Breakdown ===");
     let totalSingle = 0;
     let totalSub = 0;
     let totalAll = 0;
+    let totalPaid = 0;
+    let totalOverdue = 0;
+    let totalPending = 0;
     
     monthlyData.forEach((month, index) => {
-      if (month.totalRevenue > 0) {
+      if (month.totalRevenue > 0 || month.subscriptionRevenue > 0 || month.singleSessionRevenue > 0) {
         totalSingle += month.singleSessionRevenue;
         totalSub += month.subscriptionRevenue;
         totalAll += month.totalRevenue;
+        totalPaid += month.paidAmount;
+        totalOverdue += month.overdueAmount;
+        totalPending += month.pendingAmount;
         
         console.log(`${month.month}: Total=${month.totalRevenue}, Single=${month.singleSessionRevenue}, Sub=${month.subscriptionRevenue}, Paid=${month.paidAmount}, Overdue=${month.overdueAmount}, Pending=${month.pendingAmount}, Rate=${month.collectionRate}%`);
       }
     });
     
-    console.log(`\nTotals: Single=${totalSingle}, Subscription=${totalSub}, All=${totalAll}`);
+    console.log(`\nYear ${year} Totals:`);
+    console.log(`  Single Session: ${totalSingle} MAD`);
+    console.log(`  Subscription: ${totalSub} MAD`);
+    console.log(`  Total Expected: ${totalAll} MAD`);
+    console.log(`  Paid: ${totalPaid} MAD (${totalAll > 0 ? Math.round(totalPaid/totalAll*100) : 0}%)`);
+    console.log(`  Overdue: ${totalOverdue} MAD (${totalAll > 0 ? Math.round(totalOverdue/totalAll*100) : 0}%)`);
+    console.log(`  Pending: ${totalPending} MAD (${totalAll > 0 ? Math.round(totalPending/totalAll*100) : 0}%)`);
 
     return monthlyData;
   } catch (error) {
@@ -1486,7 +1536,6 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
     }));
   }
 }
-
 // ==================== RESERVATIONS BY STATUS - FIXED ====================
 export async function getReservationsByStatus(
   year: number,

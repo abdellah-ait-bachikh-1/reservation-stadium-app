@@ -452,7 +452,7 @@ export default function RevenueTrendsChart({
         <div className="mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             {/* Annual Total Revenue Card */}
-            <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
+            <div className="bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-700/20 dark:to-neutral-700/10 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-900">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-gray-600 dark:text-gray-400 rtl:text-right">
@@ -468,7 +468,7 @@ export default function RevenueTrendsChart({
                     </span>
                   </div>
                 </div>
-                <DollarSign className="w-8 h-8 text-green-600" />
+                <DollarSign className="w-8 h-8 text-neutral-600" />
               </div>
               <div className="flex items-center justify-between mt-2">
                 <div className="text-xs text-gray-500 flex items-center gap-1">
