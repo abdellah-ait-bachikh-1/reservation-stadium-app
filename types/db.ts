@@ -13,6 +13,8 @@ import {
   stadiumSports,
   users,
   notificationModelValues,notificationTypes,
+    passwordResetTokens,
+  singleSessionPayments,
 } from "@/drizzle/schema";
 
 // Base types from Drizzle schema
@@ -153,9 +155,9 @@ export interface CreateCashPaymentInput {
   amount: string;
   receiptNumber: string;
   userId: string;
-  reservationId?: string;
-  monthlyPaymentId?: string;
   notes?: string;
+  monthlyPaymentId?: string;
+  singleSessionPaymentId?: string;
 }
 
 export interface CreateSubscriptionInput {
@@ -239,3 +241,14 @@ export interface CreateNotificationInput {
   actorUserId?: string;
   userId: string;
 }
+
+
+export type SingleSessionPaymentType = typeof singleSessionPayments.$inferSelect;
+export type InsertSingleSessionPaymentType = typeof singleSessionPayments.$inferInsert;
+
+export type PasswordResetTokenType = typeof passwordResetTokens.$inferSelect;
+export type InsertPasswordResetTokenType = typeof passwordResetTokens.$inferInsert;
+
+export type UserRoleType = "ADMIN" | "CLUB";
+
+export type PaymentMethodType = "CASH" | "BANK_TRANSFER" | "CREDIT_CARD";

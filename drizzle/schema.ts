@@ -25,7 +25,11 @@ export const USER_PREFERRED_LOCALE = mysqlEnum("preferred_locale", [
   "FR",
   "AR",
 ]);
-
+export const PAYMENT_METHOD = mysqlEnum("payment_method", [
+  "CASH",
+  "BANK_TRANSFER",
+  "CREDIT_CARD",
+]);
 export const notificationModelValues = [
   "USER",
   "RESERVATION",
@@ -411,6 +415,7 @@ export const monthlyPayments = mysqlTable(
     reservationSeriesId: char("reservation_series_id", {
       length: 36,
     }).notNull(),
+    paymentMethod: PAYMENT_METHOD.default("CASH"),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
@@ -513,25 +518,35 @@ export const cashPaymentRecords = mysqlTable(
       .primaryKey()
       .default(sql`(UUID())`)
       .notNull(),
+
     amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+
     paymentDate: timestamp("payment_date", { mode: "string" })
       .defaultNow()
       .notNull(),
+
     receiptNumber: varchar("receipt_number", { length: 255 }).notNull(),
+
     notes: text("notes"),
-    reservationId: char("reservation_id", { length: 36 }),
+
+    // ✅ Monthly subscription cash payment
     monthlyPaymentId: char("monthly_payment_id", { length: 36 }),
+
+    // ✅ Single session cash payment
+    singleSessionPaymentId: char("single_session_payment_id", { length: 36 }),
+
     userId: char("user_id", { length: 36 }).notNull(),
+
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .notNull(),
+
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow()
       .notNull(),
   },
   (table) => [
-    // Named foreign keys
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -539,22 +554,74 @@ export const cashPaymentRecords = mysqlTable(
     }).onDelete("cascade"),
 
     foreignKey({
-      columns: [table.reservationId],
-      foreignColumns: [reservations.id],
-      name: "fk_cash_payments_reservation",
-    }).onDelete("set null"),
-
-    foreignKey({
       columns: [table.monthlyPaymentId],
       foreignColumns: [monthlyPayments.id],
       name: "fk_cash_payments_monthly",
     }).onDelete("set null"),
 
-    index("user_id_index").on(table.userId),
-    index("reservation_id_index").on(table.reservationId),
+    foreignKey({
+      columns: [table.singleSessionPaymentId],
+      foreignColumns: [singleSessionPayments.id],
+      name: "fk_cash_payments_single_session",
+    }).onDelete("set null"),
+
     index("monthly_payment_id_index").on(table.monthlyPaymentId),
+    index("single_session_payment_id_index").on(
+      table.singleSessionPaymentId,
+    ),
+    index("user_id_index").on(table.userId),
+  ],
+);
+
+
+export const singleSessionPayments = mysqlTable(
+  "single_session_payments",
+  {
+    id: char("id", { length: 36 })
+      .primaryKey()
+      .default(sql`(UUID())`)
+      .notNull(),
+
+    reservationId: char("reservation_id", { length: 36 })
+      .notNull()
+      .unique(),
+
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+
+    status: PAYMENT_STATUS.default("PENDING").notNull(),
+
+    paymentDate: timestamp("payment_date", { mode: "string" }),
+
+    receiptNumber: varchar("receipt_number", { length: 255 }),
+
+    userId: char("user_id", { length: 36 }).notNull(),
+paymentMethod: PAYMENT_METHOD.default("CASH"),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.reservationId],
+      foreignColumns: [reservations.id],
+      name: "fk_single_session_payments_reservation",
+    }).onDelete("cascade"),
+
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "fk_single_session_payments_user",
+    }).onDelete("cascade"),
+
+    index("reservation_id_index").on(table.reservationId),
+    index("user_id_index").on(table.userId),
+    index("status_index").on(table.status),
     index("payment_date_index").on(table.paymentDate),
-    index("created_at_index").on(table.createdAt),
   ],
 );
 
@@ -670,7 +737,6 @@ export const stadiumSportsRelations = relations(stadiumSports, ({ one }) => ({
     relationName: "sport_stadiums",
   }),
 }));
-
 export const reservationsRelations = relations(reservations, ({ one }) => ({
   stadium: one(stadiums, {
     fields: [reservations.stadiumId],
@@ -692,12 +758,15 @@ export const reservationsRelations = relations(reservations, ({ one }) => ({
     references: [reservationSeries.id],
     relationName: "reservation_series_reservations",
   }),
-  cashPayment: one(cashPaymentRecords, {
+
+   singleSessionPayment: one(singleSessionPayments, {
     fields: [reservations.id],
-    references: [cashPaymentRecords.reservationId],
-    relationName: "reservation_cash_payment",
+    references: [singleSessionPayments.reservationId],
+    relationName: "reservation_single_session_payment", 
   }),
 }));
+
+
 
 export const reservationSeriesRelations = relations(
   reservationSeries,
@@ -753,16 +822,18 @@ export const monthlyPaymentsRelations = relations(
 export const cashPaymentRecordsRelations = relations(
   cashPaymentRecords,
   ({ one }) => ({
-    reservation: one(reservations, {
-      fields: [cashPaymentRecords.reservationId],
-      references: [reservations.id],
-      relationName: "reservation_cash_payment",
-    }),
     monthlyPayment: one(monthlyPayments, {
       fields: [cashPaymentRecords.monthlyPaymentId],
       references: [monthlyPayments.id],
       relationName: "monthly_payment_cash_payment",
     }),
+
+   singleSessionPayment: one(singleSessionPayments, {
+  fields: [cashPaymentRecords.singleSessionPaymentId],
+  references: [singleSessionPayments.id],
+  relationName: "single_session_cash_payment",
+}),
+
     user: one(users, {
       fields: [cashPaymentRecords.userId],
       references: [users.id],
@@ -770,6 +841,7 @@ export const cashPaymentRecordsRelations = relations(
     }),
   }),
 );
+
 
 export const monthlySubscriptionsRelations = relations(
   monthlySubscriptions,
@@ -806,4 +878,37 @@ export const usersRelations = relations(users, ({ many }) => ({
   subscriptions: many(monthlySubscriptions, {
     relationName: "user_subscriptions",
   }),
+  passwordResetTokens: many(passwordResetTokens),
+
+   singleSessionPayments: many(singleSessionPayments, {
+    relationName: "user_single_session_payments", 
+  }),
 }));
+
+export const singleSessionPaymentsRelations = relations(
+  singleSessionPayments,
+  ({ one }) => ({
+  reservation: one(reservations, {
+      fields: [singleSessionPayments.reservationId],
+      references: [reservations.id],
+      relationName: "single_session_payment_reservation", 
+    }),
+    user: one(users, {
+      fields: [singleSessionPayments.userId],
+      references: [users.id],
+      relationName: "user_single_session_payments",
+    }),
+  
+
+
+  }),
+);
+export const passwordResetTokensRelations = relations(
+  passwordResetTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [passwordResetTokens.userId],
+      references: [users.id],
+    }),
+  }),
+);

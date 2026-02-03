@@ -12,6 +12,7 @@ import {
   sports,
   notifications,
   reservationSeries,
+  singleSessionPayments,
 } from "@/drizzle/schema";
 import {
   eq,
@@ -62,7 +63,7 @@ export interface ChartData {
 export interface StadiumRevenue {
   id: string;
   name: string;
-  totalRevenue: number; // Expected revenue (PAID + PENDING + OVERDUE)
+  totalRevenue: number;
   paidRevenue: number;
   overdueRevenue: number;
   pendingRevenue: number;
@@ -92,7 +93,6 @@ export interface StadiumRevenueSummary {
   };
 }
 
-
 export interface MonthlyRevenueData {
   month: string;
   totalRevenue: number;
@@ -100,7 +100,7 @@ export interface MonthlyRevenueData {
   singleSessionRevenue: number;
   paidAmount: number;
   overdueAmount: number;
-   pendingAmount: number;
+  pendingAmount: number;
   collectionRate: number;
 }
 
@@ -121,12 +121,9 @@ export interface PendingUserApproval {
 }
 
 export interface DashboardStats {
-  // ALL TIME
   totalClubs: number;
   totalStadiums: number;
   totalUsers: number;
-  
-  // YEAR FILTERED
   totalReservations: number;
   activeReservations: number;
   pendingReservations: number;
@@ -137,8 +134,6 @@ export interface DashboardStats {
   overdueAmount: number;
   avgUtilization: number;
   completionRate: number;
-  
-  // MONTH FILTERED
   newClubsThisMonth: number;
   newUsersThisMonth: number;
   
@@ -160,7 +155,6 @@ export interface DashboardStats {
 }
 
 // ==================== MAIN DATA FETCHER ====================
-// ==================== MAIN DATA FETCHER ====================
 export async function getDashboardData(
   year: number = new Date().getFullYear(),
 ): Promise<{
@@ -169,12 +163,12 @@ export async function getDashboardData(
   overduePayments: OverduePayment[];
   reservationsByMonth: ChartData[];
   revenueByMonth: MonthlyRevenueData[];
-  revenueByStadium: StadiumRevenue[]; // This should still be the array
+  revenueByStadium: StadiumRevenue[];
   reservationsByStatus: ReservationStatusData[];
   revenueTrends: MonthlyRevenueData[];
   availableYears: number[];
   detailedRevenueStats?: any;
-  stadiumRevenueSummary?: StadiumRevenueSummary; // Add this for the full object
+  stadiumRevenueSummary?: StadiumRevenueSummary;
 }> {
   try {
     const [
@@ -183,7 +177,7 @@ export async function getDashboardData(
       overduePayments,
       reservationsByMonth,
       revenueByMonth,
-      revenueByStadiumResult, // This is now an object with stadiums and summary
+      revenueByStadiumResult,
       reservationsByStatus,
       availableYears,
       detailedRevenueStats,
@@ -193,7 +187,7 @@ export async function getDashboardData(
       getOverduePayments(year),
       getReservationsByMonth(year),
       getRevenueByMonth(year),
-      getRevenueByStadium(year), // This returns the full object
+      getRevenueByStadium(year),
       getReservationsByStatus(year),
       getAvailableYears(),
       getDetailedRevenueStats(year),
@@ -205,12 +199,12 @@ export async function getDashboardData(
       overduePayments,
       reservationsByMonth,
       revenueByMonth,
-      revenueByStadium: revenueByStadiumResult.stadiums, // Extract just the stadiums array
+      revenueByStadium: revenueByStadiumResult.stadiums,
       reservationsByStatus,
       revenueTrends: revenueByMonth,
       availableYears,
       detailedRevenueStats,
-      stadiumRevenueSummary: revenueByStadiumResult, // Add the full object if needed
+      stadiumRevenueSummary: revenueByStadiumResult,
     };
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
@@ -244,9 +238,10 @@ export async function getDetailedRevenueStats(year: number): Promise<{
   pendingPercentage: number;
 }> {
   try {
-    const revenueByMonth = await getRevenueByMonth(year);
+    // Get stadium revenue summary for accurate totals
+    const stadiumSummary = await getRevenueByStadium(year);
     
-    if (!revenueByMonth.length) {
+    if (!stadiumSummary.stadiums.length) {
       return {
         totalRevenue: 0,
         totalSubscription: 0,
@@ -274,36 +269,47 @@ export async function getDetailedRevenueStats(year: number): Promise<{
       };
     }
 
-    const totalRevenue = revenueByMonth.reduce((sum, item) => sum + item.totalRevenue, 0);
-    const totalSubscription = revenueByMonth.reduce((sum, item) => sum + item.subscriptionRevenue, 0);
-    const totalSingleSession = revenueByMonth.reduce((sum, item) => sum + item.singleSessionRevenue, 0);
-    
-    const totalPaid = revenueByMonth.reduce((sum, item) => sum + item.paidAmount, 0);
-    const totalOverdue = revenueByMonth.reduce((sum, item) => sum + item.overdueAmount, 0);
-    const totalPending = revenueByMonth.reduce((sum, item) => sum + (item.pendingAmount || 0), 0);
-    
-    // Calculate breakdowns (estimated based on revenue proportions)
-    const paidSubscription = Math.round(totalPaid * (totalSubscription / (totalSubscription + totalSingleSession)));
-    const paidSingleSession = totalPaid - paidSubscription;
-    const overdueSubscription = Math.round(totalOverdue * (totalSubscription / (totalSubscription + totalSingleSession)));
-    const overdueSingleSession = totalOverdue - overdueSubscription;
-    const pendingSubscription = Math.round(totalPending * (totalSubscription / (totalSubscription + totalSingleSession)));
-    const pendingSingleSession = totalPending - pendingSubscription;
-    
-    const expectedRevenue = totalPaid + totalOverdue + totalPending;
-    const collectionRate = expectedRevenue > 0 ? Math.round((totalPaid / expectedRevenue) * 100) : 0;
+    const totalRevenue = stadiumSummary.summary.totalRevenue;
+    const totalSubscription = stadiumSummary.summary.subscriptionRevenue;
+    const totalSingleSession = stadiumSummary.summary.singleSessionRevenue;
+    const totalPaid = stadiumSummary.summary.paidAmount;
+    const totalOverdue = stadiumSummary.summary.overdueAmount;
+    const totalPending = stadiumSummary.summary.pendingAmount;
+
+    // Calculate breakdowns from stadium data (more accurate)
+    let paidSubscription = 0;
+    let paidSingleSession = 0;
+    let overdueSubscription = 0;
+    let overdueSingleSession = 0;
+    let pendingSubscription = 0;
+    let pendingSingleSession = 0;
+
+    for (const stadium of stadiumSummary.stadiums) {
+      paidSubscription += stadium.subscriptionPaid;
+      paidSingleSession += stadium.singleSessionPaid;
+      overdueSubscription += stadium.subscriptionOverdue;
+      overdueSingleSession += stadium.singleSessionOverdue;
+      pendingSubscription += stadium.subscriptionPending;
+      pendingSingleSession += stadium.singleSessionPending;
+    }
+
+    const collectionRate = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
+    const expectedRevenue = totalRevenue;
     const collectedRevenue = totalPaid;
     
+    // Get active months from revenueByMonth
+    const revenueByMonth = await getRevenueByMonth(year);
     const activeMonths = revenueByMonth.filter(month => month.totalRevenue > 0).length || 1;
+    
     const avgMonthlyRevenue = Math.round(totalRevenue / activeMonths);
     const avgMonthlySubscription = Math.round(totalSubscription / activeMonths);
     const avgMonthlySingleSession = Math.round(totalSingleSession / activeMonths);
     
     const subscriptionPercentage = totalRevenue > 0 ? Math.round((totalSubscription / totalRevenue) * 100) : 0;
     const singleSessionPercentage = totalRevenue > 0 ? Math.round((totalSingleSession / totalRevenue) * 100) : 0;
-    const paidPercentage = expectedRevenue > 0 ? Math.round((totalPaid / expectedRevenue) * 100) : 0;
-    const overduePercentage = expectedRevenue > 0 ? Math.round((totalOverdue / expectedRevenue) * 100) : 0;
-    const pendingPercentage = expectedRevenue > 0 ? Math.round((totalPending / expectedRevenue) * 100) : 0;
+    const paidPercentage = totalRevenue > 0 ? Math.round((totalPaid / totalRevenue) * 100) : 0;
+    const overduePercentage = totalRevenue > 0 ? Math.round((totalOverdue / totalRevenue) * 100) : 0;
+    const pendingPercentage = totalRevenue > 0 ? Math.round((totalPending / totalRevenue) * 100) : 0;
 
     return {
       totalRevenue,
@@ -359,14 +365,12 @@ export async function getDetailedRevenueStats(year: number): Promise<{
     };
   }
 }
-
 // ==================== OVERDUE PAYMENTS ====================
 export async function getOverduePayments(year: number): Promise<OverduePayment[]> {
   try {
     const today = new Date();
     const currentYear = today.getFullYear();
     
-    // Validate year
     if (!year || year < 2020 || year > currentYear) {
       year = currentYear;
     }
@@ -428,38 +432,9 @@ export async function getOverduePayments(year: number): Promise<OverduePayment[]
 }
 
 // ==================== REVENUE BY STADIUM ====================
-// ==================== REVENUE BY STADIUM - SIMPLIFIED AND CORRECT ====================
-export async function getRevenueByStadium(year: number): Promise<{
-  stadiums: StadiumRevenue[];
-  summary: {
-    totalRevenue: number;
-    subscriptionRevenue: number;
-    singleSessionRevenue: number;
-    paidAmount: number;
-    overdueAmount: number;
-    pendingAmount: number;
-    collectionRate: number;
-    expectedRevenue: number;
-  };
-}> {
+export async function getRevenueByStadium(year: number): Promise<StadiumRevenueSummary> {
   try {
-    console.log(`=== SIMPLIFIED STADIUM REVENUE FOR ${year} ===`);
-
-    // First, get the monthly revenue data
-    const monthlyData = await getRevenueByMonth(year);
-    
-    // Calculate total revenue from monthly data
-    const totalRevenue = monthlyData.reduce((sum, month) => sum + month.totalRevenue, 0);
-    const totalSubscription = monthlyData.reduce((sum, month) => sum + month.subscriptionRevenue, 0);
-    const totalSingleSession = monthlyData.reduce((sum, month) => sum + month.singleSessionRevenue, 0);
-    const totalPaid = monthlyData.reduce((sum, month) => sum + month.paidAmount, 0);
-    const totalOverdue = monthlyData.reduce((sum, month) => sum + month.overdueAmount, 0);
-    const totalPending = monthlyData.reduce((sum, month) => sum + month.pendingAmount, 0);
-    
-    console.log(`From monthly data: Total=${totalRevenue}, Sub=${totalSubscription}, Single=${totalSingleSession}`);
-    console.log(`Paid=${totalPaid}, Overdue=${totalOverdue}, Pending=${totalPending}`);
-
-    // Now get stadium distribution
+    // Get all stadiums
     const allStadiums = await db
       .select({
         id: stadiums.id,
@@ -468,310 +443,161 @@ export async function getRevenueByStadium(year: number): Promise<{
       .from(stadiums)
       .where(isNull(stadiums.deletedAt));
 
-    // Initialize revenue map
-    const revenueMap = new Map<
-      string,
-      {
-        id: string;
-        name: string;
-        totalRevenue: number;
-        paidRevenue: number;
-        overdueRevenue: number;
-        pendingRevenue: number;
-        subscriptionRevenue: number;
-        singleSessionRevenue: number;
-        subscriptionPaid: number;
-        subscriptionOverdue: number;
-        subscriptionPending: number;
-        singleSessionPaid: number;
-        singleSessionOverdue: number;
-        singleSessionPending: number;
-      }
-    >();
+    const stadiumRevenues: StadiumRevenue[] = [];
 
-    allStadiums.forEach((stadium) => {
-      revenueMap.set(stadium.id, {
+    for (const stadium of allStadiums) {
+      // ===== SUBSCRIPTION REVENUE =====
+      // Get monthly payments for this stadium
+      const subscriptionData = await db
+        .select({
+          paidAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PAID' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+          overdueAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'OVERDUE' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+          pendingAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PENDING' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+        })
+        .from(monthlyPayments)
+        .innerJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
+        .where(
+          and(
+            eq(monthlyPayments.year, year),
+            eq(reservationSeries.stadiumId, stadium.id),
+            eq(reservationSeries.billingType, "MONTHLY_SUBSCRIPTION"),
+          ),
+        );
+
+      const subscriptionPaid = Number(subscriptionData[0]?.paidAmount) || 0;
+      const subscriptionOverdue = Number(subscriptionData[0]?.overdueAmount) || 0;
+      const subscriptionPending = Number(subscriptionData[0]?.pendingAmount) || 0;
+      const subscriptionRevenue = subscriptionPaid + subscriptionOverdue + subscriptionPending;
+
+      // ===== SINGLE SESSION REVENUE =====
+      // IMPORTANT: Use the SAME logic as getRevenueByMonth()
+      // Only count APPROVED single sessions for expected revenue
+      const singleSessionExpected = await db
+        .select({
+          totalExpected: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
+        })
+        .from(reservations)
+        .where(
+          and(
+            sql`YEAR(${reservations.startDateTime}) = ${year}`,
+            eq(reservations.stadiumId, stadium.id),
+            eq(reservations.paymentType, "SINGLE_SESSION"),
+            eq(reservations.status, "APPROVED"),
+            isNull(reservations.deletedAt),
+          ),
+        );
+
+      const singleSessionTotal = Number(singleSessionExpected[0]?.totalExpected) || 0;
+
+      // Get actual paid amount from singleSessionPayments table
+      const singleSessionPaidData = await db
+        .select({
+          paidAmount: sql<number>`COALESCE(SUM(${singleSessionPayments.amount}), 0)`,
+        })
+        .from(singleSessionPayments)
+        .innerJoin(reservations, eq(singleSessionPayments.reservationId, reservations.id))
+        .where(
+          and(
+            sql`YEAR(${reservations.startDateTime}) = ${year}`,
+            eq(reservations.stadiumId, stadium.id),
+            eq(singleSessionPayments.status, "PAID"),
+          ),
+        );
+
+      const singleSessionPaid = Number(singleSessionPaidData[0]?.paidAmount) || 0;
+
+      // Get UNPAID single sessions
+      const unpaidSingleSessions = await db
+        .select({
+          unpaidAmount: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
+        })
+        .from(reservations)
+        .where(
+          and(
+            sql`YEAR(${reservations.startDateTime}) = ${year}`,
+            eq(reservations.stadiumId, stadium.id),
+            eq(reservations.paymentType, "SINGLE_SESSION"),
+            eq(reservations.status, "UNPAID"),
+            isNull(reservations.deletedAt),
+          ),
+        );
+
+      const singleSessionUnpaid = Number(unpaidSingleSessions[0]?.unpaidAmount) || 0;
+
+      // Calculate PENDING single sessions (approved but not paid and not unpaid)
+      const singleSessionPending = Math.max(0, singleSessionTotal - singleSessionPaid - singleSessionUnpaid);
+      
+      // For single sessions: PENDING = approved but not paid, OVERDUE = UNPAID status
+      const singleSessionOverdue = singleSessionUnpaid;
+      const singleSessionRevenue = singleSessionTotal;
+
+      // ===== CALCULATE TOTALS =====
+      const totalRevenue = subscriptionRevenue + singleSessionRevenue;
+      const paidRevenue = subscriptionPaid + singleSessionPaid;
+      const overdueRevenue = subscriptionOverdue + singleSessionOverdue;
+      const pendingRevenue = subscriptionPending + singleSessionPending;
+
+      // Validate: paid should not exceed total
+      const validatedPaidRevenue = Math.min(paidRevenue, totalRevenue);
+      const validatedTotalRevenue = Math.max(totalRevenue, paidRevenue); // Ensure total >= paid
+
+      // Add to results
+      stadiumRevenues.push({
         id: stadium.id,
         name: stadium.name,
-        totalRevenue: 0,
-        paidRevenue: 0,
-        overdueRevenue: 0,
-        pendingRevenue: 0,
-        subscriptionRevenue: 0,
-        singleSessionRevenue: 0,
-        subscriptionPaid: 0,
-        subscriptionOverdue: 0,
-        subscriptionPending: 0,
-        singleSessionPaid: 0,
-        singleSessionOverdue: 0,
-        singleSessionPending: 0,
-      });
-    });
-
-    // ===== 1. DISTRIBUTE MONTHLY PAYMENTS BY STADIUM =====
-    const monthlyPaymentsDistribution = await db
-      .select({
-        stadiumId: reservationSeries.stadiumId,
-        status: monthlyPayments.status,
-        amount: sql<number>`COALESCE(SUM(${monthlyPayments.amount}), 0)`,
-      })
-      .from(monthlyPayments)
-      .innerJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
-      .innerJoin(stadiums, eq(reservationSeries.stadiumId, stadiums.id))
-      .where(
-        and(
-          eq(monthlyPayments.year, year),
-          isNull(stadiums.deletedAt),
-        ),
-      )
-      .groupBy(reservationSeries.stadiumId, monthlyPayments.status);
-
-    // Distribute subscription revenue
-    monthlyPaymentsDistribution.forEach(row => {
-      const stadium = revenueMap.get(row.stadiumId);
-      if (stadium) {
-        const amount = Number(row.amount) || 0;
-        stadium.subscriptionRevenue += amount;
-        stadium.totalRevenue += amount;
-        
-        switch (row.status) {
-          case "PAID":
-            stadium.subscriptionPaid += amount;
-            stadium.paidRevenue += amount;
-            break;
-          case "OVERDUE":
-            stadium.subscriptionOverdue += amount;
-            stadium.overdueRevenue += amount;
-            break;
-          case "PENDING":
-            stadium.subscriptionPending += amount;
-            stadium.pendingRevenue += amount;
-            break;
-        }
-      }
-    });
-
-    // ===== 2. DISTRIBUTE SINGLE SESSION RESERVATIONS BY STADIUM =====
-    // Get all single session reservations (APPROVED status only)
-    const singleSessionReservations = await db
-      .select({
-        stadiumId: reservations.stadiumId,
-        totalAmount: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
-      })
-      .from(reservations)
-      .innerJoin(stadiums, eq(reservations.stadiumId, stadiums.id))
-      .where(
-        and(
-          sql`YEAR(${reservations.startDateTime}) = ${year}`,
-          eq(reservations.paymentType, "SINGLE_SESSION"),
-          eq(reservations.status, "APPROVED"),
-          isNull(reservations.deletedAt),
-          isNull(stadiums.deletedAt),
-        ),
-      )
-      .groupBy(reservations.stadiumId);
-
-    // Distribute single session revenue as PENDING initially
-    singleSessionReservations.forEach(row => {
-      const stadium = revenueMap.get(row.stadiumId);
-      if (stadium) {
-        const amount = Number(row.totalAmount) || 0;
-        stadium.singleSessionRevenue += amount;
-        stadium.totalRevenue += amount;
-        stadium.pendingRevenue += amount;
-        stadium.singleSessionPending += amount;
-      }
-    });
-
-    // ===== 3. ADJUST FOR CASH PAYMENTS =====
-    // Single session cash payments
-    const singleSessionCashPayments = await db
-      .select({
-        stadiumId: reservations.stadiumId,
-        amount: sql<number>`COALESCE(SUM(${cashPaymentRecords.amount}), 0)`,
-      })
-      .from(cashPaymentRecords)
-      .innerJoin(reservations, eq(cashPaymentRecords.reservationId, reservations.id))
-      .innerJoin(stadiums, eq(reservations.stadiumId, stadiums.id))
-      .where(
-        and(
-          sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`,
-          isNull(cashPaymentRecords.monthlyPaymentId),
-          eq(reservations.paymentType, "SINGLE_SESSION"),
-          isNull(stadiums.deletedAt),
-        ),
-      )
-      .groupBy(reservations.stadiumId);
-
-    // Adjust single session payments
-    singleSessionCashPayments.forEach(row => {
-      const stadium = revenueMap.get(row.stadiumId);
-      if (stadium) {
-        const amount = Number(row.amount) || 0;
-        // Move from pending to paid
-        const pendingToMove = Math.min(stadium.singleSessionPending, amount);
-        stadium.singleSessionPending -= pendingToMove;
-        stadium.pendingRevenue -= pendingToMove;
-        
-        stadium.singleSessionPaid += amount;
-        stadium.paidRevenue += amount;
-      }
-    });
-
-    // ===== 4. ADJUST FOR UNPAID RESERVATIONS =====
-    const unpaidSingleSessions = await db
-      .select({
-        stadiumId: reservations.stadiumId,
-        totalUnpaid: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
-      })
-      .from(reservations)
-      .innerJoin(stadiums, eq(reservations.stadiumId, stadiums.id))
-      .where(
-        and(
-          sql`YEAR(${reservations.startDateTime}) = ${year}`,
-          eq(reservations.paymentType, "SINGLE_SESSION"),
-          eq(reservations.status, "UNPAID"),
-          isNull(reservations.deletedAt),
-          isNull(stadiums.deletedAt),
-        ),
-      )
-      .groupBy(reservations.stadiumId);
-
-    // Adjust unpaid reservations
-    unpaidSingleSessions.forEach(row => {
-      const stadium = revenueMap.get(row.stadiumId);
-      if (stadium) {
-        const amount = Number(row.totalUnpaid) || 0;
-        // Move from pending to overdue
-        const pendingToMove = Math.min(stadium.singleSessionPending, amount);
-        stadium.singleSessionPending -= pendingToMove;
-        stadium.pendingRevenue -= pendingToMove;
-        
-        stadium.singleSessionOverdue += amount;
-        stadium.overdueRevenue += amount;
-      }
-    });
-
-    // ===== 5. ADJUST SUBSCRIPTION CASH PAYMENTS =====
-    const subscriptionCashPayments = await db
-      .select({
-        stadiumId: reservationSeries.stadiumId,
-        amount: sql<number>`COALESCE(SUM(${cashPaymentRecords.amount}), 0)`,
-      })
-      .from(cashPaymentRecords)
-      .innerJoin(monthlyPayments, eq(cashPaymentRecords.monthlyPaymentId, monthlyPayments.id))
-      .innerJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
-      .innerJoin(stadiums, eq(reservationSeries.stadiumId, stadiums.id))
-      .where(
-        and(
-          sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`,
-          isNotNull(cashPaymentRecords.monthlyPaymentId),
-          isNull(stadiums.deletedAt),
-        ),
-      )
-      .groupBy(reservationSeries.stadiumId);
-
-    // Adjust subscription payments
-    subscriptionCashPayments.forEach(row => {
-      const stadium = revenueMap.get(row.stadiumId);
-      if (stadium) {
-        const amount = Number(row.amount) || 0;
-        // Move from pending/overdue to paid
-        const pendingToMove = Math.min(stadium.subscriptionPending, amount);
-        stadium.subscriptionPending -= pendingToMove;
-        stadium.pendingRevenue -= pendingToMove;
-        
-        const remaining = amount - pendingToMove;
-        if (remaining > 0) {
-          const overdueToMove = Math.min(stadium.subscriptionOverdue, remaining);
-          stadium.subscriptionOverdue -= overdueToMove;
-          stadium.overdueRevenue -= overdueToMove;
-        }
-        
-        stadium.subscriptionPaid += amount;
-        stadium.paidRevenue += amount;
-      }
-    });
-
-    // ===== 6. FINAL CALCULATION =====
-    const stadiumRevenues = Array.from(revenueMap.values());
-    const stadiumsWithRevenue = stadiumRevenues.filter((s) => s.totalRevenue > 0);
-
-    // Recalculate totals to ensure consistency
-    const stadiumsTotalRevenue = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.totalRevenue, 0);
-    const stadiumsTotalPaid = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.paidRevenue, 0);
-    const stadiumsTotalOverdue = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.overdueRevenue, 0);
-    const stadiumsTotalPending = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.pendingRevenue, 0);
-    const stadiumsTotalSubscription = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.subscriptionRevenue, 0);
-    const stadiumsTotalSingleSession = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.singleSessionRevenue, 0);
-
-    // If stadium total doesn't match monthly total, scale it
-    let scaleFactor = 1;
-    if (stadiumsTotalRevenue > 0 && totalRevenue > 0) {
-      scaleFactor = totalRevenue / stadiumsTotalRevenue;
-    }
-
-    // Apply scaling if needed
-    if (scaleFactor !== 1) {
-      console.log(`Scaling stadium revenue by factor: ${scaleFactor.toFixed(2)}`);
-      stadiumsWithRevenue.forEach(stadium => {
-        stadium.totalRevenue = Math.round(stadium.totalRevenue * scaleFactor);
-        stadium.paidRevenue = Math.round(stadium.paidRevenue * scaleFactor);
-        stadium.overdueRevenue = Math.round(stadium.overdueRevenue * scaleFactor);
-        stadium.pendingRevenue = Math.round(stadium.pendingRevenue * scaleFactor);
-        stadium.subscriptionRevenue = Math.round(stadium.subscriptionRevenue * scaleFactor);
-        stadium.singleSessionRevenue = Math.round(stadium.singleSessionRevenue * scaleFactor);
-        stadium.subscriptionPaid = Math.round(stadium.subscriptionPaid * scaleFactor);
-        stadium.subscriptionOverdue = Math.round(stadium.subscriptionOverdue * scaleFactor);
-        stadium.subscriptionPending = Math.round(stadium.subscriptionPending * scaleFactor);
-        stadium.singleSessionPaid = Math.round(stadium.singleSessionPaid * scaleFactor);
-        stadium.singleSessionOverdue = Math.round(stadium.singleSessionOverdue * scaleFactor);
-        stadium.singleSessionPending = Math.round(stadium.singleSessionPending * scaleFactor);
+        totalRevenue: validatedTotalRevenue,
+        paidRevenue: validatedPaidRevenue,
+        overdueRevenue,
+        pendingRevenue,
+        subscriptionRevenue,
+        singleSessionRevenue,
+        subscriptionPaid,
+        subscriptionOverdue,
+        subscriptionPending,
+        singleSessionPaid,
+        singleSessionOverdue,
+        singleSessionPending,
+        percentage: 0,
+        collectionRate: validatedTotalRevenue > 0 ? 
+          Math.round((validatedPaidRevenue / validatedTotalRevenue) * 100) : 0,
       });
     }
 
-    // Calculate percentages and collection rates
-    const finalTotalRevenue = stadiumsWithRevenue.reduce((sum, stadium) => sum + stadium.totalRevenue, 0);
-    const collectionRate = finalTotalRevenue > 0 ? Math.round((totalPaid / finalTotalRevenue) * 100) : 0;
-
-    const stadiumsWithPercentages = stadiumsWithRevenue.map((stadium) => {
-      const percentage = finalTotalRevenue > 0 ? Math.round((stadium.totalRevenue / finalTotalRevenue) * 100) : 0;
-      const stadiumCollectionRate = stadium.totalRevenue > 0 ? Math.round((stadium.paidRevenue / stadium.totalRevenue) * 100) : 0;
-
-      return {
-        ...stadium,
-        percentage,
-        collectionRate: stadiumCollectionRate,
-      };
-    });
+    // Calculate percentages
+    const totalAllRevenue = stadiumRevenues.reduce((sum, s) => sum + s.totalRevenue, 0);
+    
+    const stadiumsWithPercentages = stadiumRevenues.map(stadium => ({
+      ...stadium,
+      percentage: totalAllRevenue > 0 ? Math.round((stadium.totalRevenue / totalAllRevenue) * 100) : 0,
+    }));
 
     // Sort by total revenue
     const sortedStadiums = stadiumsWithPercentages.sort((a, b) => b.totalRevenue - a.totalRevenue);
 
-    console.log(`\nFINAL STADIUM REVENUE:`);
-    console.log(`Total: ${finalTotalRevenue} MAD`);
-    console.log(`Subscription: ${stadiumsTotalSubscription} MAD`);
-    console.log(`Single Session: ${stadiumsTotalSingleSession} MAD`);
-    console.log(`Paid: ${totalPaid} MAD`);
-    console.log(`Overdue: ${totalOverdue} MAD`);
-    console.log(`Pending: ${totalPending} MAD`);
-    console.log(`Collection Rate: ${collectionRate}%`);
+    // Calculate summary
+    const totalPaidAll = sortedStadiums.reduce((sum, s) => sum + s.paidRevenue, 0);
+    const totalOverdueAll = sortedStadiums.reduce((sum, s) => sum + s.overdueRevenue, 0);
+    const totalPendingAll = sortedStadiums.reduce((sum, s) => sum + s.pendingRevenue, 0);
+    const totalAllRevenueValidated = Math.max(totalAllRevenue, totalPaidAll);
+
+    const summary = {
+      totalRevenue: totalAllRevenueValidated,
+      subscriptionRevenue: sortedStadiums.reduce((sum, s) => sum + s.subscriptionRevenue, 0),
+      singleSessionRevenue: sortedStadiums.reduce((sum, s) => sum + s.singleSessionRevenue, 0),
+      paidAmount: totalPaidAll,
+      overdueAmount: totalOverdueAll,
+      pendingAmount: totalPendingAll,
+      collectionRate: totalAllRevenueValidated > 0 ? 
+        Math.round((totalPaidAll / totalAllRevenueValidated) * 100) : 0,
+      expectedRevenue: totalAllRevenueValidated,
+    };
 
     return {
       stadiums: sortedStadiums,
-      summary: {
-        totalRevenue: finalTotalRevenue,
-        subscriptionRevenue: stadiumsTotalSubscription,
-        singleSessionRevenue: stadiumsTotalSingleSession,
-        paidAmount: totalPaid,
-        overdueAmount: totalOverdue,
-        pendingAmount: totalPending,
-        collectionRate,
-        expectedRevenue: finalTotalRevenue,
-      },
+      summary,
     };
   } catch (error) {
-    console.error("Error in simplified getRevenueByStadium:", error);
+    console.error("Error in getRevenueByStadium:", error);
     return {
       stadiums: [],
       summary: {
@@ -787,81 +613,6 @@ export async function getRevenueByStadium(year: number): Promise<{
     };
   }
 }
-// Add this temporary debug function
-export async function debugRevenueData(year: number) {
-  try {
-    console.log(`\n=== DEBUG REVENUE DATA FOR ${year} ===`);
-    
-    // 1. Check monthly payments
-    const monthlyPaymentsData = await db
-      .select({
-        month: monthlyPayments.month,
-        year: monthlyPayments.year,
-        status: monthlyPayments.status,
-        amount: monthlyPayments.amount,
-        stadiumName: stadiums.name,
-      })
-      .from(monthlyPayments)
-      .leftJoin(reservationSeries, eq(monthlyPayments.reservationSeriesId, reservationSeries.id))
-      .leftJoin(stadiums, eq(reservationSeries.stadiumId, stadiums.id))
-      .where(eq(monthlyPayments.year, year))
-      .orderBy(monthlyPayments.month);
-
-    console.log(`Monthly payments for ${year}: ${monthlyPaymentsData.length}`);
-    monthlyPaymentsData.forEach(p => {
-      console.log(`Month ${p.month}: ${p.amount} MAD, Status: ${p.status}, Stadium: ${p.stadiumName}`);
-    });
-
-    // 2. Check cash payments
-    const cashPaymentsData = await db
-      .select({
-        amount: cashPaymentRecords.amount,
-        paymentDate: cashPaymentRecords.paymentDate,
-        monthlyPaymentId: cashPaymentRecords.monthlyPaymentId,
-        reservationId: cashPaymentRecords.reservationId,
-      })
-      .from(cashPaymentRecords)
-      .where(sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`);
-
-    console.log(`\nCash payments for ${year}: ${cashPaymentsData.length}`);
-    const totalCash = cashPaymentsData.reduce((sum, p) => sum + Number(p.amount), 0);
-    console.log(`Total cash payments: ${totalCash} MAD`);
-    
-    const withMonthlyId = cashPaymentsData.filter(p => p.monthlyPaymentId);
-    const withoutMonthlyId = cashPaymentsData.filter(p => !p.monthlyPaymentId);
-    console.log(`With monthlyPaymentId (subscriptions): ${withMonthlyId.length}`);
-    console.log(`Without monthlyPaymentId (single sessions): ${withoutMonthlyId.length}`);
-
-    // 3. Check reservations with cash payments
-    const paidReservations = await db
-      .select({
-        id: reservations.id,
-        stadiumName: stadiums.name,
-        sessionPrice: reservations.sessionPrice,
-        isPaid: reservations.isPaid,
-        paymentType: reservations.paymentType,
-        cashPaymentAmount: cashPaymentRecords.amount,
-      })
-      .from(reservations)
-      .innerJoin(stadiums, eq(reservations.stadiumId, stadiums.id))
-      .leftJoin(cashPaymentRecords, eq(reservations.id, cashPaymentRecords.reservationId))
-      .where(
-        and(
-          sql`YEAR(${reservations.createdAt}) = ${year}`,
-          eq(reservations.isPaid, true)
-        )
-      )
-      .limit(10);
-
-    console.log(`\nPaid reservations for ${year}: ${paidReservations.length}`);
-    paidReservations.forEach(r => {
-      console.log(`Reservation: ${r.sessionPrice} MAD, Type: ${r.paymentType}, Stadium: ${r.stadiumName}, Cash: ${r.cashPaymentAmount || 'none'}`);
-    });
-
-  } catch (error) {
-    console.error("Debug error:", error);
-  }
-}
 
 // ==================== PENDING USER APPROVALS ====================
 export async function getPendingUserApprovals(year: number): Promise<PendingUserApproval[]> {
@@ -869,25 +620,27 @@ export async function getPendingUserApprovals(year: number): Promise<PendingUser
     const startDate = startOfYear(new Date(year, 0, 1)).toISOString();
     const endDate = endOfYear(new Date(year, 11, 31)).toISOString();
 
-    const pendingUsers = await db.query.users.findMany({
-      where: and(
-        isNull(users.deletedAt),
-        eq(users.isApproved, false),
-        eq(users.role, "CLUB"),
-        gte(users.createdAt, startDate),
-        lte(users.createdAt, endDate),
-      ),
-      orderBy: [desc(users.createdAt)],
-      limit: 10,
-      columns: {
-        id: true,
-        name: true,
-        email: true,
-        phoneNumber: true,
-        emailVerifiedAt: true,
-        createdAt: true,
-      },
-    });
+    const pendingUsers = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        phoneNumber: users.phoneNumber,
+        emailVerifiedAt: users.emailVerifiedAt,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .where(
+        and(
+          isNull(users.deletedAt),
+          eq(users.isApproved, false),
+          eq(users.role, "CLUB"),
+          gte(users.createdAt, startDate),
+          lte(users.createdAt, endDate),
+        )
+      )
+      .orderBy(desc(users.createdAt))
+      .limit(10);
 
     if (!pendingUsers.length) {
       return [];
@@ -940,12 +693,9 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
 
   // Execute all queries in parallel
   const [
-    // ALL TIME QUERIES
     totalClubsResult,
     totalStadiumsResult,
     totalUsersResult,
-    
-    // YEAR FILTERED QUERIES
     totalReservationsResult,
     activeReservationsResult,
     pendingReservationsResult,
@@ -954,27 +704,25 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     subscriptionsResult,
     overduePaymentsResult,
     overdueAmountResult,
-    
-    // MONTH FILTERED QUERIES
     newClubsThisMonthResult,
     newUsersThisMonthResult,
   ] = await Promise.all([
-    // ALL TIME: Total Clubs
+    // Total Clubs
     db.select({ count: count() })
       .from(clubs)
       .where(isNull(clubs.deletedAt)),
 
-    // ALL TIME: Total Stadiums
+    // Total Stadiums
     db.select({ count: count() })
       .from(stadiums)
       .where(isNull(stadiums.deletedAt)),
 
-    // ALL TIME: Total Users
+    // Total Users
     db.select({ count: count() })
       .from(users)
       .where(isNull(users.deletedAt)),
 
-    // YEAR: Total Reservations - FIXED: Use startDateTime instead of createdAt
+    // Total Reservations
     db.select({ count: count() })
       .from(reservations)
       .where(
@@ -985,20 +733,22 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // YEAR: Active Reservations - FIXED: Current and future APPROVED reservations
-    db.select({ count: count() })
-      .from(reservations)
-      .where(
-        and(
-          isNull(reservations.deletedAt),
-          gte(reservations.startDateTime, currentDate.toISOString()),
-          eq(reservations.status, "APPROVED"),
-          gte(reservations.startDateTime, startOfYearDate.toISOString()),
-          lte(reservations.startDateTime, endOfYearDate.toISOString()),
-        ),
-      ),
+    // Active Reservations
+   db
+  .select({ count: count() })
+  .from(reservations)
+  .where(
+    and(
+      isNull(reservations.deletedAt),
+      // Remove this line: gte(reservations.startDateTime, currentDate.toISOString()),
+      // Active reservations should include both past and future APPROVED reservations
+      eq(reservations.status, "APPROVED"),
+      gte(reservations.startDateTime, startOfYearDate.toISOString()),
+      lte(reservations.startDateTime, endOfYearDate.toISOString()),
+    ),
+  ),
 
-    // YEAR: Pending Reservations - FIXED: Use startDateTime
+    // Pending Reservations
     db.select({ count: count() })
       .from(reservations)
       .where(
@@ -1010,7 +760,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // YEAR: New Clubs this year - FIXED: Based on club.createdAt
+    // New Clubs this year
     db.select({ count: count() })
       .from(clubs)
       .where(
@@ -1021,29 +771,34 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // YEAR: New Users this year - FIXED: Based on user.createdAt
+    // New Users this year
     db.select({ count: count() })
       .from(users)
       .where(
         and(
           isNull(users.deletedAt),
-          eq(users.role, "CLUB"), // Only club users
+          eq(users.role, "CLUB"),
           gte(users.createdAt, startOfYearDate.toISOString()),
           lte(users.createdAt, endOfYearDate.toISOString()),
         ),
       ),
 
-    // YEAR: Active Subscriptions - FIXED: Count all ACTIVE regardless of creation date
-    db.select({ count: count() })
-      .from(monthlySubscriptions)
-      .where(
-        and(
-          eq(monthlySubscriptions.status, "ACTIVE"),
-          // Don't filter by createdAt - count all active subscriptions
-        ),
+    // Active Subscriptions
+   // Active Subscriptions - FIXED
+db.select({ count: count() })
+  .from(monthlySubscriptions)
+  .where(
+    and(
+      eq(monthlySubscriptions.status, "ACTIVE"),
+      lte(monthlySubscriptions.startDate, endOfYearDate.toISOString()),
+      or(
+        isNull(monthlySubscriptions.endDate),
+        gte(monthlySubscriptions.endDate, startOfYearDate.toISOString()),
       ),
+    ),
+  ),
 
-    // YEAR: Overdue Payments Count
+    // Overdue Payments Count
     db.select({ count: count() })
       .from(monthlyPayments)
       .where(
@@ -1053,7 +808,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // YEAR: Overdue Payments Amount
+    // Overdue Payments Amount
     db.select({ totalAmount: sum(monthlyPayments.amount) })
       .from(monthlyPayments)
       .where(
@@ -1063,7 +818,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // MONTH: New Clubs this month
+    // New Clubs this month
     db.select({ count: count() })
       .from(clubs)
       .where(
@@ -1074,7 +829,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         ),
       ),
 
-    // MONTH: New Users this month
+    // New Users this month
     db.select({ count: count() })
       .from(users)
       .where(
@@ -1089,11 +844,10 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
   // Get previous year data for comparison
   const previousYearData = await getPreviousYearData(year, previousYear);
 
-  // Calculate YEAR: Average stadium utilization - FIXED: Use actual days passed
+  // Calculate Average stadium utilization
   const totalStadiums = totalStadiumsResult[0]?.count || 1;
   const totalReservationsThisYear = totalReservationsResult[0]?.count || 0;
   
-  // Calculate days passed this year (or full year if not current year)
   const now = new Date();
   const daysInYear = year === now.getFullYear() 
     ? Math.ceil((now.getTime() - new Date(year, 0, 1).getTime()) / (1000 * 60 * 60 * 24))
@@ -1104,8 +858,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     Math.round((totalReservationsThisYear / (totalStadiums * Math.max(1, daysInYear))) * 100),
   );
 
-  // Calculate YEAR: Completion rate - FIXED: Consider reservations that actually happened
-  // Count reservations that have started and are APPROVED
+  // Calculate Completion rate
   const completedReservations = await db
     .select({ count: count() })
     .from(reservations)
@@ -1115,7 +868,7 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
         gte(reservations.startDateTime, startOfYearDate.toISOString()),
         lte(reservations.startDateTime, endOfYearDate.toISOString()),
         eq(reservations.status, "APPROVED"),
-        lte(reservations.startDateTime, now.toISOString()), // Only reservations that have started
+        lte(reservations.startDateTime, now.toISOString()),
       ),
     );
 
@@ -1141,12 +894,9 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
   };
 
   return {
-    // ALL TIME
     totalClubs: totalClubsResult[0]?.count || 0,
     totalStadiums: totalStadiumsResult[0]?.count || 0,
     totalUsers: totalUsersResult[0]?.count || 0,
-    
-    // YEAR
     totalReservations: totalReservationsResult[0]?.count || 0,
     activeReservations: activeReservationsResult[0]?.count || 0,
     pendingReservations: pendingReservationsResult[0]?.count || 0,
@@ -1157,8 +907,6 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
     overdueAmount: Number(overdueAmountResult[0]?.totalAmount) || 0,
     avgUtilization: avgUtilization || 0,
     completionRate: completionRate || 0,
-    
-    // MONTH
     newClubsThisMonth: newClubsThisMonthResult[0]?.count || 0,
     newUsersThisMonth: newUsersThisMonthResult[0]?.count || 0,
     
@@ -1219,9 +967,6 @@ export async function getDashboardStats(year: number): Promise<DashboardStats> {
   };
 }
 
-
-
-
 // ==================== RESERVATIONS BY MONTH ====================
 export async function getReservationsByMonth(year: number): Promise<ChartData[]> {
   try {
@@ -1230,7 +975,7 @@ export async function getReservationsByMonth(year: number): Promise<ChartData[]>
 
     const reservationsByMonth = await db
       .select({
-        month: sql<string>`MONTH(${reservations.startDateTime})`, // FIXED: Use startDateTime
+        month: sql<string>`MONTH(${reservations.startDateTime})`.as("month"),
         count: count(),
       })
       .from(reservations)
@@ -1265,7 +1010,7 @@ export async function getReservationsByMonth(year: number): Promise<ChartData[]>
   }
 }
 
-// ==================== REVENUE BY MONTH - IMPROVED ====================
+// ==================== REVENUE BY MONTH ====================
 export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueData[]> {
   try {
     // Create array for all 12 months
@@ -1286,8 +1031,8 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
     // ===== 1. SINGLE SESSION: EXPECTED REVENUE (ALL APPROVED RESERVATIONS) =====
     const singleSessionExpected = await db
       .select({
-        month: sql<string>`MONTH(${reservations.startDateTime})`,
-        totalExpected: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
+        month: sql<string>`MONTH(${reservations.startDateTime})`.as("month"),
+        totalExpected: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`.as("totalExpected"),
       })
       .from(reservations)
       .where(
@@ -1300,96 +1045,76 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       )
       .groupBy(sql`MONTH(${reservations.startDateTime})`);
 
-    console.log("\n=== DEBUG: Single Session Expected Revenue ===");
-    singleSessionExpected.forEach(item => {
-      console.log(`Month ${item.month}: ${item.totalExpected} MAD`);
-    });
-
     // Process expected single session revenue
-    singleSessionExpected.forEach(item => {
+    singleSessionExpected.forEach((item: any) => {
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.totalExpected) || 0;
         monthlyData[monthIndex].singleSessionRevenue += amount;
         monthlyData[monthIndex].totalRevenue += amount;
-        monthlyData[monthIndex].pendingAmount += amount; // Start as pending
+        monthlyData[monthIndex].pendingAmount += amount;
       }
     });
 
-    // ===== 2. SINGLE SESSION: ACTUAL CASH PAYMENTS =====
-    const singleSessionPayments = await db
+    // ===== 2. SINGLE SESSION: ACTUAL PAYMENTS =====
+    const singleSessionPaymentsData = await db
       .select({
-        month: sql<string>`MONTH(${cashPaymentRecords.paymentDate})`,
-        amount: sql<number>`COALESCE(SUM(${cashPaymentRecords.amount}), 0)`,
+        month: sql<string>`MONTH(${singleSessionPayments.paymentDate})`.as("month"),
+        amount: sql<number>`COALESCE(SUM(${singleSessionPayments.amount}), 0)`.as("amount"),
       })
-      .from(cashPaymentRecords)
+      .from(singleSessionPayments)
       .where(
         and(
-          sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`,
-          isNull(cashPaymentRecords.monthlyPaymentId), // Single sessions only
+          sql`YEAR(${singleSessionPayments.paymentDate}) = ${year}`,
+          eq(singleSessionPayments.status, "PAID"),
         ),
       )
-      .groupBy(sql`MONTH(${cashPaymentRecords.paymentDate})`);
-
-    console.log("\n=== DEBUG: Single Session Cash Payments ===");
-    singleSessionPayments.forEach(item => {
-      console.log(`Month ${item.month}: ${item.amount} MAD`);
-    });
+      .groupBy(sql`MONTH(${singleSessionPayments.paymentDate})`);
 
     // Process actual payments - adjust from pending to paid
-    singleSessionPayments.forEach(item => {
+    singleSessionPaymentsData.forEach((item: any) => {
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.amount) || 0;
-        monthlyData[monthIndex].pendingAmount -= amount;
+        monthlyData[monthIndex].pendingAmount -= Math.min(monthlyData[monthIndex].pendingAmount, amount);
         monthlyData[monthIndex].paidAmount += amount;
       }
     });
 
     // ===== 3. SUBSCRIPTION: MONTHLY PAYMENTS (EXPECTED REVENUE) =====
-    const allMonthlyPayments = await db
-      .select({
-        month: monthlyPayments.month,
-        paidAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PAID' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
-        overdueAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'OVERDUE' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
-        pendingAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PENDING' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
-        totalExpected: sql<number>`COALESCE(SUM(${monthlyPayments.amount}), 0)`,
-      })
-      .from(monthlyPayments)
-      .where(eq(monthlyPayments.year, year))
-      .groupBy(monthlyPayments.month);
+   const monthlyPaymentsData = await db
+  .select({
+    month: monthlyPayments.month,
+    paidAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PAID' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+    overdueAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'OVERDUE' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+    pendingAmount: sql<number>`COALESCE(SUM(CASE WHEN ${monthlyPayments.status} = 'PENDING' THEN ${monthlyPayments.amount} ELSE 0 END), 0)`,
+  })
+  .from(monthlyPayments)
+  .where(eq(monthlyPayments.year, year))
+  .groupBy(monthlyPayments.month);
 
-    console.log("\n=== DEBUG: Monthly Payments ===");
-    allMonthlyPayments.forEach(item => {
-      console.log(`Month ${item.month}: Paid=${item.paidAmount}, Overdue=${item.overdueAmount}, Pending=${item.pendingAmount}, Total=${item.totalExpected}`);
-    });
-
-    // Process monthly payments
-    allMonthlyPayments.forEach(item => {
-      const monthIndex = Number(item.month) - 1;
-      if (monthIndex >= 0 && monthIndex < 12) {
-        const paid = Number(item.paidAmount) || 0;
-        const pending = Number(item.pendingAmount) || 0;
-        const overdue = Number(item.overdueAmount) || 0;
-        const totalExpected = Number(item.totalExpected) || 0;
-        
-        // Add to subscription revenue
-        monthlyData[monthIndex].subscriptionRevenue += totalExpected;
-        // Add to total revenue
-        monthlyData[monthIndex].totalRevenue += totalExpected;
-        
-        // Track status amounts
-        monthlyData[monthIndex].paidAmount += paid;
-        monthlyData[monthIndex].pendingAmount += pending;
-        monthlyData[monthIndex].overdueAmount += overdue;
-      }
-    });
-
+// Process monthly payments
+monthlyPaymentsData.forEach((item: any) => {
+  const monthIndex = Number(item.month) - 1;
+  if (monthIndex >= 0 && monthIndex < 12) {
+    const paid = Number(item.paidAmount) || 0;
+    const pending = Number(item.pendingAmount) || 0;
+    const overdue = Number(item.overdueAmount) || 0;
+    const totalSubscription = paid + pending + overdue;
+    
+    monthlyData[monthIndex].subscriptionRevenue += totalSubscription;
+    monthlyData[monthIndex].totalRevenue += totalSubscription;
+    
+    monthlyData[monthIndex].paidAmount += paid;
+    monthlyData[monthIndex].pendingAmount += pending;
+    monthlyData[monthIndex].overdueAmount += overdue;
+  }
+});
     // ===== 4. ADJUST FOR UNPAID SINGLE SESSIONS =====
     const unpaidSingleSessions = await db
       .select({
-        month: sql<string>`MONTH(${reservations.startDateTime})`,
-        totalUnpaid: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`,
+        month: sql<string>`MONTH(${reservations.startDateTime})`.as("month"),
+        totalUnpaid: sql<number>`COALESCE(SUM(${reservations.sessionPrice}), 0)`.as("totalUnpaid"),
       })
       .from(reservations)
       .where(
@@ -1402,60 +1127,21 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       )
       .groupBy(sql`MONTH(${reservations.startDateTime})`);
 
-    console.log("\n=== DEBUG: Unpaid Single Sessions ===");
-    unpaidSingleSessions.forEach(item => {
-      console.log(`Month ${item.month}: ${item.totalUnpaid} MAD`);
-    });
-
     // Adjust UNPAID single sessions from pending to overdue
-    unpaidSingleSessions.forEach(item => {
+    unpaidSingleSessions.forEach((item: any) => {
       const monthIndex = parseInt(item.month) - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
         const amount = Number(item.totalUnpaid) || 0;
-        // IMPORTANT: Check if we have pending amount to deduct
         if (monthlyData[monthIndex].pendingAmount >= amount) {
           monthlyData[monthIndex].pendingAmount -= amount;
         } else {
-          // If pending is less than unpaid, adjust appropriately
           monthlyData[monthIndex].pendingAmount = Math.max(0, monthlyData[monthIndex].pendingAmount - amount);
         }
         monthlyData[monthIndex].overdueAmount += amount;
       }
     });
 
-    // ===== 5. CORRECTION: SUBSCRIPTION CASH PAYMENTS =====
-    // Some subscription payments might be marked as PENDING but have cash payments
-    const subscriptionCashPayments = await db
-      .select({
-        month: sql<string>`MONTH(${cashPaymentRecords.paymentDate})`,
-        amount: sql<number>`COALESCE(SUM(${cashPaymentRecords.amount}), 0)`,
-      })
-      .from(cashPaymentRecords)
-      .where(
-        and(
-          sql`YEAR(${cashPaymentRecords.paymentDate}) = ${year}`,
-          isNotNull(cashPaymentRecords.monthlyPaymentId), // Subscription payments
-        ),
-      )
-      .groupBy(sql`MONTH(${cashPaymentRecords.paymentDate})`);
-
-    console.log("\n=== DEBUG: Subscription Cash Payments ===");
-    subscriptionCashPayments.forEach(item => {
-      console.log(`Month ${item.month}: ${item.amount} MAD`);
-    });
-
-    // Process subscription cash payments (adjust from pending to paid)
-    subscriptionCashPayments.forEach(item => {
-      const monthIndex = parseInt(item.month) - 1;
-      if (monthIndex >= 0 && monthIndex < 12) {
-        const amount = Number(item.amount) || 0;
-        // Adjust from pending to paid
-        monthlyData[monthIndex].pendingAmount = Math.max(0, monthlyData[monthIndex].pendingAmount - amount);
-        monthlyData[monthIndex].paidAmount += amount;
-      }
-    });
-
-    // ===== 6. CALCULATE COLLECTION RATE AND FINALIZE =====
+    // ===== 5. CALCULATE COLLECTION RATE AND FINALIZE =====
     monthlyData.forEach(month => {
       // Ensure non-negative values
       month.paidAmount = Math.max(0, month.paidAmount);
@@ -1465,14 +1151,6 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
       // Recalculate total as sum of statuses
       month.totalRevenue = month.paidAmount + month.pendingAmount + month.overdueAmount;
       
-      // Recalculate single session revenue as total minus subscription
-      const totalSubscriptionForMonth = allMonthlyPayments
-        .filter(mp => Number(mp.month) - 1 === monthlyData.indexOf(month))
-        .reduce((sum, mp) => sum + Number(mp.totalExpected || 0), 0);
-      
-      month.subscriptionRevenue = totalSubscriptionForMonth;
-      month.singleSessionRevenue = month.totalRevenue - month.subscriptionRevenue;
-      
       // Calculate collection rate
       if (month.totalRevenue > 0) {
         month.collectionRate = Math.min(100, Math.max(0, Math.round((month.paidAmount / month.totalRevenue) * 100)));
@@ -1480,36 +1158,6 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
         month.collectionRate = 0;
       }
     });
-
-    // ===== 7. DEBUG LOGGING =====
-    console.log("\n=== DEBUG: Final Monthly Revenue Breakdown ===");
-    let totalSingle = 0;
-    let totalSub = 0;
-    let totalAll = 0;
-    let totalPaid = 0;
-    let totalOverdue = 0;
-    let totalPending = 0;
-    
-    monthlyData.forEach((month, index) => {
-      if (month.totalRevenue > 0 || month.subscriptionRevenue > 0 || month.singleSessionRevenue > 0) {
-        totalSingle += month.singleSessionRevenue;
-        totalSub += month.subscriptionRevenue;
-        totalAll += month.totalRevenue;
-        totalPaid += month.paidAmount;
-        totalOverdue += month.overdueAmount;
-        totalPending += month.pendingAmount;
-        
-        console.log(`${month.month}: Total=${month.totalRevenue}, Single=${month.singleSessionRevenue}, Sub=${month.subscriptionRevenue}, Paid=${month.paidAmount}, Overdue=${month.overdueAmount}, Pending=${month.pendingAmount}, Rate=${month.collectionRate}%`);
-      }
-    });
-    
-    console.log(`\nYear ${year} Totals:`);
-    console.log(`  Single Session: ${totalSingle} MAD`);
-    console.log(`  Subscription: ${totalSub} MAD`);
-    console.log(`  Total Expected: ${totalAll} MAD`);
-    console.log(`  Paid: ${totalPaid} MAD (${totalAll > 0 ? Math.round(totalPaid/totalAll*100) : 0}%)`);
-    console.log(`  Overdue: ${totalOverdue} MAD (${totalAll > 0 ? Math.round(totalOverdue/totalAll*100) : 0}%)`);
-    console.log(`  Pending: ${totalPending} MAD (${totalAll > 0 ? Math.round(totalPending/totalAll*100) : 0}%)`);
 
     return monthlyData;
   } catch (error) {
@@ -1526,7 +1174,8 @@ export async function getRevenueByMonth(year: number): Promise<MonthlyRevenueDat
     }));
   }
 }
-// ==================== RESERVATIONS BY STATUS - FIXED ====================
+
+// ==================== RESERVATIONS BY STATUS ====================
 export async function getReservationsByStatus(
   year: number,
 ): Promise<ReservationStatusData[]> {
@@ -1543,7 +1192,7 @@ export async function getReservationsByStatus(
       .where(
         and(
           isNull(reservations.deletedAt),
-          gte(reservations.startDateTime, startDate), // FIXED: Use startDateTime
+          gte(reservations.startDateTime, startDate),
           lte(reservations.startDateTime, endDate),
         ),
       )
@@ -1573,8 +1222,6 @@ export async function getReservationsByStatus(
   }
 }
 
-
-// ==================== AVAILABLE YEARS ====================
 // ==================== AVAILABLE YEARS ====================
 export async function getAvailableYears(): Promise<number[]> {
   try {
@@ -1584,19 +1231,26 @@ export async function getAvailableYears(): Promise<number[]> {
       .from(monthlyPayments)
       .orderBy(desc(monthlyPayments.year));
 
-    // Get years from cashPaymentRecords (single sessions)
+    // Get years from singleSessionPayments
+    const yearsFromSingle = await db
+      .selectDistinct({
+        year: sql<number>`YEAR(${singleSessionPayments.paymentDate})`.as("year")
+      })
+      .from(singleSessionPayments)
+      .orderBy(desc(sql`YEAR(${singleSessionPayments.paymentDate})`));
+
+    // Get years from cashPaymentRecords
     const yearsFromCash = await db
       .selectDistinct({
-        year: sql<number>`YEAR(${cashPaymentRecords.paymentDate})`
+        year: sql<number>`YEAR(${cashPaymentRecords.paymentDate})`.as("year")
       })
       .from(cashPaymentRecords)
-      .where(isNull(cashPaymentRecords.monthlyPaymentId)) // Only single sessions
       .orderBy(desc(sql`YEAR(${cashPaymentRecords.paymentDate})`));
 
     // Also check reservations for years
     const yearsFromReservations = await db
       .selectDistinct({
-        year: sql<number>`YEAR(${reservations.createdAt})`
+        year: sql<number>`YEAR(${reservations.createdAt})`.as("year")
       })
       .from(reservations)
       .orderBy(desc(sql`YEAR(${reservations.createdAt})`));
@@ -1604,17 +1258,18 @@ export async function getAvailableYears(): Promise<number[]> {
     // Combine all years
     const allYears = [
       ...yearsFromPayments.map(item => item.year),
-      ...yearsFromCash.map(item => item.year),
-      ...yearsFromReservations.map(item => item.year)
+      ...yearsFromSingle.map((item: any) => item.year),
+      ...yearsFromCash.map((item: any) => item.year),
+      ...yearsFromReservations.map((item: any) => item.year)
     ];
 
     const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Your app start year
+    const startYear = 2025;
     
     // Create a Set to remove duplicates and filter valid years
     const uniqueYears = [...new Set([...allYears, currentYear])]
-      .filter(year => year >= startYear && year <= currentYear)
-      .sort((a, b) => b - a); // Most recent first
+      .filter(year => year && year >= startYear && year <= currentYear)
+      .sort((a, b) => b - a);
 
     return uniqueYears.length > 0 ? uniqueYears : [currentYear];
   } catch (error) {
@@ -1778,12 +1433,12 @@ async function getPreviousYearData(
     pendingReservations: pendingReservationsPrevious[0]?.count || 0,
     totalClubs: totalClubsPrevious[0]?.count || 0,
     totalStadiums,
-    totalUsers: 0, // Simplified - would need actual previous year total users
-    subscriptions: 0, // Simplified
+    totalUsers: 0,
+    subscriptions: 0,
     overduePayments: overduePaymentsPrevious[0]?.count || 0,
     overdueAmount: Number(overdueAmountPrevious[0]?.totalAmount) || 0,
-    newClubsThisMonth: 0, // Simplified
-    newUsersThisMonth: 0, // Simplified
+    newClubsThisMonth: 0,
+    newUsersThisMonth: 0,
     avgUtilization: avgUtilizationPrevious,
     completionRate: completionRatePrevious,
     newClubsThisYear: newClubsPreviousYear[0]?.count || 0,

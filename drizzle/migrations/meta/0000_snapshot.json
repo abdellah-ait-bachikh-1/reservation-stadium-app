@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d3dc81cd-c313-405f-bf4d-4ce96a04ca6f",
+  "id": "a9349091-675a-4be4-9d45-07704b05ac87",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "cash_payment_records": {
@@ -44,15 +44,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "reservation_id": {
-          "name": "reservation_id",
+        "monthly_payment_id": {
+          "name": "monthly_payment_id",
           "type": "char(36)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "monthly_payment_id": {
-          "name": "monthly_payment_id",
+        "single_session_payment_id": {
+          "name": "single_session_payment_id",
           "type": "char(36)",
           "primaryKey": false,
           "notNull": false,
@@ -84,20 +84,6 @@
         }
       },
       "indexes": {
-        "user_id_index": {
-          "name": "user_id_index",
-          "columns": [
-            "user_id"
-          ],
-          "isUnique": false
-        },
-        "reservation_id_index": {
-          "name": "reservation_id_index",
-          "columns": [
-            "reservation_id"
-          ],
-          "isUnique": false
-        },
         "monthly_payment_id_index": {
           "name": "monthly_payment_id_index",
           "columns": [
@@ -105,17 +91,17 @@
           ],
           "isUnique": false
         },
-        "payment_date_index": {
-          "name": "payment_date_index",
+        "single_session_payment_id_index": {
+          "name": "single_session_payment_id_index",
           "columns": [
-            "payment_date"
+            "single_session_payment_id"
           ],
           "isUnique": false
         },
-        "created_at_index": {
-          "name": "created_at_index",
+        "user_id_index": {
+          "name": "user_id_index",
           "columns": [
-            "created_at"
+            "user_id"
           ],
           "isUnique": false
         }
@@ -134,12 +120,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_cash_payments_reservation": {
-          "name": "fk_cash_payments_reservation",
+        "fk_cash_payments_monthly": {
+          "name": "fk_cash_payments_monthly",
           "tableFrom": "cash_payment_records",
-          "tableTo": "reservations",
+          "tableTo": "monthly_payments",
           "columnsFrom": [
-            "reservation_id"
+            "monthly_payment_id"
           ],
           "columnsTo": [
             "id"
@@ -147,12 +133,12 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "fk_cash_payments_monthly": {
-          "name": "fk_cash_payments_monthly",
+        "fk_cash_payments_single_session": {
+          "name": "fk_cash_payments_single_session",
           "tableFrom": "cash_payment_records",
-          "tableTo": "monthly_payments",
+          "tableTo": "single_session_payments",
           "columnsFrom": [
-            "monthly_payment_id"
+            "single_session_payment_id"
           ],
           "columnsTo": [
             "id"
@@ -188,6 +174,13 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "shortcut_name": {
+          "name": "shortcut_name",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "address": {
@@ -387,6 +380,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "enum('CASH','BANK_TRANSFER','CREDIT_CARD')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'CASH'"
         },
         "created_at": {
           "name": "created_at",
@@ -1393,6 +1394,162 @@
         }
       },
       "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "single_session_payments": {
+      "name": "single_session_payments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "reservation_id": {
+          "name": "reservation_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','PAID','OVERDUE','PARTIALLY_PAID')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'PENDING'"
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "receipt_number": {
+          "name": "receipt_number",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "enum('CASH','BANK_TRANSFER','CREDIT_CARD')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'CASH'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "reservation_id_index": {
+          "name": "reservation_id_index",
+          "columns": [
+            "reservation_id"
+          ],
+          "isUnique": false
+        },
+        "user_id_index": {
+          "name": "user_id_index",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "status_index": {
+          "name": "status_index",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "payment_date_index": {
+          "name": "payment_date_index",
+          "columns": [
+            "payment_date"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "fk_single_session_payments_reservation": {
+          "name": "fk_single_session_payments_reservation",
+          "tableFrom": "single_session_payments",
+          "tableTo": "reservations",
+          "columnsFrom": [
+            "reservation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "fk_single_session_payments_user": {
+          "name": "fk_single_session_payments_user",
+          "tableFrom": "single_session_payments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "single_session_payments_id": {
+          "name": "single_session_payments_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "single_session_payments_reservation_id_unique": {
+          "name": "single_session_payments_reservation_id_unique",
+          "columns": [
+            "reservation_id"
+          ]
+        }
+      },
       "checkConstraint": {}
     },
     "sports": {

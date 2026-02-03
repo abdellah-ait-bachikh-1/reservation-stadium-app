@@ -4,8 +4,8 @@ CREATE TABLE `cash_payment_records` (
 	`payment_date` timestamp NOT NULL DEFAULT (now()),
 	`receipt_number` varchar(255) NOT NULL,
 	`notes` text,
-	`reservation_id` char(36),
 	`monthly_payment_id` char(36),
+	`single_session_payment_id` char(36),
 	`user_id` char(36) NOT NULL,
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
@@ -15,6 +15,7 @@ CREATE TABLE `cash_payment_records` (
 CREATE TABLE `clubs` (
 	`id` char(36) NOT NULL DEFAULT (UUID()),
 	`name` varchar(255) NOT NULL,
+	`shortcut_name` varchar(20),
 	`address` varchar(255),
 	`monthly_fee` decimal(10,2),
 	`payment_due_day` smallint unsigned,
@@ -36,6 +37,7 @@ CREATE TABLE `monthly_payments` (
 	`receipt_number` varchar(255),
 	`user_id` char(36) NOT NULL,
 	`reservation_series_id` char(36) NOT NULL,
+	`payment_method` enum('CASH','BANK_TRANSFER','CREDIT_CARD') DEFAULT 'CASH',
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `monthly_payments_id` PRIMARY KEY(`id`),
@@ -123,6 +125,21 @@ CREATE TABLE `reservations` (
 	CONSTRAINT `reservations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `single_session_payments` (
+	`id` char(36) NOT NULL DEFAULT (UUID()),
+	`reservation_id` char(36) NOT NULL,
+	`amount` decimal(10,2) NOT NULL,
+	`status` enum('PENDING','PAID','OVERDUE','PARTIALLY_PAID') NOT NULL DEFAULT 'PENDING',
+	`payment_date` timestamp,
+	`receipt_number` varchar(255),
+	`user_id` char(36) NOT NULL,
+	`payment_method` enum('CASH','BANK_TRANSFER','CREDIT_CARD') DEFAULT 'CASH',
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `single_session_payments_id` PRIMARY KEY(`id`),
+	CONSTRAINT `single_session_payments_reservation_id_unique` UNIQUE(`reservation_id`)
+);
+--> statement-breakpoint
 CREATE TABLE `sports` (
 	`id` char(36) NOT NULL DEFAULT (UUID()),
 	`name_ar` varchar(255) NOT NULL,
@@ -187,8 +204,8 @@ CREATE TABLE `users` (
 );
 --> statement-breakpoint
 ALTER TABLE `cash_payment_records` ADD CONSTRAINT `fk_cash_payments_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `cash_payment_records` ADD CONSTRAINT `fk_cash_payments_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservations`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `cash_payment_records` ADD CONSTRAINT `fk_cash_payments_monthly` FOREIGN KEY (`monthly_payment_id`) REFERENCES `monthly_payments`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `cash_payment_records` ADD CONSTRAINT `fk_cash_payments_single_session` FOREIGN KEY (`single_session_payment_id`) REFERENCES `single_session_payments`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `clubs` ADD CONSTRAINT `fk_clubs_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `clubs` ADD CONSTRAINT `fk_clubs_sport` FOREIGN KEY (`sport_id`) REFERENCES `sports`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `monthly_payments` ADD CONSTRAINT `fk_monthly_payments_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -202,14 +219,14 @@ ALTER TABLE `reservation_series` ADD CONSTRAINT `fk_reservation_series_stadium` 
 ALTER TABLE `reservation_series` ADD CONSTRAINT `fk_reservation_series_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `reservations` ADD CONSTRAINT `fk_reservations_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadiums`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `reservations` ADD CONSTRAINT `fk_reservations_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `single_session_payments` ADD CONSTRAINT `fk_single_session_payments_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservations`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `single_session_payments` ADD CONSTRAINT `fk_single_session_payments_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `stadium_images` ADD CONSTRAINT `fk_stadium_images_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadiums`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `stadium_sports` ADD CONSTRAINT `fk_stadium_sports_stadium` FOREIGN KEY (`stadium_id`) REFERENCES `stadiums`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `stadium_sports` ADD CONSTRAINT `fk_stadium_sports_sport` FOREIGN KEY (`sport_id`) REFERENCES `sports`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX `user_id_index` ON `cash_payment_records` (`user_id`);--> statement-breakpoint
-CREATE INDEX `reservation_id_index` ON `cash_payment_records` (`reservation_id`);--> statement-breakpoint
 CREATE INDEX `monthly_payment_id_index` ON `cash_payment_records` (`monthly_payment_id`);--> statement-breakpoint
-CREATE INDEX `payment_date_index` ON `cash_payment_records` (`payment_date`);--> statement-breakpoint
-CREATE INDEX `created_at_index` ON `cash_payment_records` (`created_at`);--> statement-breakpoint
+CREATE INDEX `single_session_payment_id_index` ON `cash_payment_records` (`single_session_payment_id`);--> statement-breakpoint
+CREATE INDEX `user_id_index` ON `cash_payment_records` (`user_id`);--> statement-breakpoint
 CREATE INDEX `user_id_index` ON `clubs` (`user_id`);--> statement-breakpoint
 CREATE INDEX `sport_id_index` ON `clubs` (`sport_id`);--> statement-breakpoint
 CREATE INDEX `name_index` ON `clubs` (`name`);--> statement-breakpoint
@@ -253,6 +270,10 @@ CREATE INDEX `created_at_index` ON `reservations` (`created_at`);--> statement-b
 CREATE INDEX `is_paid_index` ON `reservations` (`is_paid`);--> statement-breakpoint
 CREATE INDEX `start_date_time_stadium_id_index` ON `reservations` (`start_date_time`,`stadium_id`);--> statement-breakpoint
 CREATE INDEX `status_start_date_time_index` ON `reservations` (`status`,`start_date_time`);--> statement-breakpoint
+CREATE INDEX `reservation_id_index` ON `single_session_payments` (`reservation_id`);--> statement-breakpoint
+CREATE INDEX `user_id_index` ON `single_session_payments` (`user_id`);--> statement-breakpoint
+CREATE INDEX `status_index` ON `single_session_payments` (`status`);--> statement-breakpoint
+CREATE INDEX `payment_date_index` ON `single_session_payments` (`payment_date`);--> statement-breakpoint
 CREATE INDEX `stadium_id_index` ON `stadium_images` (`stadium_id`);--> statement-breakpoint
 CREATE INDEX `monthly_price_index` ON `stadiums` (`monthly_price`);--> statement-breakpoint
 CREATE INDEX `price_per_session` ON `stadiums` (`price_per_session`);--> statement-breakpoint
