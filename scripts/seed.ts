@@ -61,10 +61,10 @@ async function comprehensiveSeed() {
 
     // We'll seed data from 2025 to current year
     const START_YEAR = 2025;
-    const SEED_YEARS = Array.from(
-      { length: CURRENT_YEAR - START_YEAR + 1 },
-      (_, i) => START_YEAR + i,
-    );
+   const SEED_YEARS = Array.from(
+  { length: CURRENT_YEAR - START_YEAR + 1 },
+  (_, i) => START_YEAR + i,
+);
 
     // Fixed pricing
     const MONTHLY_PRICE = "100.00";
