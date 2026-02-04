@@ -1,0 +1,1 @@
+DROP TABLE `cash_payment_records`;

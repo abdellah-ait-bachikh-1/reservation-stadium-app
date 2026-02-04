@@ -1,7 +1,7 @@
 // scripts/seed.ts
 import { db } from "@/drizzle/db";
 import {
-  cashPaymentRecords,
+  
   clubs,
   monthlyPayments,
   monthlySubscriptions,
@@ -78,10 +78,7 @@ async function comprehensiveSeed() {
     // ===== CLEAR ALL DATA =====
     console.log("🧹 Clearing all existing data...");
     
-    // Clear in correct order to respect foreign key constraints
-    await db.delete(cashPaymentRecords).execute();
-    console.log("✅ Cleared cashPaymentRecords");
-    
+
     await db.delete(singleSessionPayments).execute();
     console.log("✅ Cleared singleSessionPayments");
     
@@ -989,7 +986,7 @@ const isPaid = status === "PAID" || (status === "APPROVED" && Math.random() > 0.
       }
 
       if (cashPaymentsData.length > 0) {
-        await db.insert(cashPaymentRecords).values(cashPaymentsData);
+       
         allCashPayments.push(...cashPaymentsData);
       }
 

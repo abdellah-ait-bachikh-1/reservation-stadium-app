@@ -7,7 +7,7 @@ import {
   reservations,
   monthlySubscriptions,
   monthlyPayments,
-  cashPaymentRecords,
+ 
   stadiumSports,
   sports,
   notifications,
@@ -1291,13 +1291,7 @@ export async function getAvailableYears(): Promise<number[]> {
       .orderBy(desc(sql`YEAR(${singleSessionPayments.paymentDate})`));
 
     // Get years from cashPaymentRecords
-    const yearsFromCash = await db
-      .selectDistinct({
-        year: sql<number>`YEAR(${cashPaymentRecords.paymentDate})`.as("year")
-      })
-      .from(cashPaymentRecords)
-      .orderBy(desc(sql`YEAR(${cashPaymentRecords.paymentDate})`));
-
+  
     // Also check reservations for years
     const yearsFromReservations = await db
       .selectDistinct({
@@ -1310,7 +1304,6 @@ export async function getAvailableYears(): Promise<number[]> {
     const allYears = [
       ...yearsFromPayments.map(item => item.year),
       ...yearsFromSingle.map((item: any) => item.year),
-      ...yearsFromCash.map((item: any) => item.year),
       ...yearsFromReservations.map((item: any) => item.year)
     ];
 

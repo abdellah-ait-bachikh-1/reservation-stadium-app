@@ -9,7 +9,7 @@ import {
   monthlySubscriptions,
   monthlyPayments,
   singleSessionPayments,
-  cashPaymentRecords,
+  
   notifications,
   passwordResetTokens
 } from "@/drizzle/schema";
@@ -137,9 +137,6 @@ export async function permanentDeleteUsers(userIds: string[]) {
 
     // IMPORTANT: Delete in reverse order of dependencies to avoid foreign key constraint errors
     
-    // 1. First delete cash payment records (depends on single session payments and monthly payments)
-    await db.delete(cashPaymentRecords)
-      .where(inArray(cashPaymentRecords.userId, userIds));
 
     // 2. Delete single session payments
     await db.delete(singleSessionPayments)
