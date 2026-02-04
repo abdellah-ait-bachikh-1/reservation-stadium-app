@@ -1016,43 +1016,54 @@
       "close": "Fermer"
     },
     "toast": {
-      "success": {
-        "created": "Créé avec succès",
-        "updated": "Mis à jour avec succès",
-        "deleted": "Supprimé avec succès",
-        "saved": "Enregistré avec succès",
-        "registered": "Inscription réussie. Un email de vérification a été envoyé à votre adresse email. Veuillez vérifier votre email et confirmer que c'est bien vous. Après vérification, l'administrateur examinera votre compte et l'approuvera ou le refusera. Si vous ne pouvez pas vous connecter après vérification, veuillez contacter l'équipe municipale.",
-        "loggedIn": "Connecté avec succès",
-        "loggedOut": "Déconnecté avec succès",
-        "sent": "Envoyé avec succès",
-        "passwordResetEmailSent": "Un email de réinitialisation a été envoyé",
-        "accountDeleted": "Ce compte a été supprimé. Veuillez contacter le support.",
-        "accountNotVerified": "Votre compte n'est pas encore vérifié. Veuillez vérifier votre boîte de réception.",
-        "accountNotApproved": "Votre compte est en attente d'approbation par l'admin. Veuillez contacter le support.",
-        "passwordReset": "Le mot de passe a été réinitialisé avec succès !"
-      },
-      "error": {
-        "creationFailed": "Erreur lors de la création, vérifiez vos identifiants et réessayez",
-        "updateFailed": "Erreur lors de la mise à jour, veuillez réessayer",
-        "deleteFailed": "Erreur lors de la suppression, veuillez réessayer",
-        "saveFailed": "Erreur lors de l'enregistrement, veuillez réessayer",
-        "registrationFailed": "Échec de l'inscription, vérifiez vos informations",
-        "loginFailed": "Échec de la connexion, vérifiez vos identifiants",
-        "generic": "Une erreur s'est produite, veuillez réessayer",
-        "network": "Erreur réseau, vérifiez votre connexion",
-        "validation": "Veuillez vérifier vos informations",
-        "resetPasswordFailed": "Échec de l'envoi de l'email de réinitialisation"
-      },
-      "info": {
-        "loading": "Chargement...",
-        "processing": "Traitement en cours...",
-        "updating": "Mise à jour en cours..."
-      },
-      "warning": {
-        "unsavedChanges": "Vous avez des modifications non enregistrées",
-        "confirmationRequired": "Confirmation requise"
-      }
-    },
+  "success": {
+    "created": "Créé avec succès",
+    "updated": "Mis à jour avec succès",
+    "deleted": "Supprimé avec succès",
+    "saved": "Enregistré avec succès",
+    "registered": "Inscription réussie. Un e-mail de vérification a été envoyé à votre adresse e-mail. Veuillez vérifier votre e-mail et confirmer qu'il s'agit bien de vous. Après vérification, l'administrateur examinera votre compte et l'approuvera ou le refusera. Si vous ne pouvez pas vous connecter après vérification, veuillez contacter l'équipe municipale.",
+    "loggedIn": "Connecté avec succès",
+    "loggedOut": "Déconnecté avec succès",
+    "sent": "Envoyé avec succès",
+    "passwordResetEmailSent": "Un e-mail de réinitialisation de mot de passe a été envoyé",
+    "passwordReset": "Le mot de passe a été réinitialisé avec succès !",
+    "approved": "Approuvé avec succès",
+    "declined": "Refusé avec succès",
+    "verificationSent": "E-mail de vérification envoyé avec succès",
+    "restored": "Restauré avec succès",
+    "bulkUpdated": "Mis à jour avec succès"
+  },
+  "error": {
+    "creationFailed": "Erreur lors de la création, vérifiez vos informations et réessayez",
+    "updateFailed": "Erreur lors de la mise à jour, veuillez réessayer",
+    "deleteFailed": "Erreur lors de la suppression, veuillez réessayer",
+    "saveFailed": "Erreur lors de l'enregistrement, veuillez réessayer",
+    "registrationFailed": "Échec de l'inscription, vérifiez vos informations",
+    "loginFailed": "Échec de la connexion, vérifiez vos identifiants",
+    "generic": "Une erreur est survenue, veuillez réessayer",
+    "network": "Erreur réseau, vérifiez votre connexion",
+    "validation": "Veuillez vérifier vos informations",
+    "resetPasswordFailed": "Échec de l'envoi de l'e-mail de réinitialisation",
+    "accountDeleted": "Ce compte a été supprimé. Veuillez contacter le support.",
+    "accountNotVerified": "Votre adresse e-mail n'est pas encore vérifiée. Veuillez vérifier votre boîte de réception.",
+    "accountNotApproved": "Votre compte est en attente d'approbation par l'administrateur. Veuillez contacter le support.",
+    "loadingFailed": "Échec du chargement des utilisateurs",
+    "approvalFailed": "Échec de l'approbation",
+    "declineFailed": "Échec du refus",
+    "verificationFailed": "Échec de l'envoi de l'e-mail de vérification",
+    "restoreFailed": "Échec de la restauration",
+    "bulkActionFailed": "Échec de l'action groupée"
+  },
+  "info": {
+    "loading": "Chargement...",
+    "processing": "Traitement en cours...",
+    "updating": "Mise à jour..."
+  },
+  "warning": {
+    "unsavedChanges": "Vous avez des modifications non enregistrées",
+    "confirmationRequired": "Confirmation requise"
+  }
+},
     "footer": {
       "emailTitle": "Email",
       "emailDescription": "Pour les demandes générales et le support",

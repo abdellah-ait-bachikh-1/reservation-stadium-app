@@ -1,5 +1,6 @@
 import { APP_NAMES } from "@/const";
 import { LocaleEnumType, LocaleType } from "@/types";
+import { format } from "date-fns";
 import { getLocale } from "next-intl/server";
 
 export function isRtl(locale: LocaleType) {
@@ -51,3 +52,9 @@ export const isErrorHasMessage = (error: unknown): error is Error => {
 };
 
 
+
+export function getMySQLDateTime(date?: Date): string {
+  const d = date || new Date();
+  // Format: YYYY-MM-DD HH:MM:SS (MySQL DATETIME format)
+  return format(d, "yyyy-MM-dd HH:mm:ss");
+}

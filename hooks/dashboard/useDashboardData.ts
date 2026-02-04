@@ -21,7 +21,7 @@ export interface DashboardData {
     newUsersThisYear: number;
     avgUtilization: number;
     completionRate: number;
-    
+
     changes?: {
       totalReservationsChange?: string;
       activeReservationsChange?: string;
@@ -38,7 +38,7 @@ export interface DashboardData {
       newUsersChange?: string;
     };
   };
-  
+
   revenueByStadium: Array<{
     id: string;
     name: string;
@@ -47,7 +47,7 @@ export interface DashboardData {
     singleSessionRevenue: number;
     percentage: number;
   }>;
-  
+
   pendingUserApprovals: Array<{
     id: string;
     name: string;
@@ -57,7 +57,7 @@ export interface DashboardData {
     createdAt: string;
     timeAgo: string;
   }>;
-  
+
   overduePayments: Array<{
     id: string;
     clubName: string;
@@ -70,12 +70,12 @@ export interface DashboardData {
     month: number;
     year: number;
   }>;
-  
+
   reservationsByMonth: Array<{
     month: string;
     value: number;
   }>;
-  
+
   revenueByMonth: Array<{
     month: string;
     totalRevenue: number;
@@ -86,13 +86,13 @@ export interface DashboardData {
     pendingAmount: number;
     collectionRate: number;
   }>;
-  
+
   reservationsByStatus: Array<{
     status: ReservationStatusType;
     count: number;
     color: string;
   }>;
-  
+
   revenueTrends: Array<{
     month: string;
     totalRevenue: number;
@@ -103,9 +103,9 @@ export interface DashboardData {
     pendingAmount: number;
     collectionRate: number;
   }>;
-  
+
   availableYears: number[];
-  
+
   detailedRevenueStats?: {
     totalRevenue: number;
     totalSubscription: number;
@@ -131,7 +131,7 @@ export interface DashboardData {
     overduePercentage: number;
     pendingPercentage: number;
   };
-  
+
   // ADD THIS NEW PROPERTY
   stadiumRevenueSummary?: {
     stadiums: Array<{

@@ -279,36 +279,55 @@ export default function UsersClient({ locale }: UsersClientProps) {
     };
 
     // Handle bulk actions
-    const handleBulkAction = (action: string) => {
-        if (selectedUsers.size === 0) return;
+  // Handle bulk actions
+const handleBulkAction = (action: string) => {
+  if (selectedUsers.size === 0) return;
 
-        if (action === "delete") {
-            setDeleteModal({
-                isOpen: true,
-                userId: null,
-                userName: null,
-                isBulk: true
-            });
-        } else {
-            actions.bulkAction.mutate({
-                action,
-                userIds: Array.from(selectedUsers),
-            });
-            setSelectedUsers(new Set());
-        }
-    };
+  if (action === "delete") {
+    setDeleteModal({
+      isOpen: true,
+      userId: null,
+      userName: null,
+      isBulk: true
+    });
+  } else if (action === "softDelete") {
+    actions.softDeleteUser.mutate(Array.from(selectedUsers));
+    setSelectedUsers(new Set());
+  } else if (action === "permanentDelete") {
+    actions.permanentDeleteUser.mutate(Array.from(selectedUsers));
+    setSelectedUsers(new Set());
+  } else if (action === "restore") {
+    actions.restoreUser.mutate(Array.from(selectedUsers));
+    setSelectedUsers(new Set());
+  } else if (action === "approve") {
+  actions.approveUsers.mutate(Array.from(selectedUsers));
+  setSelectedUsers(new Set());
+} else if (action === "decline") {
+  actions.declineUsers.mutate(Array.from(selectedUsers));
+  setSelectedUsers(new Set());
+} else if (action === "resendVerification") {
+  actions.resendVerificationToUsers.mutate(Array.from(selectedUsers));
+  setSelectedUsers(new Set());
+} else {
+    // Fallback to bulk action for other operations
+    actions.bulkAction.mutate({
+      action,
+      userIds: Array.from(selectedUsers),
+    });
+    setSelectedUsers(new Set());
+  }
+};
 
-    const handleApproveUser = (userId: string) => {
-        actions.approveUser.mutate(userId);
-    };
+   const handleApproveUser = (userId: string) => {
+  actions.approveUser.mutate(userId);
+};
 
     const handleDeclineUser = (userId: string) => {
-        actions.declineUser.mutate(userId);
-    };
-
-    const handleResendVerification = (userId: string) => {
-        actions.resendVerification.mutate(userId);
-    };
+  actions.declineUser.mutate(userId);
+};
+const handleResendVerification = (userId: string) => {
+  actions.resendVerification.mutate(userId);
+};
 
     // Handle delete click for single user
     const handleDeleteClick = (userId: string, userName: string) => {
@@ -321,49 +340,43 @@ export default function UsersClient({ locale }: UsersClientProps) {
     };
 
     // Handle soft delete
-    const handleSoftDelete = () => {
-        if (deleteModal.isBulk) {
-            // Bulk soft delete
-            actions.bulkAction.mutate({
-                action: "softDelete",
-                userIds: Array.from(selectedUsers),
-            });
-            setSelectedUsers(new Set());
-        } else {
-            // Single soft delete
-            if (deleteModal.userId) {
-                actions.softDeleteUser.mutate(deleteModal.userId);
-            }
-        }
-        setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
-    };
+ const handleSoftDelete = () => {
+  if (deleteModal.isBulk) {
+    // Bulk soft delete using the new mutation
+    actions.softDeleteUser.mutate(Array.from(selectedUsers));
+    setSelectedUsers(new Set());
+  } else {
+    // Single soft delete
+    if (deleteModal.userId) {
+      actions.softDeleteUser.mutate(deleteModal.userId);
+    }
+  }
+  setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
+};
 
     // Handle permanent delete
-    const handlePermanentDelete = () => {
-        if (deleteModal.isBulk) {
-            // Bulk permanent delete
-            actions.bulkAction.mutate({
-                action: "permanentDelete",
-                userIds: Array.from(selectedUsers),
-            });
-            setSelectedUsers(new Set());
-        } else {
-            // Single permanent delete
-            if (deleteModal.userId) {
-                actions.permanentDeleteUser.mutate(deleteModal.userId);
-            }
-        }
-        setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
-    };
+  const handlePermanentDelete = () => {
+  if (deleteModal.isBulk) {
+    // Bulk permanent delete using the new mutation
+    actions.permanentDeleteUser.mutate(Array.from(selectedUsers));
+    setSelectedUsers(new Set());
+  } else {
+    // Single permanent delete
+    if (deleteModal.userId) {
+      actions.permanentDeleteUser.mutate(deleteModal.userId);
+    }
+  }
+  setDeleteModal({ isOpen: false, userId: null, userName: null, isBulk: false });
+};
 
-    const handleRestore = (userId: string) => {
-        actions.restoreUser.mutate(userId);
-    };
-
-    // Handle resend verification button action
-    const handleResendVerificationBtn = (userId: string) => {
-        actions.resendVerification.mutate(userId);
-    };
+// Handle restore
+const handleRestore = (userId: string) => {
+  actions.restoreUser.mutate(userId);
+};
+    
+  const handleResendVerificationBtn = (userId: string) => {
+  actions.resendVerification.mutate(userId);
+};
 
     // Format date
     const formatDate = (dateString: string | null) => {
@@ -509,9 +522,14 @@ export default function UsersClient({ locale }: UsersClientProps) {
     };
 
     // Check if any delete action is pending
-    const isDeleteLoading = actions.softDeleteUser.isPending ||
-        actions.permanentDeleteUser.isPending ||
-        actions.bulkAction.isPending;
+const isDeleteLoading = 
+  actions.softDeleteUser.isPending ||
+  actions.permanentDeleteUser.isPending ||
+  actions.restoreUser.isPending ||
+  actions.approveUser.isPending ||
+  actions.declineUser.isPending ||
+  actions.resendVerification.isPending ||
+  actions.bulkAction.isPending;
 
     // Initial loading state (only on first load)
     if (isLoading && !data && isInitialLoad.current) {
@@ -1025,108 +1043,111 @@ export default function UsersClient({ locale }: UsersClientProps) {
                 </div>
 
 
-                {/* Bulk Actions */}
-                {selectedUsers.size > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
-                    >
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {t("pages.dashboard.users.selectedCount", {
-                                count: selectedUsers.size,
-                                total: data?.filteredUserIds?.length || 0
-                            })}
-                        </span>
-                        <div className="flex gap-2 ml-auto">
-                            {deletedFilter !== "deleted" && (
-                                <>
-                                    <Button
-                                        size="sm"
-                                        color="success"
-                                        variant="flat"
-                                        startContent={<HiCheckCircle className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("approve")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.approve")}
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        color="danger"
-                                        variant="flat"
-                                        startContent={<HiXCircle className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("decline")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.decline")}
-                                    </Button>
+               {/* Bulk Actions Section */}
+{selectedUsers.size > 0 && (
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+  >
+    <span className="text-sm text-gray-600 dark:text-gray-400">
+      {t("pages.dashboard.users.selectedCount", {
+        count: selectedUsers.size,
+        total: data?.filteredUserIds?.length || 0
+      })}
+    </span>
+    <div className="flex gap-2 ml-auto">
+      {deletedFilter !== "deleted" && (
+        <>
+          <Button
+            size="sm"
+            color="success"
+            variant="flat"
+            startContent={<HiCheckCircle className="w-4 h-4" />}
+            onPress={() => handleBulkAction("approve")}
+            isLoading={actions.bulkAction.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.approve")}
+          </Button>
+          
+          <Button
+            size="sm"
+            color="danger"
+            variant="flat"
+            startContent={<HiXCircle className="w-4 h-4" />}
+            onPress={() => handleBulkAction("decline")}
+            isLoading={actions.bulkAction.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.decline")}
+          </Button>
 
-                                    {/* ADDED: Resend Verification Bulk Action */}
-                                    <Button
-                                        size="sm"
-                                        color="warning"
-                                        variant="flat"
-                                        startContent={<HiMail className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("resendVerification")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.resendVerification")}
-                                    </Button>
+          <Button
+            size="sm"
+            color="warning"
+            variant="flat"
+            startContent={<HiMail className="w-4 h-4" />}
+            onPress={() => handleBulkAction("resendVerification")}
+            isLoading={actions.bulkAction.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.resendVerification")}
+          </Button>
 
-                                    <Button
-                                        size="sm"
-                                        color="warning"
-                                        variant="flat"
-                                        startContent={<HiTrash className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("delete")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.delete")}
-                                    </Button>
-                                </>
-                            )}
-                            {deletedFilter === "deleted" && (
-                                <>
-                                    <Button
-                                        size="sm"
-                                        color="success"
-                                        variant="flat"
-                                        startContent={<HiArchive className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("restore")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.restore")}
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        color="danger"
-                                        variant="flat"
-                                        startContent={<HiTrash className="w-4 h-4" />}
-                                        onPress={() => handleBulkAction("permanentDelete")}
-                                        isLoading={actions.bulkAction.isPending}
-                                        isDisabled={isFiltering}
-                                    >
-                                        {t("common.actions.permanentDelete")}
-                                    </Button>
-                                </>
-                            )}
-                            <Button
-                                size="sm"
-                                variant="flat"
-                                onPress={() => setSelectedUsers(new Set())}
-                                isDisabled={isFiltering}
-                            >
-                                {t("common.actions.clear")}
-                            </Button>
-                        </div>
-                    </motion.div>
-                )}
+          <Button
+            size="sm"
+            color="warning"
+            variant="flat"
+            startContent={<HiTrash className="w-4 h-4" />}
+            onPress={() => handleBulkAction("delete")}
+            isLoading={actions.softDeleteUser.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.delete")}
+          </Button>
+        </>
+      )}
+      
+      {deletedFilter === "deleted" && (
+        <>
+          <Button
+            size="sm"
+            color="success"
+            variant="flat"
+            startContent={<HiArchive className="w-4 h-4" />}
+            onPress={() => handleBulkAction("restore")}
+            isLoading={actions.restoreUser.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.restore")}
+          </Button>
+          
+          <Button
+            size="sm"
+            color="danger"
+            variant="flat"
+            startContent={<HiTrash className="w-4 h-4" />}
+            onPress={() => handleBulkAction("permanentDelete")}
+            isLoading={actions.permanentDeleteUser.isPending}
+            isDisabled={isFiltering}
+          >
+            {t("common.actions.permanentDelete")}
+          </Button>
+        </>
+      )}
+      
+      <Button
+        size="sm"
+        variant="flat"
+        onPress={() => setSelectedUsers(new Set())}
+        isDisabled={isFiltering}
+      >
+        {t("common.actions.clear")}
+      </Button>
+    </div>
+  </motion.div>
+)}
 
                 {/* Deleted Filter Info */}
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">

@@ -248,7 +248,10 @@ export type TranslationKey =
     | 'common.toast.error.accountDeleted'
     | 'common.toast.error.accountNotApproved'
     | 'common.toast.error.accountNotVerified'
+    | 'common.toast.error.approvalFailed'
+    | 'common.toast.error.bulkActionFailed'
     | 'common.toast.error.creationFailed'
+    | 'common.toast.error.declineFailed'
     | 'common.toast.error.deleteFailed'
     | 'common.toast.error.generic'
     | 'common.toast.error.loadingFailed'
@@ -256,25 +259,29 @@ export type TranslationKey =
     | 'common.toast.error.network'
     | 'common.toast.error.registrationFailed'
     | 'common.toast.error.resetPasswordFailed'
+    | 'common.toast.error.restoreFailed'
     | 'common.toast.error.saveFailed'
     | 'common.toast.error.updateFailed'
     | 'common.toast.error.validation'
+    | 'common.toast.error.verificationFailed'
     | 'common.toast.info.loading'
     | 'common.toast.info.processing'
     | 'common.toast.info.updating'
-    | 'common.toast.success.accountDeleted'
-    | 'common.toast.success.accountNotApproved'
-    | 'common.toast.success.accountNotVerified'
+    | 'common.toast.success.approved'
+    | 'common.toast.success.bulkUpdated'
     | 'common.toast.success.created'
+    | 'common.toast.success.declined'
     | 'common.toast.success.deleted'
     | 'common.toast.success.loggedIn'
     | 'common.toast.success.loggedOut'
     | 'common.toast.success.passwordReset'
     | 'common.toast.success.passwordResetEmailSent'
     | 'common.toast.success.registered'
+    | 'common.toast.success.restored'
     | 'common.toast.success.saved'
     | 'common.toast.success.sent'
     | 'common.toast.success.updated'
+    | 'common.toast.success.verificationSent'
     | 'common.toast.warning.confirmationRequired'
     | 'common.toast.warning.unsavedChanges'
     | 'common.total'
@@ -2040,10 +2047,12 @@ export const _TranslationNamespaces = {
     "loggedOut",
     "sent",
     "passwordResetEmailSent",
-    "accountDeleted",
-    "accountNotVerified",
-    "accountNotApproved",
-    "passwordReset"
+    "passwordReset",
+    "approved",
+    "declined",
+    "verificationSent",
+    "restored",
+    "bulkUpdated"
   ],
   "common.toast.error": [
     "creationFailed",
@@ -2055,7 +2064,16 @@ export const _TranslationNamespaces = {
     "generic",
     "network",
     "validation",
-    "resetPasswordFailed"
+    "resetPasswordFailed",
+    "accountDeleted",
+    "accountNotVerified",
+    "accountNotApproved",
+    "loadingFailed",
+    "approvalFailed",
+    "declineFailed",
+    "verificationFailed",
+    "restoreFailed",
+    "bulkActionFailed"
   ],
   "common.toast.info": [
     "loading",

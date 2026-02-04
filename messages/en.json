@@ -1018,44 +1018,54 @@
       "close": "Close"
     },
     "toast": {
-      "success": {
-        "created": "Created successfully",
-        "updated": "Updated successfully",
-        "deleted": "Deleted successfully",
-        "saved": "Saved successfully",
-        "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
-        "loggedIn": "Logged in successfully",
-        "loggedOut": "Logged out successfully",
-        "sent": "Sent successfully",
-        "passwordResetEmailSent": "A password reset email has been sent",
-        "passwordReset": "Password has been reset successfully!"
-      },
-      "error": {
-        "creationFailed": "Error creating, check your credentials and try again",
-        "updateFailed": "Error updating, please try again",
-        "deleteFailed": "Error deleting, please try again",
-        "saveFailed": "Error saving, please try again",
-        "registrationFailed": "Registration failed, check your information",
-        "loginFailed": "Login failed, check your credentials",
-        "generic": "An error occurred, please try again",
-        "network": "Network error, check your connection",
-        "validation": "Please check your information",
-        "resetPasswordFailed": "Failed to send reset email",
-        "accountDeleted": "This account has been deleted. Please contact support.",
-        "accountNotVerified": "Your account email is not verified yet. Please check your inbox.",
-        "accountNotApproved": "Your account is pending admin approval. Please contact support.",
-        "loadingFailed": "Failed to load users"
-      },
-      "info": {
-        "loading": "Loading...",
-        "processing": "Processing...",
-        "updating": "Updating..."
-      },
-      "warning": {
-        "unsavedChanges": "You have unsaved changes",
-        "confirmationRequired": "Confirmation required"
-      }
-    },
+  "success": {
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "saved": "Saved successfully",
+    "registered": "Registration successful. A verification email has been sent to your email. Please check your email and verify it's you. After verification, the admin will review your account and approve or decline it. If you can't login after verification, please contact the municipal team.",
+    "loggedIn": "Logged in successfully",
+    "loggedOut": "Logged out successfully",
+    "sent": "Sent successfully",
+    "passwordResetEmailSent": "A password reset email has been sent",
+    "passwordReset": "Password has been reset successfully!",
+    "approved": "Approved successfully",
+    "declined": "Declined successfully",
+    "verificationSent": "Verification email sent successfully",
+    "restored": "Restored successfully",
+    "bulkUpdated": "Updated successfully"
+  },
+  "error": {
+    "creationFailed": "Error creating, check your credentials and try again",
+    "updateFailed": "Error updating, please try again",
+    "deleteFailed": "Error deleting, please try again",
+    "saveFailed": "Error saving, please try again",
+    "registrationFailed": "Registration failed, check your information",
+    "loginFailed": "Login failed, check your credentials",
+    "generic": "An error occurred, please try again",
+    "network": "Network error, check your connection",
+    "validation": "Please check your information",
+    "resetPasswordFailed": "Failed to send reset email",
+    "accountDeleted": "This account has been deleted. Please contact support.",
+    "accountNotVerified": "Your account email is not verified yet. Please check your inbox.",
+    "accountNotApproved": "Your account is pending admin approval. Please contact support.",
+    "loadingFailed": "Failed to load users",
+    "approvalFailed": "Failed to approve",
+    "declineFailed": "Failed to decline",
+    "verificationFailed": "Failed to send verification email",
+    "restoreFailed": "Failed to restore",
+    "bulkActionFailed": "Failed to perform bulk action"
+  },
+  "info": {
+    "loading": "Loading...",
+    "processing": "Processing...",
+    "updating": "Updating..."
+  },
+  "warning": {
+    "unsavedChanges": "You have unsaved changes",
+    "confirmationRequired": "Confirmation required"
+  }
+},
     "footer": {
       "emailTitle": "Email",
       "emailDescription": "For general inquiries and support",
