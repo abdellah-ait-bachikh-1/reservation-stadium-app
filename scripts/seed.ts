@@ -17,7 +17,7 @@ import {
   singleSessionPayments,
 } from "@/drizzle/schema";
 import {
-  InsertCashPaymentRecordType,
+
   InsertClubType,
   InsertMonthlyPaymentType,
   InsertMonthlySubscriptionType,
