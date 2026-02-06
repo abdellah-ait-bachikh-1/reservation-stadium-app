@@ -8,7 +8,7 @@ import {
   reservations,
   reservationSeries,
   monthlyPayments,
-  cashPaymentRecords,
+  
   monthlySubscriptions,
   stadiumSports,
   users,
@@ -45,9 +45,7 @@ export type InsertReservationSeriesType = typeof reservationSeries.$inferInsert;
 export type MonthlyPaymentType = typeof monthlyPayments.$inferSelect;
 export type InsertMonthlyPaymentType = typeof monthlyPayments.$inferInsert;
 
-export type CashPaymentRecordType = typeof cashPaymentRecords.$inferSelect;
-export type InsertCashPaymentRecordType =
-  typeof cashPaymentRecords.$inferInsert;
+
 
 export type MonthlySubscriptionType = typeof monthlySubscriptions.$inferSelect;
 export type InsertMonthlySubscriptionType =
